@@ -1,0 +1,380 @@
+# -*- muttrc -*-
+# mutt configuration (c) 2003-2006 
+# by Alexander Solovyov   aka piranha
+# thx to: Max Krasilnikov aka pseudo
+#         Vsevolod Volkov aka vvv
+
+# ignore "from " received content- mime-version status x-status message-id
+# ignore sender references return-path lines
+# ignore Organization X- Xref Distribution Path Approved
+# ignore List- Errors-To Delivered- Precedence
+# ignore NNTP- User-Agent
+# ignore Face In-Reply-To Resent-
+
+ignore *
+unignore "Date:"
+unignore "From:"
+unignore "To:"
+unignore "Subject:"
+# unignore "X-Original-NNTP-Posting-Host:"
+unignore "Cc:"
+
+reset spoolfile
+
+set abort_nosubject=no
+set abort_unmodified=yes
+set query_command="lbdbq '%s'"
+set allow_8bit=yes
+set allow_ansi=no
+# set alternates="(\^piranha@(eth0.org.ua)|(semiol.dp.ua)|(anarxi.st)|((viii)|(library).ntu-kpi.kiev.ua))|(\^alexander.solovyov@gmail.com)|(\^admin@semiol.dp.ua)"
+set arrow_cursor=no
+set ascii_chars=yes
+set askbcc=no
+set askcc=no
+set attach_format="%u%D%I %t%4n %T%.40d%> [%.7m/%.10M, %.6e%?C?, %C?, %s] "
+set attach_sep="\n"
+set attach_split=yes
+set attribution='According to %n:\n'
+set autoedit=no
+set auto_tag=no
+set beep=yes
+set beep_new=no
+set bounce=yes
+set bounce_delivered=no
+set charset="koi8-u"
+set check_new=no
+set collapse_unread=yes
+set uncollapse_jump=no
+set compose_format="-- Mutt: Compose  [Approx. msg size: %l   Atts: %a]%>-"
+set confirmappend=no
+set confirmcreate=yes
+set connect_timeout=30
+set content_type="text/plain"
+set copy=yes
+set date_format="!%a, %b %d, %Y at %I:%M:%S%p"
+set default_hook="~f %s !~P | (~P ~C %s)"
+set delete=yes
+set delete_untag=yes
+set digest_collapse=yes
+set duplicate_threads=yes
+set edit_headers=yes
+#set editor="jed %s -tmp -f '{mail_mode;email_prepare_reply;email_prepare_body;}'"
+set editor="vim +9 -c EraseSignature %s"
+set fast_reply=yes
+set folder="~/.mail"
+set followup_to=yes
+set force_name=no
+set forward_edit=yes
+set forward_format="[%F] %s"
+set forward_quote=no
+set nntp_group_index_format="%2C %M%N %4n/%4s %-45.45f %d"
+set hdrs=yes
+set header=no
+set help=no
+set hidden_host=yes
+set hide_limited=no
+set hide_missing=yes
+set hide_top_limited=yes
+set history=100
+set honor_followup_to=yes
+set ignore_list_reply_to=no
+set include=yes
+set indent_string="> "
+set index_format="%4C %Z %[!%d.%m.%y] %-15.15F (%?M?C%3M&%4l?) %s"
+#set ispell="/usr/bin/ispell"
+set keep_flagged=no
+set locale="ru_RU.koi8r"
+set mail_check=5
+set markers=no
+set mask="!^\\.[^.]"
+set mark_old=no
+#set mbox=$HOME/.mail/received-`date +"%Y.%m"`
+set mbox_type=mbox
+set metoo=no
+set menu_scroll=yes
+set meta_key=no
+set mime_forward=no
+set nntp_mime_subject=no #FOR USENET!!!
+set move=no
+set message_format="%s"
+set narrow_tree=no
+set pager="builtin"
+set pager_context=1
+set pager_format="-%Z- %C/%m: %-20.20n   %s"
+set pager_index_lines=6
+set pager_stop=yes
+set pipe_split=yes
+set pipe_decode=no
+set pipe_sep="\n<<<--->>><<<--->>><<<--->>><<<--->>><<<--->>>\n"
+set postpone=ask-no
+set postponed="+.Drafts"
+set print=ask-yes
+set print_command="lpr"
+set quit=yes
+set quote_empty=no
+set quote_quoted=no
+set quote_regexp="^([ ]?([-a-z]*[|>}#]|:))+"
+set read_inc=10
+set read_only=no
+set recall=ask-yes
+set reply_regexp="^((re|aw)(([\\[0-9\\]+])?|\\^[0-9]+):[ \t]?)+"
+set reply_self=no
+set reply_to=yes
+set resolve=yes
+set reverse_alias=yes
+set reverse_name=yes
+set reverse_realname=yes
+set rfc2047_parameters=yes
+set save_address=no
+set save_empty=yes
+set save_name=yes
+set score=yes
+set score_threshold_delete=-1
+set score_threshold_flag=9999
+set score_threshold_read=-1
+set send_charset="us-ascii:koi8-r:koi8-u:utf-8"
+set nntp_save_unsubscribed=yes
+set nntp_show_new_news=no
+set nntp_show_only_unread=yes
+set sig_dashes=yes
+set sig_on_top=no
+set simple_search="~f %s | ~s %s"
+set smart_wrap=yes
+set smileys="(>From )|(:[-^]?[][)(><}{|/DP])"
+set sleep_time=1
+set sort=threads
+set sort_alias=alias
+set sort_aux=date-sent
+set sort_browser=alpha
+set sort_re=yes
+set status_format="-%r-Mutt: %f [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b?%?l? %l?]---(%s/%S)-%>-(%P)---"
+set status_on_top=no
+set strict_threads=yes
+set suspend=yes
+set text_flowed=no
+set thread_received=no
+set thorough_search=yes
+set tilde=yes
+set to_chars=" +TCFL"
+set use_domain=no
+set use_from=yes
+set use_ipv6=no
+set agent_string=yes
+set wait_key=yes
+set weed=yes
+set write_inc=10
+set write_bcc=no
+set sendmail_wait=10
+set msgid_format="%Y%m%d%h%M%s.G%P%p"
+set xterm_title="Mutt %?b?[NEW mail in %b mailboxes]? ?m?%m messages&no messages?%?n? [%n NEW]?"
+#set list_reply=ask-yes
+set assumed_charset="cp1251:koi8-u:utf-8"
+set header_cache="~/.mutt/hcache"
+
+#IMAP
+set spoolfile=imap://piranha@localhost/INBOX
+set folder=imap://piranha@localhost/
+set imap_mail_check=5
+#set imap_authenticators="crypt"
+
+#NEWS
+set nntp_cache_dir="~/.mutt"
+set nntp_host="nntp://news.ntu-kpi.kiev.ua"
+set nntp_newsrc="~/.newsrc"
+set nntp_context=2000
+set nntp_load_description=no
+set nntp_mail_check=60
+set nntp_reconnect=yes
+set nntp_ask_x_comment_to=no
+#set nntp_ask_follow_up=no
+set nntp_catchup=no
+set nntp_post_moderated=yes
+set nntp_x_comment_to=yes
+bind    index   F       followup-message
+bind    index   F       followup-message
+
+# set up the sidebar, default not visible
+# The width of the mailbox list pane (left sidebar like in GUIs).
+set sidebar_width=25
+# This specifies whether or not to show the mailbox list panel.
+set sidebar_visible=yes
+# When ``set'', the "hierarchy" of the sidebar entries will be shortened, 
+# e.g. de.alt.sysadmin.recovery becomes d.a.s.recovery.
+set sidebar_shorten_hierarchy=no
+set sidebar_delim="  "
+# which mailboxes to list in the sidebar
+mailboxes ! `~/bin/mailboxes.sh`
+#mailboxes =INBOX =root =lj =exim-users
+# color of folders with new mail
+color sidebar_new yellow default 
+# ctrl-n, ctrl-p to select next, prev folder ctrl-o to open selected folder
+bind index \CP sidebar-prev
+bind index \CN sidebar-next
+bind index \CO sidebar-open
+bind pager \CP sidebar-prev
+bind pager \CN sidebar-next
+bind pager \CO sidebar-open
+# I don't need these.  just for documentation purposes.  See below. 
+# sidebar-scroll-up
+# sidebar-scroll-down
+# z toggles sidebar visibility
+macro index z ':toggle sidebar_visible^M'
+macro pager z ':toggle sidebar_visible^M'  
+
+
+append-hook     \\.gz$  "gzip -c %t >> %f"
+open-hook       \\.gz$  "gzip -cd %f > %t"
+close-hook      \\.gz$  "gzip -c %t > %f"
+
+set default_hook="~f %s !~P | (~P ~C %s)"
+
+#fcc-hook roka@.* =roka
+#fcc-hook murkt@.* =murkt
+#fcc-hook piranha@.* =piranha
+#fcc-hook anime_kpi@yahoogroups\.com =anime_kpi
+#fcc-hook talk@news\.ntu-kpi\.kiev\.ua =news-talk
+fcc-hook . +sent.`date +"%Y.%m"`
+
+#send-hook . "set signature='~/bin/sig_random.sh |'"
+send-hook . "set signature='~/.signature'"
+send-hook . "set attribution='Ave, %n.\nAccording to your message:\n'"
+#send-hook ".ntu-kpi.kiev.ua" "my_hdr From: Alexander Solovyov <piranha@viii.ntu-kpi.kiev.ua>"
+send-hook . "my_hdr From: Alexander Solovyov <piranha@piranha.org.ua>"
+
+#mailboxes ! `echo ~/.mail/*|sed 's/\/home\/piranha\/.mail\/sent.*//'|sed 's/\/home\/piranha\/.mail\/procmail.log//'`
+
+unhdr_order *
+hdr_order date from subject to cc
+
+#lists hostels cpc humor jed-users
+
+#view html
+#if there is only html dump that
+#auto_view text/html
+# this helps with multipart messages
+alternative_order text/plain text/html
+
+# colors
+color hdrdefault yellow black
+color quoted cyan black
+color quoted1 yellow black
+color quoted2 magenta black
+color quoted3 red black
+color quoted4 green black
+color quoted5 white black
+color signature brightblue black
+color indicator black yellow
+color error red black
+color status white blue
+color tree magenta black        # the thread tree in the index menu
+color tilde magenta black
+color message cyan black
+color normal white black
+color attachment magenta black
+color search black yellow       # how to hilite search patterns in the pager
+color header green black  ^(from|subject|to|cc|bcc|newsgroups|message-id):
+color body blue black "(ftp|http)://[^ ]+" # point out URLs
+color body green black [-a-z_0-9.]+@[-a-z_0-9.]+    # e-mail addresses
+color underline brightgreen black
+
+color index red black ~D              # deleted
+color index blue black ~T              # tagged
+color index brightblue black ~Ceth0@googlegroups.com
+color index brightblue black ~Cusers@lists.eth0.net.ua
+color index brightmagenta black ~flj_notify
+color index brightyellow black ~Croot
+#color index red black ~Cwhois
+#color index green black ~Cduties
+#color index cyan black ~Cteam
+#color index brightgreen black ~Cnoc
+#color index brightred black ~Cnms
+#color index red black ~fmonitord
+#color index blue black ~froot
+
+#color index_author brightwhite default !~N
+#color index_author brightred default ~N
+#color index_author cyan default '~r >5d'
+#color index_author green default '~r >10d'
+#color index_author brightyellow red ~D
+#color index_subject brightwhite default !~N
+#color index_subject brightred default ~N
+#color index_subject cyan default '~r >5d'
+#color index_subject green default '~r >10d'
+#color index_subject brightyellow red ~D
+#color index_collapsed brightyellow default
+#color index_number blue default
+#color index_flags brightyellow default
+#color index_date magenta default
+#color index_size brightyellow default
+#color index_label brightyellow default
+#
+
+bind	pager	<down>	next-line
+bind	pager	<up>	previous-line
+bind	pager	<end>	bottom
+bind	pager	<home>	top
+bind	pager	g	group-reply
+#bind	pager	t	display-toggle-weed
+bind	pager	<right>	next-entry
+bind	pager	<left>	previous-entry
+bind	index	f	forward-message
+bind	pager	f	forward-message
+
+bind	index	M   flag-message
+bind	pager	M	flag-message
+
+bind	index   \cr imap-fetch-mail
+bind	pager   \cr imap-fetch-mail
+
+# codepages
+macro pager \ek "^E^Utext/plain; charset=koi8-u\r"
+macro pager \ew "^E^Utext/plain; charset=windows-1251\r"
+macro pager \eu "^E^Utext/plain; charset=utf-8\r"
+macro pager \ed "^E^Utext/plain; charset=cp866\r"
+
+macro index \cb '/~b ' 'search in message bodies'
+
+macro index "\Cx\Cb" "<change-folder>?"                                   # Folder list.
+macro pager "\Cx\Cb" "<change-folder>?"                                   # Folder list.
+
+macro index "\eb"    "<pipe-message>lbdb-fetchaddr<enter>"
+macro pager "\eb"    "<pipe-message>lbdb-fetchaddr<enter>"
+
+macro index "\ev"    "<pipe-message>most<enter>"
+macro pager "\ev"    "<pipe-message>most<enter>"
+
+macro index "\es"    "<pipe-message>cat > ~/"
+macro pager "\es"    "<pipe-message>cat > ~/"
+
+#set pgp_sign_micalg=pgp-sha1 # default for DSS keys
+set pgp_decode_command="gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
+set pgp_verify_command="gpg --no-verbose --batch --output - --verify %s %f"
+set pgp_decrypt_command="gpg --passphrase-fd 0 --no-verbose --batch --output - %f"
+set pgp_sign_command="gpg --no-verbose --batch --output - --passphrase-fd 0 --armor \
+    --detach-sign --textmode %?a?-u %a? %f"
+set pgp_clearsign_command="gpg --no-verbose --batch --output - --passphrase-fd 0 \
+    --armor --textmode --clearsign %?a?-u %a? %f"
+set pgp_encrypt_only_command="/usr/lib/mutt/pgpewrap gpg -v --batch --output - \
+    --encrypt --textmode --armor --always-trust -- -r %r -- %f"
+set pgp_encrypt_sign_command="/usr/lib/mutt/pgpewrap gpg --passphrase-fd 0 -v \
+    --batch --output - --encrypt --sign %?a?-u %a? --armor --always-trust -- -r %r -- %f"
+set pgp_import_command="gpg --no-verbose --import -v %f"
+set pgp_export_command="gpg --no-verbose --export --armor %r"
+set pgp_verify_key_command="gpg --no-verbose --batch --fingerprint --check-sigs %r"
+set pgp_list_pubring_command="gpg --no-verbose --batch --with-colons --list-keys %r"
+set pgp_list_secring_command="gpg --no-verbose --batch --with-colons --list-secret-keys %r"
+set pgp_getkeys_command=""
+
+# Add this to your ~/.muttrc to integrate spamassassin and mutt
+# spamassassin report and classify as spam
+macro index S "|/usr/bin/spamassassin -r"
+macro pager S "|/usr/bin/spamassassin -r"
+# spamassassin classify as ham
+macro index H "|/usr/bin/sa-learn --ham  --no-sync"
+macro pager H "|/usr/bin/sa-learn --ham  --no-sync"
+# rebuild the spamassassin bayes filter db
+macro index R "|/usr/bin/sa-learn --sync"
+macro pager R "|/usr/bin/sa-learn --sync"
+
+#source ~/.colorrc
+#alias eth0 eth0 project <eth0@googlegroups.com>
