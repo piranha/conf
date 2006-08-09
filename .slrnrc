@@ -1,3 +1,6 @@
+% $Id: .slrnrc 3 2006-08-09 14:16:14Z piranha $
+% (c) piranha, 2002-2006
+
 set username "piranha"
 set hostname "viii.ntu-kpi.kiev.ua"
 set realname "Alexander Solovyov"

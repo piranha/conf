@@ -1,3 +1,7 @@
+" $Id: .vimrc 3 2006-08-09 14:16:14Z piranha $
+" (c) piranha, 2003-2006
+" thx to pseudo
+
 " Settings {{{
 " To be secure & Vi nocompatible
 set secure nocompatible

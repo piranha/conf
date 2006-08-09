@@ -1,45 +1,23 @@
-# ===============================================================
-# ENVIRONMENT
-# ===============================================================
-# The DISPLAY variable tells programs which display to use.
-# This mainly affects programs running on the X server.
-# However, when I use screen then I am usually using a terminal -
-# and programs do not need to contact the X server.
-# This results in programs waiting for some timeout when
-# they start up - and this just keeps getting in my way.
-# I therefore unset the DISPLAY variable with this command:
-#  unsetenv DISPLAY
+# $Id: .screenrc 3 2006-08-09 14:16:14Z piranha $
+# (c) piranha 2003-2006
+# thx to dym and Michael Prokop
+
 # Text Tools rule!  :-)
-#
-# setenv DISPLAY 'localhost:0.0'
  unsetenv DISPLAY
-#
-# Note:  the command "setenv DISPLAY ''"
-# defines the variable DISPLAY to have an empty value.
-# but of course it would still *exist*.
-# and some programs seem to react to the
-# DISPLAY variable even if it is empty.
-# so to turn off the effect you *must*
-# "unset" the variable.
-#
-# ===============================================================
-# ESCAPE - the COMMAND CHARACTER
-# ===============================================================
-# escape ^aa  # default
-# escape ^pp  # suggested binding for emacs users
-#
+# setenv DISPLAY 'localhost:0.0'
+
 # ===============================================================
 # STARTUP of programs in an extra window:
 # ===============================================================
 # Uncomment one/some following lines to automatically let
 # SCREEN start some programs in the given window numbers:
-#screen -t mail       0 mutt
-screen -t zsh         0 zsh
+# screen -t mail       0 mutt
+# screen -t zsh        0 zsh
 # screen -t vim        1 vim
 # screen -t google     2 links http://www.google.com
 # screen -t slrn       3 slrn
 # screen -t www        4 $BROWSER http://www.michael-prokop.at/
-#
+
 # ===============================================================
 # VARIABLES - Boolean values (on/off)
 # ===============================================================
@@ -52,17 +30,10 @@ screen -t zsh         0 zsh
 # nethack               on              # default: off
 # don't display the copyright page
   startup_message       off             # default: on
-# no annoying audible bell, please
+# no annoying bell, please
   vbell                 off
 
-# ===============================================================
-# version depending stuff
-# ===============================================================
-# 030723 screen version >= 4.00.00beta1 supports the following
-# commands:
-   defnonblock 1
-#  blankerprg rain -d 100
-#  idle 120 blanker
+defnonblock 1
 
 # ===============================================================
 # xterm tweaks
@@ -112,25 +83,24 @@ screen -t zsh         0 zsh
   defscrollback         1000            # default: 100
   msgminwait            3               # default: 1
   silencewait           15              # default: 30
-#
+
 # ===============================================================
 # VARIABLES - Paths and Files (esp. programs)
 # ===============================================================
 # bufferfile:   The file to use for commands
 #               "readbuf" ('<') and  "writebuf" ('>'):
-  bufferfile            $HOME/.screen_exchange
-#
+bufferfile            $HOME/.screen_exchange
+
 # hardcopydir:  The directory which contains all hardcopies.
-#  hardcopydir           $HOME/.hardcopy
- hardcopydir           $HOME/.screen
-#
+hardcopydir           $HOME/.screen
+
 # shell:  Default process started in screen's windows.
 # Makes it possible to use a different shell inside screen
 # than is set as the default login shell.  Halleluja! :-)
- shell                 zsh
-#  shell                 bash
+# shell                 zsh
+# shell                 bash
 # shell                 ksh
-#
+
 # ===============================================================
 # VARIABLES - Strings
 # ===============================================================
@@ -331,7 +301,7 @@ hardstatus alwayslastline "%{ck}%H %{gk}| %{+u rk}Load: %l%{-u gk} | %{wk}%c %{y
 # activity              'Activity in window %n' # default
 # activity              "%C -> %n%f %t activity!"
 activity              "activity in %n (%t) [%C]~"
-#
+
 # pass on the "beep" (CTRL-G) by adding a '~':
 # bell                  "%C -> %n%f %t bell!~"
 # bell                  "bell     in %n (%t) [%w:%s]~"
@@ -469,30 +439,30 @@ activity              "activity in %n (%t) [%C]~"
 #
 # 040126 To be able to select windows with n > 9 ->
 # press "C-a - #" instead of just "C-a #"
-  bind - command -c select_1n
-  bind -c select_1n 0 select 10
-  bind -c select_1n 1 select 11
-  bind -c select_1n 2 select 12
-  bind -c select_1n 3 select 13
-  bind -c select_1n 4 select 14
-  bind -c select_1n 5 select 15
-  bind -c select_1n 6 select 16
-  bind -c select_1n 7 select 17
-  bind -c select_1n 8 select 18
-  bind -c select_1n 9 select 19
-  bind -c select_1n - command -c select_2n
-  bind -c select_2n 0 select 20
-  bind -c select_2n 1 select 21
-  bind -c select_2n 2 select 22
-  bind -c select_2n 3 select 23
-  bind -c select_2n 4 select 24
-  bind -c select_2n 5 select 25
-  bind -c select_2n 6 select 26
-  bind -c select_2n 7 select 27
-  bind -c select_2n 8 select 28
-  bind -c select_2n 9 select 29
-  bind -c select_2n - select -
-#
+bind - command -c select_1n
+bind -c select_1n 0 select 10
+bind -c select_1n 1 select 11
+bind -c select_1n 2 select 12
+bind -c select_1n 3 select 13
+bind -c select_1n 4 select 14
+bind -c select_1n 5 select 15
+bind -c select_1n 6 select 16
+bind -c select_1n 7 select 17
+bind -c select_1n 8 select 18
+bind -c select_1n 9 select 19
+bind -c select_1n - command -c select_2n
+bind -c select_2n 0 select 20
+bind -c select_2n 1 select 21
+bind -c select_2n 2 select 22
+bind -c select_2n 3 select 23
+bind -c select_2n 4 select 24
+bind -c select_2n 5 select 25
+bind -c select_2n 6 select 26
+bind -c select_2n 7 select 27
+bind -c select_2n 8 select 28
+bind -c select_2n 9 select 29
+bind -c select_2n - select -
+
 # ==============================================================
 # KEY BINDING FAQ:
 # ==============================================================
@@ -554,258 +524,7 @@ activity              "activity in %n (%t) [%C]~"
   bind 'O' login off
   bind '}' history
 
-# I am using the uppercase letters to start programs/services:
-#
-# the idea:
-# bind <key> <command>
-# this binds the key to start a windows with <command> inside.
-#
-# the command "screen" starts a "window" -
-# and the default key is 'c' for "create".
-# (i know - this *is* confusing at first.)
-# with 'screen -t title" you can set a titlestring.
-# the number following is the window number to be used.
-# if the window number is already taken then
-# the least highest available number is used.
-#
-#
-# bind A title  # default!
-#
-# BUUG - Berlin Unix User Group - read some news about Unix
-# bind B # unbound by default
-# bind B screen -t 'buug' 4 links www.buug.de
-#
-# CHEM - LinuxTag event in Chemnitz -- 2002-03-09 + 2002-03-10
-# bind C screen -t 'CHEM' 9 links www.tu-chemnitz.de/linux/tag/
-# bind C screen -t 'CIT'  9 links http://www.math.fu-berlin.de/~guckes/cit/
-# bind C screen -t 'CIT'  9 links http://www.computerinfotag.de
-# NOTE:  This overrides the default binding for the "clear" command.
-#
-# DICT - Dictionary English<->German
-# bind D pow_detach !
-# bind D screen -t 'DICT' 4 links dict.tu-chemnitz.de
-# Note: this overrides the default binding for the
-# command "pow_detach".  I hardly ever use that one.
-#
-# MUTT - Email User Agent
-# bind E # unbound by default
 bind M screen -t 'mail' 0 muttng
-#  bind S screen -t 'news' 9 /usr/bin/slrn
-# see also:  http://www.math.fu-berlin.de/~guckes/mutt/
-#
-# FTP - File Transfer "Program"
-# bind F fit # default!
-# bind F screen -t 'ftp' 9 ncftp
-# see also:  http://www.math.fu-berlin.de/~guckes/ncftp/
-#
-# GOOGLE - Web Search Engine
-# bind G # unbound by default
-# notice: elinks is a better version of links -> get it @ http://elinks.or.cz/
-  bind G screen -t 'google' $BROWSER www.google.com
-#
-# HEISE - IT NewsTicker
-# bind H log # default!
-#  bind H screen -t HeiseTicker $BROWSER www.heise.de/newsticker/pda/data/paket4.html
-# bind A screen -t 'abook' abook
-# bind C screen -t 'cicq' centericq
-# bind E screen -t 'bitchx' bitchx mikap irc.openprojects.net
-#  bind E screen -t 'bitchx' bitchx mikap irc.debian.org
-#  bind L screen -t 'browser' $BROWSER
-# bind M screen -t 'mutt' mutt
-# bind N screen -t 'ncftp' ncftp
-#
-# Search in TU-Graz-Newsarchiv
-# bind T screen -t newsarchiv-suche $BROWSER http://newsarchiv.tugraz.at/search/
-#
-# 030407 showman -> echo -n "What manpage?"; read X; man $X; screen -X eval 'focus bottom' remove
-#  bindkey "^B" eval split "focus bottom" "screen $HOME/bin/showman"
-#
-# 030507 call "date" and write it to buffer so you are
-# able to insert it via screen->paste [bind paste to "<ctrl>+<a> <P>"!]
-#
-# $ cat $HOME/bin/showdate
-# date +%Y%m%d_%Hh%Mm%Ss > $HOME/.date; cat $HOME/.date | tr -d '\n' > .date; screen -X bufferfile $HOME/.date; 
-# screen -X readbuf
-# $
-#
-# and now we bind it :)
-# 
-# bindkey "^F" eval "screen $HOME/bin/showdate"
-#
-# NOTE: This overrides the default binding of the "hardcopy" command!
-#
-# IRC - International Relay Chat
-# bind I screen -t 'irc'  5 irc
-# bind I screen -t 'icq'  9 micq
-# see also:  http://www.math.fu-berlin.de/~guckes/irc/
-#
-# Feb 2002:  Use it to search the Internet Movie DataBase (IMDB):
-# bind I screen -t 'IMDB' 9 links http://www.imdb.com/
-# bind I screen -t 'IMDB' 9 links http://us.imdb.com/search/
-# see also: http://www.math.fu-berlin.de/~guckes/berlinale/
-#
-# bind J # unbound by default
-#
-# LYNX - web browser
-# bind L # unbound by default
-# bind L screen -t 'lynx' 4 lynx  http://www.math.fu-berlin.de/~guckes/
-# see also:  http://www.math.fu-berlin.de/~guckes/lynx/
-# see also:  http://www.math.fu-berlin.de/~guckes/links/
-#
-# bind M monitor # default!
-#
-# NN - newsreader
-# bind N screen -t 'nn'   3 nn
-# see also:  http://www.math.fu-berlin.de/~guckes/nn/
-# Get some news about the weather (LOWG = Graz/Austria; LOWK = Klagenfurt/Austria)
-# bind N screen -t 'weather'  $BROWSER http://weatherpixie.com/index.php?place=LOWG
-# bind N screen -t 'weather'  $BROWSER http://weatherpixie.com/index.php?place=LOWK
 
-#
-# Paste - use 'P' instead of ']':
-# bind P # unbound by default
-# bind P paste .
-
-# Yet another hack:
-# Prepend/append register [/] to the paste if ^a^] is pressed.
-# This lets me have autoindent mode in vi.
-# register [ "\033:se noai\015a"
-# register ] "\033:se ai\015a"
-# bind ^] paste [.]
-
-# The character ']' is hard to type on german keyboards,
-# as it requires the use of a yet another meta character "AltGR".
-# I prefer to use 'P' for "paste" because it is a letter
-# which is available at the same position both with the
-# US keyboards and keyboards with "Kraut layout" -
-# which I call" Krautboards", by the way. ;-)
-# bind ] paste . # default!
-#
-# bind R # unbound by default
-#
-# centericq - icq for terminal
-# bind C screen -t 'icq' 3 centericq
-#
-# SLRN - newsreader
-# bind J screen -t 'slrn' 3 zsh -c bin/start_slrn_be.sh
-# bind T screen -t 'slrn-tu' 2 zsh -c ~/bin/start_slrn_tu.sh
-# bind L screen -t 'slrn-be' 1 zsh -c ~/bin/start_slrn_be.sh
-# see also:  http://www.slrn.org  http://slrn.sourceforge.net
-# and        http://www.math.fu-berlin.de/~guckes/slrn/
-#
-# bind T # unbound by default
-#bind A screen -t 'viii' 7 ssh -2Cv viii
-#
-# bind U # unbound by default
-# bind U screen
-#
-# VIM - editor
-# bind V # unbound by default
-# bind V screen -t 'vim' 5 vim
-# Editing comes with email quite naturally -
-# so I have reserved window #1 for this.
-# http://www.math.fu-berlin.de/~guckes/vim/
-# http://www.vim.org/ (which is just a mirror)
-#
-#      X - a fast way to lock the current screen.
-# bind X lockscreen
-#
-# bind Y exec !!! echo -n http://www.math.fu-berlin.de/~guckes/
-# bind Y stuff http://www.math.fu-berlin.de/~guckes/
-# bind Y stuff http://www.michael-prokop.at/
-# This pastes the address of my homepage to the process
-# in the current window.  very nice - saves some typing.
-# and you don't have to have the functionality of
-# "abbreviating" in the processes themselves. :-)
-#
-# FUNCTION KEYS 11 12
-# bindkey -k -m F1 eval 'stuff "Y"'  colon 'stuff "paste .^M"' #COPY AND PASTE LINE WITH F1
-# bindkey -k -m F2 eval 'stuff "W"'  colon 'stuff "paste .^M"' #COPY AND PASTE WORD WITH F2
-
-#END KEY
-# bindkey -k -m kH eval 'stuff "Y"' 'stuff " "' colon 'stuff "paste .^M^M"'         # paste the line with END
-# bindkey    -m "^[O2F" eval 'stuff "W"' 'stuff " "' colon 'stuff "paste .^M^M"'    # paste a word with SHIFT-END in COPY mode
-
-# 030511 Some usefull abbreviations
-# bindkey -t ROFL stuff *ROFL*
-# bindkey -t œ69 stuff "scp  web69@michael-prokop.at:~/html/"
-# bindkey -t œicq stuff "ICQ#: 52179636"
-# bindkey -t œpost stuff "Wienerstra?e 58a-8, 8020 Graz"
-# bindkey -t œhandy stuff "+43 (664) 1646346"
-# bindkey -t œweb stuff "www.michael-prokop.at"
-# 030511 Workaround for stupid machines without xmodmap ;-)
-# bindkey -t œa stuff "a""
-# bindkey -t œA stuff "A""
-# bindkey -t œo stuff "o""
-# bindkey -t œO stuff "O""
-# bindkey -t œu stuff "u""
-# bindkey -t œU stuff "U""
-# bindkey -t œs stuff "?"
-#
-# ===============================================================
-# BIND Examples:
-# ===============================================================
-# You can also paste the values of
-# SCREEN's environment variables:
-# bind E stuff $EMAIL
-# bind U stuff $URL
-# bind I stuff $ICQ
-#
-# ===============================================================
-# BINDKEY:
-# ===============================================================
-# [TODO briefly explain the difference between BIND and BINDKEY]
-#
-# use the PgUp and PgDn keys to enter copy mode
-# and page through the window backlog:
-# bindkey -k kP copy
-#
-# Use the function keys F7 and F8
-# to cycle backwards/forwards in
-# the list of existing windows:
-#  bindkey -k k7 prev
-#  bindkey -k k8 next
-#
-# make the "kb" send a backspace (CTRL-H:)
-# bindkey -d kb stuff ^H
-# WARNING:  this does not work as advertised.
-# it eats the "kb" when typing "dankbar" for example. :-(
-#
-# NumPad keybindings:
-# ^[Oo /      resize =
-# ^[Oj *      resize max
-# ^[Om -      resize -2
-# ^[Ok +      resize +2
-# ^[OM Enter
-#
-# ===============================================================
-# At the very end... show the current version and say hello :-)
-# ===============================================================
-# Briefly show the version number of this starting
-# screen session - but only for *one* second:
-# msgwait 1
-# version
-# change back to showing messages
-# for duration of two seconds:
-# msgwait 2
-#
-# Welcome the user:
-# echo "welcome BoFH - could you please kill all DAUs?"
-
-#bindkey -k k1 select 0
-#bindkey -k k2 select 1
-#bindkey -k k3 select 2
-#bindkey -k k4 select 3
-#bindkey -k k5 select 4
-#bindkey -k k6 select 5
-#bindkey -k k7 select 6
-#bindkey -k k8 select 7
-#bindkey -k k9 select 8
-#bindkey -k kb stuff ^?
-
-#
-# Tell Vim to use a "tabstop" of '8',
-# ie expands TABs to the next column
-# whose number is a multiple of eight.
 # EOF  vim: ts=8 et nowrap
 
