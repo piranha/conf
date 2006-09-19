@@ -10,7 +10,7 @@
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 12 2005-07-07 16:48:49Z piranha $
+;; $Id$
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
