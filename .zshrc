@@ -1,5 +1,6 @@
 # -*- mode: sh; mode: fold -*-
 # zsh configuration (c) 2003-2006 Alexander Solovyov
+# $Id: .zshrc 5 2006-09-19 07:42:44Z piranha $
 # piranha AT piranha DOT org DOT ua
 #
 # Thanks to: 
