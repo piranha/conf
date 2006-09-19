@@ -1,4 +1,4 @@
-" $Id: .vimrc 3 2006-08-09 14:16:14Z piranha $
+" $Id: .vimrc 4 2006-09-19 07:42:14Z piranha $
 " (c) piranha, 2003-2006
 " thx to pseudo
 
@@ -126,18 +126,6 @@ set   backspace=2
 map <F1> <Esc>
 imap <F1> <Esc>
 
-" start of line
-"noremap <C-A>		i<Home>
-inoremap <C-A>		<Home>
-cnoremap <C-A>		<Home>
-" end of line
-noremap <C-E>		i<End>
-inoremap <C-E>		<End>
-" back one word
-inoremap <C-B>	<S-Left>
-" forward one word
-"inoremap <C-F>	<S-Right>
-
 " Switching between windows by pressing one time CTRL-X keys.
 noremap <C-X> <C-W><C-W>
 
@@ -151,10 +139,6 @@ imap <C-L> <C-X><C-L>
 set remap
 map <C-O><C-O> :split 
 imap <C-O><C-O> <Esc>:split 
-
-" diakritika 
-":map <C-D><C-D> :so ~/.vim/diakritika.vim
-":imap <C-D><C-D> <Esc>:so ~/.vim/diakritika.vim
 
 " Open new window with the file ~/.zshrc (my shell configuration file)
 map <C-O><C-T> :split ~/.zshrc<CR>
@@ -177,7 +161,7 @@ vmap S y/<C-R>=escape(@",'/\')<CR>
 map <F7> !tr "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>" "£ÊÃÕËÅÎÇÛİÚÈßÆÙ×ÁĞÒÏÌÄÖÜÑŞÓÍÉÔØÂÀ³\"\'*:,.;êãõëåHçûıúèÿæù÷áğòïìäöüñşóíéôøâà"<CR>
 map <F8> !tr "£ÊÃÕËÅÎÇÛİÚÈßÆÙ×ÁĞÒÏÌÄÖÜÑŞÓÍÉÔØÂÀ³\"\'*:,.;êãõëåHçûıúèÿæù÷áğòïìäöüñşóíéôøâà" "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>"<CR>
 
-map <F5> :%s/^\(src\\|<div\\|title\\|target\\|id\\|alt\).*$//<CR>:%s/^\n//<CR>:%s/href=//<CR>
+map <F5> :set hls!<bar>set hls?<CR>
 
 "Tabs
 map gn :tabnew<CR>
@@ -207,9 +191,7 @@ map <C-C> :emenu Encoding.<TAB>
 
 map <Leader>re :help regexpref<cr>
 
-" map <F9> :1s/Alexander Solovyov/Alexander Solovyov [Moderator]/<CR>:5s/: Re: /: [M] /<CR>:8<CR>
-" map <F10> :1s/Alexander Solovyov/Alexander Solovyov [Moderator]/<CR>:5s/: (fwd) /: /<CR>:3s/Cc:/Cc: comp.software@library.ntu-kpi.kiev.ua/<CR>:8<CR>
-map <F9> :7<CR>o--=off<CR>piranha<CR>
+map <F9> <Esc>:1<CR>/^$<CR>o--=off<CR>piranha<CR><CR><Up>
 
 "}}}
 

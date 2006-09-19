@@ -1,5 +1,4 @@
 # -*- mode: sh; mode: fold -*-
-# $Id: .zshrc 3 2006-08-09 14:16:14Z piranha $
 # zsh configuration (c) 2003-2006 Alexander Solovyov
 # piranha AT piranha DOT org DOT ua
 #
@@ -72,14 +71,24 @@ bindkey "[B" down-line-or-history
 # Заголовок xterm
 case $TERM in
 xterm*)
-  precmd () {
-    print -Pn "\033]0;%n@%M (%y) - %/\a"
-    print -Pn "\033]1;%n@%m (tty%l)\a"
-  }
-  preexec () {
-    print -Pn "\033]0;%n@%M (%y) - %/ - ($1)\a"
-    print -Pn "\033]1;%n@%m (tty%l)\a"
-  }
+    precmd () {
+        print -Pn "\033]0;%n@%M (%y) - %/\a"
+        print -Pn "\033]1;%n@%m (tty%l)\a"
+    }
+    preexec () {
+        print -Pn "\033]0;%n@%M (%y) - %/ - ($1)\a"
+        print -Pn "\033]1;%n@%m (tty%l)\a"
+    }
+;;
+screen)
+    preexec () {
+    # set screen title
+        echo -ne "\ek${1[(w)1]}\e\\"
+    }
+    precmd () {
+    #set screen title
+        echo -ne "\ekzsh\e\\"
+    }
 ;;
 esac
 
@@ -223,27 +232,43 @@ alias k2u="iconv -c -f koi8-r -t utf-8"
 alias U2k="iconv -c -f utf-16 -t koi8-r"
 alias k2U="iconv -c -f koi8-r -t utf-16"
 
-# Misc
+## LFTP
 if [ -x `whence -c lftp` ]; then
         alias ftp="lftp"
 else
 	alias ftp="/usr/bin/ftp"
 fi
-alias grep="egrep"
+## Mutt new generation
 if [ -x `whence -c muttng` ]; then
         alias m="muttng"
 else
         alias m="mutt"
 fi
-alias nroff="nroff -Tlatin1"
-alias mc="mc -acx"
-alias ss="sudo -s"
-alias sr="screen -D -r"
+## color ls
 if [ `uname` = "Linux" ]; then
         alias ls="/bin/ls --color"
 else
         alias ls="/bin/ls -G"
 fi
+## GNU Find
+if [ `uname` != "Linux" ]; then
+    alias find="gfind"
+fi
+## Editor
+if [ -x `whence -c emacsclient` ]; then
+    alias e="emacsclient"
+elif [ -x `whence -c vim` ]; then
+    alias e="vim"
+else
+    alias e="vi"
+fi
+
+# Other
+alias grep="egrep"
+alias nroff="nroff -Tlatin1"
+alias mc="mc -acx"
+alias ss="sudo -s"
+alias sr="screen -D -r"
 alias ll="ls -lh"
 alias la="ls -lA"
 alias lsd="ls -ld *(-/DN)"
@@ -256,10 +281,8 @@ alias p="ping"
 alias tt="/usr/sbin/traceroute"
 alias df="df -h"
 alias bc="bc -l"
-#alias w="w|sort"
 alias cad="ssh -p 2221 cad.kiev.ua"
 alias rtin="rtin -qd -g news.ntu-kpi.kiev.ua"
-alias e="jed"
 alias ml="ledit -h ~/.mldonkey_history -x nc localhost 4000"
 alias myapg="apg -n 8 -x 9 -M NCL -s"
 alias mkperlpkg="dh-make-perl --build --cpan"
