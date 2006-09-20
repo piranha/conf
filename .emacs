@@ -3,7 +3,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNU Emacs config
-;; by Alexander Solovyov, 2006
+;; by Alexander Solovyov
 ;; piranha AT piranha DOT org DOT ua
 ;;
 ;; Special thank to all, who help me in creation, especially to:
@@ -11,27 +11,47 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 8 2006-09-19 07:52:02Z piranha $
+;; $Id: .emacs 9 2006-09-20 05:54:11Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
-;; NTEmacs lang setup & changing with system switcher
+;; systems
+;;;;;;;;;;
+
+(defconst win32
+  (eq system-type 'windows-nt)
+  "Are we running on Win32 system")
+
+(defconst linux
+  (eq system-type 'gnu/linux)
+  "Are we running on linux system")
+
+;;;;;;;;;;
+;; lang setup & changing with system switcher
 ;;;;;;;;;;
 
 (require 'mule)
 (require 'codepage)
+
 (codepage-setup 866)
 (codepage-setup 1251)
-;(prefer-coding-system 'cp1251)
 (setq default-input-method "cyrillic-jcuken-ms")
-(set-clipboard-coding-system 'cp1251-dos)
-(set-selection-coding-system 'cp1251-dos)
-(set-default-coding-systems 'cp1251-dos)
-(set-keyboard-coding-system 'cp1251-dos)
-(set-w32-system-coding-system 'cp1251-dos)
 (define-coding-system-alias 'windows-1251 'cp1251)
 (define-coding-system-alias 'koi8-ru 'koi8-u)
-(prefer-coding-system 'utf-8)
+
+(when linux
+  (set-clipboard-coding-system 'koi8-u)
+  (set-selection-coding-system 'koi8-u)
+  (set-default-coding-systems 'koi8-u)
+  (set-keyboard-coding-system 'koi8-u))
+(when win32
+  (set-clipboard-coding-system 'cp1251-dos)
+  (set-selection-coding-system 'cp1251-dos)
+  (set-default-coding-systems 'cp1251-dos)
+  (set-keyboard-coding-system 'cp1251-dos)
+  (set-w32-system-coding-system 'cp1251-dos))
+
+(prefer-coding-system 'utf-8)    
 
 ;;;;;;;;;;;;;
 ;; Extensions
@@ -39,31 +59,26 @@
 
 ;; loadpath
 (setq load-path (cons (expand-file-name "~/.el") load-path))
-(when (file-exists-p "/usr/share/emacs/site-lisp/site-gentoo. el") 
+(when (file-exists-p "/usr/share/emacs/site-lisp/site-gentoo.el")
   (load "/usr/share/emacs/site-lisp/site-gentoo"))
 
 (require 'color-theme)
 ;(require 'gnus-load)
 (require 'psvn)
-(require 'gnuserv)
 (require 'filladapt)
 (require 'session)
 (require 'prh-bufsw)
 (require 'htmlize)
 ;(eval-after-load "buff-menu" '(require 'buff-menu-plus)) 
-(gnuserv-start)
-
-;(defadvice server-edit-files-quickly (before set-gnuserv-frame activate compile)
-;  "Set gnuserv-frame to current frame"
-;  (setq gnuserv-frame (selected-frame)))
 
 ;;;;;;;;;;
 ;; General
 
 ;; bar setup
-(tool-bar-mode 0)
-(menu-bar-mode 1) 
-
+(if win32
+    ((menu-bar-mode 1)
+     (tool-bar-mode 0))
+  (menu-bar-mode 0))
 ;; ibuffer
 (require 'ibuffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -198,6 +213,11 @@
 ;; C-a - mark all buffer
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 
+;; C-(home|end) in linux console
+(global-set-key "[7^" 'beginning-of-buffer)
+(global-set-key "[8^" 'end-of-buffer)
+
+
 ;; kill current buffer
 (defun prh:kill-current-buffer ()
 	(interactive)
@@ -211,61 +231,61 @@
 ;;;;;;;;;;;;;;
 ;; Frame setup
 
-;; Font setup
-(set-default-font "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")
-(setq w32-enable-synthesized-fonts nil)
+(when linux
+  (server-start))
 
-;; size & position
-(set-frame-height (selected-frame) 56)
-(set-frame-width (selected-frame) 154)
-(set-frame-position (selected-frame) 0 0)
-;(w32-send-sys-command 61488)
+(when win32
+  ;; GNUserv
+  (require 'gnuserv)
+  (gnuserv-start)
 
-;; Title formatting
-(setq frame-title-format (list '(buffer-file-name "%f" "%b") " - GNU Emacs " emacs-version "@" system-name ))
-(setq icon-title-format frame-title-format)
-
-;; colors
-;(set-face-foreground 'modeline "darkslateblue")
-;(set-background-color "black")
-;(set-foreground-color "gray")
-;(set-cursor-color "darkgreen")
-
-(when (eq window-system 'w32)
-  (defun restore-frame (&optional frame)
-    "Restore FRAME to previous size (default: current frame)."
-    (interactive)
-    (w32-send-sys-command 61728 frame)))
-
-(when (eq window-system 'w32)
-  (defun maximize-frame (&optional frame)
-    "Maximize FRAME (default: current frame)."
-    (interactive)
-    (w32-send-sys-command 61488 frame)))
-
-(when (eq window-system 'w32)
-  (defalias 'minimize-frame (if (fboundp 'really-iconify-frame)
-                                'really-iconify-frame
-                              'iconify-frame)))
-
-(defun prh:ajust-frame ()
-  "Ajusts current frame to display properties"
-  (interactive)
+  ;; Font setup
   (set-default-font "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")
-  (w32-send-sys-command 61488))
-
-(global-set-key [C-f12] 'prh:ajust-frame)
-
-
-(defadvice server-find-file (before server-find-file-in-one-frame activate)
-	"Make sure that the selected frame is stored in `gnuserv-frame', and raised."
-	(setq gnuserv-frame (selected-frame))
-	(raise-frame))
-
-(defadvice server-edit (before server-edit-in-one-frame activate)
-	"Make sure that the selected frame is stored in `gnuserv-frame', and lowered."
-	(setq gnuserv-frame (selected-frame))
-	(lower-frame))
+  (setq w32-enable-synthesized-fonts nil)
+  
+  ;; size & position
+  (set-frame-height (selected-frame) 56)
+  (set-frame-width (selected-frame) 154)
+  (set-frame-position (selected-frame) 0 0)
+  
+  ;; Title formatting
+  (setq frame-title-format (list '(buffer-file-name "%f" "%b") " - GNU Emacs " emacs-version "@" system-name ))
+  (setq icon-title-format frame-title-format)
+  
+  (when (eq window-system 'w32)
+    (defun restore-frame (&optional frame)
+      "Restore FRAME to previous size (default: current frame)."
+      (interactive)
+      (w32-send-sys-command 61728 frame)))
+  
+  (when (eq window-system 'w32)
+    (defun maximize-frame (&optional frame)
+      "Maximize FRAME (default: current frame)."
+      (interactive)
+      (w32-send-sys-command 61488 frame)))
+  
+  (when (eq window-system 'w32)
+    (defalias 'minimize-frame (if (fboundp 'really-iconify-frame)
+                                  'really-iconify-frame
+                                'iconify-frame)))
+  
+  (defun prh:ajust-frame ()
+    "Ajusts current frame to display properties"
+    (interactive)
+    (set-default-font "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")
+    (w32-send-sys-command 61488))
+  
+  (global-set-key [C-f12] 'prh:ajust-frame)
+  
+  (defadvice server-find-file (before server-find-file-in-one-frame activate)
+    "Make sure that the selected frame is stored in `gnuserv-frame', and raised."
+    (setq gnuserv-frame (selected-frame))
+    (raise-frame))
+  (defadvice server-edit (before server-edit-in-one-frame activate)
+    "Make sure that the selected frame is stored in `gnuserv-frame', and lowered."
+    (setq gnuserv-frame (selected-frame))
+    (lower-frame))
+)
 
 ;; end frame setup
 ;;;;;;;;;;;;;;;;;;
@@ -276,7 +296,7 @@
 (add-hook 'python-mode-hook
 		  (lambda ()
             (set (make-variable-buffer-local 'beginning-of-defun-function)
-                  'py-beginning-of-def-or-class)
+                 'py-beginning-of-def-or-class)
             (setq outline-regexp "def\\|class ")
             (local-set-key [return] 'reindent-then-newline-and-indent)
 			(turn-on-auto-fill)
@@ -331,7 +351,7 @@
 (add-hook 
  'docbook-mode-hook
  '(lambda ()
-		(local-set-key "\C-tab" 'indent-for-tab-command))) 
+    (local-set-key "\C-tab" 'indent-for-tab-command))) 
 
 ;; You might want to make this the default for .sgml or .xml documents,
 ;; or you might want to rely on -*- DocBook -*- on the first line,
@@ -380,15 +400,14 @@
 ;; Custom hooks
 (add-hook 'after-save-hook 'autocompile())
 
-;(add-hook 'after-make-frame-functions 'prh:ajust-frame)
-
 (add-hook 'after-init-hook 'session-initialize)
 
 ;; end of hooks
 ;;;;;;;;;;;;;;;
 
-(color-theme-initialize)
-(color-theme-subtle-hacker)
+(when win32
+  (color-theme-initialize)
+  (color-theme-subtle-hacker))
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.

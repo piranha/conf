@@ -3,14 +3,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Gnus config
-;; by Alexander Solovyov, 2004
-;; piranha AT viii.ntu-kpi.kiev.ua
+;; by Alexander Solovyov
+;; piranha AT piranha.org.ua
 ;;
 ;; Special thank to all, who help me in creation, especially to:
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 8 2006-09-19 07:52:02Z piranha $
+;; $Id: .gnus 9 2006-09-20 05:54:11Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -20,7 +20,8 @@
 (require 'gnus-alias)
 (require 'gnus-stat)
 (require 'message-x)
-(load "~/secrets.el")
+(when (file-exists-p "~/.el/secrets.el")
+  (load "~/.el/secrets.el"))
 
 ;;;;;;;;;;;
 ;; Language
@@ -142,9 +143,7 @@
 ;; News
 ;;;;;;;
 
-(setq gnus-select-method '(nntp "192.168.0.1"))
-;(setq gnus-select-method '(nntp "news2.ussr.ntu-kpi.kiev.ua"))
-;(setq gnus-select-method '(nntp "127.0.0.1"))
+(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 ;; headers displayed
@@ -153,7 +152,7 @@
    "^Newsgroups:"
    "^Reply-To:"
    "^Subject:"
-	 "^Message-ID:"
+   "^Message-ID:"
    "^Date:"
    "^To:"
    "^Cc:"
