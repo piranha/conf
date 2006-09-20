@@ -10,7 +10,7 @@
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 9 2006-09-20 05:54:11Z piranha $
+;; $Id: .gnus 10 2006-09-20 06:07:09Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -42,7 +42,6 @@
 ;; message-x
 (setq message-x-body-function '(lambda () (interactive) (hippie-expand nil)))
 
-
 ;;;;;;;;;;
 ;; General
 ;;;;;;;;;;
@@ -50,7 +49,7 @@
 ;; auto word-wrap
 (add-hook 'message-mode-hook
 	(lambda ()
-    (setq fill-column 72)
+    (setq fill-column 79)
 		(turn-on-auto-fill)))
 
 (setq
@@ -69,9 +68,9 @@
   ;; gnus directory :))
   gnus-directory "~"
   ;; how many messages must has group, for asking when entering
-  gnus-large-newsgroup 200
+  gnus-large-newsgroup 300
   ;; split long outgoing mail
-  message-send-mail-partially-limit 380000
+;  message-send-mail-partially-limit 380000
   ;; highlight only good signatures
   gnus-signature-separator "^-- $"
 	;; don't insert Cancel-Lock
@@ -79,7 +78,7 @@
 
 ;; User settings
 (setq
-;  user-name "piranha"
+  user-name "piranha"
   user-full-name "Alexander Solovyov"
   user-mail-address "piranha@piranha.org.ua"
   gnus-local-domain "piranha.eth0.net.ua"
@@ -109,25 +108,18 @@
 (load-library "message")
 
 (setq gnus-posting-styles
-	'((".*"
-     (name "Alexander Solovyov")
-     (address "piranha@piranha.org.ua")
-     (organization "Crazy Penguinz Crew")
-     (signature-file "~/.signature")
-;     (Face `(gnus-convert-png-to-face "~/face.png"))
-		)
-;		(".*news-talk.*"
-;		 (address "piranha@viii.ntu-kpi.kiev.ua")
-;		)
-		("ntu-kpi.*"
-		 ("X-Keywords" "chista_pass")
-		)
-    ("fido7.*"
-     (name "Alexander Solovyov")
-     (address "piranha@viii.ntu-kpi.kiev.ua")
-     (signature-file "~/.sign_fido")
-     ("Keywords:" "33298066")
-     )))
+      '((".*"
+         (name "Alexander Solovyov")
+         (address "piranha@piranha.org.ua")
+         (organization "Crazy Penguinz Crew")
+         (signature-file "~/.signature"))
+        ("ntu-kpi.*"
+         ("X-Keywords" "parolcheg"))
+        ("fido7.*"
+         (name "Alexander Solovyov")
+         (address "piranha@viii.ntu-kpi.kiev.ua")
+         (signature-file "~/.sign_fido")
+         ("Keywords:" "SUKANAXKEYWORD"))))
 
 ;; gnus-parameters
 (setq gnus-parameters
