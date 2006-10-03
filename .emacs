@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 9 2006-09-20 05:54:11Z piranha $
+;; $Id: .emacs 11 2006-10-03 09:13:10Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -216,7 +216,6 @@
 ;; C-(home|end) in linux console
 (global-set-key "[7^" 'beginning-of-buffer)
 (global-set-key "[8^" 'end-of-buffer)
-
 
 ;; kill current buffer
 (defun prh:kill-current-buffer ()

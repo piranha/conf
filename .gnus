@@ -10,8 +10,16 @@
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 10 2006-09-20 06:07:09Z piranha $
+;; $Id: .gnus 11 2006-10-03 09:13:10Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;
+;; graphics
+;;;;;;;;;;;
+
+(defconst graf
+  (not (eq window-system 'nil))
+  "Are we running window system?")
 
 ;;;;;;;;;;
 ;; Loading
@@ -56,7 +64,7 @@
   ;; be verbose
   gnus-novice-user nil
   ;; where move expired messages
-  nnmail-expiry-target "nnml:expired"
+  nnmail-expiry-target "nnmaildir:expired"
   ;; don't read whole active file (see help for add info)
   gnus-read-active-file nil
   ;; ask server for new newsgroups
@@ -162,12 +170,13 @@
    message-forward-as-mime nil
    message-forward-ignored-headers "^Content-Transfer-Encoding:\\|^X-\\|^References\\|^Xref\\|^In-Reply-To\\|^Received\\|^NNTP\\|^Return-Path\\|^Sender\\|^Approved\\|^User-Agent\\|^List-\\|^Error-To\\|^FL-\\|^Precedence\\|^Gnus-\\|^Path\\|^Cancel-Lock\\|^Face")
 
-(setq gnus-group-highlight
-	'(((> unread 200) . my-group-face-1)
-	((and (< level 3) (zerop unread)) . my-group-face-2)
-	((< level 3) . my-group-face-3)
-	((zerop unread) . my-group-face-4)
-	(t . my-group-face-5)))
+(when graf
+  (setq gnus-group-highlight
+        '(((> unread 200) . my-group-face-1)
+          ((and (< level 3) (zerop unread)) . my-group-face-2)
+          ((< level 3) . my-group-face-3)
+          ((zerop unread) . my-group-face-4)
+          (t . my-group-face-5))))
 
 ;; always show MIME buttons
 (setq gnus-inhibit-mime-unbuttonizing t)
@@ -196,24 +205,24 @@
 ;; yet another threading
 ;(setq gnus-summary-line-format
 ; ":%U%R | %B %s %-105=|%4L |%-30,30f |%&user-date; \n")
-
-(setq gnus-summary-line-format (concat
-                                "%*%5{%U%R%z%}"
-                                "%4{\x49022%}"
-                                "%2{%-10&user-date;%}"
-                                "%4{\x49022%}"
-                                "%4{\x49022%}"
-                                "%2{ %}%(%-24,24n"
-                                "%4{\x49022%}"
-                                "%2{%5i%}"
-                                "%4{\x49022%}"
-                                "%2{%6k %}%)"
-                                "%4{\x49022%}"
-                                "%2{ %}%3{%B%}%1{%s%}\n"))
+(when graf
+  (setq gnus-summary-line-format (concat
+                                  "%*%5{%U%R%z%}"
+                                  "%4{\x49022%}"
+                                  "%2{%-10&user-date;%}"
+                                  "%4{\x49022%}"
+                                  "%4{\x49022%}"
+                                  "%2{ %}%(%-24,24n"
+                                  "%4{\x49022%}"
+                                  "%2{%5i%}"
+                                  "%4{\x49022%}"
+                                  "%2{%6k %}%)"
+                                  "%4{\x49022%}"
+                                  "%2{ %}%3{%B%}%1{%s%}\n")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the best! unicode threading pointers
-(when window-system
+(when graf
  (setq gnus-sum-thread-tree-root "\x4912f ")
  (setq gnus-sum-thread-tree-single-indent "\x4912e ")
  (setq gnus-sum-thread-tree-leaf-with-other "\x4903c\x49020\x490fa ")
@@ -226,7 +235,7 @@
 
 ;;;;;;;;
 ;; Faces
-(cond (window-system
+(when graf
       (setq custom-background-mode 'light)
       (defface my-group-face-1
         '((t (:foreground "Red" :bold t))) "First group face")
@@ -237,7 +246,7 @@
       (defface my-group-face-4
         '((t (:foreground "CornflowerBlue" :bold t))) "Fourth group face")
       (defface my-group-face-5
-         '((t (:foreground "DeepSkyBlue" :bold t))) "Fifth group face")))
+         '((t (:foreground "DeepSkyBlue" :bold t))) "Fifth group face")
 
 (copy-face 'default 'mysubject)
 (setq gnus-face-1 'mysubject)
@@ -280,6 +289,7 @@
   "Use this face to display indirect fups to my postings")
 (copy-face 'gnus-summary-high-unread-face 'dz-gnus-indir-fup-face)
 (set-face-foreground 'dz-gnus-indirect-fup-face "lightgreen")
+)
 ;; end of faces
 ;;;;;;;;;;;;;;;
 
@@ -288,13 +298,13 @@
 ;; Mail
 ;;;;;;;
 
-(setq gnus-secondary-select-methods '((nnml "")))
-(setq mail-sources
-           '((pop :server "localhost"
-                  :port "pop3"
-                  :user "piranha"
-                  :password "pft,bcm"
-)))
+(setq gnus-secondary-select-methods '((nnmaildir "")))
+;(setq mail-sources
+;           '((pop :server "localhost"
+;                  :port "pop3"
+;                  :user "piranha"
+;                  :password "parolcheg"
+;)))
 
 ;; Mail sorting
 ;(setq nnmail-split-methods '(
@@ -314,34 +324,34 @@
 (defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
 (defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))
 
-(setq nnmail-split-methods 'nnmail-split-fancy)
-(setq nnmail-split-fancy
-      '(|
-        ("\\(To\\|Cc\\)" ".*hostels.*@ntu-kpi\\.kiev\\.ua.*" "hostels")
-        ("\\(To\\|Cc\\)" ".*all-admins@ntu-kpi\\.kiev\\.ua.*" "hostels")
-        ("\\(To\\|Cc\\)" ".*humor@xcp\\.kiev\\.ua.*" (: prh:mail-date2 "humor"))
-        ("From" ".*daily@security\\.nnov\\.ru.*" "security")
-        ("\\(To\\|Cc\\)" ".*anime_kpi@yahoogroups.com.*" "anime_kpi")
-        ("From" ".*Alexander Solovyov \\[Moderator\\].*" "moder")
-				("From" ".*Nikita Gubenko \\[CoModerator\\].*" "moder")
-        ("List-Id" ".*c-p-c.googlegroups.com.*" "cpc")
-        ("List-Id" ".*newstalk.news.ntu-kpi.kiev.ua.*" "news-talk")
-				("List-Id" ".*exim-users.exim.org.ua.*" "exim")
-				("List-Id" ".*eth0.googlegroups.com.*" "eth0")
-				("List-Id" ".*users.lists.eth0.net.ua.*" "eth0-public")
-				("List-Id" ".*sudoers.lists.eth0.net.ua.*" "eth0-sudoers")
-				("List-Id" ".*ik22.lists.eth0.net.ua.*" "ik22")
-				("From" ".*@livejournal.com.*" "lj")
-				("From" ".*root@eth0.net.ua.*" "root")
-				("Subject" ".*\\*\\*\\*SPAM\\*\\*\\*.*" "spam")
-        (any ".*" (: prh:mail-date "inbox"))
-        ))
+;(setq nnmail-split-methods 'nnmail-split-fancy)
+;(setq nnmail-split-fancy
+;      '(|
+;        ("\\(To\\|Cc\\)" ".*hostels.*@ntu-kpi\\.kiev\\.ua.*" "hostels")
+;        ("\\(To\\|Cc\\)" ".*all-admins@ntu-kpi\\.kiev\\.ua.*" "hostels")
+;        ("\\(To\\|Cc\\)" ".*humor@xcp\\.kiev\\.ua.*" (: prh:mail-date2 "humor"))
+;        ("From" ".*daily@security\\.nnov\\.ru.*" "security")
+;        ("\\(To\\|Cc\\)" ".*anime_kpi@yahoogroups.com.*" "anime_kpi")
+;        ("From" ".*Alexander Solovyov \\[Moderator\\].*" "moder")
+;				("From" ".*Nikita Gubenko \\[CoModerator\\].*" "moder")
+;        ("List-Id" ".*c-p-c.googlegroups.com.*" "cpc")
+;        ("List-Id" ".*newstalk.news.ntu-kpi.kiev.ua.*" "news-talk")
+;				("List-Id" ".*exim-users.exim.org.ua.*" "exim")
+;				("List-Id" ".*eth0.googlegroups.com.*" "eth0")
+;				("List-Id" ".*users.lists.eth0.net.ua.*" "eth0-public")
+;				("List-Id" ".*sudoers.lists.eth0.net.ua.*" "eth0-sudoers")
+;				("List-Id" ".*ik22.lists.eth0.net.ua.*" "ik22")
+;				("From" ".*@livejournal.com.*" "lj")
+;				("From" ".*root@eth0.net.ua.*" "root")
+;				("Subject" ".*\\*\\*\\*SPAM\\*\\*\\*.*" "spam")
+;        (any ".*" (: prh:mail-date "inbox"))
+;        ))
 
 
 ;; save messages
 (setq gnus-message-archive-group '(
-    (if (message-news-p) (concat "nnml:sent-news" (format-time-string ".%Y.%m" (current-time)))
-      (concat "nnml:sent-mail" (format-time-string ".%Y.%m" (current-time))))))
+    (if (message-news-p) (concat "maildir:sent-news" (format-time-string ".%Y.%m" (current-time)))
+      (concat "maildir:sent-mail" (format-time-string ".%Y.%m" (current-time))))))
 
 ;;;;;;
 ;; PGG

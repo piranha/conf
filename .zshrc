@@ -1,6 +1,6 @@
 # -*- mode: sh; mode: fold -*-
 # zsh configuration (c) 2003-2006 Alexander Solovyov
-# $Id: .zshrc 5 2006-09-19 07:42:44Z piranha $
+# $Id: .zshrc 11 2006-10-03 09:13:10Z piranha $
 # piranha AT piranha DOT org DOT ua
 #
 # Thanks to: 
@@ -275,7 +275,7 @@ alias la="ls -lA"
 alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
 alias l=$PAGER
-alias g="egrep --color"
+alias g="egrep -i --color"
 alias c="cat"
 alias h="head"
 alias p="ping"
@@ -284,6 +284,7 @@ alias df="df -h"
 alias bc="bc -l"
 alias cad="ssh -p 2221 cad.kiev.ua"
 alias rtin="rtin -qd -g news.ntu-kpi.kiev.ua"
+alias slrn="slrn --nntp -h localhost" 
 alias ml="ledit -h ~/.mldonkey_history -x nc localhost 4000"
 alias myapg="apg -n 8 -x 9 -M NCL -s"
 alias mkperlpkg="dh-make-perl --build --cpan"

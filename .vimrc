@@ -1,8 +1,10 @@
-" $Id: .vimrc 4 2006-09-19 07:42:14Z piranha $
+" $Id: .vimrc 11 2006-10-03 09:13:10Z piranha $
 " (c) piranha, 2003-2006
 " thx to pseudo
 
 " Settings {{{
+" DADADA NAX!!!!
+set paste
 " To be secure & Vi nocompatible
 set secure nocompatible
 syntax enable

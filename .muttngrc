@@ -1,5 +1,5 @@
 # -*- muttrc -*-
-# $Id: .muttngrc 3 2006-08-09 14:16:14Z piranha $
+# $Id: .muttngrc 11 2006-10-03 09:13:10Z piranha $
 # mutt configuration (c) 2003-2006 
 # by Alexander Solovyov   aka piranha
 # thx to: Max Krasilnikov aka pseudo
@@ -256,41 +256,41 @@ hdr_order date from subject to cc
 alternative_order text/plain text/html
 
 # colors
-color hdrdefault yellow black
-color quoted cyan black
-color quoted1 yellow black
-color quoted2 magenta black
-color quoted3 red black
-color quoted4 green black
-color quoted5 white black
-color signature brightblue black
+color hdrdefault yellow default
+color quoted cyan default
+color quoted1 yellow default
+color quoted2 magenta default
+color quoted3 red default
+color quoted4 green default
+color quoted5 white default
+color signature brightblue default
 color indicator black yellow
-color error red black
+color error red default
 color status white blue
-color tree magenta black        # the thread tree in the index menu
-color tilde magenta black
-color message cyan black
-color normal white black
-color attachment magenta black
+color tree magenta default        # the thread tree in the index menu
+color tilde magenta default
+color message cyan default
+color normal white default
+color attachment magenta default
 color search black yellow       # how to hilite search patterns in the pager
-color header green black  ^(from|subject|to|cc|bcc|newsgroups|message-id):
-color body blue black "(ftp|http)://[^ ]+" # point out URLs
-color body green black [-a-z_0-9.]+@[-a-z_0-9.]+    # e-mail addresses
-color underline brightgreen black
+color header green default  ^(from|subject|to|cc|bcc|newsgroups|message-id):
+color body blue default "(ftp|http)://[^ ]+" # point out URLs
+color body green default [-a-z_0-9.]+@[-a-z_0-9.]+    # e-mail addresses
+color underline brightgreen default
 
-color index red black ~D              # deleted
-color index blue black ~T              # tagged
-color index brightblue black ~Ceth0@googlegroups.com
-color index brightblue black ~Cusers@lists.eth0.net.ua
-color index brightmagenta black ~flj_notify
-color index brightyellow black ~Croot
-#color index red black ~Cwhois
-#color index green black ~Cduties
-#color index cyan black ~Cteam
-#color index brightgreen black ~Cnoc
-#color index brightred black ~Cnms
-#color index red black ~fmonitord
-#color index blue black ~froot
+color index red default ~D              # deleted
+color index blue default ~T              # tagged
+color index brightblue default ~Ceth0@googlegroups.com
+color index brightblue default ~Cusers@lists.eth0.net.ua
+color index brightmagenta default ~flj_notify
+color index brightyellow default ~Croot
+#color index red default ~Cwhois
+#color index green default ~Cduties
+#color index cyan default ~Cteam
+#color index brightgreen default ~Cnoc
+#color index brightred default ~Cnms
+#color index red default ~fmonitord
+#color index blue default ~froot
 
 #color index_author brightwhite default !~N
 #color index_author brightred default ~N
