@@ -10,7 +10,7 @@
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 11 2006-10-03 09:13:10Z piranha $
+;; $Id: .gnus 12 2006-10-05 20:31:56Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -57,18 +57,18 @@
 ;; auto word-wrap
 (add-hook 'message-mode-hook
 	(lambda ()
-    (setq fill-column 79)
+    (setq fill-column 72)
 		(turn-on-auto-fill)))
 
 (setq
   ;; be verbose
   gnus-novice-user nil
   ;; where move expired messages
-  nnmail-expiry-target "nnmaildir:expired"
+  nnmail-expiry-target "nnml:expired"
   ;; don't read whole active file (see help for add info)
   gnus-read-active-file nil
   ;; ask server for new newsgroups
-  gnus-check-new-newsgroups 'ask-server
+  gnus-check-new-newsgroups nil
   ;; smileys suck
   gnus-treat-display-smileys nil
   ;; all cites must be highlighted
@@ -89,15 +89,14 @@
   user-name "piranha"
   user-full-name "Alexander Solovyov"
   user-mail-address "piranha@piranha.org.ua"
-  gnus-local-domain "piranha.eth0.net.ua"
+;  gnus-local-domain "piranha.org.ua"
 ;  smtpmail-default-smtp-server "viii.ntu-kpi.kiev.ua"
 ;  smtpmail-local-domain "viii.ntu-kpi.kiev.ua"
-  smtpmail-default-smtp-server "localhost"
-  message-send-mail-function 'smtpmail-send-it
-  smtpmail-auth-login-username "piranha")
+;  smtpmail-default-smtp-server "localhost"
+;  message-send-mail-function 'smtpmail-send-it
+;  smtpmail-auth-login-username "piranha"
+)
 
-(setq smtpmail-auth-credentials
-      '(("localhost" 25 "piranha" "pft,bcm")))
 ;(setq smtpmail-debug-info t)
 
 ;; gnus-alias
@@ -122,7 +121,7 @@
          (organization "Crazy Penguinz Crew")
          (signature-file "~/.signature"))
         ("ntu-kpi.*"
-         ("X-Keywords" "parolcheg"))
+         ("X-Keywords" x-keyword))
         ("fido7.*"
          (name "Alexander Solovyov")
          (address "piranha@viii.ntu-kpi.kiev.ua")
@@ -163,20 +162,22 @@
    "^User-Agent:"
    "^Content-Type:"
    "^X-Newsreader:"
-   "^NNTP-Posting-Host:"))
+   "^NNTP-Posting-Host:"
+   "^Followup-To:"
+))
 
 ;; message forwarding
 (setq
    message-forward-as-mime nil
    message-forward-ignored-headers "^Content-Transfer-Encoding:\\|^X-\\|^References\\|^Xref\\|^In-Reply-To\\|^Received\\|^NNTP\\|^Return-Path\\|^Sender\\|^Approved\\|^User-Agent\\|^List-\\|^Error-To\\|^FL-\\|^Precedence\\|^Gnus-\\|^Path\\|^Cancel-Lock\\|^Face")
 
-(when graf
-  (setq gnus-group-highlight
-        '(((> unread 200) . my-group-face-1)
-          ((and (< level 3) (zerop unread)) . my-group-face-2)
-          ((< level 3) . my-group-face-3)
-          ((zerop unread) . my-group-face-4)
-          (t . my-group-face-5))))
+;(when graf
+;  (setq gnus-group-highlight
+;        '(((> unread 200) . my-group-face-1)
+;          ((and (< level 3) (zerop unread)) . my-group-face-2)
+;          ((< level 3) . my-group-face-3)
+;          ((zerop unread) . my-group-face-4)
+;          (t . my-group-face-5))))
 
 ;; always show MIME buttons
 (setq gnus-inhibit-mime-unbuttonizing t)
@@ -203,22 +204,21 @@
 ;	gnus-thread-sort-by-total-score))
 
 ;; yet another threading
-;(setq gnus-summary-line-format
-; ":%U%R | %B %s %-105=|%4L |%-30,30f |%&user-date; \n")
-(when graf
-  (setq gnus-summary-line-format (concat
-                                  "%*%5{%U%R%z%}"
-                                  "%4{\x49022%}"
-                                  "%2{%-10&user-date;%}"
-                                  "%4{\x49022%}"
-                                  "%4{\x49022%}"
-                                  "%2{ %}%(%-24,24n"
-                                  "%4{\x49022%}"
-                                  "%2{%5i%}"
-                                  "%4{\x49022%}"
-                                  "%2{%6k %}%)"
-                                  "%4{\x49022%}"
-                                  "%2{ %}%3{%B%}%1{%s%}\n")))
+(setq gnus-summary-line-format
+      ":%U%R| %B %s %-60=|%4L |%-30,30f |%&user-date; \n")
+;(setq gnus-summary-line-format (concat
+;                                "%*%5{%U%R%z%}"
+;                                "%4{\x49022%}"
+;                                "%2{%-10&user-date;%}"
+;                                "%4{\x49022%}"
+;                                "%4{\x49022%}"
+;                                "%2{ %}%(%-24,24n"
+;                                "%4{\x49022%}"
+;                                "%2{%5i%}"
+;                                "%4{\x49022%}"
+;                                "%2{%6k %}%)"
+;                                "%4{\x49022%}"
+;                                "%2{ %}%3{%B%}%1{%s%}\n"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the best! unicode threading pointers
@@ -235,62 +235,60 @@
 
 ;;;;;;;;
 ;; Faces
-(when graf
-      (setq custom-background-mode 'light)
-      (defface my-group-face-1
-        '((t (:foreground "Red" :bold t))) "First group face")
-      (defface my-group-face-2
-        '((t (:foreground "DarkSeaGreen4" :bold t))) "Second group face")
-      (defface my-group-face-3
-        '((t (:foreground "Green4" :bold t))) "Third group face")
-      (defface my-group-face-4
-        '((t (:foreground "CornflowerBlue" :bold t))) "Fourth group face")
-      (defface my-group-face-5
-         '((t (:foreground "DeepSkyBlue" :bold t))) "Fifth group face")
-
-(copy-face 'default 'mysubject)
-(setq gnus-face-1 'mysubject)
-
-(copy-face 'default 'mytime)
-(set-face-foreground 'mytime "green3")
-(setq gnus-face-2 'mytime)
-
-(copy-face 'default 'mythreads)
-(set-face-foreground 'mythreads "indianred1")
-(setq gnus-face-3 'mythreads)
-
-(copy-face 'default 'mygrey)
-(set-face-foreground 'mygrey "grey")
-(setq gnus-face-4 'mygrey)
-
-(copy-face 'default 'myblack)
-(set-face-foreground 'myblack "grey60")
-(setq gnus-face-5 'myblack)
-
-(copy-face 'default 'mybiggernumbers)
-(set-face-foreground 'mybiggernumbers "indianred4")
-(setq gnus-face-6 'mybiggernumbers)
-
-(set-face-foreground 'gnus-summary-normal-ancient-face "LightSteelBlue")
-
-;; to view my own postings
-(require 'gnus-sum)
-(defface dz-gnus-own-posting-face nil
-  "Use this face to display own postings in Summary Buffer")
-(copy-face 'gnus-summary-high-unread-face 'dz-gnus-own-posting-face)
-(set-face-foreground 'dz-gnus-own-posting-face "aquamarine")
-
-(defface dz-gnus-direct-fup-face nil
-  "Use this face to display direct fups to my postings.")
-(copy-face 'gnus-summary-high-unread-face 'dz-gnus-dir-fup-face)
-(set-face-foreground 'dz-gnus-direct-fup-face "yellow")
-
-(defface dz-gnus-indirect-fup-face nil
-  "Use this face to display indirect fups to my postings")
-(copy-face 'gnus-summary-high-unread-face 'dz-gnus-indir-fup-face)
-(set-face-foreground 'dz-gnus-indirect-fup-face "lightgreen")
-)
-;; end of faces
+;(setq custom-background-mode 'light)
+;(defface my-group-face-1
+;  '((t (:foreground "Red" :bold t))) "First group face")
+;(defface my-group-face-2
+;  '((t (:foreground "DarkSeaGreen4" :bold t))) "Second group face")
+;(defface my-group-face-3
+;  '((t (:foreground "Blue4" :bold t))) "Third group face")
+;(defface my-group-face-4
+;  '((t (:foreground "CornflowerBlue" :bold t))) "Fourth group face")
+;(defface my-group-face-5
+;  '((t (:foreground "DeepSkyBlue" :bold t))) "Fifth group face")
+;
+;(copy-face 'default 'mysubject)
+;(setq gnus-face-1 'mysubject)
+;
+;(copy-face 'default 'mytime)
+;(set-face-foreground 'mytime "green3")
+;(setq gnus-face-2 'mytime)
+;
+;(copy-face 'default 'mythreads)
+;(set-face-foreground 'mythreads "indianred1")
+;(setq gnus-face-3 'mythreads)
+;
+;(copy-face 'default 'mygrey)
+;(set-face-foreground 'mygrey "grey")
+;(setq gnus-face-4 'mygrey)
+;
+;(copy-face 'default 'myblack)
+;(set-face-foreground 'myblack "grey60")
+;(setq gnus-face-5 'myblack)
+;
+;(copy-face 'default 'mybiggernumbers)
+;(set-face-foreground 'mybiggernumbers "indianred4")
+;(setq gnus-face-6 'mybiggernumbers)
+;
+;(set-face-foreground 'gnus-summary-normal-ancient-face "LightSteelBlue")
+;
+;;; to view my own postings
+;(require 'gnus-sum)
+;(defface dz-gnus-own-posting-face nil
+;  "Use this face to display own postings in Summary Buffer")
+;(copy-face 'gnus-summary-high-unread-face 'dz-gnus-own-posting-face)
+;(set-face-foreground 'dz-gnus-own-posting-face "aquamarine")
+;
+;(defface dz-gnus-direct-fup-face nil
+;  "Use this face to display direct fups to my postings.")
+;(copy-face 'gnus-summary-high-unread-face 'dz-gnus-dir-fup-face)
+;(set-face-foreground 'dz-gnus-direct-fup-face "yellow")
+;
+;(defface dz-gnus-indirect-fup-face nil
+;  "Use this face to display indirect fups to my postings")
+;(copy-face 'gnus-summary-high-unread-face 'dz-gnus-indir-fup-face)
+;(set-face-foreground 'dz-gnus-indirect-fup-face "lightgreen")
+;;; end of faces
 ;;;;;;;;;;;;;;;
 
 
@@ -298,7 +296,7 @@
 ;; Mail
 ;;;;;;;
 
-(setq gnus-secondary-select-methods '((nnmaildir "")))
+(setq gnus-secondary-select-methods '((nnmaildir "" (directory "~/.mail"))))
 ;(setq mail-sources
 ;           '((pop :server "localhost"
 ;                  :port "pop3"
@@ -349,9 +347,9 @@
 
 
 ;; save messages
-(setq gnus-message-archive-group '(
-    (if (message-news-p) (concat "maildir:sent-news" (format-time-string ".%Y.%m" (current-time)))
-      (concat "maildir:sent-mail" (format-time-string ".%Y.%m" (current-time))))))
+;(setq gnus-message-archive-group '(
+;    (if (message-news-p) (concat "nnmaildir:sent-news" (format-time-string ".%Y.%m" (current-time)))
+;      (concat "nnmaildir:sent-mail" (format-time-string ".%Y.%m" (current-time))))))
 
 ;;;;;;
 ;; PGG
@@ -615,16 +613,17 @@
 (add-hook 'message-setup-hook 'prh:now-playing)
 
 ;; hl-line-mode
-(add-hook 'gnus-summary-mode-hook 'my-setup-hl-line)
-;(add-hook 'gnus-group-mode-hook 'my-setup-hl-line)
-(defun my-setup-hl-line ()
- (hl-line-mode 1)
-;  (setq cursor-type nil) ; Comment this out, if you want the cursor to
-			 ; stay visible.
-; (set-face-foreground 'highlight "Green")
- (copy-face 'default 'highlight)
- (set-face-background 'highlight "DarkGreen")
+(when graf
+  (add-hook 'gnus-summary-mode-hook 'my-setup-hl-line)
+  (add-hook 'gnus-group-mode-hook 'my-setup-hl-line)
 )
+(defun my-setup-hl-line ()
+  (hl-line-mode 1)
+;    (setq cursor-type nil) ; Comment this out, if you want the cursor to
+          ; stay visible.
+          ; (set-face-foreground 'highlight "Green")
+  (copy-face 'default 'highlight)
+  (set-face-background 'highlight "DarkGreen"))
 
 
 ;;;;;;;;;;;;;;;;;;

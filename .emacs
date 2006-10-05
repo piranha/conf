@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 11 2006-10-03 09:13:10Z piranha $
+;; $Id: .emacs 12 2006-10-05 20:31:56Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -223,6 +223,8 @@
 	(kill-buffer (current-buffer)))
 
 (global-set-key (kbd "C-x w") 'prh:kill-current-buffer)
+
+(global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
 ;; end of keybindings
 ;;;;;;;;;;;;;;;;;;;;;
