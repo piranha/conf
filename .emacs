@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 13 2006-10-06 06:48:23Z piranha $
+;; $Id: .emacs 14 2006-10-06 06:51:26Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -98,8 +98,10 @@
   inhibit-startup-message t
   ;; NO annoing backups
   make-backup-files nil
+  ;; follow symlinks and don't ask
+  vc-follow-symlinks t
   ;; see what you type
-  echo-keystrokes 0.1
+  echo-keystrokes 0.01
   ;; text scrolling 
   scroll-conservatively 50
   scroll-preserve-screen-position 't
