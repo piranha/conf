@@ -10,13 +10,14 @@
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 12 2006-10-05 20:31:56Z piranha $
+;; $Id: .gnus 13 2006-10-06 06:48:23Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
 ;; graphics
 ;;;;;;;;;;;
 
+;; defined also in .emacs, but for consistency...
 (defconst graf
   (not (eq window-system 'nil))
   "Are we running window system?")

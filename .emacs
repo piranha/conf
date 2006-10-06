@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 12 2006-10-05 20:31:56Z piranha $
+;; $Id: .emacs 13 2006-10-06 06:48:23Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -25,6 +25,11 @@
 (defconst linux
   (eq system-type 'gnu/linux)
   "Are we running on linux system")
+
+(defconst graf
+  (not (eq window-system 'nil))
+  "Are we running window system?")
+
 
 ;;;;;;;;;;
 ;; lang setup & changing with system switcher
@@ -74,11 +79,6 @@
 ;;;;;;;;;;
 ;; General
 
-;; bar setup
-(if win32
-    ((menu-bar-mode 1)
-     (tool-bar-mode 0))
-  (menu-bar-mode 0))
 ;; ibuffer
 (require 'ibuffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -232,6 +232,26 @@
 ;;;;;;;;;;;;;;
 ;; Frame setup
 
+(if graf
+    (progn
+      ;; Title formatting
+      (setq frame-title-format (list '(buffer-file-name "%f" "%b") " - GNU Emacs " emacs-version "@" system-name ))
+      (setq icon-title-format frame-title-format)
+      
+      ;; Font setup
+      (if win32
+          (progn
+            (set-default-font "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")
+            (setq w32-enable-synthesized-fonts nil))
+        (set-default-font "-*-fixed-*-*-*-*-15-*-*-*-*-*-koi8-*"))
+;; bar setup
+      (menu-bar-mode 1)
+      (tool-bar-mode 0)
+      (when linux
+        (scroll-bar-mode 0)))
+  (menu-bar-mode 0)
+)
+
 (when linux
   (server-start))
 
@@ -240,35 +260,25 @@
   (require 'gnuserv)
   (gnuserv-start)
 
-  ;; Font setup
-  (set-default-font "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")
-  (setq w32-enable-synthesized-fonts nil)
-  
   ;; size & position
   (set-frame-height (selected-frame) 56)
   (set-frame-width (selected-frame) 154)
   (set-frame-position (selected-frame) 0 0)
   
-  ;; Title formatting
-  (setq frame-title-format (list '(buffer-file-name "%f" "%b") " - GNU Emacs " emacs-version "@" system-name ))
-  (setq icon-title-format frame-title-format)
   
-  (when (eq window-system 'w32)
     (defun restore-frame (&optional frame)
       "Restore FRAME to previous size (default: current frame)."
       (interactive)
-      (w32-send-sys-command 61728 frame)))
+      (w32-send-sys-command 61728 frame))
   
-  (when (eq window-system 'w32)
     (defun maximize-frame (&optional frame)
       "Maximize FRAME (default: current frame)."
       (interactive)
-      (w32-send-sys-command 61488 frame)))
+      (w32-send-sys-command 61488 frame))
   
-  (when (eq window-system 'w32)
     (defalias 'minimize-frame (if (fboundp 'really-iconify-frame)
                                   'really-iconify-frame
-                                'iconify-frame)))
+                                'iconify-frame))
   
   (defun prh:ajust-frame ()
     "Ajusts current frame to display properties"
@@ -406,7 +416,7 @@
 ;; end of hooks
 ;;;;;;;;;;;;;;;
 
-(when win32
+(when graf
   (color-theme-initialize)
   (color-theme-subtle-hacker))
 
