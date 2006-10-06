@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 14 2006-10-06 06:51:26Z piranha $
+;; $Id: .emacs 15 2006-10-06 06:54:04Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -250,7 +250,7 @@
       (menu-bar-mode 1)
       (tool-bar-mode 0)
       (when linux
-        (scroll-bar-mode 0)))
+        (scroll-bar-mode -1)))
   (menu-bar-mode 0)
 )
 
