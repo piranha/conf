@@ -10,7 +10,7 @@
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 13 2006-10-06 06:48:23Z piranha $
+;; $Id: .gnus 16 2006-10-09 13:43:39Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -106,10 +106,8 @@
 (setq
  gnus-alias-identity-alist '(
       ("piranha"   "" "\"Alexander Solovyov\" <piranha@piranha.org.ua>" "" nil "" "")
-      ("pviii" "" "\"Alexander Solovyov\" <piranha@viii.ntu-kpi.kiev.ua>" "" nil "" "")
-      ("pgmail"  "" "\"Alexander Solovyov\" <alexander.solovyov@gmail.com>" "" nil "" "")
-      ("moder-soft"   "" "\"Alexander Solovyov [Moderator]\" <piranha@viii.ntu-kpi.kiev.ua>" "" nil "" "~/.sign_moder-soft")
-      ("moder-games"   "" "\"Alexander Solovyov [Moderator]\" <piranha@viii.ntu-kpi.kiev.ua>" "" nil "" "~/.sign_moder-games"))
+      ("viii" "" "\"Alexander Solovyov\" <piranha@viii.ntu-kpi.kiev.ua>" "" nil "" "")
+      ("gmail"  "" "\"Alexander Solovyov\" <alexander.solovyov@gmail.com>" "" nil "" ""))
  gnus-alias-default-identity "piranha")
 
 (load-library "smtpmail")
@@ -223,16 +221,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; the best! unicode threading pointers
-(when graf
- (setq gnus-sum-thread-tree-root "\x4912f ")
- (setq gnus-sum-thread-tree-single-indent "\x4912e ")
- (setq gnus-sum-thread-tree-leaf-with-other "\x4903c\x49020\x490fa ")
- (setq gnus-sum-thread-tree-vertical "\x49022")
- (setq gnus-sum-thread-tree-single-leaf "\x490b0\x49020\x490fa "))
+;(when graf
+; (setq gnus-sum-thread-tree-root "\x4912f ")
+; (setq gnus-sum-thread-tree-single-indent "\x4912e ")
+; (setq gnus-sum-thread-tree-leaf-with-other "\x4903c\x49020\x490fa ")
+; (setq gnus-sum-thread-tree-vertical "\x49022")
+; (setq gnus-sum-thread-tree-single-leaf "\x490b0\x49020\x490fa "))
 ;; here unicode threading ends
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq gnus-summary-same-subject "")
 
 ;;;;;;;;
 ;; Faces
@@ -415,7 +411,6 @@
   (quote (setq mm-automatic-display (remove "application/pgp-signature"
                                             mm-automatic-display))))
 
-
 ;;;;;;;
 ;; BBDB
 ;;;;;;;
@@ -521,16 +516,14 @@
         (cond
          ((string-match "ntu-kpi.comp.software" group)
           (progn
-                (gnus-alias-use-identity "moder-soft")
                 (YSZ:award-insert-stuff name)))
          ((string-match "ntu-kpi.rec.games" group)
           (progn
-                (gnus-alias-use-identity "moder-games")
                 (YSZ:award-insert-stuff name)))
          (t
           (progn
                 (message-goto-body)
-                (insert "Ohrenel? V chujoy ehe-to nagrady stavit'??\n\n")) ) ) ) )
+                (insert "Ohrenel? V chujoy ehe-to nagrady stavit'??\n\n"))))))
 
 (defun YSZ:award-insert-stuff (name)
   (insert "--=off\n")
@@ -538,9 +531,7 @@
   (insert moder-pass "\n")
   (insert name)
   (insert "\n")
-	(kill-line)
-  )
-
+	(kill-line))
 
 ;; Now playing
 (setq now-playing-file "~/.song")
@@ -552,8 +543,7 @@
 ;      (let ((coding-system-for-read 'utf-16-le)) (insert-file-contents now-playing-file)))))
 			(insert-file-contents now-playing-file)
 			(goto-char (point-max))
-			(newline)
-		)))
+			(newline))))
 
 ;; Random citation line
 (setq random-sig-directory "~/.sigs")
@@ -610,22 +600,8 @@
      (local-set-key "\C-c\C-c" 'message-send-and-exit)))
 
 ;; for now-playing and citation lines
-(add-hook 'message-setup-hook 'prh:random-cite)
-(add-hook 'message-setup-hook 'prh:now-playing)
-
-;; hl-line-mode
-(when graf
-  (add-hook 'gnus-summary-mode-hook 'my-setup-hl-line)
-  (add-hook 'gnus-group-mode-hook 'my-setup-hl-line)
-)
-(defun my-setup-hl-line ()
-  (hl-line-mode 1)
-;    (setq cursor-type nil) ; Comment this out, if you want the cursor to
-          ; stay visible.
-          ; (set-face-foreground 'highlight "Green")
-  (copy-face 'default 'highlight)
-  (set-face-background 'highlight "DarkGreen"))
-
+;(add-hook 'message-setup-hook 'prh:random-cite)
+;(add-hook 'message-setup-hook 'prh:now-playing)
 
 ;;;;;;;;;;;;;;;;;;
 ;; Autocompilation

@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 15 2006-10-06 06:54:04Z piranha $
+;; $Id: .emacs 16 2006-10-09 13:43:39Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -242,10 +242,9 @@
       
       ;; Font setup
       (if win32
-          (progn
-            (set-default-font "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")
-            (setq w32-enable-synthesized-fonts nil))
-        (set-default-font "-*-fixed-*-*-*-*-15-*-*-*-*-*-koi8-*"))
+          (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
+;??            (setq w32-enable-synthesized-fonts nil))
+        (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-koi8-*")))
 ;; bar setup
       (menu-bar-mode 1)
       (tool-bar-mode 0)
@@ -267,20 +266,19 @@
   (set-frame-width (selected-frame) 154)
   (set-frame-position (selected-frame) 0 0)
   
+  (defun restore-frame (&optional frame)
+    "Restore FRAME to previous size (default: current frame)."
+    (interactive)
+    (w32-send-sys-command 61728 frame))
   
-    (defun restore-frame (&optional frame)
-      "Restore FRAME to previous size (default: current frame)."
-      (interactive)
-      (w32-send-sys-command 61728 frame))
-  
-    (defun maximize-frame (&optional frame)
+  (defun maximize-frame (&optional frame)
       "Maximize FRAME (default: current frame)."
       (interactive)
       (w32-send-sys-command 61488 frame))
   
-    (defalias 'minimize-frame (if (fboundp 'really-iconify-frame)
-                                  'really-iconify-frame
-                                'iconify-frame))
+  (defalias 'minimize-frame (if (fboundp 'really-iconify-frame)
+                                'really-iconify-frame
+                              'iconify-frame))
   
   (defun prh:ajust-frame ()
     "Ajusts current frame to display properties"
@@ -420,14 +418,14 @@
 
 (when graf
   (color-theme-initialize)
-  (color-theme-subtle-hacker))
+  (color-theme-charcoal-black))
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(canlock-password "a8a433cb25fe5cc792f85b4081f1f02f08030bf7"))
+ )
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
