@@ -1,10 +1,10 @@
 # -*- mode: sh; mode: fold -*-
 # zsh configuration (c) 2003-2006 Alexander Solovyov
-# $Id: .zshrc 11 2006-10-03 09:13:10Z piranha $
+# $Id: .zshrc 17 2006-10-19 13:18:21Z piranha $
 # piranha AT piranha DOT org DOT ua
 #
 # Thanks to: 
-# Maxim Samoylenko aka smax
+# tldp.org
 # Alexander Zayats aka ai
 # "XAKEP" journal 
 # Google.com
@@ -32,7 +32,7 @@ else
 fi
 export EDITOR="vim"
 export BROWSER="links"
-#export MAIL=~/.mail/received-`date +"%Y.%m"`
+export MAIL=~/.mail/
 #export MAIL=/var/mail/piranha
 #export MAIL=/home/hosting/eth0.net.ua/`whoami`/Maildir/
 export LESS="-R"

@@ -1,5 +1,5 @@
 # -*- muttrc -*-
-# $Id: .muttngrc 11 2006-10-03 09:13:10Z piranha $
+# $Id: .muttngrc 17 2006-10-19 13:18:21Z piranha $
 # mutt configuration (c) 2003-2006 
 # by Alexander Solovyov   aka piranha
 # thx to: Max Krasilnikov aka pseudo
@@ -19,6 +19,10 @@ unignore "To:"
 unignore "Subject:"
 # unignore "X-Original-NNTP-Posting-Host:"
 unignore "Cc:"
+unignore "Message-ID:"
+unignore "X-Priority:"
+unignore "X-Confirm-Reading-To:"
+unignore "X-Spam_score:"
 
 reset spoolfile
 
@@ -90,7 +94,7 @@ set markers=no
 set mask="!^\\.[^.]"
 set mark_old=no
 #set mbox=$HOME/.mail/received-`date +"%Y.%m"`
-set mbox_type=mbox
+set mbox_type=Maildir
 set metoo=no
 set menu_scroll=yes
 set meta_key=no
@@ -173,9 +177,9 @@ set assumed_charset="cp1251:koi8-u:utf-8"
 set header_cache="~/.mutt/hcache"
 
 #IMAP
-set spoolfile=imap://piranha@localhost/INBOX
-set folder=imap://piranha@localhost/
-set imap_mail_check=5
+#set spoolfile=imap://piranha@piranha.org.ua@localhost/
+#set folder=imap://piranha@piranha.org.ua@localhost/
+#set imap_mail_check=5
 #set imap_authenticators="crypt"
 
 #NEWS
@@ -198,14 +202,11 @@ bind    index   F       followup-message
 # The width of the mailbox list pane (left sidebar like in GUIs).
 set sidebar_width=25
 # This specifies whether or not to show the mailbox list panel.
-set sidebar_visible=yes
+set sidebar_visible=no
 # When ``set'', the "hierarchy" of the sidebar entries will be shortened, 
 # e.g. de.alt.sysadmin.recovery becomes d.a.s.recovery.
 set sidebar_shorten_hierarchy=no
 set sidebar_delim="  "
-# which mailboxes to list in the sidebar
-mailboxes ! `~/bin/mailboxes.sh`
-#mailboxes =INBOX =root =lj =exim-users
 # color of folders with new mail
 color sidebar_new yellow default 
 # ctrl-n, ctrl-p to select next, prev folder ctrl-o to open selected folder
@@ -222,6 +223,7 @@ bind pager \CO sidebar-open
 macro index z ':toggle sidebar_visible^M'
 macro pager z ':toggle sidebar_visible^M'  
 
+mailboxes ! `~/bin/mailboxes.sh`
 
 append-hook     \\.gz$  "gzip -c %t >> %f"
 open-hook       \\.gz$  "gzip -cd %f > %t"
@@ -242,16 +244,12 @@ send-hook . "set attribution='Ave, %n.\nAccording to your message:\n'"
 #send-hook ".ntu-kpi.kiev.ua" "my_hdr From: Alexander Solovyov <piranha@viii.ntu-kpi.kiev.ua>"
 send-hook . "my_hdr From: Alexander Solovyov <piranha@piranha.org.ua>"
 
-#mailboxes ! `echo ~/.mail/*|sed 's/\/home\/piranha\/.mail\/sent.*//'|sed 's/\/home\/piranha\/.mail\/procmail.log//'`
-
 unhdr_order *
 hdr_order date from subject to cc
 
-#lists hostels cpc humor jed-users
-
 #view html
 #if there is only html dump that
-#auto_view text/html
+auto_view text/html
 # this helps with multipart messages
 alternative_order text/plain text/html
 
@@ -274,16 +272,17 @@ color normal white default
 color attachment magenta default
 color search black yellow       # how to hilite search patterns in the pager
 color header green default  ^(from|subject|to|cc|bcc|newsgroups|message-id):
-color body blue default "(ftp|http)://[^ ]+" # point out URLs
+color body magenta default "(ftp|http)://[^ ]+" # point out URLs
 color body green default [-a-z_0-9.]+@[-a-z_0-9.]+    # e-mail addresses
 color underline brightgreen default
 
 color index red default ~D              # deleted
-color index blue default ~T              # tagged
-color index brightblue default ~Ceth0@googlegroups.com
-color index brightblue default ~Cusers@lists.eth0.net.ua
-color index brightmagenta default ~flj_notify
-color index brightyellow default ~Croot
+color index blue default ~T             # tagged
+color index yellow default ~F           # flagged
+#color index brightblue default ~Ceth0@googlegroups.com
+#color index brightblue default ~Cusers@lists.eth0.net.ua
+#color index brightmagenta default ~flj_notify
+#color index brightyellow default ~Croot
 #color index red default ~Cwhois
 #color index green default ~Cduties
 #color index cyan default ~Cteam
@@ -324,8 +323,8 @@ bind	pager	f	forward-message
 bind	index	M   flag-message
 bind	pager	M	flag-message
 
-bind	index   \cr imap-fetch-mail
-bind	pager   \cr imap-fetch-mail
+#bind	index   \cr imap-fetch-mail
+#bind	pager   \cr imap-fetch-mail
 
 # codepages
 macro pager \ek "^E^Utext/plain; charset=koi8-u\r"
@@ -335,14 +334,22 @@ macro pager \ed "^E^Utext/plain; charset=cp866\r"
 
 macro index \cb '/~b ' 'search in message bodies'
 
-macro index "\Cx\Cb" "<change-folder>?"                                   # Folder list.
-macro pager "\Cx\Cb" "<change-folder>?"                                   # Folder list.
+macro index c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro pager c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro index \ec "<change-folder>" "open a different folder"
+macro pager \ec "<change-folder>" "open a different folder"
 
-macro index "\eb"    "<pipe-message>lbdb-fetchaddr<enter>"
-macro pager "\eb"    "<pipe-message>lbdb-fetchaddr<enter>"
+macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro pager C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro index \eC "<copy-message>" "copy a message to a mailbox"
+macro pager \eC "<copy-message>" "copy a message to a mailbox"
+macro index s "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+macro pager s "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+macro index \es "<save-message>" "move a message to a mailbox"
+macro pager \es "<save-message>" "move a message to a mailbox"
 
-macro index "\ev"    "<pipe-message>most<enter>"
-macro pager "\ev"    "<pipe-message>most<enter>"
+macro index "\ev"    "<pipe-message>$PAGER<enter>"
+macro pager "\ev"    "<pipe-message>$PAGER<enter>"
 
 macro index "\es"    "<pipe-message>cat > ~/"
 macro pager "\es"    "<pipe-message>cat > ~/"
