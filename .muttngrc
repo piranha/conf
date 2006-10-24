@@ -1,5 +1,5 @@
 # -*- muttrc -*-
-# $Id: .muttngrc 18 2006-10-24 09:19:53Z piranha $
+# $Id: .muttngrc 19 2006-10-24 12:53:51Z piranha $
 # mutt configuration (c) 2003-2006 
 # by Alexander Solovyov   aka piranha
 # thx to: Max Krasilnikov aka pseudo
@@ -338,9 +338,10 @@ bind	pager	f	forward-message
 bind	index	M   flag-message
 bind	pager	M	flag-message
 
-macro   pager    q     "<exit>"                                           "Leaves pager to index view"
-macro   index    q     "<sync-mailbox><change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
-macro   browser  q     "<exit><quit>"                                     "Exit mutt"
+macro   index   c   "<sync-mailbox><change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
+macro   pager   c   "<sync-mailbox><change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
+bind    index   \ec   change-folder
+bind    pager   \ec   change-folder
 
 macro   index   C   "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
 macro   pager   C   "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
