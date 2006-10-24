@@ -1,5 +1,5 @@
 # -*- muttrc -*-
-# $Id: .muttngrc 17 2006-10-19 13:18:21Z piranha $
+# $Id: .muttngrc 18 2006-10-24 09:19:53Z piranha $
 # mutt configuration (c) 2003-2006 
 # by Alexander Solovyov   aka piranha
 # thx to: Max Krasilnikov aka pseudo
@@ -24,14 +24,22 @@ unignore "X-Priority:"
 unignore "X-Confirm-Reading-To:"
 unignore "X-Spam_score:"
 
+alternates piranha@piranha.org.ua
+alternates piranha@eth0.net.ua
+alternates piranha@9.org.ua
+alternates piranha@anarxi.st
+alternates piranha@viii.ntu-kpi.kiev.ua
+alternates piranha@library.ntu-kpi.kiev.ua
+alternates alexander.solovyov@gmail.com
+
 reset spoolfile
 
+set umask=022
 set abort_nosubject=no
 set abort_unmodified=yes
 set query_command="lbdbq '%s'"
 set allow_8bit=yes
 set allow_ansi=no
-# set alternates="(\^piranha@(eth0.org.ua)|(semiol.dp.ua)|(anarxi.st)|((viii)|(library).ntu-kpi.kiev.ua))|(\^alexander.solovyov@gmail.com)|(\^admin@semiol.dp.ua)"
 set arrow_cursor=no
 set ascii_chars=yes
 set askbcc=no
@@ -47,7 +55,9 @@ set beep_new=no
 set bounce=yes
 set bounce_delivered=no
 set charset="koi8-u"
-set check_new=no
+set check_new=yes
+set beep_new=yes
+set mail_check=3
 set collapse_unread=yes
 set uncollapse_jump=no
 set compose_format="-- Mutt: Compose  [Approx. msg size: %l   Atts: %a]%>-"
@@ -64,9 +74,10 @@ set digest_collapse=yes
 set duplicate_threads=yes
 set edit_headers=yes
 #set editor="jed %s -tmp -f '{mail_mode;email_prepare_reply;email_prepare_body;}'"
-set editor="vim +9 -c EraseSignature %s"
+#set editor="vim +9 -c EraseSignature %s"
+set editor="vim -c 'set tw=72 ft=mail noautoindent' -c EraseSignature -c ':11' %s"
 set fast_reply=yes
-set folder="~/.mail"
+set folder="~/.mail/"
 set followup_to=yes
 set force_name=no
 set forward_edit=yes
@@ -85,11 +96,11 @@ set honor_followup_to=yes
 set ignore_list_reply_to=no
 set include=yes
 set indent_string="> "
-set index_format="%4C %Z %[!%d.%m.%y] %-15.15F (%?M?C%3M&%4l?) %s"
+#set index_format="%4C %Z %[!%d.%m.%y] %-15.15F (%?M?C%3M&%4l?) %s"
+set index_format="%4C %Z %[!%d.%m.%y] %-20.20F (%4c) %s"
 #set ispell="/usr/bin/ispell"
 set keep_flagged=no
 set locale="ru_RU.koi8r"
-set mail_check=5
 set markers=no
 set mask="!^\\.[^.]"
 set mark_old=no
@@ -223,7 +234,8 @@ bind pager \CO sidebar-open
 macro index z ':toggle sidebar_visible^M'
 macro pager z ':toggle sidebar_visible^M'  
 
-mailboxes ! `~/bin/mailboxes.sh`
+#mailboxes ! `~/bin/mailboxes.sh`
+mailboxes `echo -n "+ ";find ~/.mail -type d -name ".*" -printf "+'%f' "`
 
 append-hook     \\.gz$  "gzip -c %t >> %f"
 open-hook       \\.gz$  "gzip -cd %f > %t"
@@ -231,18 +243,22 @@ close-hook      \\.gz$  "gzip -c %t > %f"
 
 set default_hook="~f %s !~P | (~P ~C %s)"
 
+folder-hook . set sort=threads
+folder-hook 'spam' set sort=date-received
+folder-hook 'trash' set sort=date-received
+
 #fcc-hook roka@.* =roka
 #fcc-hook murkt@.* =murkt
 #fcc-hook piranha@.* =piranha
 #fcc-hook anime_kpi@yahoogroups\.com =anime_kpi
 #fcc-hook talk@news\.ntu-kpi\.kiev\.ua =news-talk
-fcc-hook . +sent.`date +"%Y.%m"`
+fcc-hook . +.sent.`date +"%Y.%m"`
 
 #send-hook . "set signature='~/bin/sig_random.sh |'"
 send-hook . "set signature='~/.signature'"
 send-hook . "set attribution='Ave, %n.\nAccording to your message:\n'"
-#send-hook ".ntu-kpi.kiev.ua" "my_hdr From: Alexander Solovyov <piranha@viii.ntu-kpi.kiev.ua>"
 send-hook . "my_hdr From: Alexander Solovyov <piranha@piranha.org.ua>"
+send-hook django-developers@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 
 unhdr_order *
 hdr_order date from subject to cc
@@ -307,7 +323,6 @@ color index yellow default ~F           # flagged
 #color index_date magenta default
 #color index_size brightyellow default
 #color index_label brightyellow default
-#
 
 bind	pager	<down>	next-line
 bind	pager	<up>	previous-line
@@ -323,8 +338,22 @@ bind	pager	f	forward-message
 bind	index	M   flag-message
 bind	pager	M	flag-message
 
-#bind	index   \cr imap-fetch-mail
-#bind	pager   \cr imap-fetch-mail
+macro   pager    q     "<exit>"                                           "Leaves pager to index view"
+macro   index    q     "<sync-mailbox><change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
+macro   browser  q     "<exit><quit>"                                     "Exit mutt"
+
+macro   index   C   "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro   pager   C   "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro   index   \eC "<copy-message>"                    "copy a message to custom mailbox"
+macro   pager   \eC "<copy-message>"                    "copy a message to custom mailbox"
+macro   index   s   "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+macro   pager   s   "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+macro   index   \es "<save-message>"                    "move a message to custom mailbox"
+macro   pager   \es "<save-message>"                    "move a message to custom mailbox"
+
+bind    browser <Tab>   check-new
+
+macro index \cb '/~b ' 'search in message bodies'
 
 # codepages
 macro pager \ek "^E^Utext/plain; charset=koi8-u\r"
@@ -332,27 +361,12 @@ macro pager \ew "^E^Utext/plain; charset=windows-1251\r"
 macro pager \eu "^E^Utext/plain; charset=utf-8\r"
 macro pager \ed "^E^Utext/plain; charset=cp866\r"
 
-macro index \cb '/~b ' 'search in message bodies'
-
-macro index c "<change-folder>?<toggle-mailboxes>" "open a different folder"
-macro pager c "<change-folder>?<toggle-mailboxes>" "open a different folder"
-macro index \ec "<change-folder>" "open a different folder"
-macro pager \ec "<change-folder>" "open a different folder"
-
-macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
-macro pager C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
-macro index \eC "<copy-message>" "copy a message to a mailbox"
-macro pager \eC "<copy-message>" "copy a message to a mailbox"
-macro index s "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
-macro pager s "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
-macro index \es "<save-message>" "move a message to a mailbox"
-macro pager \es "<save-message>" "move a message to a mailbox"
 
 macro index "\ev"    "<pipe-message>$PAGER<enter>"
 macro pager "\ev"    "<pipe-message>$PAGER<enter>"
 
-macro index "\es"    "<pipe-message>cat > ~/"
-macro pager "\es"    "<pipe-message>cat > ~/"
+#macro index "\es"    "<pipe-message>cat > ~/"
+#macro pager "\es"    "<pipe-message>cat > ~/"
 
 #set pgp_sign_micalg=pgp-sha1 # default for DSS keys
 set pgp_decode_command="gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
