@@ -1,6 +1,6 @@
 # -*- mode: sh; mode: fold -*-
 # zsh configuration (c) 2003-2006 Alexander Solovyov
-# $Id: .zshrc 17 2006-10-19 13:18:21Z piranha $
+# $Id: .zshrc 20 2007-01-13 16:38:47Z piranha $
 # piranha AT piranha DOT org DOT ua
 #
 # Thanks to: 
@@ -258,6 +258,7 @@ fi
 ## Editor
 if [ -x `whence -c emacsclient` ]; then
     alias e="emacsclient"
+    export ALTERNATE_EDITOR="emacs"
 elif [ -x `whence -c vim` ]; then
     alias e="vim"
 else
@@ -286,6 +287,7 @@ alias cad="ssh -p 2221 cad.kiev.ua"
 alias rtin="rtin -qd -g news.ntu-kpi.kiev.ua"
 alias slrn="slrn --nntp -h localhost" 
 alias ml="ledit -h ~/.mldonkey_history -x nc localhost 4000"
-alias myapg="apg -n 8 -x 9 -M NCL -s"
+alias myapg="apg -n 8 -x 9 -M NCL -s" 
+alias yapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo" 
 alias mkperlpkg="dh-make-perl --build --cpan"
 alias -g C="|ccze -A"

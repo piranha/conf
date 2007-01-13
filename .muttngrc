@@ -1,5 +1,5 @@
 # -*- muttrc -*-
-# $Id: .muttngrc 19 2006-10-24 12:53:51Z piranha $
+# $Id: .muttngrc 20 2007-01-13 16:38:47Z piranha $
 # mutt configuration (c) 2003-2006 
 # by Alexander Solovyov   aka piranha
 # thx to: Max Krasilnikov aka pseudo
@@ -74,8 +74,7 @@ set digest_collapse=yes
 set duplicate_threads=yes
 set edit_headers=yes
 #set editor="jed %s -tmp -f '{mail_mode;email_prepare_reply;email_prepare_body;}'"
-#set editor="vim +9 -c EraseSignature %s"
-set editor="vim -c 'set tw=72 ft=mail noautoindent' -c EraseSignature -c ':11' %s"
+set editor="vim -c EraseSignature -c 'set nopaste' -c 'set tw=72' %s"
 set fast_reply=yes
 set folder="~/.mail/"
 set followup_to=yes
@@ -259,6 +258,7 @@ send-hook . "set signature='~/.signature'"
 send-hook . "set attribution='Ave, %n.\nAccording to your message:\n'"
 send-hook . "my_hdr From: Alexander Solovyov <piranha@piranha.org.ua>"
 send-hook django-developers@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
+send-hook pythagora-ua@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 
 unhdr_order *
 hdr_order date from subject to cc
@@ -335,11 +335,14 @@ bind	pager	<left>	previous-entry
 bind	index	f	forward-message
 bind	pager	f	forward-message
 
+bind    index   ^   parent-message
+bind    pager   ^   parent-message
+
 bind	index	M   flag-message
 bind	pager	M	flag-message
 
-macro   index   c   "<sync-mailbox><change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
-macro   pager   c   "<sync-mailbox><change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
+macro   index   c   "<change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
+macro   pager   c   "<change-folder>?<toggle-mailboxes>" "Leaves Index to folder list"
 bind    index   \ec   change-folder
 bind    pager   \ec   change-folder
 
@@ -365,9 +368,6 @@ macro pager \ed "^E^Utext/plain; charset=cp866\r"
 
 macro index "\ev"    "<pipe-message>$PAGER<enter>"
 macro pager "\ev"    "<pipe-message>$PAGER<enter>"
-
-#macro index "\es"    "<pipe-message>cat > ~/"
-#macro pager "\es"    "<pipe-message>cat > ~/"
 
 #set pgp_sign_micalg=pgp-sha1 # default for DSS keys
 set pgp_decode_command="gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"

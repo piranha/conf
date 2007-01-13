@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 16 2006-10-09 13:43:39Z piranha $
+;; $Id: .emacs 20 2007-01-13 16:38:47Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -214,10 +214,20 @@
 
 ;; C-a - mark all buffer
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
+;; overrides mark-whole-buffer
+(global-set-key (kbd "M-?") 'help-command)
 
 ;; C-(home|end) in linux console
-(global-set-key "[7^" 'beginning-of-buffer)
-(global-set-key "[8^" 'end-of-buffer)
+(global-set-key (kbd "C-x <home>") 'beginning-of-buffer)
+(global-set-key (kbd "C-x <end>") 'end-of-buffer)
+
+(global-set-key "\C-w" 'backward-kill-word)
+(global-set-key "\C-x\C-k" 'kill-region)
+
+(global-set-key (kbd "M-s") 'isearch-forward-regexp)
+(global-set-key (kbd "M-r") 'isearch-backward-regexp)
+
+(global-set-key (kbd "<f5>") 'call-last-kbd-macro)
 
 ;; kill current buffer
 (defun prh:kill-current-buffer ()
@@ -380,6 +390,9 @@
 
 ;;;;;;;;;;;;
 ;; Functions
+
+;; alias for qrr
+(defalias 'qrr 'query-replace-regexp)
 
 ;; Autocompilation
 (defun autocompile()

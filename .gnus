@@ -10,7 +10,7 @@
 ;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 16 2006-10-09 13:43:39Z piranha $
+;; $Id: .gnus 20 2007-01-13 16:38:47Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -125,7 +125,7 @@
          (name "Alexander Solovyov")
          (address "piranha@viii.ntu-kpi.kiev.ua")
          (signature-file "~/.sign_fido")
-         ("Keywords:" "SUKANAXKEYWORD"))))
+         ("Keywords:" fido-keyword))))
 
 ;; gnus-parameters
 (setq gnus-parameters
@@ -135,7 +135,11 @@
 ;         (display . all)
 )))
 
-
+;; Show text before html
+(eval-after-load "mm-decode"
+ '(progn 
+      (add-to-list 'mm-discouraged-alternatives "text/html")
+      (add-to-list 'mm-discouraged-alternatives "text/richtext")))
 
 ;;;;;;;
 ;; News
@@ -293,7 +297,19 @@
 ;; Mail
 ;;;;;;;
 
-(setq gnus-secondary-select-methods '((nnmaildir "" (directory "~/.mail"))))
+;;(setq gnus-secondary-select-methods
+;;      '((nnmaildir "mail"
+;;                   (directory "~/.nnmaildir/")
+;;                   (expire-age never)
+;;                   )))
+
+(setq gnus-secondary-select-methods
+      '((nnimap "piranha.org.ua")))
+;                (nnimap-address "piranha.org.ua")
+;                (nnimap-list-pattern ("INBOX" ".*"))
+;                (nnimap-authinfo-file "~/.imap-authinfo"))
+;        ))
+
 ;(setq mail-sources
 ;           '((pop :server "localhost"
 ;                  :port "pop3"
@@ -328,25 +344,25 @@
 ;        ("From" ".*daily@security\\.nnov\\.ru.*" "security")
 ;        ("\\(To\\|Cc\\)" ".*anime_kpi@yahoogroups.com.*" "anime_kpi")
 ;        ("From" ".*Alexander Solovyov \\[Moderator\\].*" "moder")
-;				("From" ".*Nikita Gubenko \\[CoModerator\\].*" "moder")
+;		 ("From" ".*Nikita Gubenko \\[CoModerator\\].*" "moder")
 ;        ("List-Id" ".*c-p-c.googlegroups.com.*" "cpc")
 ;        ("List-Id" ".*newstalk.news.ntu-kpi.kiev.ua.*" "news-talk")
-;				("List-Id" ".*exim-users.exim.org.ua.*" "exim")
-;				("List-Id" ".*eth0.googlegroups.com.*" "eth0")
-;				("List-Id" ".*users.lists.eth0.net.ua.*" "eth0-public")
-;				("List-Id" ".*sudoers.lists.eth0.net.ua.*" "eth0-sudoers")
-;				("List-Id" ".*ik22.lists.eth0.net.ua.*" "ik22")
-;				("From" ".*@livejournal.com.*" "lj")
-;				("From" ".*root@eth0.net.ua.*" "root")
-;				("Subject" ".*\\*\\*\\*SPAM\\*\\*\\*.*" "spam")
+;		 ("List-Id" ".*exim-users.exim.org.ua.*" "exim")
+;		 ("List-Id" ".*eth0.googlegroups.com.*" "eth0")
+;		 ("List-Id" ".*users.lists.eth0.net.ua.*" "eth0-public")
+;		 ("List-Id" ".*sudoers.lists.eth0.net.ua.*" "eth0-sudoers")
+;		 ("List-Id" ".*ik22.lists.eth0.net.ua.*" "ik22")
+;		 ("From" ".*@livejournal.com.*" "lj")
+;		 ("From" ".*root@eth0.net.ua.*" "root")
+;		 ("Subject" ".*\\*\\*\\*SPAM\\*\\*\\*.*" "spam")
 ;        (any ".*" (: prh:mail-date "inbox"))
 ;        ))
 
 
 ;; save messages
-;(setq gnus-message-archive-group '(
-;    (if (message-news-p) (concat "nnmaildir:sent-news" (format-time-string ".%Y.%m" (current-time)))
-;      (concat "nnmaildir:sent-mail" (format-time-string ".%Y.%m" (current-time))))))
+(setq gnus-message-archive-group '(
+    (if (message-news-p) (concat "nnimap+piranha.org.ua:sent-news" (format-time-string ".%Y.%m" (current-time)))
+      (concat "nnimap+piranha.org.ua:sent" (format-time-string ".%Y.%m" (current-time))))))
 
 ;;;;;;
 ;; PGG
