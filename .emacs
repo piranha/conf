@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 20 2007-01-13 16:38:47Z piranha $
+;; $Id: .emacs 21 2007-01-13 18:25:23Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -221,8 +221,8 @@
 (global-set-key (kbd "C-x <home>") 'beginning-of-buffer)
 (global-set-key (kbd "C-x <end>") 'end-of-buffer)
 
-(global-set-key "\C-w" 'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-x C-k") 'kill-region)
 
 (global-set-key (kbd "M-s") 'isearch-forward-regexp)
 (global-set-key (kbd "M-r") 'isearch-backward-regexp)
@@ -431,7 +431,11 @@
 
 (when graf
   (color-theme-initialize)
-  (color-theme-charcoal-black))
+  (when linux
+    (color-theme-charcoal-black))
+  (when win32
+    (color-theme-subtle-hacker))
+)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.

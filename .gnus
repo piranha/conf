@@ -6,11 +6,12 @@
 ;; by Alexander Solovyov
 ;; piranha AT piranha.org.ua
 ;;
-;; Special thank to all, who help me in creation, especially to:
-;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
+;; Thanks to all, who help me in creation, especially to:
+;; Yuriy Sazonets <haze AT astral * ntu-kpi * kiev * ua>
+;; Alexander Zayats <ai AT eth0 * net * ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 20 2007-01-13 16:38:47Z piranha $
+;; $Id: .gnus 21 2007-01-13 18:25:23Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -29,8 +30,8 @@
 (require 'gnus-alias)
 (require 'gnus-stat)
 (require 'message-x)
-(when (file-exists-p "~/.el/secrets.el")
-  (load "~/.el/secrets.el"))
+(when (file-exists-p "~/.secrets.el")
+  (load "~/.secrets.el"))
 
 ;;;;;;;;;;;
 ;; Language
@@ -145,8 +146,10 @@
 ;; News
 ;;;;;;;
 
-(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
+;(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+(setq gnus-select-method '(nnimap "piranha.org.ua"))
 
 ;; headers displayed
 (setq gnus-visible-headers
@@ -174,16 +177,81 @@
    message-forward-as-mime nil
    message-forward-ignored-headers "^Content-Transfer-Encoding:\\|^X-\\|^References\\|^Xref\\|^In-Reply-To\\|^Received\\|^NNTP\\|^Return-Path\\|^Sender\\|^Approved\\|^User-Agent\\|^List-\\|^Error-To\\|^FL-\\|^Precedence\\|^Gnus-\\|^Path\\|^Cancel-Lock\\|^Face")
 
-;(when graf
-;  (setq gnus-group-highlight
-;        '(((> unread 200) . my-group-face-1)
-;          ((and (< level 3) (zerop unread)) . my-group-face-2)
-;          ((< level 3) . my-group-face-3)
-;          ((zerop unread) . my-group-face-4)
-;          (t . my-group-face-5))))
 
-;; always show MIME buttons
-(setq gnus-inhibit-mime-unbuttonizing t)
+;;;;;;;
+;; Mail
+;;;;;;;
+
+;;(setq gnus-secondary-select-methods
+;;      '((nnmaildir "mail"
+;;                   (directory "~/.nnmaildir/")
+;;                   (expire-age never)
+;;                   )))
+
+(setq gnus-secondary-select-methods
+      '((nntp "news.ntu-kpi.kiev.ua")))
+
+;(setq gnus-secondary-select-methods
+;      '((nnimap "piranha.org.ua")))
+;                (nnimap-address "piranha.org.ua")
+;                (nnimap-list-pattern ("INBOX" ".*"))
+;                (nnimap-authinfo-file "~/.imap-authinfo"))
+;        ))
+
+;(setq mail-sources
+;           '((pop :server "localhost"
+;                  :port "pop3"
+;                  :user "piranha"
+;                  :password "parolcheg"
+;)))
+
+;; Mail sorting
+;(setq nnmail-split-methods '(
+;     ("hostels" "^\\(To\\|From\\|Cc\\):.*hostels.*@hosix\\.ntu-kpi\\.kiev\\.ua.*")
+;     ("humor" "^\\(To\\|From\\|Cc\\):.*humor@xcp\\.kiev\\.ua.*")
+;     ("moderatorials" "^\\(To\\|From\\|Cc\\):.*comp.software@library\\.ntu-kpi\\.kiev\\.ua.*")
+;     ("roka" "^\\(From\\):.*roka@.*")
+;     ("spam" "^\\(Subject\\):.*SPAM.*")
+;     ("root" "^\\(To\\|From\\|Cc\\):.*root@.*")
+;     ("murkt" "^\\(From\\):.*murkt@eth0\\.org\\.ua.*")
+;     ("security" "^\\(From\\):.*daily@security\\.nnov\\.ru.*")
+;     ("hostels" "^\\(To\\):.*hostels@ntu-kpi\\.kiev\\.ua.*")
+;     ("news-talk" "^\\(To\\|Cc\\):.*talk@news.ntu-kpi.kiev.ua.*")
+;     ("anime" "^\\(To\\):.*anime_kpi@yahoogroups.com.*")
+;     ("inbox" "")))
+
+(defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
+(defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))
+
+;(setq nnmail-split-methods 'nnmail-split-fancy)
+;(setq nnmail-split-fancy
+;      '(|
+;        ("\\(To\\|Cc\\)" ".*hostels.*@ntu-kpi\\.kiev\\.ua.*" "hostels")
+;        ("\\(To\\|Cc\\)" ".*all-admins@ntu-kpi\\.kiev\\.ua.*" "hostels")
+;        ("\\(To\\|Cc\\)" ".*humor@xcp\\.kiev\\.ua.*" (: prh:mail-date2 "humor"))
+;        ("From" ".*daily@security\\.nnov\\.ru.*" "security")
+;        ("\\(To\\|Cc\\)" ".*anime_kpi@yahoogroups.com.*" "anime_kpi")
+;        ("From" ".*Alexander Solovyov \\[Moderator\\].*" "moder")
+;		 ("From" ".*Nikita Gubenko \\[CoModerator\\].*" "moder")
+;        ("List-Id" ".*c-p-c.googlegroups.com.*" "cpc")
+;        ("List-Id" ".*newstalk.news.ntu-kpi.kiev.ua.*" "news-talk")
+;		 ("List-Id" ".*exim-users.exim.org.ua.*" "exim")
+;		 ("List-Id" ".*eth0.googlegroups.com.*" "eth0")
+;		 ("List-Id" ".*users.lists.eth0.net.ua.*" "eth0-public")
+;		 ("List-Id" ".*sudoers.lists.eth0.net.ua.*" "eth0-sudoers")
+;		 ("List-Id" ".*ik22.lists.eth0.net.ua.*" "ik22")
+;		 ("From" ".*@livejournal.com.*" "lj")
+;		 ("From" ".*root@eth0.net.ua.*" "root")
+;		 ("Subject" ".*\\*\\*\\*SPAM\\*\\*\\*.*" "spam")
+;        (any ".*" (: prh:mail-date "inbox"))
+;        ))
+
+
+;; save messages
+(setq gnus-message-archive-group '(
+    (if (message-news-p) (concat "nnimap+piranha.org.ua:sent-news" (format-time-string ".%Y.%m" (current-time)))
+      (concat "nnimap+piranha.org.ua:sent" (format-time-string ".%Y.%m" (current-time))))))
+
 
 ;;;;;;;;;;;;
 ;; Threading
@@ -233,6 +301,18 @@
 ; (setq gnus-sum-thread-tree-single-leaf "\x490b0\x49020\x490fa "))
 ;; here unicode threading ends
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;(when graf
+;  (setq gnus-group-highlight
+;        '(((> unread 200) . my-group-face-1)
+;          ((and (< level 3) (zerop unread)) . my-group-face-2)
+;          ((< level 3) . my-group-face-3)
+;          ((zerop unread) . my-group-face-4)
+;          (t . my-group-face-5))))
+
+;; always show MIME buttons
+(setq gnus-inhibit-mime-unbuttonizing t)
+
 
 ;;;;;;;;
 ;; Faces
@@ -292,77 +372,6 @@
 ;;; end of faces
 ;;;;;;;;;;;;;;;
 
-
-;;;;;;;
-;; Mail
-;;;;;;;
-
-;;(setq gnus-secondary-select-methods
-;;      '((nnmaildir "mail"
-;;                   (directory "~/.nnmaildir/")
-;;                   (expire-age never)
-;;                   )))
-
-(setq gnus-secondary-select-methods
-      '((nnimap "piranha.org.ua")))
-;                (nnimap-address "piranha.org.ua")
-;                (nnimap-list-pattern ("INBOX" ".*"))
-;                (nnimap-authinfo-file "~/.imap-authinfo"))
-;        ))
-
-;(setq mail-sources
-;           '((pop :server "localhost"
-;                  :port "pop3"
-;                  :user "piranha"
-;                  :password "parolcheg"
-;)))
-
-;; Mail sorting
-;(setq nnmail-split-methods '(
-;     ("hostels" "^\\(To\\|From\\|Cc\\):.*hostels.*@hosix\\.ntu-kpi\\.kiev\\.ua.*")
-;     ("humor" "^\\(To\\|From\\|Cc\\):.*humor@xcp\\.kiev\\.ua.*")
-;     ("moderatorials" "^\\(To\\|From\\|Cc\\):.*comp.software@library\\.ntu-kpi\\.kiev\\.ua.*")
-;     ("roka" "^\\(From\\):.*roka@.*")
-;     ("spam" "^\\(Subject\\):.*SPAM.*")
-;     ("root" "^\\(To\\|From\\|Cc\\):.*root@.*")
-;     ("murkt" "^\\(From\\):.*murkt@eth0\\.org\\.ua.*")
-;     ("security" "^\\(From\\):.*daily@security\\.nnov\\.ru.*")
-;     ("hostels" "^\\(To\\):.*hostels@ntu-kpi\\.kiev\\.ua.*")
-;     ("news-talk" "^\\(To\\|Cc\\):.*talk@news.ntu-kpi.kiev.ua.*")
-;     ("anime" "^\\(To\\):.*anime_kpi@yahoogroups.com.*")
-;     ("inbox" "")))
-
-(defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
-(defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))
-
-;(setq nnmail-split-methods 'nnmail-split-fancy)
-;(setq nnmail-split-fancy
-;      '(|
-;        ("\\(To\\|Cc\\)" ".*hostels.*@ntu-kpi\\.kiev\\.ua.*" "hostels")
-;        ("\\(To\\|Cc\\)" ".*all-admins@ntu-kpi\\.kiev\\.ua.*" "hostels")
-;        ("\\(To\\|Cc\\)" ".*humor@xcp\\.kiev\\.ua.*" (: prh:mail-date2 "humor"))
-;        ("From" ".*daily@security\\.nnov\\.ru.*" "security")
-;        ("\\(To\\|Cc\\)" ".*anime_kpi@yahoogroups.com.*" "anime_kpi")
-;        ("From" ".*Alexander Solovyov \\[Moderator\\].*" "moder")
-;		 ("From" ".*Nikita Gubenko \\[CoModerator\\].*" "moder")
-;        ("List-Id" ".*c-p-c.googlegroups.com.*" "cpc")
-;        ("List-Id" ".*newstalk.news.ntu-kpi.kiev.ua.*" "news-talk")
-;		 ("List-Id" ".*exim-users.exim.org.ua.*" "exim")
-;		 ("List-Id" ".*eth0.googlegroups.com.*" "eth0")
-;		 ("List-Id" ".*users.lists.eth0.net.ua.*" "eth0-public")
-;		 ("List-Id" ".*sudoers.lists.eth0.net.ua.*" "eth0-sudoers")
-;		 ("List-Id" ".*ik22.lists.eth0.net.ua.*" "ik22")
-;		 ("From" ".*@livejournal.com.*" "lj")
-;		 ("From" ".*root@eth0.net.ua.*" "root")
-;		 ("Subject" ".*\\*\\*\\*SPAM\\*\\*\\*.*" "spam")
-;        (any ".*" (: prh:mail-date "inbox"))
-;        ))
-
-
-;; save messages
-(setq gnus-message-archive-group '(
-    (if (message-news-p) (concat "nnimap+piranha.org.ua:sent-news" (format-time-string ".%Y.%m" (current-time)))
-      (concat "nnimap+piranha.org.ua:sent" (format-time-string ".%Y.%m" (current-time))))))
 
 ;;;;;;
 ;; PGG
