@@ -11,7 +11,7 @@
 ;; Alexander Zayats <ai AT eth0 * net * ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 21 2007-01-13 18:25:23Z piranha $
+;; $Id: .gnus 22 2007-01-13 20:40:44Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -157,7 +157,7 @@
    "^Newsgroups:"
    "^Reply-To:"
    "^Subject:"
-   "^Message-ID:"
+;   "^Message-ID:"
    "^Date:"
    "^To:"
    "^Cc:"
@@ -165,8 +165,8 @@
    "^Mail-Copies-To:"
    "^Resent-From:"
    "^X-Sent:"
-   "^User-Agent:"
-   "^Content-Type:"
+;   "^User-Agent:"
+;   "^Content-Type:"
    "^X-Newsreader:"
    "^NNTP-Posting-Host:"
    "^Followup-To:"
