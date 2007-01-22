@@ -11,7 +11,7 @@
 ;; Alexander Zayats <ai AT eth0 * net * ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 22 2007-01-13 20:40:44Z piranha $
+;; $Id: .gnus 23 2007-01-22 10:51:23Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -276,7 +276,7 @@
 
 ;; yet another threading
 (setq gnus-summary-line-format
-      ":%U%R| %B %s %-60=|%4L |%-30,30f |%&user-date; \n")
+      ":%U%R| %B %s %-40=|%4L |%-20,20f |%&user-date; \n")
 ;(setq gnus-summary-line-format (concat
 ;                                "%*%5{%U%R%z%}"
 ;                                "%4{\x49022%}"

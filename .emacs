@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 21 2007-01-13 18:25:23Z piranha $
+;; $Id: .emacs 23 2007-01-22 10:51:23Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -138,10 +138,6 @@
   ;; calendar customizing
   european-calendar-style t
   calendar-week-start-day 1
-  ;; where i am
-  ;calendar-latitude 51.05
-  ;calendar-longitude -2.39
-  ;calendar-location-name "Ieper"
   ;; autosave every 512 keyboard inputs
   auto-save-interval 512
   ;; limit the number of newest versions
@@ -214,6 +210,7 @@
 
 ;; C-a - mark all buffer
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
+(global-set-key (kbd "C-x a") 'mark-whole-buffer)
 ;; overrides mark-whole-buffer
 (global-set-key (kbd "M-?") 'help-command)
 
@@ -412,7 +409,7 @@
 	(insert (format-time-string "%c")))
 
 (defun electric-pair ()
-  "Insert character pair without sournding spaces"
+  "Insert character pair without surronding spaces"
   (interactive)
   (let (parens-require-spaces)
     (insert-pair)))
