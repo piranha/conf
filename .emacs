@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 24 2007-01-26 21:07:11Z piranha $
+;; $Id: .emacs 25 2007-01-26 21:42:24Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -313,6 +313,7 @@
             (setq outline-regexp "def\\|class ")
             (local-set-key [return] 'reindent-then-newline-and-indent)
 			(turn-on-auto-fill)
+            (setq fill-column 100)
 			(eldoc-mode 1)
 			(define-key python-mode-map "\"" 'electric-pair)
 			(define-key python-mode-map "\'" 'electric-pair)
