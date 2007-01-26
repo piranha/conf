@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 23 2007-01-22 10:51:23Z piranha $
+;; $Id: .emacs 24 2007-01-26 21:07:11Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -241,6 +241,8 @@
 ;;;;;;;;;;;;;;
 ;; Frame setup
 
+(server-start)
+
 (if graf
     (progn
       ;; Title formatting
@@ -260,14 +262,7 @@
   (menu-bar-mode 0)
 )
 
-(when linux
-  (server-start))
-
 (when win32
-  ;; GNUserv
-  (require 'gnuserv)
-  (gnuserv-start)
-
   ;; size & position
   (set-frame-height (selected-frame) 56)
   (set-frame-width (selected-frame) 154)
