@@ -1,6 +1,6 @@
 # -*- mode: sh; mode: fold -*-
-# zsh configuration (c) 2003-2006 Alexander Solovyov
-# $Id: .zshrc 20 2007-01-13 16:38:47Z piranha $
+# zsh configuration (c) 2003-2007 Alexander Solovyov
+# $Id: .zshrc 26 2007-02-26 10:43:20Z piranha $
 # piranha AT piranha DOT org DOT ua
 #
 # Thanks to: 
@@ -14,6 +14,7 @@
 export LANG=ru_RU.KOI8-R
 export LC_TIME=C
 export LC_NUMERIC=C
+export TZ='Europe/Kiev'
 
 stty pass8
 
@@ -48,6 +49,7 @@ PS1="$wc%n$at$hc%m $wc%~$w>$n"
 export RPROMPT=$(echo "$gr%T$n")
 unset n b Cr uc hc wc tc tty at r y gr
 
+# automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
 
 # History
