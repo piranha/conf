@@ -11,7 +11,7 @@
 ;; Alexander Zayats <ai AT eth0 * net * ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 23 2007-01-22 10:51:23Z piranha $
+;; $Id: .gnus 27 2007-03-26 08:15:25Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -120,6 +120,8 @@
          (address "piranha@piranha.org.ua")
          (organization "Crazy Penguinz Crew")
          (signature-file "~/.signature"))
+        (".*@googlegroups.com"
+         (gnus-alias-use-identity "gmail"))
         ("ntu-kpi.*"
          ("X-Keywords" x-keyword))
         ("fido7.*"

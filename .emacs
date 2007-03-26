@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 25 2007-01-26 21:42:24Z piranha $
+;; $Id: .emacs 27 2007-03-26 08:15:25Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -74,6 +74,7 @@
 (require 'session)
 (require 'prh-bufsw)
 (require 'htmlize)
+(require 'django-html-mode)
 ;(eval-after-load "buff-menu" '(require 'buff-menu-plus)) 
 
 ;;;;;;;;;;
@@ -312,14 +313,17 @@
                  'py-beginning-of-def-or-class)
             (setq outline-regexp "def\\|class ")
             (local-set-key [return] 'reindent-then-newline-and-indent)
-			(turn-on-auto-fill)
-            (setq fill-column 100)
 			(eldoc-mode 1)
 			(define-key python-mode-map "\"" 'electric-pair)
 			(define-key python-mode-map "\'" 'electric-pair)
 			(define-key python-mode-map "(" 'electric-pair)
 			(define-key python-mode-map "[" 'electric-pair)
 			(define-key python-mode-map "{" 'electric-pair)))
+
+(mapc (lambda (hook)
+        (add-hook hook (lambda ()
+                         (setq show-trailing-whitespace t))))
+      '(python-mode-hook))
 
 ;(autoload 'py-complete-init "py-complete")
 ;(add-hook 'python-mode-hook 'py-complete-init) 
@@ -375,7 +379,7 @@
        (list
         '("\\.sgm" . docbook-mode)
         '("\\.sgml" . docbook-mode)
-        '("\\.xml" . docbook-mode))
+        '("\\.dbk" . docbook-mode))
        auto-mode-alist))
 
 ;; end of Docbook settings
@@ -415,7 +419,7 @@
 
 ;;;;;;;;
 ;; Custom hooks
-(add-hook 'after-save-hook 'autocompile())
+;(add-hook 'after-save-hook 'autocompile())
 
 (add-hook 'after-init-hook 'session-initialize)
 
