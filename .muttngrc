@@ -1,5 +1,5 @@
 # -*- muttrc -*-
-# $Id: .muttngrc 20 2007-01-13 16:38:47Z piranha $
+# $Id: .muttngrc 28 2007-07-11 08:55:31Z piranha $
 # mutt configuration (c) 2003-2006 
 # by Alexander Solovyov   aka piranha
 # thx to: Max Krasilnikov aka pseudo
@@ -24,7 +24,7 @@ unignore "X-Priority:"
 unignore "X-Confirm-Reading-To:"
 unignore "X-Spam_score:"
 
-alternates piranha@piranha.org.ua
+#alternates piranha@piranha.org.ua
 alternates piranha@eth0.net.ua
 alternates piranha@9.org.ua
 alternates piranha@anarxi.st
@@ -256,7 +256,7 @@ fcc-hook . +.sent.`date +"%Y.%m"`
 #send-hook . "set signature='~/bin/sig_random.sh |'"
 send-hook . "set signature='~/.signature'"
 send-hook . "set attribution='Ave, %n.\nAccording to your message:\n'"
-send-hook . "my_hdr From: Alexander Solovyov <piranha@piranha.org.ua>"
+send-hook . "my_hdr From: Alexander Solovyov <piranha@eth0.net.ua>"
 send-hook django-developers@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 send-hook pythagora-ua@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 

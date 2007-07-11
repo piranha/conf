@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 27 2007-03-26 08:15:25Z piranha $
+;; $Id: .emacs 28 2007-07-11 08:55:31Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -305,6 +305,23 @@
 ;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;
+;; Tabbar
+
+(require 'tabbar)
+(setq tabbar-mode t)
+
+(global-set-key [C-S-tab] 'tabbar-backward-tab)
+(global-set-key [C-tab] 'tabbar-forward-tab)
+
+(set-face-foreground 'tabbar-default "LightSteelBlue")
+(set-face-background 'tabbar-default "DarkSlateGray")
+(set-face-foreground 'tabbar-selected "pale green")
+(set-face-bold-p 'tabbar-selected t)
+
+;; tabbar end
+;;;;;;;;;;;;;
+
+;;;;;;;;;
 ;; python
 
 (add-hook 'python-mode-hook
@@ -312,7 +329,7 @@
             (set (make-variable-buffer-local 'beginning-of-defun-function)
                  'py-beginning-of-def-or-class)
             (setq outline-regexp "def\\|class ")
-            (local-set-key [return] 'reindent-then-newline-and-indent)
+            (local-set-key [return] 'newline-and-indent)
 			(eldoc-mode 1)
 			(define-key python-mode-map "\"" 'electric-pair)
 			(define-key python-mode-map "\'" 'electric-pair)
