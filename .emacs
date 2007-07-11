@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 28 2007-07-11 08:55:31Z piranha $
+;; $Id: .emacs 29 2007-07-11 08:59:34Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -179,7 +179,7 @@
 (transient-mark-mode t)
 
 ; to highlight ( and )
-;(show-paren-mode t)
+(show-paren-mode t)
 
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
@@ -331,11 +331,12 @@
             (setq outline-regexp "def\\|class ")
             (local-set-key [return] 'newline-and-indent)
 			(eldoc-mode 1)
-			(define-key python-mode-map "\"" 'electric-pair)
-			(define-key python-mode-map "\'" 'electric-pair)
-			(define-key python-mode-map "(" 'electric-pair)
-			(define-key python-mode-map "[" 'electric-pair)
-			(define-key python-mode-map "{" 'electric-pair)))
+			;(define-key python-mode-map "\"" 'electric-pair)
+			;(define-key python-mode-map "\'" 'electric-pair)
+			;(define-key python-mode-map "(" 'electric-pair)
+			;(define-key python-mode-map "[" 'electric-pair)
+			;(define-key python-mode-map "{" 'electric-pair)
+            ))
 
 (mapc (lambda (hook)
         (add-hook hook (lambda ()
