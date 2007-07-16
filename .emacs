@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 29 2007-07-11 08:59:34Z piranha $
+;; $Id: .emacs 30 2007-07-16 09:23:56Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -308,7 +308,6 @@
 ;; Tabbar
 
 (require 'tabbar)
-(setq tabbar-mode t)
 
 (global-set-key [C-S-tab] 'tabbar-backward-tab)
 (global-set-key [C-tab] 'tabbar-forward-tab)
@@ -317,6 +316,17 @@
 (set-face-background 'tabbar-default "DarkSlateGray")
 (set-face-foreground 'tabbar-selected "pale green")
 (set-face-bold-p 'tabbar-selected t)
+(set-face-attribute 'tabbar-button nil :box '(:line-width 1 :color "gray72"))
+
+(setq tabbar-buffer-groups-function
+      (lambda () 
+        (list
+         (cond
+          ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
+          (t "All Buffers"))
+         )))
+
+(tabbar-mode)
 
 ;; tabbar end
 ;;;;;;;;;;;;;
