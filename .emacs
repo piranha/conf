@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 30 2007-07-16 09:23:56Z piranha $
+;; $Id: .emacs 31 2007-09-08 19:09:36Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -75,6 +75,7 @@
 (require 'prh-bufsw)
 (require 'htmlize)
 (require 'django-html-mode)
+(require 'css-mode)
 ;(eval-after-load "buff-menu" '(require 'buff-menu-plus)) 
 
 ;;;;;;;;;;
@@ -83,6 +84,31 @@
 ;; ibuffer
 (require 'ibuffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+;; default groups for ibuffer
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("python" (or
+                          (name . "^\\*Python\\*$")
+                          (mode . django-html-mode)
+                          (mode . python-mode)))
+               ("emacs" (or
+                         (name . "^\\*scratch\\*$")
+                         (name . "^\\*Messages\\*$")))
+               ("gnus" (or
+                        (mode . message-mode)
+                        (mode . bbdb-mode)
+                        (mode . mail-mode)
+                        (mode . gnus-group-mode)
+                        (mode . gnus-summary-mode)
+                        (mode . gnus-article-mode)
+                        (name . "^\\.bbdb$")
+                        (name . "^\\.newsrc-dribble")))))))
+
+;; ibuffer, I like my buffers to be grouped
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups
+             "default")))
 
 ;; filladapt
 (setq-default filladapt-mode t)
@@ -152,6 +178,8 @@
   ;; dired settings
   dired-recursive-copies t
   dired-recursive-deletes t
+  ;; safe variables to set in buffer
+  safe-local-variable-values '((encoding . utf-8))
 )
 
 ;; save position in files

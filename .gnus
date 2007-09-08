@@ -11,7 +11,7 @@
 ;; Alexander Zayats <ai AT eth0 * net * ua>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .gnus 27 2007-03-26 08:15:25Z piranha $
+;; $Id: .gnus 31 2007-09-08 19:09:36Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
@@ -151,7 +151,7 @@
 ;(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
-(setq gnus-select-method '(nnimap "piranha.org.ua"))
+;(setq gnus-select-method '(nnimap "eth0.net.ua"))
 
 ;; headers displayed
 (setq gnus-visible-headers
