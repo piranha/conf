@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 31 2007-09-08 19:09:36Z piranha $
+;; $Id: .emacs 32 2007-09-10 18:08:34Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -76,7 +76,6 @@
 (require 'htmlize)
 (require 'django-html-mode)
 (require 'css-mode)
-;(eval-after-load "buff-menu" '(require 'buff-menu-plus)) 
 
 ;;;;;;;;;;
 ;; General
@@ -93,6 +92,7 @@
                           (mode . python-mode)))
                ("emacs" (or
                          (name . "^\\*scratch\\*$")
+                         (name . "^\\.emacs$")
                          (name . "^\\*Messages\\*$")))
                ("gnus" (or
                         (mode . message-mode)
@@ -182,6 +182,9 @@
   safe-local-variable-values '((encoding . utf-8))
 )
 
+;; display time
+(display-time)
+
 ;; save position in files
 (setq-default save-place t)
 
@@ -206,7 +209,7 @@
 ;; highlight marked text
 (transient-mark-mode t)
 
-; to highlight ( and )
+;; to highlight ( and )
 (show-paren-mode t)
 
 ;; syntax highlight
@@ -222,47 +225,28 @@
 ;;;;;;;;;;;;;;
 ;; keybindings
 
-;; moving between buffers
-(setq stesla-hated-buffer-regexps '("^ " "*Buffer" "^\\*trace" "^\\*tramp" "^\\*"))
-(pc-bufsw::bind-keys [C-tab] [C-S-tab])
-(pc-bufsw::bind-keys [f12] [f11])
-(setq pc-bufsw::quite-time 2)
-
-;; undo
 (global-set-key (kbd "C-z") 'undo)
 
-;; completion
 (global-set-key (kbd "C-/") 'dabbrev-completion)
 
-;; go to line
-(global-set-key (kbd "C-M-g") 'goto-line)
-
-;; C-a - mark all buffer
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "C-x a") 'mark-whole-buffer)
-;; overrides mark-whole-buffer
+;(global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "M-?") 'help-command)
 
-;; C-(home|end) in linux console
-(global-set-key (kbd "C-x <home>") 'beginning-of-buffer)
-(global-set-key (kbd "C-x <end>") 'end-of-buffer)
-
-(global-set-key (kbd "C-w") 'backward-kill-word)
-(global-set-key (kbd "C-x C-k") 'kill-region)
-
-(global-set-key (kbd "M-s") 'isearch-forward-regexp)
-(global-set-key (kbd "M-r") 'isearch-backward-regexp)
+;(global-set-key (kbd "C-w") 'backward-kill-word)
+;(global-set-key (kbd "C-x C-k") 'kill-region)
 
 (global-set-key (kbd "<f5>") 'call-last-kbd-macro)
 
-;; kill current buffer
-(defun prh:kill-current-buffer ()
-	(interactive)
-	(kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x w")  (lambda () (interactive) (kill-buffer nil)))
 
-(global-set-key (kbd "C-x w") 'prh:kill-current-buffer)
+(global-set-key '[(control meta l)] (lambda () (interactive) (switch-to-buffer (other-buffer))))
 
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
+
+(if win32
+    (global-set-key [C-f12] '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
+  (nil)
+  )
 
 ;; end of keybindings
 ;;;;;;;;;;;;;;;;;;;;;
@@ -275,15 +259,17 @@
 (if graf
     (progn
       ;; Title formatting
-      (setq frame-title-format (list '(buffer-file-name "%f" "%b") " - GNU Emacs " emacs-version "@" system-name ))
+      (setq frame-title-format (list '(buffer-file-name "%b aka %f") " - GNU Emacs " emacs-version "@" (downcase system-name)))
       (setq icon-title-format frame-title-format)
       
       ;; Font setup
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
-;??            (setq w32-enable-synthesized-fonts nil))
         (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-koi8-*")))
-;; bar setup
+      ;; Default Frame
+      (add-to-list 'default-frame-alist '(fullscreen . fullwidth))
+
+      ;; bar setup
       (menu-bar-mode 1)
       (tool-bar-mode 0)
       (when linux
@@ -292,33 +278,6 @@
 )
 
 (when win32
-  ;; size & position
-  (set-frame-height (selected-frame) 56)
-  (set-frame-width (selected-frame) 154)
-  (set-frame-position (selected-frame) 0 0)
-  
-  (defun restore-frame (&optional frame)
-    "Restore FRAME to previous size (default: current frame)."
-    (interactive)
-    (w32-send-sys-command 61728 frame))
-  
-  (defun maximize-frame (&optional frame)
-      "Maximize FRAME (default: current frame)."
-      (interactive)
-      (w32-send-sys-command 61488 frame))
-  
-  (defalias 'minimize-frame (if (fboundp 'really-iconify-frame)
-                                'really-iconify-frame
-                              'iconify-frame))
-  
-  (defun prh:ajust-frame ()
-    "Ajusts current frame to display properties"
-    (interactive)
-    (set-default-font "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")
-    (w32-send-sys-command 61488))
-  
-  (global-set-key [C-f12] 'prh:ajust-frame)
-  
   (defadvice server-find-file (before server-find-file-in-one-frame activate)
     "Make sure that the selected frame is stored in `gnuserv-frame', and raised."
     (setq gnuserv-frame (selected-frame))
@@ -380,9 +339,6 @@
         (add-hook hook (lambda ()
                          (setq show-trailing-whitespace t))))
       '(python-mode-hook))
-
-;(autoload 'py-complete-init "py-complete")
-;(add-hook 'python-mode-hook 'py-complete-init) 
 
 ;; end of python
 ;;;;;;;;;;;;;;;;
@@ -482,6 +438,9 @@
 ;; end of hooks
 ;;;;;;;;;;;;;;;
 
+;;;;;;;;;;
+;; Finesse
+
 (when graf
   (color-theme-initialize)
   (when linux
@@ -489,6 +448,9 @@
   (when win32
     (color-theme-subtle-hacker))
 )
+
+;; end
+;;;;;;
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
