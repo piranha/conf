@@ -11,7 +11,7 @@
 ;; Alex Ott <ottalex AT narod.ru>
 ;; Emacswiki.org ;)
 ;;
-;; $Id: .emacs 32 2007-09-10 18:08:34Z piranha $
+;; $Id: .emacs 33 2007-09-16 16:11:58Z piranha $
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
@@ -232,8 +232,8 @@
 ;(global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "M-?") 'help-command)
 
-;(global-set-key (kbd "C-w") 'backward-kill-word)
-;(global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-x C-k") 'kill-region)
 
 (global-set-key (kbd "<f5>") 'call-last-kbd-macro)
 
