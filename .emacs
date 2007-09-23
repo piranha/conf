@@ -409,12 +409,6 @@
     (interactive) 
     (insert (format-time-string "%c")))
 
-(defun electric-pair ()
-  "Insert character pair without surronding spaces"
-  (interactive)
-  (let (parens-require-spaces)
-    (insert-pair)))
-
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
 
