@@ -322,23 +322,12 @@
 ;; python
 
 (add-hook 'python-mode-hook
-		  (lambda ()
-            (set (make-variable-buffer-local 'beginning-of-defun-function)
-                 'py-beginning-of-def-or-class)
-            (setq outline-regexp "def\\|class ")
+          (lambda ()
+            (set beginning-of-defun-function 'py-beginning-of-def-or-class)
             (local-set-key [return] 'newline-and-indent)
-			(eldoc-mode 1)
-			;(define-key python-mode-map "\"" 'electric-pair)
-			;(define-key python-mode-map "\'" 'electric-pair)
-			;(define-key python-mode-map "(" 'electric-pair)
-			;(define-key python-mode-map "[" 'electric-pair)
-			;(define-key python-mode-map "{" 'electric-pair)
+            (eldoc-mode 1)
+            (setq show-trailing-whitespace t)
             ))
-
-(mapc (lambda (hook)
-        (add-hook hook (lambda ()
-                         (setq show-trailing-whitespace t))))
-      '(python-mode-hook))
 
 ;; end of python
 ;;;;;;;;;;;;;;;;
@@ -359,12 +348,12 @@
 (setq auto-mode-alist
       (append
        (list
-	'("\\.dcl$" . dtd-mode)
-	'("\\.dec$" . dtd-mode)
-	'("\\.dtd$" . dtd-mode)
-	'("\\.ele$" . dtd-mode)
-	'("\\.ent$" . dtd-mode)
-	'("\\.mod$" . dtd-mode))
+    '("\\.dcl$" . dtd-mode)
+    '("\\.dec$" . dtd-mode)
+    '("\\.dtd$" . dtd-mode)
+    '("\\.ele$" . dtd-mode)
+    '("\\.ent$" . dtd-mode)
+    '("\\.mod$" . dtd-mode))
        auto-mode-alist))
 
 ;; To use resize-minibuffer-mode, uncomment this and include in your .emacs:
@@ -411,14 +400,14 @@
       (byte-compile-file (buffer-file-name))))
 
 (defun insert-date (format) 
-	"Wrapper around format-time-string." 
-	(interactive "MFormat: ") 
-	(insert (format-time-string format)))
+    "Wrapper around format-time-string." 
+    (interactive "MFormat: ") 
+    (insert (format-time-string format)))
 
 (defun insert-standard-date () 
-	"Inserts standard date time string." 
-	(interactive) 
-	(insert (format-time-string "%c")))
+    "Inserts standard date time string." 
+    (interactive) 
+    (insert (format-time-string "%c")))
 
 (defun electric-pair ()
   "Insert character pair without surronding spaces"
