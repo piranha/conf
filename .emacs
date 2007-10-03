@@ -75,6 +75,7 @@
 (require 'django-html-mode)
 (require 'css-mode)
 (require 'psvn)
+(require 'erlang-start)
 
 ;; Use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -92,6 +93,9 @@
                           (name . "^\\*Python\\*$")
                           (mode . django-html-mode)
                           (mode . python-mode)))
+               ("erlang" (or
+                          (name . "^\\*erlang\\*$")
+                          (mode . erlang-mode)))
                ("emacs" (or
                          (name . "^\\*scratch\\*$")
                          (name . "^\\.emacs$")
@@ -325,6 +329,18 @@
             ))
 
 ;; end of python
+;;;;;;;;;;;;;;;;
+
+;;;;;;;;;
+;; erlang
+
+(add-hook 'erlang-mode-hook
+          (lambda ()
+            (local-set-key [return] 'newline-and-indent)
+            (setq show-trailing-whitespace t)
+            ))
+
+;; end of erlang
 ;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;
