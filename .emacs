@@ -56,7 +56,7 @@
   (set-keyboard-coding-system 'cp1251-dos)
   (set-w32-system-coding-system 'cp1251-dos))
 
-(prefer-coding-system 'utf-8)    
+(prefer-coding-system 'utf-8)
 
 ;;;;;;;;;;;;;
 ;; Extensions
@@ -69,13 +69,15 @@
 
 (require 'color-theme)
 ;(require 'gnus-load)
-(require 'psvn)
 (require 'filladapt)
 (require 'session)
-(require 'prh-bufsw)
 (require 'htmlize)
 (require 'django-html-mode)
 (require 'css-mode)
+(require 'psvn)
+
+;; Use cperl-mode instead of perl-mode
+(defalias 'perl-mode 'cperl-mode)
 
 ;;;;;;;;;;
 ;; General
@@ -129,7 +131,7 @@
   vc-follow-symlinks t
   ;; see what you type
   echo-keystrokes 0.01
-  ;; text scrolling 
+  ;; text scrolling
   scroll-conservatively 50
   scroll-preserve-screen-position 't
   scroll-margin 10
@@ -143,7 +145,7 @@
   default-major-mode 'text-mode
   ;; meaning are the same as the name :)
   delete-key-deletes-forward t
-  ;; next-line don't add new lines 
+  ;; next-line don't add new lines
   next-line-add-newlines nil
   ;; Scroll by one line at a time
   scroll-step 1
@@ -203,9 +205,6 @@
 ;; Make all "yes or no" prompts show "y or n" instead
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Use cperl-mode instead of perl-mode
-(defalias 'perl-mode 'cperl-mode)
-
 ;; highlight marked text
 (transient-mark-mode t)
 
@@ -226,22 +225,17 @@
 ;; keybindings
 
 (global-set-key (kbd "C-z") 'undo)
-
+(global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "C-/") 'dabbrev-completion)
-
-;(global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "M-?") 'help-command)
-
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
 (global-set-key (kbd "<f5>") 'call-last-kbd-macro)
 
 (global-set-key (kbd "C-x w")  (lambda () (interactive) (kill-buffer nil)))
-
 (global-set-key '[(control meta l)] (lambda () (interactive) (switch-to-buffer (other-buffer))))
-
-(global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
 (if win32
     (global-set-key [C-f12] '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
@@ -261,7 +255,7 @@
       ;; Title formatting
       (setq frame-title-format (list '(buffer-file-name "%b aka %f") " - GNU Emacs " emacs-version "@" (downcase system-name)))
       (setq icon-title-format frame-title-format)
-      
+
       ;; Font setup
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
@@ -306,7 +300,7 @@
 (set-face-attribute 'tabbar-button nil :box '(:line-width 1 :color "gray72"))
 
 (setq tabbar-buffer-groups-function
-      (lambda () 
+      (lambda ()
         (list
          (cond
           ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
@@ -321,6 +315,7 @@
 ;;;;;;;;;
 ;; python
 
+(autoload 'python-mode "python-mode" "Python editing mode." t)
 (add-hook 'python-mode-hook
           (lambda ()
             (set beginning-of-defun-function 'py-beginning-of-def-or-class)
@@ -367,10 +362,10 @@
 
 (autoload 'docbook-mode "docbookide" "Major mode for DocBook documents." t)
 ;(add-hook 'docbook-mode-hook 'docbook-menu-mode)
-(add-hook 
+(add-hook
  'docbook-mode-hook
  '(lambda ()
-    (local-set-key "\C-tab" 'indent-for-tab-command))) 
+    (local-set-key "\C-tab" 'indent-for-tab-command)))
 
 ;; You might want to make this the default for .sgml or .xml documents,
 ;; or you might want to rely on -*- DocBook -*- on the first line,
@@ -399,14 +394,14 @@
   (if (string= (buffer-file-name) (concat default-directory ".emacs"))
       (byte-compile-file (buffer-file-name))))
 
-(defun insert-date (format) 
-    "Wrapper around format-time-string." 
-    (interactive "MFormat: ") 
+(defun insert-date (format)
+    "Wrapper around format-time-string."
+    (interactive "MFormat: ")
     (insert (format-time-string format)))
 
-(defun insert-standard-date () 
-    "Inserts standard date time string." 
-    (interactive) 
+(defun insert-standard-date ()
+    "Inserts standard date time string."
+    (interactive)
     (insert (format-time-string "%c")))
 
 ;; end of functions
