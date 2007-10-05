@@ -68,15 +68,14 @@
   (load "/usr/share/emacs/site-lisp/site-gentoo"))
 
 (require 'color-theme)
-;(require 'gnus-load)
+(require 'gnus-load nil t)
 (require 'psvn)
 (require 'filladapt)
 (require 'session)
-(require 'prh-bufsw)
-(require 'htmlize)
+(require 'htmlize nil t)
 (require 'django-html-mode)
-(require 'css-mode)
-(require 'erlang-start)
+(require 'css-mode nil t)
+(require 'erlang-start nil t)
 
 ;;;;;;;;;;
 ;; General
@@ -347,6 +346,15 @@
 
 ;; end of erlang
 ;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;
+;; markdown
+(autoload 'markdown-mode "markdown-mode.el"
+  "Major mode for editing Markdown files" t)
+(setq auto-mode-alist
+      (cons '("\\.md$" . markdown-mode) auto-mode-alist))
+;; end of markdown
+;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; DTD mode settings
