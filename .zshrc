@@ -221,6 +221,19 @@ function t()
     fi
 }
 
+function totalram()
+{
+    if [ -z "$1" ]; then
+        echo "First argument - pattern to grep from processes"
+    else
+        SUM=0
+        for i in `ps aux|grep $1|awk '{print $5}'`; do
+            SUM=`expr $i + $SUM`
+        done
+        echo $SUM
+    fi
+}
+
 #############        ALIASES         ###############
 # Nocorrect
 #alias mv="nocorrect mv"
