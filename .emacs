@@ -235,6 +235,7 @@
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
+(global-set-key (kbd "C-x C-a") 'imenu)
 
 (global-set-key (kbd "<f5>") 'call-last-kbd-macro)
 
