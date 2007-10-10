@@ -65,7 +65,7 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 setopt autocd
 
-# ëÌÁ×Á
+# ÐšÐ»Ð°Ð²Ð°
 bindkey -e
 bindkey "[2~" transpose-words
 bindkey "[3~" delete-char
@@ -74,7 +74,7 @@ bindkey "[4~" end-of-line
 bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
 
-# úÁÇÏÌÏ×ÏË xterm
+# Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº xterm
 case $TERM in
 xterm*|rxvt*)
     precmd () {
@@ -132,16 +132,16 @@ compinit
 #ma() { mutt -f ~archiver/Mail/$1 }
 #compctl -k arch ma
 
-# ðÏÉÓË ÆÁÊÌÁ ÐÏ ÛÁÂÌÏÎÕ:
+# ÐŸÐ¾Ð¸ÑÐº Ñ„Ð°Ð¹Ð»Ð° Ð¿Ð¾ ÑˆÐ°Ð±Ð»Ð¾Ð½Ñƒ:
 function ff() { find . -type f -iname '*'$*'*' -ls ; }
 
-# ÐÏÉÓË ÓÔÒÏËÉ ÐÏ ÆÁÊÌÁÍ:
+# Ð¿Ð¾Ð¸ÑÐº ÑÑ‚Ñ€Ð¾ÐºÐ¸ Ð¿Ð¾ Ñ„Ð°Ð¹Ð»Ð°Ð¼:
 function fstr()
 {
     OPTIND=1
     local case=""
-    local usage="fstr: ÐÏÉÓË ÓÔÒÏËÉ × ÆÁÊÌÁÈ.
-ðÏÒÑÄÏË ÉÓÐÏÌØÚÏ×ÁÎÉÑ: fstr [-i] \"ÛÁÂÌÏÎ\" [\"ÛÁÂÌÏÎ_ÉÍÅÎÉ_ÆÁÊÌÁ\"] "
+    local usage="fstr: Ð¿Ð¾Ð¸ÑÐº ÑÑ‚Ñ€Ð¾ÐºÐ¸ Ð² Ñ„Ð°Ð¹Ð»Ð°Ñ….
+ÐŸÐ¾Ñ€ÑÐ´Ð¾Ðº Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ: fstr [-i] \"ÑˆÐ°Ð±Ð»Ð¾Ð½\" [\"ÑˆÐ°Ð±Ð»Ð¾Ð½_Ð¸Ð¼ÐµÐ½Ð¸_Ñ„Ð°Ð¹Ð»Ð°\"] "
     while getopts :it opt
     do
         case "$opt" in
@@ -159,7 +159,7 @@ function fstr()
     find . -type f -name "${2:-*}" -print0 | xargs -0 grep -sn ${case} "$1" 2>&- | egrep --color $1
 }
 
-# ÐÅÒÅ×ÅÓÔÉ ÉÍÑ ÆÁÊÌÁ × ÎÉÖÎÉÊ ÒÅÇÉÓÔÒ
+# Ð¿ÐµÑ€ÐµÐ²ÐµÑÑ‚Ð¸ Ð¸Ð¼Ñ Ñ„Ð°Ð¹Ð»Ð° Ð² Ð½Ð¸Ð¶Ð½Ð¸Ð¹ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€
 function lowercase()
 {
     for file ; do
@@ -174,7 +174,7 @@ function lowercase()
             mv "$file" "$newname"
             echo "lowercase: $file --> $newname"
         else
-            echo "lowercase: ÉÍÑ ÆÁÊÌÁ $file ÎÅ ÂÙÌÏ ÉÚÍÅÎÅÎÏ."
+            echo "lowercase: Ð¸Ð¼Ñ Ñ„Ð°Ð¹Ð»Ð° $file Ð½Ðµ Ð±Ñ‹Ð»Ð¾ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¾."
         fi
     done
 }
@@ -182,8 +182,8 @@ function lowercase()
 function isomake()
 {
 	if [ -z "$1" ]; then
-		echo "isomake: ÐÅÒ×ÙÊ ÐÁÒÁÍÅÔÒ - ÉÍÑ ×ÙÈÏÄÎÏÇÏ iso-ÆÁÊÌÁ"
-		echo "isomake: ×ÔÏÒÏÊ ÐÁÒÁÍÅÔÒ - ÉÍÑ ×ÈÏÄÎÏÊ ÄÉÒÙ/ÆÁÊÌÁ"
+		echo "isomake: Ð¿ÐµÑ€Ð²Ñ‹Ð¹ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€ - Ð¸Ð¼Ñ Ð²Ñ‹Ñ…Ð¾Ð´Ð½Ð¾Ð³Ð¾ iso-Ñ„Ð°Ð¹Ð»Ð°"
+		echo "isomake: Ð²Ñ‚Ð¾Ñ€Ð¾Ð¹ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€ - Ð¸Ð¼Ñ Ð²Ñ…Ð¾Ð´Ð½Ð¾Ð¹ Ð´Ð¸Ñ€Ñ‹/Ñ„Ð°Ð¹Ð»Ð°"
 	else
 		mkisofs -v -J -r -o $1 $2
 	fi
@@ -198,7 +198,7 @@ function apt-show()
     fi
 }
 
-# ðÏÉÓË × ÐÏÒÔÁÈ
+# ÐŸÐ¾Ð¸ÑÐº Ð² Ð¿Ð¾Ñ€Ñ‚Ð°Ñ…
 function pname()
 {
     pushd > /dev/null
