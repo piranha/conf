@@ -13,7 +13,7 @@
 #export LANG=ru_RU.koi8r
 #export LANG=ru_RU.KOI8-R
 #export TZ='Europe/Kiev'
-if [ -f ~/.zshlocal ];
+if [ -f ~/.zshlocal ]; then
     source ~/.zshlocal
 fi
 export LC_TIME=C
