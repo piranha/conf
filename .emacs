@@ -240,9 +240,8 @@
 (global-set-key (kbd "C-x w")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key '[(control meta l)] (lambda () (interactive) (switch-to-buffer (other-buffer))))
 
-(if win32
+(when win32
     (global-set-key [C-f12] '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
-  (nil)
   )
 
 ;; end of keybindings
@@ -293,6 +292,7 @@
 
 (require 'tabbar)
 
+(global-set-key [C-S-iso-lefttab] 'tabbar-backward-tab)
 (global-set-key [C-S-tab] 'tabbar-backward-tab)
 (global-set-key [C-tab] 'tabbar-forward-tab)
 
@@ -356,7 +356,9 @@
        (list
         '("\\.md$" . markdown-mode)
         '("\\.css$" . css-mode)
-        '("\\.erl$" . erlang-mode))
+        '("\\.erl$" . erlang-mode)
+        '("\\.hs$" . haskell-mode)
+        )
         auto-mode-alist))
 
 ;; end of modes

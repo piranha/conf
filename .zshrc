@@ -11,10 +11,13 @@
 
 
 #export LANG=ru_RU.koi8r
-export LANG=ru_RU.KOI8-R
+#export LANG=ru_RU.KOI8-R
+#export TZ='Europe/Kiev'
+if [ -f ~/.zshlocal ];
+    source ~/.zshlocal
+fi
 export LC_TIME=C
 export LC_NUMERIC=C
-export TZ='Europe/Kiev'
 
 stty pass8
 
@@ -73,7 +76,7 @@ bindkey "[B" down-line-or-history
 
 # Заголовок xterm
 case $TERM in
-xterm*)
+xterm*|rxvt*)
     precmd () {
         print -Pn "\033]0;%n@%M (%y) - %/\a"
         print -Pn "\033]1;%n@%m (tty%l)\a"
