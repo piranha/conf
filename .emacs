@@ -73,9 +73,7 @@
 (require 'session)
 (require 'htmlize nil t)
 (require 'django-html-mode)
-(require 'css-mode nil t)
 (require 'psvn)
-(require 'erlang-start nil t)
 
 ;; Use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -345,12 +343,23 @@
 ;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
-;; markdown
+;; various modes
 (autoload 'markdown-mode "markdown-mode.el"
   "Major mode for editing Markdown files" t)
+(autoload 'css-mode "css-mode.el"
+  "Major mode for editing CSS files" t)
+(autoload 'erlang-mode "erlang-mode.el"
+  "Major mode for editing Erlang source files" t)
+
 (setq auto-mode-alist
-      (cons '("\\.md$" . markdown-mode) auto-mode-alist))
-;; end of markdown
+      (append 
+       (list
+        '("\\.md$" . markdown-mode)
+        '("\\.css$" . css-mode)
+        '("\\.erl$" . erlang-mode))
+        auto-mode-alist))
+
+;; end of modes
 ;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;
