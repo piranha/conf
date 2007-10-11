@@ -99,7 +99,6 @@ set indent_string="> "
 set index_format="%4C %Z %[!%d.%m.%y] %-20.20F (%4c) %s"
 #set ispell="/usr/bin/ispell"
 set keep_flagged=no
-set locale="ru_RU.koi8r"
 set markers=no
 set mask="!^\\.[^.]"
 set mark_old=no
@@ -255,8 +254,9 @@ fcc-hook . +.sent.`date +"%Y.%m"`
 
 #send-hook . "set signature='~/bin/sig_random.sh |'"
 send-hook . "set signature='~/.signature'"
-send-hook . "set attribution='Ave, %n.\nAccording to your message:\n'"
+send-hook . "set attribution='Hi, %n. You wrote:\n'"
 send-hook . "my_hdr From: Alexander Solovyov <piranha@eth0.net.ua>"
+#send-hook . "my_hdr From: Achtung Killer <achtung.killer@gmail.com>"
 send-hook django-developers@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 send-hook pythagora-ua@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 
