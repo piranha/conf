@@ -147,8 +147,6 @@
   default-major-mode 'text-mode
   ;; meaning are the same as the name :)
   delete-key-deletes-forward t
-  ;; next-line don't add new lines
-  next-line-add-newlines nil
   ;; Scroll by one line at a time
   scroll-step 1
   ;; don't add new lines when scrolling down
