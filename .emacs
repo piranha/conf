@@ -45,10 +45,9 @@
 (define-coding-system-alias 'koi8-ru 'koi8-u)
 
 (when linux
-  (set-clipboard-coding-system 'koi8-u)
-  (set-selection-coding-system 'koi8-u)
-  (set-default-coding-systems 'koi8-u)
-  (set-keyboard-coding-system 'koi8-u))
+  (set-selection-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-keyboard-coding-system 'utf-8))
 (when win32
   (set-clipboard-coding-system 'cp1251-dos)
   (set-selection-coding-system 'cp1251-dos)
@@ -206,10 +205,13 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; highlight marked text
-(transient-mark-mode t)
+(transient-mark-mode 1)
 
 ;; to highlight ( and )
-(show-paren-mode t)
+(show-paren-mode 1)
+
+;; disable this idiotic stickyfunc mode
+(semantic-stickyfunc-mode 0)
 
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
