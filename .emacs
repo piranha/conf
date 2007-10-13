@@ -307,6 +307,7 @@
         (list
          (cond
           ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
+          ((eq major-mode 'dired-mode) "Dired")
           (t "All Buffers"))
          )))
 
