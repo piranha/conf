@@ -41,7 +41,10 @@ export MAIL=~/.mail/
 #export MAIL=/home/hosting/eth0.net.ua/`whoami`/Maildir/
 export LESS="-R"
 export PERL5LIB=${PERL5LIB:+$PERL5LIB:}$HOME/perl
-#export MANPATH=/usr/local/man:$HOME/man
+if [ -d $HOME/share/man ]
+then
+    export MANPATH=$HOME/share/man:$(manpath)
+fi
 
 # Prompt setup (c) smax 2002, adapted for zsh (c) piranha 2004
 # 0-black, 1-red, 2-green, 3-yellow, 4-blue, 5-magenta 6-cyan, 7-white

@@ -211,7 +211,7 @@
 (show-paren-mode 1)
 
 ;; disable this idiotic stickyfunc mode
-(semantic-stickyfunc-mode 0)
+(setq-default semantic-stickyfunc-mode 0)
 
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
