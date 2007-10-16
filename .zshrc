@@ -274,7 +274,9 @@ else
 fi
 ## GNU Find
 if [ `uname` != "Linux" ]; then
-    alias find="gfind"
+    alias find="noglob gfind"
+else
+    alias find="noglob find"
 fi
 ## Editor
 if [ -x `whence -c emacsclient` ]; then
@@ -287,6 +289,7 @@ else
 fi
 
 # Other
+alias rm="rm -f"
 alias grep="egrep"
 alias nroff="nroff -Tlatin1"
 alias mc="mc -acx"

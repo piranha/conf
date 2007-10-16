@@ -90,6 +90,8 @@
                           (name . "^\\*Python\\*$")
                           (mode . django-html-mode)
                           (mode . python-mode)))
+               ("jabber" (or
+                          (name . "^\\*-jabber-")))
                ("erlang" (or
                           (name . "^\\*erlang\\*$")
                           (mode . erlang-mode)))
@@ -106,6 +108,19 @@
                         (mode . gnus-article-mode)
                         (name . "^\\.bbdb$")
                         (name . "^\\.newsrc-dribble")))))))
+
+(setq ibuffer-formats
+      '((mark modified read-only " "
+             (name 28 28 :left :elide)
+             " "
+             (size 9 -1 :right)
+             " "
+             (mode 16 16 :left :elide)
+             " " filename-and-process)
+       (mark " "
+             (name 16 -1)
+             " " filename)))
+
 
 ;; ibuffer, I like my buffers to be grouped
 (add-hook 'ibuffer-mode-hook
@@ -261,7 +276,7 @@
       ;; Font setup
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
-        (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-koi8-*")))
+        (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-*-*")))
       ;; Default Frame
       (add-to-list 'default-frame-alist '(fullscreen . fullwidth))
 
@@ -306,8 +321,9 @@
       (lambda ()
         (list
          (cond
-          ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
+          ((string-match "^\\*-jabber-" (buffer-name (current-buffer)))"jabber")
           ((eq major-mode 'dired-mode) "Dired")
+          ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
           (t "All Buffers"))
          )))
 
@@ -459,14 +475,52 @@
 
 (when graf
   (color-theme-initialize)
-  (when linux
-    (color-theme-charcoal-black))
-  (when win32
-    (color-theme-subtle-hacker))
+  (color-theme-subtle-hacker)
 )
 
 ;; end
 ;;;;;;
+
+;;;;;;;;;
+;; Jabber
+(setq
+ jabber-nickname "piranha"
+ jabber-resource "laptop"
+ jabber-server "eth0.net.ua"
+ jabber-username "piranha")
+
+(setq jabber-roster-line-format " %c %-25n %u %-8s  %S")
+(setq jabber-use-global-history nil)
+
+(define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
+
+(defun my-jabber-chat-bury ()
+  (interactive)
+  (if (eq 'jabber-chat-mode major-mode)
+      (bury-buffer)))
+
+(add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
+(setq jabber-autoaway-method 'jabber-xprintidle-program)
+
+;; stub for announce
+(setq jabber-xosd-display-time 3)
+
+(defun jabber-xosd-display-message (message)
+  "Displays MESSAGE through the xosd"
+  (let ((process-connection-type nil))
+    (start-process "jabber-xosd" nil "osd_cat" "-p" "bottom" "-A" "center" "-f" "-*-courier-*-*-*-*-30" "-d" (number-to-string jabber-xosd-display-time))
+    (process-send-string "jabber-xosd" message)
+    (process-send-eof "jabber-xosd")))
+
+(defun jabber-message-xosd (from buffer text propsed-alert)
+  (jabber-xosd-display-message "New message"))
+
+(add-to-list 'jabber-alert-message-hooks
+    	     'jabber-message-xosd)
+
+
+;; end of jabber
+;;;;;;;;;;;;;;;;
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
