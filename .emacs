@@ -92,6 +92,8 @@
                           (mode . python-mode)))
                ("jabber" (or
                           (name . "^\\*-jabber-")))
+               ("erc" (or
+                       (mode . erc-mode)))
                ("erlang" (or
                           (name . "^\\*erlang\\*$")
                           (mode . erlang-mode)))
@@ -311,8 +313,8 @@
 (global-set-key [C-S-tab] 'tabbar-backward-tab)
 (global-set-key [C-tab] 'tabbar-forward-tab)
 
-(set-face-foreground 'tabbar-default "LightSteelBlue")
-(set-face-background 'tabbar-default "DarkSlateGray")
+(set-face-foreground 'tabbar-default "Gray")
+(set-face-background 'tabbar-default "Gray15")
 (set-face-foreground 'tabbar-selected "pale green")
 (set-face-bold-p 'tabbar-selected t)
 (set-face-attribute 'tabbar-button nil :box '(:line-width 1 :color "gray72"))
@@ -321,7 +323,8 @@
       (lambda ()
         (list
          (cond
-          ((string-match "^\\*-jabber-" (buffer-name (current-buffer)))"jabber")
+          ((string-match "^\\*-jabber-" (buffer-name (current-buffer))) "jabber")
+          ((eq major-mode 'erc-mode) "ERC")
           ((eq major-mode 'dired-mode) "Dired")
           ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
           (t "All Buffers"))
@@ -475,7 +478,7 @@
 
 (when graf
   (color-theme-initialize)
-  (color-theme-subtle-hacker)
+  (color-theme-charcoal-black)
 )
 
 ;; end
@@ -518,9 +521,39 @@
 (add-to-list 'jabber-alert-message-hooks
     	     'jabber-message-xosd)
 
-
 ;; end of jabber
 ;;;;;;;;;;;;;;;;
+
+;;;;;;
+;; ERC
+
+(setq
+ erc-nick "piranha"
+ erc-user-full-name "Alexander Solovyov"
+ erc-server "irc.freenode.net"
+ erc-auto-query 'buffer
+ )
+
+(setq erc-modules 
+      '(autoaway 
+        autojoin 
+        button 
+        completion 
+        fill 
+        irccontrols 
+        log
+        match
+        menu
+        netsplit
+        noncommands
+        readonly
+        ring
+        scrolltobottom
+        stamp
+        track))
+
+;; end of erc
+;;;;;;;;;;;;;
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
