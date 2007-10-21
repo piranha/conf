@@ -194,8 +194,8 @@
 ;  visible-bell t
   cursor-in-non-selected-windows nil
   ;; dired settings
-  dired-recursive-copies t
-  dired-recursive-deletes t
+  dired-recursive-copies 'top
+  dired-recursive-deletes 'top
   ;; safe variables to set in buffer
   safe-local-variable-values '((encoding . utf-8))
 )
@@ -226,9 +226,6 @@
 
 ;; to highlight ( and )
 (show-paren-mode 1)
-
-;; disable this idiotic stickyfunc mode
-(setq-default semantic-stickyfunc-mode 0)
 
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
