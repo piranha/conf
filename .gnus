@@ -118,10 +118,9 @@
       '((".*"
          (name "Alexander Solovyov")
          (address "piranha@piranha.org.ua")
-         (organization "Crazy Penguinz Crew")
          (signature-file "~/.signature"))
-        (".*@googlegroups.com"
-         (gnus-alias-use-identity "gmail"))
+        ;(".*@googlegroups.com"
+        ; (gnus-alias-use-identity "gmail"))
         ("ntu-kpi.*"
          ("X-Keywords" x-keyword))
         ("fido7.*"
@@ -148,10 +147,8 @@
 ;; News
 ;;;;;;;
 
-;(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
+(setq gnus-select-method '(nntp "news.gmane.org"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-
-;(setq gnus-select-method '(nnimap "eth0.net.ua"))
 
 ;; headers displayed
 (setq gnus-visible-headers
@@ -190,9 +187,6 @@
 ;;                   (expire-age never)
 ;;                   )))
 
-(setq gnus-secondary-select-methods
-      '((nntp "news.ntu-kpi.kiev.ua")))
-
 ;(setq gnus-secondary-select-methods
 ;      '((nnimap "piranha.org.ua")))
 ;                (nnimap-address "piranha.org.ua")
@@ -206,21 +200,6 @@
 ;                  :user "piranha"
 ;                  :password "parolcheg"
 ;)))
-
-;; Mail sorting
-;(setq nnmail-split-methods '(
-;     ("hostels" "^\\(To\\|From\\|Cc\\):.*hostels.*@hosix\\.ntu-kpi\\.kiev\\.ua.*")
-;     ("humor" "^\\(To\\|From\\|Cc\\):.*humor@xcp\\.kiev\\.ua.*")
-;     ("moderatorials" "^\\(To\\|From\\|Cc\\):.*comp.software@library\\.ntu-kpi\\.kiev\\.ua.*")
-;     ("roka" "^\\(From\\):.*roka@.*")
-;     ("spam" "^\\(Subject\\):.*SPAM.*")
-;     ("root" "^\\(To\\|From\\|Cc\\):.*root@.*")
-;     ("murkt" "^\\(From\\):.*murkt@eth0\\.org\\.ua.*")
-;     ("security" "^\\(From\\):.*daily@security\\.nnov\\.ru.*")
-;     ("hostels" "^\\(To\\):.*hostels@ntu-kpi\\.kiev\\.ua.*")
-;     ("news-talk" "^\\(To\\|Cc\\):.*talk@news.ntu-kpi.kiev.ua.*")
-;     ("anime" "^\\(To\\):.*anime_kpi@yahoogroups.com.*")
-;     ("inbox" "")))
 
 (defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
 (defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))
@@ -278,7 +257,7 @@
 
 ;; yet another threading
 (setq gnus-summary-line-format
-      ":%U%R| %B %s %-40=|%4L |%-20,20f |%&user-date; \n")
+      ":%U%R| %B %s %-80=|%4L |%-20,20f |%&user-date; \n")
 ;(setq gnus-summary-line-format (concat
 ;                                "%*%5{%U%R%z%}"
 ;                                "%4{\x49022%}"

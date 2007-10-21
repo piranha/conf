@@ -144,8 +144,8 @@ tabbedConf = defaultTConf { fontName = "-xos4-terminus-medium-r-normal-*-16-*-*-
 
 -- | The list of possible layouts. Add your custom layouts to this list.
 layouts :: [Layout Window]
-layouts = [ Layout tiled
-          , Layout $ Mirror tiled
+layouts = [ Layout $ maximize $ tiled
+          , Layout $ maximize $ Mirror tiled
           , Layout $ noBorders $ tabbed shrinkText tabbedConf
           , Layout $ noBorders Full
           -- Add extra layouts you want to use here:
