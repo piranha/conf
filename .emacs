@@ -80,56 +80,6 @@
 ;;;;;;;;;;
 ;; General
 
-;; ibuffer
-(require 'ibuffer)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-;; default groups for ibuffer
-(setq ibuffer-saved-filter-groups
-      (quote (("default"
-               ("python" (or
-                          (name . "^\\*Python\\*$")
-                          (mode . django-html-mode)
-                          (mode . python-mode)))
-               ("jabber" (or
-                          (name . "^\\*-jabber-")))
-               ("erc" (or
-                       (mode . erc-mode)))
-               ("erlang" (or
-                          (name . "^\\*erlang\\*$")
-                          (mode . erlang-mode)))
-               ("emacs" (or
-                         (name . "^\\*scratch\\*$")
-                         (name . "^\\.emacs$")
-                         (name . "^\\*Messages\\*$")))
-               ("gnus" (or
-                        (mode . message-mode)
-                        (mode . bbdb-mode)
-                        (mode . mail-mode)
-                        (mode . gnus-group-mode)
-                        (mode . gnus-summary-mode)
-                        (mode . gnus-article-mode)
-                        (name . "^\\.bbdb$")
-                        (name . "^\\.newsrc-dribble")))))))
-
-(setq ibuffer-formats
-      '((mark modified read-only " "
-             (name 28 28 :left :elide)
-             " "
-             (size 9 -1 :right)
-             " "
-             (mode 16 16 :left :elide)
-             " " filename-and-process)
-       (mark " "
-             (name 16 -1)
-             " " filename)))
-
-
-;; ibuffer, I like my buffers to be grouped
-(add-hook 'ibuffer-mode-hook
-          (lambda ()
-            (ibuffer-switch-to-saved-filter-groups
-             "default")))
-
 ;; filladapt
 (setq-default filladapt-mode t)
 
@@ -139,6 +89,9 @@
 
 ;; overwrite mode is not disabled
 (put 'overwrite-mode 'disabled nil)
+
+;; don't ask, just do it!
+(put 'set-goal-column 'disabled nil)
 
 (setq
   ;; don't show annoing startup msg
@@ -300,6 +253,61 @@
 
 ;; end frame setup
 ;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;
+;; ibuffer
+
+(require 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+;; default groups for ibuffer
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("python" (or
+                          (name . "^\\*Python\\*$")
+                          (mode . django-html-mode)
+                          (mode . python-mode)))
+               ("jabber" (or
+                          (name . "^\\*-jabber-")))
+               ("erc" (or
+                       (mode . erc-mode)))
+               ("erlang" (or
+                          (name . "^\\*erlang\\*$")
+                          (mode . erlang-mode)))
+               ("emacs" (or
+                         (name . "^\\*scratch\\*$")
+                         (name . "^\\.emacs$")
+                         (name . "^\\*Messages\\*$")))
+               ("gnus" (or
+                        (mode . message-mode)
+                        (mode . bbdb-mode)
+                        (mode . mail-mode)
+                        (mode . gnus-group-mode)
+                        (mode . gnus-summary-mode)
+                        (mode . gnus-article-mode)
+                        (name . "^\\.bbdb$")
+                        (name . "^\\.newsrc-dribble")))))))
+
+(setq ibuffer-formats
+      '((mark modified read-only " "
+             (name 28 28 :left :elide)
+             " "
+             (size 9 -1 :right)
+             " "
+             (mode 16 16 :left :elide)
+             " " filename-and-process)
+       (mark " "
+             (name 16 -1)
+             " " filename)))
+
+
+;; ibuffer, I like my buffers to be grouped
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups
+             "default")))
+
+;; end of ibuffer
+;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;
 ;; Tabbar

@@ -47,8 +47,6 @@
 ;; Extension config
 ;;;;;;;;;;;;
 
-;; various
-
 ;; message-x
 (setq message-x-body-function '(lambda () (interactive) (hippie-expand nil)))
 
@@ -83,8 +81,11 @@
 ;  message-send-mail-partially-limit 380000
   ;; highlight only good signatures
   gnus-signature-separator "^-- $"
-	;; don't insert Cancel-Lock
-  message-insert-canlock nil)
+  ;; don't insert Cancel-Lock
+  message-insert-canlock nil
+  ;; Various dirs
+  gnus-agent-directory "~/.emacs.d/agent/"
+  )
 
 ;; User settings
 (setq
@@ -98,8 +99,6 @@
 ;  message-send-mail-function 'smtpmail-send-it
 ;  smtpmail-auth-login-username "piranha"
 )
-
-;(setq smtpmail-debug-info t)
 
 ;; gnus-alias
 (autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
@@ -147,7 +146,7 @@
 ;; News
 ;;;;;;;
 
-(setq gnus-select-method '(nntp "news.gmane.org"))
+(setq gnus-select-method '(nntp "127.0.0.1"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 ;; headers displayed
@@ -229,9 +228,12 @@
 
 
 ;; save messages
+;(setq gnus-message-archive-group '(
+;    (if (message-news-p) (concat "nnimap+piranha.org.ua:sent-news" (format-time-string ".%Y.%m" (current-time)))
+;      (concat "nnimap+piranha.org.ua:sent" (format-time-string ".%Y.%m" (current-time))))))
 (setq gnus-message-archive-group '(
-    (if (message-news-p) (concat "nnimap+piranha.org.ua:sent-news" (format-time-string ".%Y.%m" (current-time)))
-      (concat "nnimap+piranha.org.ua:sent" (format-time-string ".%Y.%m" (current-time))))))
+    (if (message-news-p) (concat "sent-news" (format-time-string ".%Y.%m" (current-time)))
+      (concat "sent" (format-time-string ".%Y.%m" (current-time))))))
 
 
 ;;;;;;;;;;;;
@@ -473,13 +475,13 @@
 (autoload 'trivial-cite "tc" t t)
 (add-hook 'mail-citation-hook 'trivial-cite)
 (setq
-  message-cite-function 'trivial-cite
-  tc-time-format "%e.%m at %H:%M"
-  tc-make-attribution 'tc-piranha-attribution
-	tc-remove-signature "^\\(-- \\|_______________________________________________\\)$"
-	tc-guess-cite-marks nil
-  ;; don't rearrange quoted text
-  tc-fill-column nil)
+ message-cite-function 'trivial-cite
+ tc-time-format "%e.%m at %H:%M"
+ tc-make-attribution 'tc-piranha-attribution
+ tc-remove-signature "^\\(-- \\|_______________________________________________\\)$"
+ tc-guess-cite-marks nil
+ ;; don't rearrange quoted text
+ tc-fill-column nil)
 
 ;; attribution
 (defun tc-piranha-attribution ()
@@ -545,11 +547,11 @@
   "Returns the song now playing"
   (when (file-exists-p now-playing-file)
     (save-excursion
-			(goto-char (point-max))
+      (goto-char (point-max))
 ;      (let ((coding-system-for-read 'utf-16-le)) (insert-file-contents now-playing-file)))))
-			(insert-file-contents now-playing-file)
-			(goto-char (point-max))
-			(newline))))
+      (insert-file-contents now-playing-file)
+      (goto-char (point-max))
+      (newline))))
 
 ;; Random citation line
 (setq random-sig-directory "~/.sigs")
@@ -558,10 +560,10 @@
   (interactive)
   (when (file-exists-p random-sig-directory)
     (let* ((files (directory-files random-sig-directory t ""))
-	   (file (nth (random (length files)) files)))
+           (file (nth (random (length files)) files)))
       (when file
         (save-excursion
-		(goto-char (point-max))
+          (goto-char (point-max))
           (insert-file-contents file))))))
 
 ;; This function is especially useful for message mode
@@ -608,17 +610,6 @@
 ;; for now-playing and citation lines
 ;(add-hook 'message-setup-hook 'prh:random-cite)
 ;(add-hook 'message-setup-hook 'prh:now-playing)
-
-;;;;;;;;;;;;;;;;;;
-;; Autocompilation
-;;;;;;;;;;;;;;;;;;
-
-(defun gnus-autocompile()
-  "compile itself if ~/.gnus"
-  (interactive)
-  (if (string= (buffer-file-name) (concat default-directory ".gnus"))
-      (byte-compile-file (buffer-file-name))))
-(add-hook 'after-save-hook 'gnus-autocompile())
 
 ;(setq smtpmail-debug-info t)
 ;(setq smtpmail-debug-verb t)

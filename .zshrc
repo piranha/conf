@@ -52,7 +52,7 @@ Cr() { echo '%{\033[3'$1'm%}'; }
 hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 2`
 [ $UID = 0 ] && at=$r%B'#'%b || at=$w'@'
 PS1="$wc%n$at$hc%m $wc%~$w>$n"
-export RPROMPT=$(echo "$gr%T$n")
+#export RPROMPT=$(echo "$gr%T$n")
 unset n b Cr uc hc wc tc tty at r y gr
 
 # automatically remove duplicates from these arrays
