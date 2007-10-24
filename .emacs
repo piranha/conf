@@ -180,6 +180,9 @@
 ;; to highlight ( and )
 (show-paren-mode 1)
 
+;; Turn off this idiotic stickyfunc mode
+(global-semantic-stickyfunc-mode -1)
+
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
 ;; Turn on font-lock in all modes that support it

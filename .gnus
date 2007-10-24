@@ -166,7 +166,8 @@
 ;   "^User-Agent:"
 ;   "^Content-Type:"
    "^X-Newsreader:"
-   "^NNTP-Posting-Host:"
+   "^User-Agent:"
+;   "^NNTP-Posting-Host:"
    "^Followup-To:"
 ))
 
