@@ -181,7 +181,8 @@
 (show-paren-mode 1)
 
 ;; Turn off this idiotic stickyfunc mode
-(global-semantic-stickyfunc-mode -1)
+(if (boundp 'global-semantic-stickyfunc-mode)
+    (global-semantic-stickyfunc-mode -1))
 
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
@@ -389,7 +390,7 @@
   "Major mode for editing Erlang source files" t)
 
 (setq auto-mode-alist
-      (append 
+      (append
        (list
         '("\\.md$" . markdown-mode)
         '("\\.css$" . css-mode)
@@ -536,8 +537,7 @@
   (jabber-xosd-display-message "New message"))
 
 (add-to-list 'jabber-alert-message-hooks
-    	     'jabber-message-xosd)
-
+             'jabber-message-xosd)
 ;; end of jabber
 ;;;;;;;;;;;;;;;;
 
@@ -551,13 +551,13 @@
  erc-auto-query 'buffer
  )
 
-(setq erc-modules 
-      '(autoaway 
-        autojoin 
-        button 
-        completion 
-        fill 
-        irccontrols 
+(setq erc-modules
+      '(autoaway
+        autojoin
+        button
+        completion
+        fill
+        irccontrols
         log
         match
         menu
