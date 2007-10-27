@@ -112,6 +112,10 @@ defaultGaps = [(18,0,0,0), (18,0,0,0)] -- 15 for default dzen font
 -- particular program, or have a client always appear on a particular
 -- workspace.
 --
+-- To find the property name associated with a program, use
+--  xprop | grep WM_CLASS
+-- and click on the client you're interested in.
+--
 manageHook :: Window -- ^ the new window to manage
            -> String -- ^ window title
            -> String -- ^ window resource name
@@ -137,6 +141,12 @@ manageHook _ _ _ _ = return id
 
 ------------------------------------------------------------------------
 -- Extensible layouts
+--
+-- You can specify and transform your layouts by modifying these values.
+-- If you change layout bindings be sure to use 'mod-shift-space' after
+-- restarting (with 'mod-q') to reset your layout state to the new
+-- defaults, as xmonad preserves your old layout settings by default.
+--
 
 -- tabbed layout config
 tabbedConf :: TConf
@@ -198,6 +208,11 @@ commands = defaultCommands
 ------------------------------------------------------------------------
 -- Key bindings:
 
+-- | The preferred terminal program, which is used in a binding below and by
+-- certain contrib modules.
+terminal :: String
+terminal = "urxvt"
+
 -- | The xmonad key bindings. Add, modify or remove key bindings here.
 --
 -- (The comment formatting character is used when generating the manpage)
@@ -205,7 +220,7 @@ commands = defaultCommands
 keys :: M.Map (KeyMask, KeySym) (X ())
 keys = M.fromList $
     -- launching and killing programs
-    [ ((modMask .|. shiftMask, xK_Return), spawn "urxvt") -- %! Launch an xterm
+    [ ((modMask .|. shiftMask, xK_Return), spawn terminal) -- %! Launch an xterm
 --    , ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"") -- %! Launch dmenu
     , ((modMask,               xK_p     ), executablesXinerama)
     , ((modMask .|. shiftMask, xK_p     ), runCommand commands)

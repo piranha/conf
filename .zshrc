@@ -36,7 +36,7 @@ else
 fi
 export EDITOR="vim"
 export BROWSER="links"
-export MAIL=~/.mail/
+#export MAIL=~/.mail/
 #export MAIL=/var/mail/piranha
 #export MAIL=/home/hosting/eth0.net.ua/`whoami`/Maildir/
 export LESS="-R"

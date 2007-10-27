@@ -321,6 +321,7 @@
 (global-set-key [C-S-iso-lefttab] 'tabbar-backward-tab)
 (global-set-key [C-S-tab] 'tabbar-backward-tab)
 (global-set-key [C-tab] 'tabbar-forward-tab)
+(global-set-key [C-f10] 'tabbar-local-mode)
 
 (set-face-foreground 'tabbar-default "Gray")
 (set-face-background 'tabbar-default "Gray15")
@@ -348,7 +349,7 @@
           (t "All Buffers"))
          )))
 
-(tabbar-mode)
+(tabbar-mode 1)
 
 ;; tabbar end
 ;;;;;;;;;;;;;
@@ -398,6 +399,8 @@
         '("\\.hs$" . haskell-mode)
         )
         auto-mode-alist))
+
+(setq w3m-use-cookies t)
 
 ;; end of modes
 ;;;;;;;;;;;;;;;;;;
@@ -511,7 +514,9 @@
  jabber-username "piranha")
 
 (setq jabber-roster-line-format " %c %-25n %u %-8s  %S")
+(setq jabber-history-enabled t)
 (setq jabber-use-global-history nil)
+(setq jabber-history-dir "~/.emacs.d/jabber/")
 
 (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
 
