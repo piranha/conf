@@ -187,12 +187,15 @@
 ;;                   (expire-age never)
 ;;                   )))
 
-;(setq gnus-secondary-select-methods
-;      '((nnimap "piranha.org.ua")))
-;                (nnimap-address "piranha.org.ua")
-;                (nnimap-list-pattern ("INBOX" ".*"))
-;                (nnimap-authinfo-file "~/.imap-authinfo"))
-;        ))
+(setq gnus-secondary-select-methods
+     '((nnimap "gmail"
+               (nnimap-address "imap.gmail.com")
+               (nnimap-server-port 993)
+               (nnimap-stream ssl)
+               (nnimap-list-pattern ("INBOX" ".*"))
+               (nnimap-authinfo-file "~/.imap-authinfo")
+               )
+       ))
 
 ;(setq mail-sources
 ;           '((pop :server "localhost"
@@ -614,3 +617,4 @@
 
 ;(setq smtpmail-debug-info t)
 ;(setq smtpmail-debug-verb t)
+;(setq imap-log t)

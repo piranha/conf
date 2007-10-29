@@ -40,7 +40,7 @@
 
 (codepage-setup 866)
 (codepage-setup 1251)
-(setq default-input-method "cyrillic-jcuken-ms")
+(setq default-input-method "russian-computer")
 (define-coding-system-alias 'windows-1251 'cp1251)
 (define-coding-system-alias 'koi8-ru 'koi8-u)
 
@@ -205,6 +205,7 @@
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "C-x C-a") 'imenu)
+(global-set-key (kbd "C-x C-d") '(lambda () (interactive) (dired (file-name-directory (buffer-file-name)))))
 
 (global-set-key (kbd "<f5>") 'call-last-kbd-macro)
 
@@ -277,9 +278,14 @@
                ("erlang" (or
                           (name . "^\\*erlang\\*$")
                           (mode . erlang-mode)))
+               ("haskell" (or
+                          (mode . haskell-mode)))
+               ("dired" (or
+                          (mode . dired-mode)))
                ("emacs" (or
                          (name . "^\\*scratch\\*$")
                          (name . "^\\.emacs$")
+                         (name . "^\\.gnus$")
                          (name . "^\\*Messages\\*$")))
                ("gnus" (or
                         (mode . message-mode)
@@ -507,42 +513,50 @@
 
 ;;;;;;;;;
 ;; Jabber
-(setq
- jabber-nickname "piranha"
- jabber-resource "laptop"
- jabber-server "eth0.net.ua"
- jabber-username "piranha")
-
-(setq jabber-roster-line-format " %c %-25n %u %-8s  %S")
-(setq jabber-history-enabled t)
-(setq jabber-use-global-history nil)
-(setq jabber-history-dir "~/.emacs.d/jabber/")
-
-(define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
-
-(defun my-jabber-chat-bury ()
-  (interactive)
-  (if (eq 'jabber-chat-mode major-mode)
-      (bury-buffer)))
-
-(add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
-(setq jabber-autoaway-method 'jabber-xprintidle-program)
-
-;; stub for announce
-(setq jabber-xosd-display-time 3)
-
-(defun jabber-xosd-display-message (message)
-  "Displays MESSAGE through the xosd"
-  (let ((process-connection-type nil))
-    (start-process "jabber-xosd" nil "osd_cat" "-p" "bottom" "-A" "center" "-f" "-*-courier-*-*-*-*-30" "-d" (number-to-string jabber-xosd-display-time))
-    (process-send-string "jabber-xosd" message)
-    (process-send-eof "jabber-xosd")))
-
-(defun jabber-message-xosd (from buffer text propsed-alert)
-  (jabber-xosd-display-message "New message"))
-
-(add-to-list 'jabber-alert-message-hooks
-             'jabber-message-xosd)
+(when 
+    (require 'jabber nil t)
+  (setq
+   jabber-nickname "piranha"
+   jabber-resource "laptop"
+   jabber-server "eth0.net.ua"
+   jabber-username "piranha")
+  
+  (setq jabber-roster-line-format " %c %-25n %u %-8s  %S\n")
+  (setq jabber-history-enabled t)
+  (setq jabber-use-global-history nil)
+  (setq jabber-history-dir "~/.emacs.d/jabber/")
+  
+  (add-hook 'jabber-chat-mode-hook
+            (lambda ()
+              (setq fill-column 120)
+              ))
+  
+  (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
+  
+  (defun my-jabber-chat-bury ()
+    (interactive)
+    (if (eq 'jabber-chat-mode major-mode)
+        (bury-buffer)))
+  
+  (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
+  (setq jabber-autoaway-method 'jabber-xprintidle-program)
+  
+  ;; stub for announce
+  (setq jabber-xosd-display-time 3)
+  
+  (defun jabber-xosd-display-message (message)
+    "Displays MESSAGE through the xosd"
+    (let ((process-connection-type nil))
+      (start-process "jabber-xosd" nil "osd_cat" "-p" "bottom" "-A" "center" "-f" "-*-courier-*-*-*-*-30" "-d" (number-to-string jabber-xosd-display-time))
+      (process-send-string "jabber-xosd" message)
+      (process-send-eof "jabber-xosd")))
+  
+  (defun jabber-message-xosd (from buffer text propsed-alert)
+    (jabber-xosd-display-message "New message"))
+  
+  (add-to-list 'jabber-alert-message-hooks
+               'jabber-message-xosd)
+)
 ;; end of jabber
 ;;;;;;;;;;;;;;;;
 

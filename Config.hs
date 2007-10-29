@@ -41,6 +41,7 @@ import qualified XMonadContrib.FlexibleResize as Flex
 import XMonadContrib.WmiiActions
 import XMonadContrib.Maximize
 import XMonadContrib.Commands
+import XMonadContrib.ToggleLayouts
 
 -- | The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -156,10 +157,9 @@ tabbedConf = defaultTConf { fontName = "-xos4-terminus-medium-r-normal-*-16-*-*-
 layouts :: [Layout Window]
 layouts = [ Layout $ maximize $ tiled
           , Layout $ maximize $ Mirror tiled
-          , Layout $ noBorders $ tabbed shrinkText tabbedConf
-          , Layout $ noBorders Full
           -- Add extra layouts you want to use here:
           -- % Extension-provided layouts
+          , Layout $ noBorders $ tabbed shrinkText tabbedConf
           ]
   where
      -- default tiling algorithm partitions the screen into two panes
@@ -181,7 +181,7 @@ layouts = [ Layout $ maximize $ tiled
 -- transformers, for example, would be hooked in here.
 --
 layoutHook :: Layout Window
-layoutHook = Layout $ Select layouts
+layoutHook = Layout $ toggleLayouts (noBorders Full) $ Select layouts
 
 -- | Register with xmonad a list of layouts whose state we can preserve over restarts.
 -- There is typically no need to modify this list, the defaults are fine.
@@ -275,7 +275,7 @@ keys = M.fromList $
     , ((modMask,               xK_o     ), viewEmptyWorkspace)
     , ((modMask .|. shiftMask, xK_o     ), tagToEmptyWorkspace)
     , ((controlMask .|. modMask .|. shiftMask, xK_space), rescreen)
-    , ((modMask,               xK_f     ), withFocused (sendMessage . maximizeRestore))
+    , ((modMask,               xK_f     ), sendMessage ToggleLayout)
     ]
     ++
     -- mod-[1..9] %! Switch to workspace N
