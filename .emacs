@@ -378,6 +378,9 @@
 ;;;;;;;;;
 ;; erlang
 
+(autoload 'erlang-mode "erlang-mode.el"
+  "Major mode for editing Erlang source files" t)
+
 (add-hook 'erlang-mode-hook
           (lambda ()
             (local-set-key [return] 'newline-and-indent)
@@ -389,12 +392,18 @@
 
 ;;;;;;;;;;;
 ;; various modes
-(autoload 'markdown-mode "markdown-mode.el"
-  "Major mode for editing Markdown files" t)
+
 (autoload 'css-mode "css-mode.el"
   "Major mode for editing CSS files" t)
-(autoload 'erlang-mode "erlang-mode.el"
-  "Major mode for editing Erlang source files" t)
+
+(autoload 'markdown-mode "markdown-mode.el"
+  "Major mode for editing Markdown files" t)
+
+(add-hook 'markdown-mode-hook
+          (lambda ()
+            (setq fill-column 80)
+            (auto-fill-mode)
+            ))
 
 (setq auto-mode-alist
       (append
