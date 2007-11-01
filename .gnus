@@ -197,12 +197,10 @@
                )
        ))
 
-;(setq mail-sources
-;           '((pop :server "localhost"
-;                  :port "pop3"
-;                  :user "piranha"
-;                  :password "parolcheg"
-;)))
+(setq mail-sources
+      '(
+        (pop :server "mail.softheme.com" :user "asolovyov")
+        ))
 
 (defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
 (defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))

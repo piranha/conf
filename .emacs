@@ -66,13 +66,13 @@
 (when (file-exists-p "/usr/share/emacs/site-lisp/site-gentoo.el")
   (load "/usr/share/emacs/site-lisp/site-gentoo"))
 
-(require 'color-theme)
 (require 'gnus-load nil t)
-(require 'filladapt)
-(require 'session)
+(require 'filladapt nil t)
+(require 'session nil t)
 (require 'htmlize nil t)
-(require 'django-html-mode)
-(require 'psvn)
+(require 'django-html-mode nil t)
+(require 'psvn nil t)
+(require 'grep+ nil t)
 
 ;; Use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -504,6 +504,7 @@
 ;; Finesse
 
 (when graf
+  (require 'color-theme)
   (color-theme-initialize)
   (color-theme-charcoal-black)
 )
@@ -529,6 +530,7 @@
   (add-hook 'jabber-chat-mode-hook
             (lambda ()
               (setq fill-column 120)
+              (local-set-key [tab] 'dabbrev-expand)
               ))
   
   (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)

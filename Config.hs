@@ -36,12 +36,15 @@ import XMonadContrib.DynamicLog
 import XMonadContrib.Submap
 import XMonadContrib.SinkAll
 import XMonadContrib.FindEmptyWorkspace
-import XMonadContrib.SwitchTrans
 import qualified XMonadContrib.FlexibleResize as Flex
 import XMonadContrib.WmiiActions
 import XMonadContrib.Maximize
 import XMonadContrib.Commands
 import XMonadContrib.ToggleLayouts
+import XMonadContrib.WindowNavigation
+import XMonadContrib.WindowBringer()
+import XMonadContrib.WindowPrompt
+import XMonadContrib.XPrompt
 
 -- | The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -153,6 +156,22 @@ manageHook _ _ _ _ = return id
 tabbedConf :: TConf
 tabbedConf = defaultTConf { fontName = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*-*" }
 
+-- Xprompt settings
+myXPConfig :: XPConfig
+-- myXPConfig = defaultXPConfig {
+--                bgColor = "#8a999e"
+--              , fgHLight = "black"
+--              , bgHLight = "#aaaaaa"
+--              }
+myXPConfig = defaultXPConfig { 
+          font              = "-*-terminus-*-*-*-*-14-*-*-*-*-*-*-*"
+        , bgColor           = "#3f3c6d"
+        , fgColor           = "#a8a3f7"
+        , fgHLight          = "#a8a3f7"
+        , bgHLight          = "blue"
+        , borderColor       = "#FFFFFF"
+        }
+
 -- | The list of possible layouts. Add your custom layouts to this list.
 layouts :: [Layout Window]
 layouts = [ Layout $ maximize $ tiled
@@ -181,7 +200,7 @@ layouts = [ Layout $ maximize $ tiled
 -- transformers, for example, would be hooked in here.
 --
 layoutHook :: Layout Window
-layoutHook = Layout $ toggleLayouts (noBorders Full) $ Select layouts
+layoutHook = Layout $ toggleLayouts (noBorders Full) $ configurableNavigation (navigateColor "white") $ Select layouts
 
 -- | Register with xmonad a list of layouts whose state we can preserve over restarts.
 -- There is typically no need to modify this list, the defaults are fine.
@@ -235,10 +254,10 @@ keys = M.fromList $
     , ((modMask,               xK_n     ), refresh) -- %! Resize viewed windows to the correct size
     , ((modMask,               xK_Print ), spawn "gm import -window root ~/tmp/screenshot-`date +\"%F--%H-%M-%S\"`.png") -- @@ Make a screenshot
     , ((modMask, xK_x), submap . M.fromList $
-       [ ((0, xK_z),       spawn "xmms2 prev")
-       , ((0, xK_x),       spawn "xmms2 toggleplay")
-       , ((0, xK_c),       spawn "xmms2 stop")
-       , ((0, xK_v),       spawn "xmms2 next")
+       [ ((0, xK_z),       spawn "mpc prev")
+       , ((0, xK_x),       spawn "mpc toggle")
+       , ((0, xK_c),       spawn "mpc stop")
+       , ((0, xK_v),       spawn "mpc next")
        ]) -- @@ Control xmms2
 
     -- move focus up or down the window stack
@@ -246,6 +265,15 @@ keys = M.fromList $
     , ((modMask,               xK_j     ), windows W.focusDown) -- %! Move focus to the next window
     , ((modMask,               xK_k     ), windows W.focusUp  ) -- %! Move focus to the previous window
     , ((modMask,               xK_m     ), windows W.focusMaster  ) -- %! Move focus to the master window
+
+--     , ((modMask,               xK_h     ), sendMessage $ Go L) -- %! Move focus to the next window
+--     , ((modMask,               xK_j     ), sendMessage $ Go D) -- %! Move focus to the next window
+--     , ((modMask,               xK_k     ), sendMessage $ Go U) -- %! Move focus to the previous window
+--     , ((modMask,               xK_l     ), sendMessage $ Go R) -- %! Move focus to the previous window
+--     , ((modMask .|. shiftMask, xK_h     ), sendMessage $ Swap L) -- %! Move focus to the next window
+--     , ((modMask .|. shiftMask, xK_j     ), sendMessage $ Swap D) -- %! Move focus to the next window
+--     , ((modMask .|. shiftMask, xK_k     ), sendMessage $ Swap U) -- %! Move focus to the previous window
+--     , ((modMask .|. shiftMask, xK_l     ), sendMessage $ Swap R) -- %! Move focus to the previous window
 
     -- modifying the window order
     , ((modMask,               xK_Return), windows W.swapMaster) -- %! Swap the focused window and the master window
@@ -276,6 +304,8 @@ keys = M.fromList $
     , ((modMask .|. shiftMask, xK_o     ), tagToEmptyWorkspace)
     , ((controlMask .|. modMask .|. shiftMask, xK_space), rescreen)
     , ((modMask,               xK_f     ), sendMessage ToggleLayout)
+--    , ((modMask,               xK_g     ), gotoMenu)
+    , ((modMask,               xK_g     ), windowPromptGoto myXPConfig)
     ]
     ++
     -- mod-[1..9] %! Switch to workspace N
