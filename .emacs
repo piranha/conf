@@ -75,9 +75,6 @@
 ;; Use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
 
-;; add some nifty things
-(load "dired-x")
-
 ;;;;;;;;;;
 ;; General
 
@@ -207,7 +204,12 @@
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "C-x C-a") 'imenu)
 
-(global-set-key (kbd "<f5>") 'call-last-kbd-macro)
+;; add some nifty things
+(load "dired-x")
+(global-unset-key (kbd "C-x C-j"))
+(global-set-key (kbd "C-x C-d") 'dired-jump)
+
+(global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 
 (global-set-key (kbd "C-x w")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key '[(control meta l)] (lambda () (interactive) (switch-to-buffer (other-buffer))))
