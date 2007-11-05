@@ -1,5 +1,6 @@
-% $Id: .slrnrc 3 2006-08-09 14:16:14Z piranha $
-% (c) piranha, 2002-2006
+% Slrn config
+% (c) Alexander Solovyov, 2002-2006
+% piranha AT piranha.org.ua
 
 set username "piranha"
 set hostname "viii.ntu-kpi.kiev.ua"

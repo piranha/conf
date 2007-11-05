@@ -3,16 +3,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNU Emacs config
-;; by Alexander Solovyov
-;; piranha AT piranha DOT org DOT ua
+;; (c) Alexander Solovyov 2004-2007
+;; piranha AT piranha.org.ua
 ;;
-;; Special thank to all, who help me in creation, especially to:
-;; Yuriy Sazonets <haze AT astral.ntu-kpi.kiev.ua>
-;; Alex Ott <ottalex AT narod.ru>
-;; Emacswiki.org ;)
-;;
-;; $Id: .emacs 33 2007-09-16 16:11:58Z piranha $
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Thanks to all, who has helped me in creation, especially to:
+;; Yuriy Sazonets
+;; Alex Ott
+;; Emacswiki.org
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;
 ;; systems

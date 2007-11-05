@@ -1,9 +1,11 @@
-" $Id: .vimrc 11 2006-10-03 09:13:10Z piranha $
-" (c) piranha, 2003-2006
-" thx to pseudo
+" Vim config
+" (c) Alexander Solovyov, 2003-2006
+" piranha AT piranha.org.ua
+"
+" Thanks to all, who has helped me in creation, especially to:
+" Max Krasilnikov
 
 " Settings {{{
-" DADADA NAX!!!!
 set paste
 " To be secure & Vi nocompatible
 set secure nocompatible

@@ -3,16 +3,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Gnus config
-;; by Alexander Solovyov
+;; (c) Alexander Solovyov 2004-2007
 ;; piranha AT piranha.org.ua
 ;;
-;; Thanks to all, who help me in creation, especially to:
-;; Yuriy Sazonets <haze AT astral * ntu-kpi * kiev * ua>
-;; Alexander Zayats <ai AT eth0 * net * ua>
-;; Emacswiki.org ;)
-;;
-;; $Id: .gnus 31 2007-09-08 19:09:36Z piranha $
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Thanks to all, who has helped me in creation, especially to:
+;; Yuriy Sazonets
+;; Alexander Zayats
+;; Emacswiki.org
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
 ;; graphics

@@ -1,13 +1,12 @@
 # -*- mode: sh; mode: fold -*-
-# zsh configuration (c) 2003-2007 Alexander Solovyov
-# $Id: .zshrc 26 2007-02-26 10:43:20Z piranha $
-# piranha AT piranha DOT org DOT ua
+# zsh configuration 
+# (c) 2003-2007 Alexander Solovyov
+# piranha AT piranha.org.ua
 #
 # Thanks to: 
 # tldp.org
-# Alexander Zayats aka ai
+# Alexander Zayats
 # "XAKEP" journal 
-# Google.com
 
 
 #export LANG=ru_RU.koi8r
@@ -280,7 +279,8 @@ else
 fi
 ## Editor
 if [ -x `whence -c emacsclient` ]; then
-    alias e="emacsclient"
+    alias e="emacsclient --no-wait"
+    alias ec="emacsclient"
     export ALTERNATE_EDITOR="emacs"
 elif [ -x `whence -c vim` ]; then
     alias e="vim"
