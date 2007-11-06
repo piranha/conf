@@ -71,6 +71,7 @@
 (require 'django-html-mode nil t)
 (require 'psvn nil t)
 (require 'grep+ nil t)
+(require 'mercurial nil t)
 
 ;; Use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
