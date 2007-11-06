@@ -60,7 +60,7 @@
 ;;;;;;;;;;;;;
 
 ;; loadpath
-(setq load-path (cons (expand-file-name "~/.el") load-path))
+(add-to-list 'load-path (expand-file-name "~/.el"))
 (when (file-exists-p "/usr/share/emacs/site-lisp/site-gentoo.el")
   (load "/usr/share/emacs/site-lisp/site-gentoo"))
 
