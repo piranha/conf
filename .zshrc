@@ -33,7 +33,11 @@ if [ -x `whence -c most` ]; then
 else
         export PAGER="less"
 fi
-export EDITOR="vim"
+if [ -x `whence -c vim` ]; then
+    export EDITOR="vim"
+else
+    export EDITOR="vi"
+fi
 export BROWSER="links"
 #export MAIL=~/.mail/
 #export MAIL=/var/mail/piranha
@@ -255,9 +259,7 @@ alias k2U="iconv -c -f koi8-r -t utf-16"
 
 ## LFTP
 if [ -x `whence -c lftp` ]; then
-        alias ftp="lftp"
-else
-	alias ftp="/usr/bin/ftp"
+    alias ftp="lftp"
 fi
 ## Mutt new generation
 if [ -x `whence -c muttng` ]; then
@@ -272,7 +274,7 @@ else
         alias ls="/bin/ls -G"
 fi
 ## GNU Find
-if [ `uname` != "Linux" ]; then
+if [ `uname` != "Linux" -a -x `whence -c gfind` ]; then
     alias find="noglob gfind"
 else
     alias find="noglob find"
@@ -282,10 +284,12 @@ if [ -x `whence -c emacsclient` ]; then
     alias e="emacsclient --no-wait"
     alias ec="emacsclient"
     export ALTERNATE_EDITOR="emacs"
-elif [ -x `whence -c vim` ]; then
-    alias e="vim"
 else
-    alias e="vi"
+    alias e=$EDITOR
+fi
+
+if [ -x `whence -c rlwrap` ]; then
+    alias nc='rlwrap nc'
 fi
 
 # Other
@@ -304,15 +308,12 @@ alias g="egrep -i --color"
 alias c="cat"
 alias h="head"
 alias p="ping"
-alias tt="/usr/sbin/traceroute"
 alias df="df -h"
 alias bc="bc -l"
-alias cad="ssh -p 2221 cad.kiev.ua"
-alias rtin="rtin -qd -g news.ntu-kpi.kiev.ua"
 alias slrn="slrn --nntp -h localhost" 
 alias ml="ledit -h ~/.mldonkey_history -x nc localhost 4000"
 alias myapg="apg -n 8 -x 9 -M NCL -s" 
 alias yapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo" 
 alias mkperlpkg="dh-make-perl --build --cpan"
 alias -g C="|ccze -A"
-alias ai="sudo aptitude install"
+alias rezsh="source ~/.zshrc"
