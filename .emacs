@@ -73,6 +73,9 @@
 (require 'grep+ nil t)
 (require 'mercurial nil t)
 
+(require 'etags nil t)
+(setq tags-file-name (expand-file-name "~/TAGS"))
+
 ;; Use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
 
@@ -82,14 +85,10 @@
 ;; filladapt
 (setq-default filladapt-mode t)
 
-;; don't ask when changing case
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region   'disabled nil)
-
-;; overwrite mode is not disabled
-(put 'overwrite-mode 'disabled nil)
-
 ;; don't ask, just do it!
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'overwrite-mode 'disabled nil)
 (put 'set-goal-column 'disabled nil)
 
 (setq
@@ -236,12 +235,13 @@
       ;; Font setup
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
-        (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-*-*")))
+        (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")))
+      
       ;; Default Frame
-      (add-to-list 'default-frame-alist '(fullscreen . fullwidth))
+      (add-to-list 'default-frame-alist '(fullscreen . fullscree))
 
       ;; bar setup
-      (menu-bar-mode 1)
+      (menu-bar-mode 0)
       (tool-bar-mode 0)
       (when linux
         (scroll-bar-mode -1)))
@@ -332,11 +332,12 @@
 (global-set-key [C-tab] 'tabbar-forward-tab)
 (global-set-key [C-f10] 'tabbar-local-mode)
 
-(set-face-foreground 'tabbar-default "Gray")
-(set-face-background 'tabbar-default "Gray15")
+(set-face-foreground 'tabbar-default "gray")
+(set-face-background 'tabbar-default "black")
 (set-face-foreground 'tabbar-selected "pale green")
 (set-face-bold-p 'tabbar-selected t)
 (set-face-attribute 'tabbar-button nil :box '(:line-width 1 :color "gray72"))
+(set-face-font 'tabbar-default "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")
 
 (setq tabbar-buffer-groups-function
       (lambda ()
@@ -354,6 +355,7 @@
             (eq major-mode 'gnus-article-mode)
             (string-match "^\\.\\(bbdb\\|newsrc-dribble\\)" (buffer-name (current-buffer))))
            "gnus")
+          ((eq major-mode 'tags-table-mode) "*")
           ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
           (t "All Buffers"))
          )))
@@ -610,7 +612,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- )
+ '(safe-local-variable-values (quote ((prompt-to-byte-compile) (encoding . utf-8)))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

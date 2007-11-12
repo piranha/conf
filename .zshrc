@@ -260,6 +260,7 @@ alias k2U="iconv -c -f koi8-r -t utf-16"
 ## LFTP
 if [ -x `whence -c lftp` ]; then
     alias ftp="lftp"
+    function sftp() { lftp sftp://`whoami`@$1 }
 fi
 ## Mutt new generation
 if [ -x `whence -c muttng` ]; then
@@ -282,7 +283,7 @@ fi
 ## Editor
 if [ -x `whence -c emacsclient` ]; then
     alias e="emacsclient --no-wait"
-    alias ec="emacsclient"
+    alias et="emacsclient -t"
     export ALTERNATE_EDITOR="emacs"
 else
     alias e=$EDITOR
@@ -318,3 +319,4 @@ alias mkperlpkg="dh-make-perl --build --cpan"
 alias -g C="|ccze -A"
 alias rezsh="source ~/.zshrc"
 alias ql="quodlibet"
+alias cal="cal -m"
