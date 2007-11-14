@@ -234,8 +234,8 @@
 
       ;; Font setup
       (if win32
-          (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
-        (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")))
+          (set-default-font "Unifont-12")
+        (set-default-font "Terminus-16"))
       
       ;; Default Frame
       (add-to-list 'default-frame-alist '(fullscreen . fullscree))

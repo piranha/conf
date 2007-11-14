@@ -3,6 +3,7 @@ import Graphics.X11
 import System.IO (hPutStrLn)
 import qualified Data.Map as M
 import Data.Bits ((.|.))
+import Data.Ratio ((%))
 -- XMonad
 import XMonad
 import XMonad.Layouts
@@ -18,6 +19,7 @@ import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.Accordion
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Prompt
 import XMonad.Prompt.Window
@@ -91,6 +93,7 @@ ownConfig h = defaultConfig
                                        $ tiled 
                                        ||| Mirror tiled
                                        ||| noBorders owntab
+                                       ||| Accordion
                 , keys               = \c -> ownKeys c `M.union` keys defaultConfig c
                 }
     where
