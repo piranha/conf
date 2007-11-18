@@ -2,9 +2,7 @@ Config { font = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-koi8-u"
        , bgColor = "#3f3c6d"
        , fgColor = "#a8a3f7"
        , position = Top
-       , commands = [ Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 10
-                    , Run Network "eth1" ["-L","0","-H","32","--normal","green","--high","red"] 10
-                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+       , commands = [ Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
                     , Run Memory ["-t","<usedratio>%"] 10
                     , Run Swap ["-t", "<usedratio>"] 10
                     , Run Battery [] 10
