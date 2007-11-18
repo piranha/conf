@@ -1,0 +1,18 @@
+Config { font = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-koi8-u"
+       , bgColor = "#3f3c6d"
+       , fgColor = "#a8a3f7"
+       , position = Top
+       , commands = [ Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Network "eth1" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    , Run Memory ["-t","<usedratio>%"] 10
+                    , Run Swap ["-t", "<usedratio>"] 10
+                    , Run Battery [] 10
+    		    , Run Date "%a %d %b %H:%M:%S" "date" 10
+                    , Run Com "if [ \"a`acpi -a|grep on-line`\" != \"a\" ]; then echo *AC*; else acpi -b|cut -c 36-39; fi" [] "ac" 10
+                    , Run StdinReader
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%StdinReader% }{ %cpu% | Mem: %memory%/%swap% | <fc=#ee9a00>%date%</fc> | %battery% %ac%"
+       }
