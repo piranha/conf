@@ -89,10 +89,11 @@ ownConfig h = defaultConfig
                 , modMask            = mod4Mask
                 , logHook            = dynamicLogWithPP $ ownPP h
                 , layoutHook         = Layout $ withUrgencyHook dzenUrgencyHook
-                                       $ toggleLayouts (noBorders Full) 
+                                       $ toggleLayouts (noBorders Full)
+                                       $ smartBorders
                                        $ tiled 
                                        ||| Mirror tiled
-                                       ||| noBorders owntab
+                                       ||| owntab
                                        ||| Accordion
                 , keys               = \c -> ownKeys c `M.union` keys defaultConfig c
                 }
