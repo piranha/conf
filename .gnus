@@ -186,14 +186,18 @@
 ;;                   )))
 
 (setq gnus-secondary-select-methods
-     '((nnimap "gmail"
-               (nnimap-address "imap.gmail.com")
-               (nnimap-server-port 993)
-               (nnimap-stream ssl)
-               (nnimap-list-pattern ("INBOX" ".*"))
-               (nnimap-authinfo-file "~/.imap-authinfo")
-               )
-       ))
+      '((nnmaildir "mail"
+                   (directory "~/.mail/")
+                   (expire-age never)
+                   )
+        (nnimap "gmail"
+                (nnimap-address "imap.gmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream ssl)
+                (nnimap-list-pattern ("INBOX" ".*"))
+                (nnimap-authinfo-file "~/.imap-authinfo")
+                )
+        ))
 
 (setq mail-sources
       '(
