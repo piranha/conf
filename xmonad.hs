@@ -97,6 +97,17 @@ ownKeys conf@(XConfig {modMask = modMask}) = M.fromList $
     [((modMask .|. controlMask, k), windows $ swapWithCurrent i)
          | (i, k) <- zip (workspaces conf) [xK_1 .. xK_9]]
 
+ownLayoutHook = smartBorders
+                $ toggleLayouts (noBorders Full)
+                $ Named "vert" tiled
+                ||| Named "horiz" (Mirror tiled)
+                ||| Named "tabbed" owntab
+                ||| Named "accordion" Accordion
+    where
+      owntab = tabbed shrinkText tabbedConf
+      tiled = Tall 1 (3/100) (1/2)
+
+
 -- overall config
 ownConfig statusbar = defaultConfig
                 { borderWidth        = 1
@@ -106,17 +117,9 @@ ownConfig statusbar = defaultConfig
                 , defaultGaps        = [(18,0,0,0), (18,0,0,0)]
                 , modMask            = mod4Mask
                 , logHook            = dynamicLogWithPP $ ownPP statusbar
-                , layoutHook         = smartBorders
-                                       $ toggleLayouts (noBorders Full)
-                                       $ Named "vert" tiled
-                                       ||| Named "horiz" (Mirror tiled)
-                                       ||| Named "tabbed" owntab
-                                       ||| Named "accordion" Accordion
+                , layoutHook         = ownLayoutHook
                 , keys               = \c -> ownKeys c `M.union` keys defaultConfig c
                 }
-    where
-      owntab = tabbed shrinkText tabbedConf
-      tiled = Tall 1 (3/100) (1/2)
 
 main = do statusbar <- spawnPipe statusBarCmd
           xmonad $ ownConfig statusbar
