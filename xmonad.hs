@@ -54,16 +54,26 @@ ownPP h = defaultPP
           , ppLayout = (\x -> "")
           }
 
+playToggle = "quodlibet --play-pause"
+playPrevious = "quodlibet --previous"
+playNext =  "quodlibet --next"
+playOrder = "quodlibet --order=toggle"
+playWindow = "quodlibet --toggle-window"
+
 -- keys config
 ownKeys conf@(XConfig {modMask = modMask}) = M.fromList $
     [ ((modMask   ,              xK_f      ), sendMessage ToggleLayout)
     , ((modMask,                 xK_x      ), submap . M.fromList $
-       [ ((0, xK_z), spawn "quodlibet --previous")
-       , ((0, xK_x), spawn "quodlibet --play-pause")
-       , ((0, xK_c), spawn "quodlibet --order=toggle")
-       , ((0, xK_v), spawn "quodlibet --next")
-       , ((0, xK_a), spawn "quodlibet --toggle-window")
+       [ ((0, xK_z), spawn playPrevious)
+       , ((0, xK_x), spawn playToggle)
+       , ((0, xK_c), spawn playOrder)
+       , ((0, xK_v), spawn playNext)
+       , ((0, xK_a), spawn playWindow)
        ])
+    , ((modMask,                 xK_F5     ), spawn playPrevious)
+    , ((modMask,                 xK_F6     ), spawn playNext)
+    , ((modMask,                 xK_F7     ), spawn playOrder)
+    , ((modMask,                 xK_F8     ), spawn playToggle)
     , ((modMask .|. controlMask, xK_x      ), xmonadPrompt ownXPConfig)
     , ((modMask,                 xK_F1     ), windowPromptGoto ownXPConfig)
     , ((modMask,                 xK_F2     ), shellPrompt ownXPConfig)
