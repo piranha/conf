@@ -6,7 +6,7 @@ Config { font = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-koi8-u"
                     , Run Memory ["-t","<usedratio>%"] 10
                     , Run Swap ["-t", "<usedratio>"] 10
                     , Run Battery [] 10
-    		    , Run Date "%a %d %b %H:%M:%S" "date" 10
+                    , Run Date "%a %d %b %H:%M:%S" "date" 10
                     , Run Com "if [ \"a`acpi -a -B|grep on-line`\" != \"a\" ]; then echo *AC*; else acpi -b|awk '{print $5}'|cut -c 2-5; fi" [] "ac" 10
                     , Run StdinReader
                     ]

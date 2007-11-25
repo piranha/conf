@@ -31,7 +31,7 @@ statusBarCmd = "xmobar"
 
 -- prompt config
 ownXPConfig :: XPConfig
-ownXPConfig = defaultXPConfig 
+ownXPConfig = defaultXPConfig
               { font              = "-*-terminus-*-*-*-*-14-*-*-*-*-*-*-*"
               , bgColor           = "#3f3c6d"
               , fgColor           = "#a8a3f7"

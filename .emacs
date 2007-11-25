@@ -157,6 +157,9 @@
 ;; save position in files
 (setq-default save-place t)
 
+;; show whitespaces at the end of line
+(setq-default show-trailing-whitespace t)
+
 ;; no blinking cursor
 (when (fboundp 'blink-cursor-mode) (blink-cursor-mode -1))
 
@@ -374,7 +377,6 @@
             (set beginning-of-defun-function 'py-beginning-of-def-or-class)
             (local-set-key [return] 'newline-and-indent)
             (eldoc-mode 1)
-            (setq show-trailing-whitespace t)
             ))
 
 ;; end of python
@@ -389,7 +391,6 @@
 (add-hook 'erlang-mode-hook
           (lambda ()
             (local-set-key [return] 'newline-and-indent)
-            (setq show-trailing-whitespace t)
             ))
 
 ;; end of erlang
