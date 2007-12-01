@@ -8,6 +8,9 @@
 # Alexander Zayats
 # "XAKEP" journal
 
+# Loading builtins
+zmodload zsh/deltochar
+autoload -U zmv
 
 #export LANG=ru_RU.koi8r
 #export LANG=ru_RU.KOI8-R
@@ -79,7 +82,6 @@ bindkey "[1~" beginning-of-line
 bindkey "[4~" end-of-line
 bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
-zmodload zsh/deltochar
 bindkey '^[z' delete-to-char
 
 # xterm header
@@ -165,21 +167,7 @@ Usage: fstr [-i] \"string_template\" [\"filename_template\"] "
 # rename file to lowercase
 function lowercase()
 {
-    for file ; do
-        filename=${file##*/}
-        case "$filename" in
-		*/*) dirname==${file%/*} ;;
-		*) dirname=.;;
-        esac
-        nf=$(echo $filename | tr A-Z a-z)
-        newname="${dirname}/${nf}"
-        if [ "$nf" != "$filename" ]; then
-            mv "$file" "$newname"
-            echo "lowercase: $file --> $newname"
-        else
-            echo "lowercase: filename $file has been not changed."
-        fi
-    done
+    zmv "($1)" '${(L)1}'
 }
 
 function isomake()
