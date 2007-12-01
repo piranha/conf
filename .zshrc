@@ -1,12 +1,12 @@
 # -*- mode: sh; mode: fold -*-
-# zsh configuration 
+# zsh configuration
 # (c) 2003-2007 Alexander Solovyov
 # piranha AT piranha.org.ua
 #
-# Thanks to: 
+# Thanks to:
 # tldp.org
 # Alexander Zayats
-# "XAKEP" journal 
+# "XAKEP" journal
 
 
 #export LANG=ru_RU.koi8r
@@ -20,7 +20,7 @@ export LC_NUMERIC=C
 
 stty pass8
 
-unlimit 
+unlimit
 limit stack 8192
 limit core 0
 limit -s
@@ -71,7 +71,7 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 setopt autocd
 
-# Клава
+# ZLE
 bindkey -e
 bindkey "[2~" transpose-words
 bindkey "[3~" delete-char
@@ -79,6 +79,8 @@ bindkey "[1~" beginning-of-line
 bindkey "[4~" end-of-line
 bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
+zmodload zsh/deltochar
+bindkey '^[z' delete-to-char
 
 # Заголовок xterm
 case $TERM in
@@ -293,6 +295,11 @@ if [ -x `whence -c rlwrap` ]; then
     alias nc='rlwrap nc'
 fi
 
+# extensions
+alias -s jpg=gliv
+alias -s flv=mplayer
+alias -s avi=mplayer
+
 # Other
 alias rm="rm -f"
 alias grep="egrep"
@@ -311,10 +318,10 @@ alias h="head"
 alias p="ping"
 alias df="df -h"
 alias bc="bc -l"
-alias slrn="slrn --nntp -h localhost" 
+alias slrn="slrn --nntp -h localhost"
 alias ml="ledit -h ~/.mldonkey_history -x nc localhost 4000"
-alias myapg="apg -n 8 -x 9 -M NCL -s" 
-alias yapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo" 
+alias myapg="apg -n 8 -x 9 -M NCL -s"
+alias yapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo"
 alias mkperlpkg="dh-make-perl --build --cpan"
 alias -g C="|ccze -A"
 alias rezsh="source ~/.zshrc"

@@ -6,7 +6,9 @@ import Data.Bits ((.|.))
 -- XMonad
 import XMonad
 import XMonad.Layouts
+import XMonad.ManageHook
 import XMonad.Operations
+import qualified XMonad.StackSet as W
 -- Extensions
 import XMonad.Actions.DwmPromote
 import XMonad.Actions.FloatKeys
@@ -97,6 +99,13 @@ ownKeys conf@(XConfig {modMask = modMask}) = M.fromList $
     [((modMask .|. controlMask, k), windows $ swapWithCurrent i)
          | (i, k) <- zip (workspaces conf) [xK_1 .. xK_9]]
 
+
+ownManageHook = composeAll . concat $
+                [ [ className =? c --> doFloat | c <- floats]
+                , [ className =? "Gecko" --> doF (W.shift "web") ]]
+    where floats = ["MPlayer", "Gimp", "qiv", "Galculator", "Gcalctool"]
+
+
 ownLayoutHook = smartBorders
                 $ toggleLayouts (noBorders Full)
                 $ Named "vert" tiled
@@ -118,6 +127,7 @@ ownConfig statusbar = defaultConfig
                 , modMask            = mod4Mask
                 , logHook            = dynamicLogWithPP $ ownPP statusbar
                 , layoutHook         = ownLayoutHook
+                , manageHook         = ownManageHook
                 , keys               = \c -> ownKeys c `M.union` keys defaultConfig c
                 }
 
