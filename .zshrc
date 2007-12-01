@@ -82,7 +82,7 @@ bindkey "[B" down-line-or-history
 zmodload zsh/deltochar
 bindkey '^[z' delete-to-char
 
-# Заголовок xterm
+# xterm header
 case $TERM in
 xterm*|rxvt*)
     precmd () {
@@ -135,21 +135,16 @@ autoload -U compinit
 compinit
 # End of lines added by compinstall
 
-# archieved mail
-#arch=( $(ls ~archiver/Mail/)  )
-#ma() { mutt -f ~archiver/Mail/$1 }
-#compctl -k arch ma
-
-# Поиск файла по шаблону:
+# Search file, containing string in name
 function ff() { find . -type f -iname '*'$*'*' -ls ; }
 
-# поиск строки по файлам:
+# Search file, containing string inside
 function fstr()
 {
     OPTIND=1
     local case=""
-    local usage="fstr: поиск строки в файлах.
-Порядок использования: fstr [-i] \"шаблон\" [\"шаблон_имени_файла\"] "
+    local usage="fstr: search string in files.
+Usage: fstr [-i] \"string_template\" [\"filename_template\"] "
     while getopts :it opt
     do
         case "$opt" in
@@ -167,7 +162,7 @@ function fstr()
     find . -type f -name "${2:-*}" -print0 | xargs -0 grep -sn ${case} "$1" 2>&- | egrep --color $1
 }
 
-# перевести имя файла в нижний регистр
+# rename file to lowercase
 function lowercase()
 {
     for file ; do
@@ -182,7 +177,7 @@ function lowercase()
             mv "$file" "$newname"
             echo "lowercase: $file --> $newname"
         else
-            echo "lowercase: имя файла $file не было изменено."
+            echo "lowercase: filename $file has been not changed."
         fi
     done
 }
@@ -190,8 +185,8 @@ function lowercase()
 function isomake()
 {
 	if [ -z "$1" ]; then
-		echo "isomake: первый параметр - имя выходного iso-файла"
-		echo "isomake: второй параметр - имя входной диры/файла"
+		echo "isomake: first parameter - iso-file name"
+		echo "isomake: second parameter - input dir/file name"
 	else
 		mkisofs -v -J -r -o $1 $2
 	fi
@@ -206,23 +201,7 @@ function apt-show()
     fi
 }
 
-# Поиск в портах
-function pname()
-{
-    pushd > /dev/null
-    cd /usr/ports
-    make search name="$1" | grep \(^Port\|^Path\|^Info\|^$\)
-    popd > /dev/null
-}
-
-function pkey()
-{
-    pushd > /dev/null
-    cd /usr/ports
-    make search key="$*" | grep \(^Port\|^Path\|^Info\|^$\)
-    popd > /dev/null
-}
-
+# tail -f, possibly colorized
 function t()
 {
     if [ -x `whence -c ccze` ]; then
@@ -327,3 +306,4 @@ alias -g C="|ccze -A"
 alias rezsh="source ~/.zshrc"
 alias ql="quodlibet"
 alias cal="cal -m"
+alias psg="ps -ylC"
