@@ -3,14 +3,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Gnus config
-;; (c) Alexander Solovyov 2004-2007
+;; by Alexander Solovyov
 ;; piranha AT piranha.org.ua
 ;;
-;; Thanks to all, who has helped me in creation, especially to:
-;; Yuriy Sazonets
-;; Alexander Zayats
-;; Emacswiki.org
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Thanks to all, who help me in creation, especially to:
+;; Yuriy Sazonets <haze AT astral * ntu-kpi * kiev * ua>
+;; Alexander Zayats <ai AT eth0 * net * ua>
+;; Emacswiki.org ;)
+;;
+;; $Id: .gnus 31 2007-09-08 19:09:36Z piranha $
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
 ;; graphics
@@ -44,6 +46,8 @@
 ;;;;;;;;;;;;
 ;; Extension config
 ;;;;;;;;;;;;
+
+;; various
 
 ;; message-x
 (setq message-x-body-function '(lambda () (interactive) (hippie-expand nil)))
@@ -79,11 +83,8 @@
 ;  message-send-mail-partially-limit 380000
   ;; highlight only good signatures
   gnus-signature-separator "^-- $"
-  ;; don't insert Cancel-Lock
-  message-insert-canlock nil
-  ;; Various dirs
-  gnus-agent-directory "~/.emacs.d/agent/"
-  )
+	;; don't insert Cancel-Lock
+  message-insert-canlock nil)
 
 ;; User settings
 (setq
@@ -97,6 +98,8 @@
 ;  message-send-mail-function 'smtpmail-send-it
 ;  smtpmail-auth-login-username "piranha"
 )
+
+;(setq smtpmail-debug-info t)
 
 ;; gnus-alias
 (autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
@@ -115,9 +118,10 @@
       '((".*"
          (name "Alexander Solovyov")
          (address "piranha@piranha.org.ua")
+         (organization "Crazy Penguinz Crew")
          (signature-file "~/.signature"))
-        ;(".*@googlegroups.com"
-        ; (gnus-alias-use-identity "gmail"))
+        (".*@googlegroups.com"
+         (gnus-alias-use-identity "gmail"))
         ("ntu-kpi.*"
          ("X-Keywords" x-keyword))
         ("fido7.*"
@@ -144,8 +148,10 @@
 ;; News
 ;;;;;;;
 
-(setq gnus-select-method '(nntp "127.0.0.1"))
+(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+;(setq gnus-select-method '(nnimap "eth0.net.ua"))
 
 ;; headers displayed
 (setq gnus-visible-headers
@@ -164,8 +170,7 @@
 ;   "^User-Agent:"
 ;   "^Content-Type:"
    "^X-Newsreader:"
-   "^User-Agent:"
-;   "^NNTP-Posting-Host:"
+   "^NNTP-Posting-Host:"
    "^Followup-To:"
 ))
 
@@ -186,23 +191,36 @@
 ;;                   )))
 
 (setq gnus-secondary-select-methods
-      '((nnmaildir "mail"
-                   (directory "~/.mail/")
-                   (expire-age never)
-                   )
-        (nnimap "gmail"
-                (nnimap-address "imap.gmail.com")
-                (nnimap-server-port 993)
-                (nnimap-stream ssl)
-                (nnimap-list-pattern ("INBOX" ".*"))
-                (nnimap-authinfo-file "~/.imap-authinfo")
-                )
-        ))
+      '((nntp "news.ntu-kpi.kiev.ua")))
 
-(setq mail-sources
-      '(
-        (pop :server "mail.softheme.com" :user "asolovyov")
-        ))
+;(setq gnus-secondary-select-methods
+;      '((nnimap "piranha.org.ua")))
+;                (nnimap-address "piranha.org.ua")
+;                (nnimap-list-pattern ("INBOX" ".*"))
+;                (nnimap-authinfo-file "~/.imap-authinfo"))
+;        ))
+
+;(setq mail-sources
+;           '((pop :server "localhost"
+;                  :port "pop3"
+;                  :user "piranha"
+;                  :password "parolcheg"
+;)))
+
+;; Mail sorting
+;(setq nnmail-split-methods '(
+;     ("hostels" "^\\(To\\|From\\|Cc\\):.*hostels.*@hosix\\.ntu-kpi\\.kiev\\.ua.*")
+;     ("humor" "^\\(To\\|From\\|Cc\\):.*humor@xcp\\.kiev\\.ua.*")
+;     ("moderatorials" "^\\(To\\|From\\|Cc\\):.*comp.software@library\\.ntu-kpi\\.kiev\\.ua.*")
+;     ("roka" "^\\(From\\):.*roka@.*")
+;     ("spam" "^\\(Subject\\):.*SPAM.*")
+;     ("root" "^\\(To\\|From\\|Cc\\):.*root@.*")
+;     ("murkt" "^\\(From\\):.*murkt@eth0\\.org\\.ua.*")
+;     ("security" "^\\(From\\):.*daily@security\\.nnov\\.ru.*")
+;     ("hostels" "^\\(To\\):.*hostels@ntu-kpi\\.kiev\\.ua.*")
+;     ("news-talk" "^\\(To\\|Cc\\):.*talk@news.ntu-kpi.kiev.ua.*")
+;     ("anime" "^\\(To\\):.*anime_kpi@yahoogroups.com.*")
+;     ("inbox" "")))
 
 (defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
 (defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))
@@ -235,9 +253,6 @@
 ;(setq gnus-message-archive-group '(
 ;    (if (message-news-p) (concat "nnimap+piranha.org.ua:sent-news" (format-time-string ".%Y.%m" (current-time)))
 ;      (concat "nnimap+piranha.org.ua:sent" (format-time-string ".%Y.%m" (current-time))))))
-(setq gnus-message-archive-group '(
-    (if (message-news-p) (concat "sent-news" (format-time-string ".%Y.%m" (current-time)))
-      (concat "sent" (format-time-string ".%Y.%m" (current-time))))))
 
 
 ;;;;;;;;;;;;
@@ -263,7 +278,7 @@
 
 ;; yet another threading
 (setq gnus-summary-line-format
-      ":%U%R| %B %s %-80=|%4L |%-20,20f |%&user-date; \n")
+      ":%U%R| %B %s %-40=|%4L |%-20,20f |%&user-date; \n")
 ;(setq gnus-summary-line-format (concat
 ;                                "%*%5{%U%R%z%}"
 ;                                "%4{\x49022%}"
@@ -479,13 +494,13 @@
 (autoload 'trivial-cite "tc" t t)
 (add-hook 'mail-citation-hook 'trivial-cite)
 (setq
- message-cite-function 'trivial-cite
- tc-time-format "%e.%m at %H:%M"
- tc-make-attribution 'tc-piranha-attribution
- tc-remove-signature "^\\(-- \\|_______________________________________________\\)$"
- tc-guess-cite-marks nil
- ;; don't rearrange quoted text
- tc-fill-column nil)
+  message-cite-function 'trivial-cite
+  tc-time-format "%e.%m at %H:%M"
+  tc-make-attribution 'tc-piranha-attribution
+	tc-remove-signature "^\\(-- \\|_______________________________________________\\)$"
+	tc-guess-cite-marks nil
+  ;; don't rearrange quoted text
+  tc-fill-column nil)
 
 ;; attribution
 (defun tc-piranha-attribution ()
@@ -551,11 +566,11 @@
   "Returns the song now playing"
   (when (file-exists-p now-playing-file)
     (save-excursion
-      (goto-char (point-max))
+			(goto-char (point-max))
 ;      (let ((coding-system-for-read 'utf-16-le)) (insert-file-contents now-playing-file)))))
-      (insert-file-contents now-playing-file)
-      (goto-char (point-max))
-      (newline))))
+			(insert-file-contents now-playing-file)
+			(goto-char (point-max))
+			(newline))))
 
 ;; Random citation line
 (setq random-sig-directory "~/.sigs")
@@ -564,10 +579,10 @@
   (interactive)
   (when (file-exists-p random-sig-directory)
     (let* ((files (directory-files random-sig-directory t ""))
-           (file (nth (random (length files)) files)))
+	   (file (nth (random (length files)) files)))
       (when file
         (save-excursion
-          (goto-char (point-max))
+		(goto-char (point-max))
           (insert-file-contents file))))))
 
 ;; This function is especially useful for message mode
@@ -615,6 +630,16 @@
 ;(add-hook 'message-setup-hook 'prh:random-cite)
 ;(add-hook 'message-setup-hook 'prh:now-playing)
 
+;;;;;;;;;;;;;;;;;;
+;; Autocompilation
+;;;;;;;;;;;;;;;;;;
+
+(defun gnus-autocompile()
+  "compile itself if ~/.gnus"
+  (interactive)
+  (if (string= (buffer-file-name) (concat default-directory ".gnus"))
+      (byte-compile-file (buffer-file-name))))
+(add-hook 'after-save-hook 'gnus-autocompile())
+
 ;(setq smtpmail-debug-info t)
 ;(setq smtpmail-debug-verb t)
-;(setq imap-log t)
