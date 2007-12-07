@@ -267,17 +267,18 @@ alias -s jpg=gliv
 alias -s flv=mplayer
 alias -s avi=mplayer
 
-# Other
-alias rm="rm -f"
-alias grep="egrep"
-alias nroff="nroff -Tlatin1"
-alias mc="mc -acx"
-alias ss="sudo -s"
-alias sr="screen -D -r"
+# ls
 alias ll="ls -lh"
 alias la="ls -lA"
 alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
+
+# Other
+alias rm="rm -f"
+alias grep="egrep"
+alias mc="mc -acx"
+alias ss="sudo -s"
+alias sr="screen -D -r"
 alias l=$PAGER
 alias g="egrep -i --color"
 alias c="cat"
@@ -295,3 +296,4 @@ alias rezsh="source ~/.zshrc"
 alias ql="quodlibet"
 alias cal="cal -m"
 alias psg="ps -ylC"
+alias psfg="ps -ylfC"

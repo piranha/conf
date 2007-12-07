@@ -232,14 +232,14 @@
 (if graf
     (progn
       ;; Title formatting
-      (setq frame-title-format (list '(buffer-file-name "%b aka %f") " - GNU Emacs " emacs-version "@" (downcase system-name)))
+      (setq frame-title-format (list "%b"  '(buffer-file-name " aka %f") " - Emacs " emacs-version))
       (setq icon-title-format frame-title-format)
 
       ;; Font setup
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
         (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")))
-      
+
       ;; Default Frame
       (add-to-list 'default-frame-alist '(fullscreen . fullscree))
 
@@ -379,6 +379,10 @@
             (eldoc-mode 1)
             ))
 
+;(require 'pymacs)
+;(pymacs-load "ropemacs" "rope-")
+;(rope-init)
+
 ;; end of python
 ;;;;;;;;;;;;;;;;
 
@@ -405,6 +409,9 @@
 (autoload 'markdown-mode "markdown-mode.el"
   "Major mode for editing Markdown files" t)
 
+(autoload 'wikipedia-mode "wikipedia-mode.el"
+  "Major mode for editing MediaWiki files" t)
+
 (add-hook 'markdown-mode-hook
           (lambda ()
             (setq fill-column 80)
@@ -418,6 +425,7 @@
         '("\\.css$" . css-mode)
         '("\\.erl$" . erlang-mode)
         '("\\.hs$" . haskell-mode)
+        '("\\.wiki\\.txt$" . wikipedia-mode)
         )
         auto-mode-alist))
 
@@ -529,48 +537,48 @@
 
 ;;;;;;;;;
 ;; Jabber
-(when 
+(when
     (require 'jabber nil t)
   (setq
    jabber-nickname "piranha"
    jabber-resource "laptop"
    jabber-server "eth0.net.ua"
    jabber-username "piranha")
-  
+
   (setq jabber-roster-line-format " %c %-25n %u %-8s  %S\n")
   (setq jabber-history-enabled t)
   (setq jabber-use-global-history nil)
   (setq jabber-history-dir "~/.emacs.d/jabber/")
-  
+
   (add-hook 'jabber-chat-mode-hook
             (lambda ()
               (setq fill-column 120)
               (local-set-key [tab] 'dabbrev-expand)
               ))
-  
+
   (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
-  
+
   (defun my-jabber-chat-bury ()
     (interactive)
     (if (eq 'jabber-chat-mode major-mode)
         (bury-buffer)))
-  
+
   (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
   (setq jabber-autoaway-method 'jabber-xprintidle-program)
-  
+
   ;; stub for announce
   (setq jabber-xosd-display-time 3)
-  
+
   (defun jabber-xosd-display-message (message)
     "Displays MESSAGE through the xosd"
     (let ((process-connection-type nil))
       (start-process "jabber-xosd" nil "osd_cat" "-p" "bottom" "-A" "center" "-f" "-*-courier-*-*-*-*-30" "-d" (number-to-string jabber-xosd-display-time))
       (process-send-string "jabber-xosd" message)
       (process-send-eof "jabber-xosd")))
-  
+
   (defun jabber-message-xosd (from buffer text propsed-alert)
     (jabber-xosd-display-message "New message"))
-  
+
   (add-to-list 'jabber-alert-message-hooks
                'jabber-message-xosd)
 )

@@ -27,7 +27,7 @@
 ;; Loading
 ;;;;;;;;;;
 (require 'tc)
-(require 'gnus-alias)
+;; (require 'gnus-alias)
 (require 'gnus-stat)
 (require 'message-x)
 (when (file-exists-p "~/.secrets.el")
@@ -37,11 +37,11 @@
 ;; Language
 ;;;;;;;;;;;
 
-(setq mm-body-charset-encoding-alist '((koi8-u . 8bit) ))
+(setq mm-body-charset-encoding-alist '((koi8-u . 8bit)))
 (setq gnus-group-posting-charset-alist nil)
-;(push '("fido7.*" koi8-r t) gnus-group-posting-charset-alist)
-;(push '("ntu-kpi.*" koi8-u t) gnus-group-posting-charset-alist)
+(setq gnus-group-charset-alist nil)
 (push '(".*" koi8-u t) gnus-group-posting-charset-alist)
+(push '(".*" koi8-u t) gnus-group-charset-alist)
 
 ;;;;;;;;;;;;
 ;; Extension config
@@ -61,6 +61,13 @@
 	(lambda ()
     (setq fill-column 72)
 		(turn-on-auto-fill)))
+
+;; remove thouse ugly red line endings
+(defun disable-trailing-whitespace ()
+ (setq show-trailing-whitespace nil))
+(add-hook 'gnus-summary-mode-hook 'disable-trailing-whitespace)
+(add-hook 'gnus-group-mode-hook 'disable-trailing-whitespace)
+(add-hook 'gnus-article-mode-hook 'disable-trailing-whitespace)
 
 (setq
   ;; be verbose
@@ -83,7 +90,7 @@
 ;  message-send-mail-partially-limit 380000
   ;; highlight only good signatures
   gnus-signature-separator "^-- $"
-	;; don't insert Cancel-Lock
+  ;; don't insert Cancel-Lock
   message-insert-canlock nil)
 
 ;; User settings
@@ -91,44 +98,43 @@
   user-name "piranha"
   user-full-name "Alexander Solovyov"
   user-mail-address "piranha@piranha.org.ua"
+)
+
+;; Send mail via SMTP
+;(setq
 ;  gnus-local-domain "piranha.org.ua"
 ;  smtpmail-default-smtp-server "viii.ntu-kpi.kiev.ua"
 ;  smtpmail-local-domain "viii.ntu-kpi.kiev.ua"
 ;  smtpmail-default-smtp-server "localhost"
 ;  message-send-mail-function 'smtpmail-send-it
 ;  smtpmail-auth-login-username "piranha"
-)
+;)
 
 ;(setq smtpmail-debug-info t)
 
-;; gnus-alias
 (autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
 (add-hook 'message-setup-hook 'gnus-alias-determine-identity)
-(setq
- gnus-alias-identity-alist '(
-      ("piranha"   "" "\"Alexander Solovyov\" <piranha@piranha.org.ua>" "" nil "" "")
-      ("viii" "" "\"Alexander Solovyov\" <piranha@viii.ntu-kpi.kiev.ua>" "" nil "" "")
-      ("gmail"  "" "\"Alexander Solovyov\" <alexander.solovyov@gmail.com>" "" nil "" ""))
- gnus-alias-default-identity "piranha")
+(add-hook 'message-load-hook
+          '(lambda ()
+             (gnus-alias-init)
+             (add-hook 'message-x-after-completion-functions 'gnus-alias-message-x-completion)
+             ))
 
-(load-library "smtpmail")
-(load-library "message")
-
-(setq gnus-posting-styles
-      '((".*"
-         (name "Alexander Solovyov")
-         (address "piranha@piranha.org.ua")
-         (organization "Crazy Penguinz Crew")
-         (signature-file "~/.signature"))
-        (".*@googlegroups.com"
-         (gnus-alias-use-identity "gmail"))
-        ("ntu-kpi.*"
-         ("X-Keywords" x-keyword))
-        ("fido7.*"
-         (name "Alexander Solovyov")
-         (address "piranha@viii.ntu-kpi.kiev.ua")
-         (signature-file "~/.sign_fido")
-         ("Keywords:" fido-keyword))))
+(setq gnus-alias-identity-alist
+      '(
+        ;;(name    inherit    from    organization    headers    body    signature)
+        ("piranha"  nil "\"Alexander Solovyov\" <piranha@piranha.org.ua>" nil nil nil "~/.signature")
+        ("news"     "piranha" nil nil (("X-keywords" . x-keyword)) nil nil)
+        ("viii"     "piranha" "\"Alexander Solovyov\" <piranha@viii.ntu-kpi.kiev.ua>" nil nil nil nil)
+        ("gmail"    "piranha" "\"Alexander Solovyov\" <alexander.solovyov@gmail.com>" nil nil nil nil)
+        ("softheme" "piranha" "\"Alexander Solovyov\" <alexander.solovyov@softheme.com>" nil nil nil nil)
+        ))
+(setq gnus-alias-identity-rules
+     '(
+       ("mydeco" ("to" "\\(softheme\\|mydeco\\).com" current) "softheme")
+       ("ntu-kpi" ("newsgroup" "^ntu-kpi" both) "news")
+       ))
+(setq gnus-alias-default-identity "piranha")
 
 ;; gnus-parameters
 (setq gnus-parameters
@@ -140,7 +146,7 @@
 
 ;; Show text before html
 (eval-after-load "mm-decode"
- '(progn 
+ '(progn
       (add-to-list 'mm-discouraged-alternatives "text/html")
       (add-to-list 'mm-discouraged-alternatives "text/richtext")))
 
@@ -148,7 +154,7 @@
 ;; News
 ;;;;;;;
 
-(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
+(setq gnus-select-method '(nntp "localhost"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 ;(setq gnus-select-method '(nnimap "eth0.net.ua"))
@@ -184,43 +190,28 @@
 ;; Mail
 ;;;;;;;
 
-;;(setq gnus-secondary-select-methods
-;;      '((nnmaildir "mail"
-;;                   (directory "~/.nnmaildir/")
-;;                   (expire-age never)
-;;                   )))
-
 (setq gnus-secondary-select-methods
-      '((nntp "news.ntu-kpi.kiev.ua")))
+     '((nnmaildir "mail"
+                  (directory "~/.mail/")
+                  (expire-age never)
+                  )))
 
-;(setq gnus-secondary-select-methods
-;      '((nnimap "piranha.org.ua")))
-;                (nnimap-address "piranha.org.ua")
-;                (nnimap-list-pattern ("INBOX" ".*"))
-;                (nnimap-authinfo-file "~/.imap-authinfo"))
-;        ))
+;(setq imap-ssl-program "openssl s_client -tls1 -connect %s:%p")
+;; (setq gnus-secondary-select-methods
+;;      '((nnimap "imap.gmail.com"
+;;                (nnimap-address "imap.gmail.com")
+;;                (nnimap-authinfo-file "~/.imap-authinfo")
+;;                (nnimap-server-port 993)
+;;                (nnimap-stream ssl)
+;; ;               (nnimap-list-pattern ("INBOX" ".*"))
+;;                )))
 
-;(setq mail-sources
-;           '((pop :server "localhost"
-;                  :port "pop3"
-;                  :user "piranha"
-;                  :password "parolcheg"
-;)))
-
-;; Mail sorting
-;(setq nnmail-split-methods '(
-;     ("hostels" "^\\(To\\|From\\|Cc\\):.*hostels.*@hosix\\.ntu-kpi\\.kiev\\.ua.*")
-;     ("humor" "^\\(To\\|From\\|Cc\\):.*humor@xcp\\.kiev\\.ua.*")
-;     ("moderatorials" "^\\(To\\|From\\|Cc\\):.*comp.software@library\\.ntu-kpi\\.kiev\\.ua.*")
-;     ("roka" "^\\(From\\):.*roka@.*")
-;     ("spam" "^\\(Subject\\):.*SPAM.*")
-;     ("root" "^\\(To\\|From\\|Cc\\):.*root@.*")
-;     ("murkt" "^\\(From\\):.*murkt@eth0\\.org\\.ua.*")
-;     ("security" "^\\(From\\):.*daily@security\\.nnov\\.ru.*")
-;     ("hostels" "^\\(To\\):.*hostels@ntu-kpi\\.kiev\\.ua.*")
-;     ("news-talk" "^\\(To\\|Cc\\):.*talk@news.ntu-kpi.kiev.ua.*")
-;     ("anime" "^\\(To\\):.*anime_kpi@yahoogroups.com.*")
-;     ("inbox" "")))
+;; (load-library "mail-source")
+;; (setq mail-sources
+;;       '((pop :server "mail.softheme.com"
+;;              :user "alexander.solovyov"
+;; ;             :program "fetchmail %u@%s -P %p %t"
+;;             )))
 
 (defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
 (defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))
@@ -253,7 +244,11 @@
 ;(setq gnus-message-archive-group '(
 ;    (if (message-news-p) (concat "nnimap+piranha.org.ua:sent-news" (format-time-string ".%Y.%m" (current-time)))
 ;      (concat "nnimap+piranha.org.ua:sent" (format-time-string ".%Y.%m" (current-time))))))
-
+(defun prh:archive-mailbox-date (mailbox)
+  (concat mailbox (format-time-string ".%Y.%m" (current-time))))
+(setq gnus-message-archive-group '(
+     (if (message-news-p) (prh:archive-mailbox-date "nnmaildir+mail:sent-news")
+       (prh:archive-mailbox-date "nnmaildir+mail:sent-mail"))))
 
 ;;;;;;;;;;;;
 ;; Threading
@@ -278,7 +273,7 @@
 
 ;; yet another threading
 (setq gnus-summary-line-format
-      ":%U%R| %B %s %-40=|%4L |%-20,20f |%&user-date; \n")
+      ":%U%R| %B %s %-80=|%4L |%-20,20f |%&user-date; \n")
 ;(setq gnus-summary-line-format (concat
 ;                                "%*%5{%U%R%z%}"
 ;                                "%4{\x49022%}"
@@ -639,7 +634,7 @@
   (interactive)
   (if (string= (buffer-file-name) (concat default-directory ".gnus"))
       (byte-compile-file (buffer-file-name))))
-(add-hook 'after-save-hook 'gnus-autocompile())
+;(add-hook 'after-save-hook 'gnus-autocompile())
 
 ;(setq smtpmail-debug-info t)
 ;(setq smtpmail-debug-verb t)
