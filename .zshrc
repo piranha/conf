@@ -122,16 +122,15 @@ compctl -k hosts ssh telnet ping mtr traceroute
 compctl -j -P "%" kill
 compctl -g '*.gz' + -g '*(-/)' gunzip gzcat
 compctl -g '*.rar' + -g '*(-/)' rar unrar
+compctl -g '*.bz2' + -g '*(-/)' bunzip2 bzcat
 compctl -g '*(-*)' + -g '*(-/)' strip
 compctl -g '*.ps *.eps' + -g '*(-/)' gs ghostview psnup psduplex ps2ascii
-compctl -g '*.dvi' + -g '*(-/)' xdvi dvips
+compctl -g '*.dvi *.pdf' + -g '*(-/)' evince
 compctl -g '*.xpm *.xpm.gz' + -g '*(-/)' xpmroot sxpm pixmap xpmtoppm
 compctl -g '*.fig' + -g '*(-/)' xfig
 compctl -g '*(-/) .*(-/)' cd
 compctl -g '(^(*.o|*.class|*.jar|*.gz|*.gif|*.a|*.Z|*.bz2))' + -g '.*' less vim
-compctl -g '*.pkg.tar.gz' pacman
-#compctl -g '*' + -g '.*' vim
-#compctl -g '*.html' + -g '*(-/)' appletviewer
+compctl -g '(^(*.o|*.class|*.jar|*.gif|*.a))' + -g '.*' most
 
 autoload -U compinit
 compinit
