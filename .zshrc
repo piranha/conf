@@ -24,12 +24,12 @@ limit -s
 umask 022
 
 export PATH=~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin
-if [ -x `whence -c most` ]; then
+if [ -x =most ]; then
         export PAGER="most"
 else
         export PAGER="less"
 fi
-if [ -x `whence -c vim` ]; then
+if [ -x =vim ]; then
     export EDITOR="vim"
 else
     export EDITOR="vi"
@@ -59,13 +59,23 @@ typeset -U path cdpath fpath manpath
 
 # History
 HISTFILE=~/.zhistory
-HISTSIZE=1000
-SAVEHIST=1000
-setopt APPEND_HISTORY
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_IGNORE_SPACE
-setopt HIST_REDUCE_BLANKS
+HISTSIZE=5000
+SAVEHIST=10000
+setopt append_history
+setopt share_history
+setopt extended_history
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt hist_reduce_blanks
 setopt autocd
+
+# Another important options
+setopt extended_glob # don't forget to quote '^', '~' and '#'!
+setopt notify # report the status of backgrounds jobs immediately
+setopt completeinword
+setopt hash_list_all
+REPORTTIME=5
+watch=(notme root)
 
 # ZLE
 bindkey -e
@@ -199,7 +209,7 @@ function apt-show()
 # tail -f, possibly colorized
 function t()
 {
-    if [ -x `whence -c ccze` ]; then
+    if [ -x =ccze= ]; then
         tail -f $1 | ccze -A
     else
         tail -f $1
@@ -234,12 +244,12 @@ alias U2k="iconv -c -f utf-16 -t koi8-r"
 alias k2U="iconv -c -f koi8-r -t utf-16"
 
 ## LFTP
-if [ -x `whence -c lftp` ]; then
+if [ -x =lftp ]; then
     alias ftp="lftp"
     function sftp() { lftp sftp://`whoami`@$1 }
 fi
 ## Mutt new generation
-if [ -x `whence -c muttng` ]; then
+if [ -x =muttng ]; then
         alias m="muttng"
 else
         alias m="mutt"
@@ -251,7 +261,7 @@ else
         alias ls="/bin/ls -G"
 fi
 ## GNU Find
-if [ `uname` != "Linux" -a -x `whence -c gfind` ]; then
+if [ `uname` != "Linux" -a -x =gfind ]; then
     alias find="noglob gfind"
 else
     alias find="noglob find"
