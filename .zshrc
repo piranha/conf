@@ -8,13 +8,6 @@
 # Alexander Zayats
 # "XAKEP" journal
 
-# Loading builtins
-zmodload zsh/deltochar
-autoload -U zmv
-
-#export LANG=ru_RU.koi8r
-#export LANG=ru_RU.KOI8-R
-#export TZ='Europe/Kiev'
 if [ -f ~/.zshlocal ]; then
     source ~/.zshlocal
 fi
@@ -42,11 +35,11 @@ else
     export EDITOR="vi"
 fi
 export BROWSER="links"
-#export MAIL=~/.mail/
-#export MAIL=/var/mail/piranha
-#export MAIL=/home/hosting/eth0.net.ua/`whoami`/Maildir/
 export LESS="-R"
-export PERL5LIB=${PERL5LIB:+$PERL5LIB:}$HOME/perl
+if [ -d $HOME/perl ]
+then
+    export PERL5LIB=${PERL5LIB:+$PERL5LIB:}$HOME/perl
+fi
 if [ -d $HOME/share/man ]
 then
     export MANPATH=$HOME/share/man:$(manpath)
@@ -84,29 +77,18 @@ bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
 bindkey '^[z' delete-to-char
 
-# xterm header
-case $TERM in
-xterm*|rxvt*)
-    precmd () {
-        print -Pn "\033]0;%n@%M (%y) - %/\a"
-        print -Pn "\033]1;%n@%m (tty%l)\a"
-    }
-    preexec () {
-        print -Pn "\033]0;%n@%M (%y) - %/ - ($1)\a"
-        print -Pn "\033]1;%n@%m (tty%l)\a"
-    }
-;;
-screen)
-    preexec () {
-    # set screen title
-        echo -ne "\ek${1[(w)1]}\e\\"
-    }
-    precmd () {
-    #set screen title
-        echo -ne "\ekzsh\e\\"
-    }
-;;
-esac
+
+# Loading builtins
+zmodload zsh/deltochar
+autoload -U zmv
+# load on reference
+zmodload -a zsh/zpty zpty
+
+# press esc-e for editing command line in $EDITOR or $VISUAL
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '\ee' edit-command-line
+
 
 ######## Completition #######
 #hostsmy=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
@@ -135,6 +117,32 @@ compctl -g '(^(*.o|*.class|*.jar|*.gif|*.a))' + -g '.*' most
 autoload -U compinit
 compinit
 # End of lines added by compinstall
+
+
+# xterm header
+case $TERM in
+xterm*|rxvt*)
+    precmd () {
+        print -Pn "\033]0;%n@%M (%y) - %/\a"
+        print -Pn "\033]1;%n@%m (tty%l)\a"
+    }
+    preexec () {
+        print -Pn "\033]0;%n@%M (%y) - %/ - ($1)\a"
+        print -Pn "\033]1;%n@%m (tty%l)\a"
+    }
+;;
+screen)
+    preexec () {
+    # set screen title
+        echo -ne "\ek${1[(w)1]}\e\\"
+    }
+    precmd () {
+    #set screen title
+        echo -ne "\ekzsh\e\\"
+    }
+;;
+esac
+
 
 # Search file, containing string in name
 function ff() { find . -type f -iname '*'$*'*' -ls ; }

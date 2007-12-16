@@ -45,7 +45,13 @@
 (when linux
   (set-selection-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
-  (set-keyboard-coding-system 'utf-8))
+  (set-keyboard-coding-system 'utf-8)
+  (setq
+   x-select-enable-clipboard t
+   x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)
+   interprogram-paste-function (quote x-cut-buffer-or-selection-value)
+   ))
+
 (when win32
   (set-clipboard-coding-system 'cp1251-dos)
   (set-selection-coding-system 'cp1251-dos)
