@@ -24,12 +24,12 @@ limit -s
 umask 022
 
 export PATH=~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin
-if [ -x =most ]; then
+if [ -x `whence -c most` ]; then
         export PAGER="most"
 else
         export PAGER="less"
 fi
-if [ -x =vim ]; then
+if [ -x `whence -c vim` ]; then
     export EDITOR="vim"
 else
     export EDITOR="vi"
@@ -209,7 +209,7 @@ function apt-show()
 # tail -f, possibly colorized
 function t()
 {
-    if [ -x =ccze= ]; then
+    if [ -x `whence -c ccze` ]; then
         tail -f $1 | ccze -A
     else
         tail -f $1
@@ -229,6 +229,19 @@ function totalram()
     fi
 }
 
+# funny function to slow print it's input
+slow_print() {
+    for argument in "${@}"
+    do
+        for ((i = 1; i <= ${#1} ;i++)) {
+            print -n "${argument[i]}"
+            sleep 0.08
+        }
+        print -n " "
+    done
+    print ""
+}
+
 #############        ALIASES         ###############
 # Nocorrect
 #alias mv="nocorrect mv"
@@ -244,12 +257,12 @@ alias U2k="iconv -c -f utf-16 -t koi8-r"
 alias k2U="iconv -c -f koi8-r -t utf-16"
 
 ## LFTP
-if [ -x =lftp ]; then
+if [ -x `whence -c lftp` ]; then
     alias ftp="lftp"
     function sftp() { lftp sftp://`whoami`@$1 }
 fi
 ## Mutt new generation
-if [ -x =muttng ]; then
+if [ -x `whence -c muttng` ]; then
         alias m="muttng"
 else
         alias m="mutt"
@@ -261,7 +274,7 @@ else
         alias ls="/bin/ls -G"
 fi
 ## GNU Find
-if [ `uname` != "Linux" -a -x =gfind ]; then
+if [ `uname` != "Linux" -a -x `whence -c gfind` ]; then
     alias find="noglob gfind"
 else
     alias find="noglob find"
