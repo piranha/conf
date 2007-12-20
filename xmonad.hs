@@ -5,7 +5,6 @@ import qualified Data.Map as M
 import Data.Bits ((.|.))
 -- XMonad
 import XMonad
-import XMonad.Layouts
 import XMonad.ManageHook
 import XMonad.Operations
 import qualified XMonad.StackSet as W

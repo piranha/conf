@@ -62,7 +62,6 @@ HISTFILE=~/.zhistory
 HISTSIZE=5000
 SAVEHIST=10000
 setopt append_history
-setopt share_history
 setopt extended_history
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
