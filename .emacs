@@ -385,9 +385,11 @@
             (eldoc-mode 1)
             ))
 
-;(require 'pymacs)
-;(pymacs-load "ropemacs" "rope-")
-;(rope-init)
+(when
+    (require 'pymacs nil t)
+  (pymacs-load "ropemacs" "rope-")
+  (rope-init)
+)
 
 ;; end of python
 ;;;;;;;;;;;;;;;;
