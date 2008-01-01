@@ -206,7 +206,6 @@
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
-(global-set-key (kbd "C-/") 'dabbrev-completion)
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
@@ -346,7 +345,8 @@
 (set-face-foreground 'tabbar-selected "pale green")
 (set-face-bold-p 'tabbar-selected t)
 (set-face-attribute 'tabbar-button nil :box '(:line-width 1 :color "gray72"))
-(set-face-font 'tabbar-default "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")
+(when linux
+  (set-face-font 'tabbar-default "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1"))
 
 (setq tabbar-buffer-groups-function
       (lambda ()
@@ -388,7 +388,6 @@
 (when
     (require 'pymacs nil t)
   (pymacs-load "ropemacs" "rope-")
-  (rope-init)
 )
 
 ;; end of python
