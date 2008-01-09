@@ -59,7 +59,7 @@
   (set-keyboard-coding-system 'cp1251-dos)
   (set-w32-system-coding-system 'cp1251-dos))
 
-(prefer-coding-system 'utf-8)
+(prefer-coding-system 'utf-8-unix)
 
 ;;;;;;;;;;;;;
 ;; Extensions
@@ -208,7 +208,7 @@
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-w") 'backward-kill-word)
-(global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-x w") 'kill-region)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "C-x C-a") 'imenu)
 
@@ -219,11 +219,11 @@
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 
-(global-set-key (kbd "C-x w")  (lambda () (interactive) (kill-buffer nil)))
-(global-set-key '[(control meta l)] (lambda () (interactive) (switch-to-buffer (other-buffer))))
+(global-set-key (kbd "C-x C-k")  (lambda () (interactive) (kill-buffer nil)))
+(global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
 
 (when win32
-    (global-set-key [C-f12] '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
+    (global-set-key (kbd "C-<f12>") '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
   )
 
 ;; end of keybindings
@@ -335,10 +335,10 @@
 
 (require 'tabbar)
 
-(global-set-key [C-S-iso-lefttab] 'tabbar-backward-tab)
-(global-set-key [C-S-tab] 'tabbar-backward-tab)
-(global-set-key [C-tab] 'tabbar-forward-tab)
-(global-set-key [C-f10] 'tabbar-local-mode)
+(global-set-key (kbd "C-S-<iso-lefttab>") 'tabbar-backward-tab)
+(global-set-key (kbd "C-S-<tab>") 'tabbar-backward-tab)
+(global-set-key (kbd "C-<tab>") 'tabbar-forward-tab)
+(global-set-key (kbd "C-<f10>") 'tabbar-local-mode)
 
 (set-face-foreground 'tabbar-default "gray")
 (set-face-background 'tabbar-default "black")
@@ -381,7 +381,7 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (set beginning-of-defun-function 'py-beginning-of-def-or-class)
-            (local-set-key [return] 'newline-and-indent)
+            (local-set-key (kbd "RET") 'newline-and-indent)
             (eldoc-mode 1)
             ))
 
@@ -401,7 +401,7 @@
 
 (add-hook 'erlang-mode-hook
           (lambda ()
-            (local-set-key [return] 'newline-and-indent)
+            (local-set-key (kbd "RET") 'newline-and-indent)
             ))
 
 ;; end of erlang
@@ -479,7 +479,7 @@
 (add-hook
  'docbook-mode-hook
  '(lambda ()
-    (local-set-key "\C-tab" 'indent-for-tab-command)))
+    (local-set-key (kbd "C-<tab>") 'indent-for-tab-command)))
 
 ;; You might want to make this the default for .sgml or .xml documents,
 ;; or you might want to rely on -*- DocBook -*- on the first line,
@@ -560,7 +560,7 @@
   (add-hook 'jabber-chat-mode-hook
             (lambda ()
               (setq fill-column 120)
-              (local-set-key [tab] 'dabbrev-expand)
+              (local-set-key (kbd "<tab>") 'dabbrev-expand)
               ))
 
   (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
