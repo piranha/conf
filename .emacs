@@ -213,6 +213,9 @@
 (global-set-key (kbd "C-x C-a") 'imenu)
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
 (global-set-key (kbd "M-<down>") 'prh:move-line-down)
+(global-set-key (kbd "C-c l") 'copy-line)
+(global-set-key (kbd "C-M-<up>") 'prh:duplicate-line-up)
+(global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
 
 ;; add some nifty things
 (load "dired-x")
@@ -532,6 +535,14 @@
   (interactive)
   (insert (format-time-string "%c")))
 
+(defun copy-line ()
+  "Save current line into Kill-Ring without mark the line "
+  (interactive)
+  (let ((beg (line-beginning-position))
+      	(end (line-end-position)))
+    (copy-region-as-kill beg end))
+  )
+
 (defun prh:kill-line ()
   "Kills current line"
   (interactive)
@@ -575,6 +586,38 @@ Arg determines number of lines to skip, negative means move up."
   (interactive "p")
   (or arg (setq arg 1))
   (prh:move-line (- arg))
+)
+
+(defun prh:duplicate-line (&optional arg)
+  "Copy current line.
+Arg determines number of lines to be created and direction."
+  (interactive "p")
+  (let ((prh:column (current-column)))
+    (progn
+      (or arg (setq arg 1))
+      (if (< arg 0)
+          (setq tomove (1+ arg))
+        (setq tomove arg))
+      (copy-line)
+      (end-of-line tomove)
+      (newline)
+      (yank)
+      (next-line (- arg))
+      (move-to-column prh:column)))
+  )
+
+(defun prh:duplicate-line-down (&optional arg)
+  "Duplicate current line down. Optional ARG determines number of lines to skip"
+  (interactive "p")
+  (or arg (setq arg 1))
+  (prh:duplicate-line arg)
+)
+
+(defun prh:duplicate-line-up (&optional arg)
+  "Duplicate current line up. Optional ARG determines number of lines to skip"
+  (interactive "p")
+  (or arg (setq arg 1))
+  (prh:duplicate-line (- arg))
 )
 
 ;; end of functions
