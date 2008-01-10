@@ -564,14 +564,14 @@ Arg determines number of lines to skip, negative means move up."
     ))
 
 (defun prh:move-line-down (&optional arg)
-  "Move current line down"
+  "Move current line down. Optional ARG determines number of lines to skip"
   (interactive "p")
   (or arg (setq arg 1))
   (prh:move-line arg)
 )
 
 (defun prh:move-line-up (&optional arg)
-  "Move current line up"
+  "Move current line up. Optional ARG determines number of lines to skip"
   (interactive "p")
   (or arg (setq arg 1))
   (prh:move-line (- arg))
