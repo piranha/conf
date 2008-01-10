@@ -211,6 +211,8 @@
 (global-set-key (kbd "C-x w") 'kill-region)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "C-x C-a") 'imenu)
+(global-set-key (kbd "M-<up>") 'prh:move-line-up)
+(global-set-key (kbd "M-<down>") 'prh:move-line-down)
 
 ;; add some nifty things
 (load "dired-x")
@@ -244,6 +246,7 @@
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
         (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")))
+        ;(add-to-list 'default-frame-alist '(font . "-*-andale mono-*-*-*-*-15-*-*-*-*-*-iso10646-1")))
 
       ;; Default Frame
       (add-to-list 'default-frame-alist '(fullscreen . fullscree))
@@ -419,8 +422,18 @@
 (autoload 'wikipedia-mode "wikipedia-mode.el"
   "Major mode for editing MediaWiki files" t)
 
+(autoload 'lout-mode "lout-mode.el"
+  "Major mode for editing Lout files" t)
+
 (add-hook 'markdown-mode-hook
           (lambda ()
+            (setq fill-column 80)
+            (auto-fill-mode)
+            ))
+
+(add-hook 'latex-mode-hook
+          (lambda ()
+            (local-set-key (kbd "\"") 'self-insert-command)
             (setq fill-column 80)
             (auto-fill-mode)
             ))
@@ -433,6 +446,7 @@
         '("\\.erl$" . erlang-mode)
         '("\\.hs$" . haskell-mode)
         '("\\.wiki\\.txt$" . wikipedia-mode)
+        '("\\.lout$" . lout-mode)
         )
         auto-mode-alist))
 
@@ -509,14 +523,56 @@
       (byte-compile-file (buffer-file-name))))
 
 (defun insert-date (format)
-    "Wrapper around format-time-string."
-    (interactive "MFormat: ")
-    (insert (format-time-string format)))
+  "Wrapper around format-time-string."
+  (interactive "MFormat: ")
+  (insert (format-time-string format)))
 
 (defun insert-standard-date ()
-    "Inserts standard date time string."
-    (interactive)
-    (insert (format-time-string "%c")))
+  "Inserts standard date time string."
+  (interactive)
+  (insert (format-time-string "%c")))
+
+(defun prh:kill-line ()
+  "Kills current line"
+  (interactive)
+  (beginning-of-line)
+  (kill-line 1)
+  )
+
+(defun prh:count-lines (arg)
+  "Count lines depending on arg.
+If arg is positive, count from current position to end,
+if negative, count from start to current position.
+"
+  (if (> arg 0)
+      (count-lines (point) (point-max))
+    (- (count-lines 1 (point)) 1)))
+
+(defun prh:move-line (&optional arg)
+  "Move current line"
+  (interactive)
+  (if (> (prh:count-lines arg) 0)
+      (let ((prh:column (current-column)))
+        (progn
+          (or arg (setq arg 1))
+          (prh:kill-line)
+          (next-line arg)
+          (yank)
+          (next-line -1)
+          (move-to-column prh:column)))
+    ))
+
+(defun prh:move-line-down ()
+  "Move current line down"
+  (interactive)
+  (prh:move-line 1)
+)
+
+(defun prh:move-line-up ()
+  "Move current line up"
+  (interactive)
+  (prh:move-line -1)
+)
 
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
