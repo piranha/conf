@@ -549,8 +549,9 @@ if negative, count from start to current position.
     (- (count-lines 1 (point)) 1)))
 
 (defun prh:move-line (&optional arg)
-  "Move current line"
-  (interactive)
+  "Move current line.
+Arg determines number of lines to skip, negative means move up."
+  (interactive "p")
   (if (> (prh:count-lines arg) 0)
       (let ((prh:column (current-column)))
         (progn
@@ -562,16 +563,18 @@ if negative, count from start to current position.
           (move-to-column prh:column)))
     ))
 
-(defun prh:move-line-down ()
+(defun prh:move-line-down (&optional arg)
   "Move current line down"
-  (interactive)
-  (prh:move-line 1)
+  (interactive "p")
+  (or arg (setq arg 1))
+  (prh:move-line arg)
 )
 
-(defun prh:move-line-up ()
+(defun prh:move-line-up (&optional arg)
   "Move current line up"
-  (interactive)
-  (prh:move-line -1)
+  (interactive "p")
+  (or arg (setq arg 1))
+  (prh:move-line (- arg))
 )
 
 ;; end of functions
