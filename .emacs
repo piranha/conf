@@ -378,6 +378,76 @@
 ;;;;;;;;;;;;;
 
 ;;;;;;;;;
+;; eshell
+
+(setq
+ eshell-cmpl-cycle-completions nil
+ eshell-buffer-shorthand t
+ eshell-output-filter-functions '(eshell-handle-control-codes eshell-watch-for-password-prompt eshell-postoutput-scroll-to-bottom)
+ eshell-scroll-show-maximum-output t
+ eshell-scroll-to-bottom-on-output nil
+)
+
+(defun eshell/e (&rest args)
+  (if (null args)
+      (bury-buffer)
+    (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
+
+(defsubst eshell/ls (&rest args)
+  "An alias version of `eshell-do-ls'."
+  (let ((insert-func 'eshell-buffered-print)
+        (error-func 'eshell-error)
+        (flush-func 'eshell-flush)
+        (args-plus (append
+                    (cond ((not (eq (car (aref eshell-current-handles 1)) t))
+                           (list "-1")))
+                    args)))
+    (eshell-do-ls args-plus)))
+
+(defun eshell-maybe-bol ()
+  (interactive)
+  (let ((p (point)))
+    (eshell-bol)
+    (if (= p (point))
+        (beginning-of-line))))
+
+(add-hook 'eshell-mode-hook
+          '(lambda ()
+             (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)
+             ))
+
+(defun eshell/deb (&rest args)
+  (eshell-eval-using-options
+   "deb" args
+   '((?f "find" t find "list available packages matching a pattern")
+     (?i "installed" t installed "list installed debs matching a pattern")
+     (?l "list-files" t list-files "list files of a package")
+     (?s "show" t show "show an available package")
+     (?v "version" t version "show the version of an installed package")
+     (?w "where" t where "find the package containing the given file")
+     (nil "help" nil nil "show this usage information")
+     :show-usage)
+   (eshell-do-eval
+    (eshell-parse-command
+     (cond
+      (find
+       (format "apt-cache search %s" find))
+      (installed
+       (format "dlocate -l %s | grep '^.i'" installed))
+      (list-files
+       (format "dlocate -L %s | sort" list-files))
+      (show
+       (format "apt-cache show %s" show))
+      (version
+       (format "dlocate -s %s | egrep '^(Package|Status|Version):'" version))
+      (where
+       (format "dlocate %s" where))))
+    t)))
+
+;; end of eshell
+;;;;;;;;;;;;;;;;
+
+;;;;;;;;;
 ;; python
 
 (autoload 'python-mode "python-mode" "Python editing mode." t)
@@ -424,6 +494,8 @@
 
 (autoload 'lout-mode "lout-mode.el"
   "Major mode for editing Lout files" t)
+(autoload 'factor-mode "factor.el"
+  "factor" t)
 
 (add-hook 'markdown-mode-hook
           (lambda ()
@@ -447,6 +519,7 @@
         '("\\.hs$" . haskell-mode)
         '("\\.wiki\\.txt$" . wikipedia-mode)
         '("\\.lout$" . lout-mode)
+        '("\\.factor" . factor-mode)
         )
         auto-mode-alist))
 
