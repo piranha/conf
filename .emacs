@@ -403,6 +403,27 @@
  eshell-scroll-to-bottom-on-input 'this
 )
 
+;; scroll to bottom for eshell
+
+(defun eshell-scroll-to-bottom (window display-start)
+  (if (and window (window-live-p window))
+      (let ((resize-mini-windows nil))
+	(save-selected-window
+	  (select-window window)
+	  (save-restriction
+	    (widen)
+	    (when (> (point) eshell-last-output-start) ; we're editing a line. Scroll.
+	      (save-excursion
+		(recenter -1)
+		(sit-for 0))))))))
+
+(defun eshell-add-scroll-to-bottom ()
+  (interactive)
+  (make-local-hook 'window-scroll-functions)
+  (add-hook 'window-scroll-functions 'eshell-scroll-to-bottom nil t))
+
+(add-hook 'eshell-mode-hook 'eshell-add-scroll-to-bottom)
+
 (defun eshell/e (&rest args)
   (if (null args)
       (bury-buffer)
@@ -426,14 +447,7 @@
     (if (= p (point))
         (beginning-of-line))))
 
-(add-hook 'eshell-mode-hook
-          '(lambda ()
-             (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)
-             (setq 
-              scroll-margin 0
-              scroll-preserve-screen-position 'nil
-              )
-             ))
+(add-hook 'eshell-mode-hook '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)))
 
 (defun eshell/deb (&rest args)
   (eshell-eval-using-options
