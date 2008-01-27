@@ -163,9 +163,6 @@
 ;; save position in files
 (setq-default save-place t)
 
-;; show whitespaces at the end of line
-(setq-default show-trailing-whitespace t)
-
 ;; no blinking cursor
 (when (fboundp 'blink-cursor-mode) (blink-cursor-mode -1))
 
@@ -198,6 +195,9 @@
 ;; Maximum colors
       (setq font-lock-maximum-decoration t)))
 
+;; ido is nice thing
+(ido-mode 1)
+
 ;; end of general
 ;;;;;;;;;;;;;;;;;
 
@@ -226,6 +226,7 @@
 
 (global-set-key (kbd "C-x C-k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
+(global-set-key (kbd "C-M-z") (lambda (char) (interactive "cZap backward to char: ") (zap-to-char -1 char)))
 
 (when win32
     (global-set-key (kbd "C-<f12>") '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
@@ -252,7 +253,7 @@
         ;(add-to-list 'default-frame-alist '(font . "-*-andale mono-*-*-*-*-15-*-*-*-*-*-iso10646-1")))
 
       ;; Default Frame
-      (add-to-list 'default-frame-alist '(fullscreen . fullscree))
+      (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
       ;; bar setup
       (menu-bar-mode 0)
@@ -389,6 +390,7 @@
             (set beginning-of-defun-function 'py-beginning-of-def-or-class)
             (local-set-key (kbd "RET") 'newline-and-indent)
             (eldoc-mode 1)
+            (setq show-trailing-whitespace t)
             ))
 
 (when
@@ -408,6 +410,7 @@
 (add-hook 'erlang-mode-hook
           (lambda ()
             (local-set-key (kbd "RET") 'newline-and-indent)
+            (setq show-trailing-whitespace t)
             ))
 
 ;; end of erlang
@@ -428,11 +431,11 @@
 (autoload 'lout-mode "lout-mode.el"
   "Major mode for editing Lout files" t)
 
-(add-hook 'markdown-mode-hook
-          (lambda ()
-            (setq fill-column 80)
-            (auto-fill-mode)
-            ))
+(add-hook 'css-mode-hook
+          (lambda () (setq show-trailing-whitespace t)))
+
+(add-hook 'html-mode-hook
+          (lambda () (setq show-trailing-whitespace t)))
 
 (add-hook 'latex-mode-hook
           (lambda ()
