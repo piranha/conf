@@ -325,6 +325,8 @@ alias -g C="|ccze -A"
 alias rezsh="source ~/.zshrc"
 alias ql="quodlibet"
 alias cal="cal -m"
+alias hgl="hg log --template '{date|shortdate} {author|user}: {rev} {node|short} {desc|firstline}\n'"
+
 alias psg="ps -ylC"
 alias psfg="ps -ylfC"
-alias hgl="hg log --template '{date|shortdate} {author|user}: {rev} {node|short} {desc|firstline}\n'"
+function psk() { ps -C $1 -o pid= | xargs kill }

@@ -163,9 +163,6 @@
 ;; save position in files
 (setq-default save-place t)
 
-;; show whitespaces at the end of line
-(setq-default show-trailing-whitespace t)
-
 ;; no blinking cursor
 (when (fboundp 'blink-cursor-mode) (blink-cursor-mode -1))
 
@@ -198,6 +195,9 @@
 ;; Maximum colors
       (setq font-lock-maximum-decoration t)))
 
+;; ido is nice thing
+(ido-mode 1)
+
 ;; end of general
 ;;;;;;;;;;;;;;;;;
 
@@ -213,6 +213,9 @@
 (global-set-key (kbd "C-x C-a") 'imenu)
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
 (global-set-key (kbd "M-<down>") 'prh:move-line-down)
+(global-set-key (kbd "C-c l") 'copy-line)
+(global-set-key (kbd "C-M-<up>") 'prh:duplicate-line-up)
+(global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
 
 ;; add some nifty things
 (load "dired-x")
@@ -223,6 +226,7 @@
 
 (global-set-key (kbd "C-x C-k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
+(global-set-key (kbd "C-M-z") (lambda (char) (interactive "cZap backward to char: ") (zap-to-char -1 char)))
 
 (when win32
     (global-set-key (kbd "C-<f12>") '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
@@ -249,7 +253,7 @@
         ;(add-to-list 'default-frame-alist '(font . "-*-andale mono-*-*-*-*-15-*-*-*-*-*-iso10646-1")))
 
       ;; Default Frame
-      (add-to-list 'default-frame-alist '(fullscreen . fullscree))
+      (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
       ;; bar setup
       (menu-bar-mode 0)
@@ -456,6 +460,7 @@
             (set beginning-of-defun-function 'py-beginning-of-def-or-class)
             (local-set-key (kbd "RET") 'newline-and-indent)
             (eldoc-mode 1)
+            (setq show-trailing-whitespace t)
             ))
 
 (when
@@ -475,6 +480,7 @@
 (add-hook 'erlang-mode-hook
           (lambda ()
             (local-set-key (kbd "RET") 'newline-and-indent)
+            (setq show-trailing-whitespace t)
             ))
 
 ;; end of erlang
@@ -497,11 +503,11 @@
 (autoload 'factor-mode "factor.el"
   "factor" t)
 
-(add-hook 'markdown-mode-hook
-          (lambda ()
-            (setq fill-column 80)
-            (auto-fill-mode)
-            ))
+(add-hook 'css-mode-hook
+          (lambda () (setq show-trailing-whitespace t)))
+
+(add-hook 'html-mode-hook
+          (lambda () (setq show-trailing-whitespace t)))
 
 (add-hook 'latex-mode-hook
           (lambda ()
@@ -605,6 +611,14 @@
   (interactive)
   (insert (format-time-string "%c")))
 
+(defun copy-line ()
+  "Save current line into Kill-Ring without mark the line "
+  (interactive)
+  (let ((beg (line-beginning-position))
+      	(end (line-end-position)))
+    (copy-region-as-kill beg end))
+  )
+
 (defun prh:kill-line ()
   "Kills current line"
   (interactive)
@@ -648,6 +662,38 @@ Arg determines number of lines to skip, negative means move up."
   (interactive "p")
   (or arg (setq arg 1))
   (prh:move-line (- arg))
+)
+
+(defun prh:duplicate-line (&optional arg)
+  "Copy current line.
+Arg determines number of lines to be created and direction."
+  (interactive "p")
+  (let ((prh:column (current-column)))
+    (progn
+      (or arg (setq arg 1))
+      (if (< arg 0)
+          (setq tomove (1+ arg))
+        (setq tomove arg))
+      (copy-line)
+      (end-of-line tomove)
+      (newline)
+      (yank)
+      (next-line (- arg))
+      (move-to-column prh:column)))
+  )
+
+(defun prh:duplicate-line-down (&optional arg)
+  "Duplicate current line down. Optional ARG determines number of lines to skip"
+  (interactive "p")
+  (or arg (setq arg 1))
+  (prh:duplicate-line arg)
+)
+
+(defun prh:duplicate-line-up (&optional arg)
+  "Duplicate current line up. Optional ARG determines number of lines to skip"
+  (interactive "p")
+  (or arg (setq arg 1))
+  (prh:duplicate-line (- arg))
 )
 
 ;; end of functions

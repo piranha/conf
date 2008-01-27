@@ -29,6 +29,7 @@ import XMonad.Prompt.Window
 import XMonad.Prompt.XMonad
 
 statusBarCmd = "xmobar"
+-- statusBarCmd = "mymon.sh | dzen2 -bg '#3f3c6d' -fg '#a8a3f7' -sa c -e 'button1=togglecollapse' -fn '-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*' -ta l -xs 1 -u"
 
 -- prompt config
 ownXPConfig :: XPConfig
@@ -108,8 +109,7 @@ ownManageHook = composeAll . concat $
 ownLayoutHook = smartBorders
                 $ toggleLayouts (noBorders Full)
                 $ Named "vert" tiled
-                ||| Named "horiz" (Mirror tiled)
-                ||| Named "tabbed" owntab
+                ||| Named "tabbed" (noBorders owntab)
                 ||| Named "accordion" Accordion
     where
       owntab = tabbed shrinkText tabbedConf
