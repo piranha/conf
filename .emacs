@@ -400,6 +400,7 @@
  eshell-output-filter-functions '(eshell-handle-control-codes eshell-watch-for-password-prompt eshell-postoutput-scroll-to-bottom)
  eshell-scroll-show-maximum-output t
  eshell-scroll-to-bottom-on-output nil
+ eshell-scroll-to-bottom-on-input 'this
 )
 
 (defun eshell/e (&rest args)
@@ -428,6 +429,10 @@
 (add-hook 'eshell-mode-hook
           '(lambda ()
              (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)
+             (setq 
+              scroll-margin 0
+              scroll-preserve-screen-position 'nil
+              )
              ))
 
 (defun eshell/deb (&rest args)
