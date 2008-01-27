@@ -226,7 +226,7 @@
 
 (global-set-key (kbd "C-x C-k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
-(global-set-key (kbd "C-M-z") (lambda (arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- 0 arg) char)))
+(global-set-key (kbd "C-M-z") (lambda (arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
 
 (when win32
     (global-set-key (kbd "C-<f12>") '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
