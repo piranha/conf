@@ -226,7 +226,7 @@
 
 (global-set-key (kbd "C-x C-k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
-(global-set-key (kbd "C-M-z") (lambda (char) (interactive "cZap backward to char: ") (zap-to-char -1 char)))
+(global-set-key (kbd "C-M-z") (lambda (arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- 0 arg) char)))
 
 (when win32
     (global-set-key (kbd "C-<f12>") '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
@@ -253,7 +253,7 @@
         ;(add-to-list 'default-frame-alist '(font . "-*-andale mono-*-*-*-*-15-*-*-*-*-*-iso10646-1")))
 
       ;; Default Frame
-      (add-to-list 'default-frame-alist '(fullscreen . fullscreen))
+      ;(add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
       ;; bar setup
       (menu-bar-mode 0)
@@ -284,36 +284,41 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; default groups for ibuffer
 (setq ibuffer-saved-filter-groups
-      (quote (("default"
-               ("python" (or
-                          (name . "^\\*Python\\*$")
-                          (mode . django-html-mode)
-                          (mode . python-mode)))
-               ("jabber" (or
-                          (name . "^\\*-jabber-")))
-               ("erc" (or
-                       (mode . erc-mode)))
-               ("erlang" (or
-                          (name . "^\\*erlang\\*$")
-                          (mode . erlang-mode)))
-               ("haskell" (or
-                          (mode . haskell-mode)))
-               ("dired" (or
-                          (mode . dired-mode)))
-               ("emacs" (or
-                         (name . "^\\*scratch\\*$")
-                         (name . "^\\.emacs$")
-                         (name . "^\\.gnus$")
-                         (name . "^\\*Messages\\*$")))
-               ("gnus" (or
-                        (mode . message-mode)
-                        (mode . bbdb-mode)
-                        (mode . mail-mode)
-                        (mode . gnus-group-mode)
-                        (mode . gnus-summary-mode)
-                        (mode . gnus-article-mode)
-                        (name . "^\\.bbdb$")
-                        (name . "^\\.newsrc-dribble")))))))
+      '(("default"
+         ("python" (or
+                    (name . "^\\*Python\\*$")
+                    (mode . django-html-mode)
+                    (mode . python-mode)))
+         ("jabber" (or
+                    (name . "^\\*-jabber-")))
+         ("erc" (or
+                 (mode . erc-mode)))
+         ("erlang" (or
+                    (name . "^\\*erlang\\*$")
+                    (mode . erlang-mode)))
+         ("haskell" (or
+                     (mode . haskell-mode)))
+         ("dired" (or
+                   (mode . dired-mode)))
+         ("emacs" (or
+                   (name . "^\\*scratch\\*$")
+                   (name . "^\\.emacs$")
+                   (name . "^\\.gnus$")
+                   (name . "^\\*Messages\\*$")))
+         ("gnus" (or
+                  (mode . message-mode)
+                  (mode . bbdb-mode)
+                  (mode . mail-mode)
+                  (mode . gnus-group-mode)
+                  (mode . gnus-summary-mode)
+                  (mode . gnus-article-mode)
+                  (name . "^\\.bbdb$")
+                  (name . "^\\.newsrc-dribble")))
+         ("shell" (or
+                   (mode . term-mode)
+                   (mode . eshell-mode)
+                   (mode . shell-mode)))
+         )))
 
 (setq ibuffer-formats
       '((mark modified read-only " "
@@ -371,6 +376,11 @@
             (eq major-mode 'gnus-article-mode)
             (string-match "^\\.\\(bbdb\\|newsrc-dribble\\)" (buffer-name (current-buffer))))
            "gnus")
+          ((or
+            (eq major-mode 'term-mode)
+            (eq major-mode 'eshell-mode)
+            (eq major-mode 'shell-mode))
+            "shell")
           ((eq major-mode 'tags-table-mode) "*")
           ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
           (t "All Buffers"))
