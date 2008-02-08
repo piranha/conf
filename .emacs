@@ -98,9 +98,9 @@
 (put 'set-goal-column 'disabled nil)
 
 (setq
-  ;; don't show annoing startup msg
+  ;; don't show annoying startup msg
   inhibit-startup-message t
-  ;; NO annoing backups
+  ;; NO annoying backups
   make-backup-files nil
   ;; follow symlinks and don't ask
   vc-follow-symlinks t
@@ -197,6 +197,11 @@
 
 ;; ido is nice thing
 (ido-mode 1)
+
+;; Enable ^Z, ^X, ^C, ^V, select with mouse and shift-cursor-movement
+(cua-mode 1)
+;; disable ^X, ^C, ^V
+(setq cua-enable-cua-keys nil)
 
 ;; end of general
 ;;;;;;;;;;;;;;;;;
@@ -464,7 +469,7 @@
     (eshell-parse-command
      (cond
       (find
-       (format "apt-cache search %s" find))
+       (format "aptitude search %s" find))
       (installed
        (format "dlocate -l %s | grep '^.i'" installed))
       (list-files
@@ -743,8 +748,11 @@ Arg determines number of lines to be created and direction."
 (when graf
   (require 'color-theme)
   (color-theme-initialize)
-  (color-theme-charcoal-black)
+  (load-file "~/.el/pastels-on-dark-theme.el")
+  (color-theme-pastels-on-dark)
 )
+
+
 
 ;; end
 ;;;;;;
