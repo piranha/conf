@@ -124,8 +124,8 @@
   scroll-step 1
   ;; don't add new lines when scrolling down
   next-line-add-newlines nil
-  ;; make sure file ends with NEWLINE
-  require-final-newline t
+  ;; don't make sure file ends with NEWLINE
+  require-final-newline nil
   ;; delete excess backup versions
   delete-old-versions t
   ;; setting the default tabulation
@@ -198,11 +198,18 @@
 ;; ido is nice thing
 (ido-mode 1)
 
+;; hardcore minibuffer completion
+(icomplete-mode 1)
+
 ;; end of general
 ;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;
 ;; keybindings
+
+(global-set-key (kbd "C-x C-b") 'bs-show)
+(global-set-key (kbd "C-,") 'bs-show)
+(global-set-key (kbd "C-.") 'switch-to-buffer)
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
@@ -285,10 +292,12 @@
 ;; default groups for ibuffer
 (setq ibuffer-saved-filter-groups
       '(("default"
-         ("python" (or
+         ("web" (or
                     (name . "^\\*Python\\*$")
                     (mode . django-html-mode)
-                    (mode . python-mode)))
+                    (mode . python-mode)
+                    (mode . html-mode)
+                    (mode . css-mode)))
          ("jabber" (or
                     (name . "^\\*-jabber-")))
          ("erc" (or
@@ -386,10 +395,51 @@
           (t "All Buffers"))
          )))
 
-(tabbar-mode 1)
+;(tabbar-mode 1)
 
 ;; tabbar end
 ;;;;;;;;;;;;;
+
+;;;;;;;;;;;
+;; bs-show
+
+(add-hook 'bs-mode-hook
+          '(lambda ()
+             (setq scroll-margin 0)
+             ))
+
+(setq bs-configurations
+      '(("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
+        ("all" nil nil nil nil nil)
+        ("dired" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'dired-mode)))) nil)
+        ("rcirc" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'rcirc-mode))))
+         rcirc-sort-buffers)))
+
+(setq bs-default-configuration "files")
+(setq bs-alternative-configuration "all")
+
+(defun rcirc-sort-name (buf)
+  "Return server process and buffer name as a string."
+  (with-current-buffer buf
+    (downcase (concat (if rcirc-server-buffer
+			  (buffer-name rcirc-server-buffer)
+			" ")
+		      " "
+		      (or rcirc-target "")))))
+
+(defun rcirc-sort-buffers (a b)
+  "Sort buffers A and B using `rcirc-sort-name'."
+  (string< (rcirc-sort-name a)
+	   (rcirc-sort-name b)))
+
+;; bs-show end
+;;;;;;;;;;;;;;
 
 ;;;;;;;;;
 ;; eshell
@@ -640,19 +690,28 @@
   (interactive)
   (insert (format-time-string "%c")))
 
-(defun copy-line ()
+(defun whole-line ()
+  "Returns list of two values - beginning of this line 
+and beginning of next line, for deleting/copying"
+  (list (line-beginning-position) (line-beginning-position 2)))
+
+(defun prh:copy-line ()
   "Save current line into Kill-Ring without mark the line "
-  (interactive)
-  (let ((beg (line-beginning-position))
-      	(end (line-end-position)))
-    (copy-region-as-kill beg end))
+  (buffer-substring (line-beginning-position) (line-end-position))
   )
 
-(defun prh:kill-line ()
+(defun prh:check-newline (line)
+  "Checks that line ends in newline. Adds it if not."
+  (if (eql (aref line (1- (length line))) ?\n)
+      line
+    (concat line "\n")
+  ))
+
+(defun prh:cut-line ()
   "Kills current line"
-  (interactive)
-  (beginning-of-line)
-  (kill-line 1)
+  (setq prh:cutted-line (apply 'buffer-substring (whole-line)))
+  (apply 'delete-region (whole-line))
+  (prh:check-newline prh:cutted-line)
   )
 
 (defun prh:count-lines (arg)
@@ -662,7 +721,7 @@ if negative, count from start to current position.
 "
   (if (> arg 0)
       (count-lines (point) (point-max))
-    (- (count-lines 1 (point)) 1)))
+   (count-lines (point-min) (point)) 1))
 
 (defun prh:move-line (&optional arg)
   "Move current line.
@@ -672,10 +731,11 @@ Arg determines number of lines to skip, negative means move up."
       (let ((prh:column (current-column)))
         (progn
           (or arg (setq arg 1))
-          (prh:kill-line)
-          (next-line arg)
-          (yank)
-          (next-line -1)
+          (setq prh:cutted-line (prh:cut-line))
+          (setq prh:cutted-line (prh:check-newline prh:cutted-line))
+          (forward-line arg)
+          (insert prh:cutted-line)
+          (forward-line -1)
           (move-to-column prh:column)))
     ))
 
@@ -703,10 +763,10 @@ Arg determines number of lines to be created and direction."
       (if (< arg 0)
           (setq tomove (1+ arg))
         (setq tomove arg))
-      (copy-line)
+      (setq prh:cutted-line (prh:copy-line))
       (end-of-line tomove)
       (newline)
-      (yank)
+      (insert prh:cutted-line)
       (next-line (- arg))
       (move-to-column prh:column)))
   )
@@ -724,6 +784,16 @@ Arg determines number of lines to be created and direction."
   (or arg (setq arg 1))
   (prh:duplicate-line (- arg))
 )
+
+(defun vsplit-to-hsplit ()
+  "Replicate the current vertical window split as a horizontal split.
+Only works if there are two windows."
+  (interactive)
+  (let ((n (window-height))
+        (b2 (window-buffer (next-window))))
+    (delete-other-windows)
+    (split-window-horizontally n)
+    (set-window-buffer (next-window) b2)))
 
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
@@ -759,7 +829,7 @@ Arg determines number of lines to be created and direction."
    jabber-server "eth0.net.ua"
    jabber-username "piranha")
 
-  (setq jabber-roster-line-format " %c %-25n %u %-8s  %S\n")
+  (setq jabber-roster-line-format " %-25n %u %-8s  %S")
   (setq jabber-history-enabled t)
   (setq jabber-use-global-history nil)
   (setq jabber-history-dir "~/.emacs.d/jabber/")
@@ -768,6 +838,7 @@ Arg determines number of lines to be created and direction."
             (lambda ()
               (setq fill-column 120)
               (local-set-key (kbd "<tab>") 'dabbrev-expand)
+              (setq scroll-margin 0)
               ))
 
   (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
