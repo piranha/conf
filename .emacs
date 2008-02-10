@@ -33,14 +33,7 @@
 ;; lang setup & changing with system switcher
 ;;;;;;;;;;
 
-(require 'mule)
-(require 'codepage)
-
-(codepage-setup 866)
-(codepage-setup 1251)
 (setq default-input-method "russian-computer")
-(define-coding-system-alias 'windows-1251 'cp1251)
-(define-coding-system-alias 'koi8-ru 'koi8-u)
 
 (when linux
   (set-selection-coding-system 'utf-8)
@@ -52,14 +45,7 @@
    interprogram-paste-function (quote x-cut-buffer-or-selection-value)
    ))
 
-(when win32
-  (set-clipboard-coding-system 'cp1251-dos)
-  (set-selection-coding-system 'cp1251-dos)
-  (set-default-coding-systems 'cp1251-dos)
-  (set-keyboard-coding-system 'cp1251-dos)
-  (set-w32-system-coding-system 'cp1251-dos))
-
-(prefer-coding-system 'utf-8-unix)
+;(prefer-coding-system 'utf-8-unix)
 
 ;;;;;;;;;;;;;
 ;; Extensions
@@ -67,18 +53,14 @@
 
 ;; loadpath
 (add-to-list 'load-path (expand-file-name "~/.el"))
-(when (file-exists-p "/usr/share/emacs/site-lisp/site-gentoo.el")
-  (load "/usr/share/emacs/site-lisp/site-gentoo"))
 
 (require 'gnus-load nil t)
 (require 'filladapt nil t)
 (require 'session nil t)
 (require 'htmlize nil t)
 (require 'django-html-mode nil t)
-(require 'psvn nil t)
 (require 'grep+ nil t)
 (require 'mercurial nil t)
-
 (require 'etags nil t)
 (setq tags-file-name (expand-file-name "~/TAGS"))
 
@@ -87,9 +69,6 @@
 
 ;;;;;;;;;;
 ;; General
-
-;; filladapt
-(setq-default filladapt-mode t)
 
 ;; don't ask, just do it!
 (put 'downcase-region 'disabled nil)
@@ -220,6 +199,47 @@
 ;; end of keybindings
 ;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;
+;; bs-show
+
+(add-hook 'bs-mode-hook
+          '(lambda ()
+             (setq scroll-margin 0)
+             ))
+
+(setq bs-configurations
+      '(("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
+        ("all" nil nil nil nil nil)
+        ("dired" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'dired-mode)))) nil)
+        ("rcirc" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'rcirc-mode))))
+         rcirc-sort-buffers)))
+
+(setq bs-default-configuration "files")
+(setq bs-alternative-configuration "all")
+
+(defun rcirc-sort-name (buf)
+  "Return server process and buffer name as a string."
+  (with-current-buffer buf
+    (downcase (concat (if rcirc-server-buffer
+			  (buffer-name rcirc-server-buffer)
+			" ")
+		      " "
+		      (or rcirc-target "")))))
+
+(defun rcirc-sort-buffers (a b)
+  "Sort buffers A and B using `rcirc-sort-name'."
+  (string< (rcirc-sort-name a)
+	   (rcirc-sort-name b)))
+
+;; bs-show end
+;;;;;;;;;;;;;;
+
 ;;;;;;;;;;;;;;
 ;; Frame setup
 
@@ -262,162 +282,89 @@
 ;; end frame setup
 ;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;
-;; ibuffer
+;;;;;;;;;
+;; python
 
-(require 'ibuffer)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-;; default groups for ibuffer
-(setq ibuffer-saved-filter-groups
-      '(("default"
-         ("web" (or
-                    (name . "^\\*Python\\*$")
-                    (mode . django-html-mode)
-                    (mode . python-mode)
-                    (mode . html-mode)
-                    (mode . css-mode)))
-         ("jabber" (or
-                    (name . "^\\*-jabber-")))
-         ("erc" (or
-                 (mode . erc-mode)))
-         ("erlang" (or
-                    (name . "^\\*erlang\\*$")
-                    (mode . erlang-mode)))
-         ("haskell" (or
-                     (mode . haskell-mode)))
-         ("dired" (or
-                   (mode . dired-mode)))
-         ("emacs" (or
-                   (name . "^\\*scratch\\*$")
-                   (name . "^\\.emacs$")
-                   (name . "^\\.gnus$")
-                   (name . "^\\*Messages\\*$")))
-         ("gnus" (or
-                  (mode . message-mode)
-                  (mode . bbdb-mode)
-                  (mode . mail-mode)
-                  (mode . gnus-group-mode)
-                  (mode . gnus-summary-mode)
-                  (mode . gnus-article-mode)
-                  (name . "^\\.bbdb$")
-                  (name . "^\\.newsrc-dribble")))
-         ("shell" (or
-                   (mode . term-mode)
-                   (mode . eshell-mode)
-                   (mode . shell-mode)))
-         )))
-
-(setq ibuffer-formats
-      '((mark modified read-only " "
-             (name 28 28 :left :elide)
-             " "
-             (size 9 -1 :right)
-             " "
-             (mode 16 16 :left :elide)
-             " " filename-and-process)
-       (mark " "
-             (name 16 -1)
-             " " filename)))
-
-
-;; ibuffer, I like my buffers to be grouped
-(add-hook 'ibuffer-mode-hook
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+(add-hook 'python-mode-hook
           (lambda ()
-            (ibuffer-switch-to-saved-filter-groups
-             "default")))
+            (set beginning-of-defun-function 'py-beginning-of-def-or-class)
+            (local-set-key (kbd "RET") 'newline-and-indent)
+            (eldoc-mode 1)
+            (setq show-trailing-whitespace t)
+            ))
 
-;; end of ibuffer
-;;;;;;;;;;;;;;;;;
+(when
+    (require 'pymacs nil t)
+  (pymacs-load "ropemacs" "rope-")
+)
+
+;; end of python
+;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;
-;; Tabbar
+;; erlang
 
-(require 'tabbar)
+(autoload 'erlang-mode "erlang-mode.el"
+  "Major mode for editing Erlang source files" t)
 
-(global-set-key (kbd "C-S-<iso-lefttab>") 'tabbar-backward-tab)
-(global-set-key (kbd "C-S-<tab>") 'tabbar-backward-tab)
-(global-set-key (kbd "C-<tab>") 'tabbar-forward-tab)
-(global-set-key (kbd "C-<f10>") 'tabbar-local-mode)
+(add-hook 'erlang-mode-hook
+          (lambda ()
+            (local-set-key (kbd "RET") 'newline-and-indent)
+            (setq show-trailing-whitespace t)
+            ))
 
-(set-face-foreground 'tabbar-default "gray")
-(set-face-background 'tabbar-default "black")
-(set-face-foreground 'tabbar-selected "pale green")
-(set-face-bold-p 'tabbar-selected t)
-(set-face-attribute 'tabbar-button nil :box '(:line-width 1 :color "gray72"))
-(when linux
-  (set-face-font 'tabbar-default "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1"))
-
-(setq tabbar-buffer-groups-function
-      (lambda ()
-        (list
-         (cond
-          ((string-match "^\\*-jabber-" (buffer-name (current-buffer))) "jabber")
-          ((eq major-mode 'erc-mode) "ERC")
-          ((eq major-mode 'dired-mode) "Dired")
-          ((or
-            (eq major-mode 'message-mode)
-            (eq major-mode 'bbdb-mode)
-            (eq major-mode 'mail-mode)
-            (eq major-mode 'gnus-group-mode)
-            (eq major-mode 'gnus-summary-mode)
-            (eq major-mode 'gnus-article-mode)
-            (string-match "^\\.\\(bbdb\\|newsrc-dribble\\)" (buffer-name (current-buffer))))
-           "gnus")
-          ((or
-            (eq major-mode 'term-mode)
-            (eq major-mode 'eshell-mode)
-            (eq major-mode 'shell-mode))
-            "shell")
-          ((eq major-mode 'tags-table-mode) "*")
-          ((find (aref (buffer-name (current-buffer)) 0) " *") "*")
-          (t "All Buffers"))
-         )))
-
-;(tabbar-mode 1)
-
-;; tabbar end
-;;;;;;;;;;;;;
+;; end of erlang
+;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
-;; bs-show
+;; various modes
 
-(add-hook 'bs-mode-hook
-          '(lambda ()
-             (setq scroll-margin 0)
-             ))
+(autoload 'css-mode "css-mode.el" "Major mode for editing CSS files" t)
+(autoload 'markdown-mode "markdown-mode.el" "Major mode for editing Markdown files" t)
+(autoload 'wikipedia-mode "wikipedia-mode.el" "Major mode for editing MediaWiki files" t)
+(autoload 'factor-mode "factor.el" "factor" t)
 
-(setq bs-configurations
-      '(("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
-        ("all" nil nil nil nil nil)
-        ("dired" nil nil nil
-         (lambda (buf)
-           (with-current-buffer buf
-             (not (eq major-mode 'dired-mode)))) nil)
-        ("rcirc" nil nil nil
-         (lambda (buf)
-           (with-current-buffer buf
-             (not (eq major-mode 'rcirc-mode))))
-         rcirc-sort-buffers)))
+(setq hooks-with-traling 
+      '(
+        css-mode-hook
+        html-mode-hook
+        emacs-lisp-mode-hook
+        factor-mode-hook
+        wikipedia-mode-hook
+        markdown-mode-hook
+        erlang-mode-hook
+        haskell-mode-hook
+        ))
 
-(setq bs-default-configuration "files")
-(setq bs-alternative-configuration "all")
+(dolist (hook hooks-with-traling)
+  (add-hook hook '(lambda () (setq show-trailing-whitespace t))))
 
-(defun rcirc-sort-name (buf)
-  "Return server process and buffer name as a string."
-  (with-current-buffer buf
-    (downcase (concat (if rcirc-server-buffer
-			  (buffer-name rcirc-server-buffer)
-			" ")
-		      " "
-		      (or rcirc-target "")))))
+(setq hooks-wants-filladapt
+      '(
+        markdown-mode-hook
+        wikipedia-mode-hook
+        ))
 
-(defun rcirc-sort-buffers (a b)
-  "Sort buffers A and B using `rcirc-sort-name'."
-  (string< (rcirc-sort-name a)
-	   (rcirc-sort-name b)))
+(dolist (hook hooks-wants-filladapt)
+  (add-hook hook '(lambda () (filladapt-mode t))))
 
-;; bs-show end
-;;;;;;;;;;;;;;
+(setq auto-mode-alist
+      (append
+       (list
+        '("\\.md$" . markdown-mode)
+        '("\\.css$" . css-mode)
+        '("\\.erl$" . erlang-mode)
+        '("\\.hs$" . haskell-mode)
+        '("\\.wiki\\.txt$" . wikipedia-mode)
+        '("\\.factor" . factor-mode)
+        )
+        auto-mode-alist))
+
+(setq w3m-use-cookies t)
+
+;; end of modes
+;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;
 ;; eshell
@@ -477,178 +424,12 @@
 
 (add-hook 'eshell-mode-hook '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)))
 
-(defun eshell/deb (&rest args)
-  (eshell-eval-using-options
-   "deb" args
-   '((?f "find" t find "list available packages matching a pattern")
-     (?i "installed" t installed "list installed debs matching a pattern")
-     (?l "list-files" t list-files "list files of a package")
-     (?s "show" t show "show an available package")
-     (?v "version" t version "show the version of an installed package")
-     (?w "where" t where "find the package containing the given file")
-     (nil "help" nil nil "show this usage information")
-     :show-usage)
-   (eshell-do-eval
-    (eshell-parse-command
-     (cond
-      (find
-       (format "aptitude search %s" find))
-      (installed
-       (format "dlocate -l %s | grep '^.i'" installed))
-      (list-files
-       (format "dlocate -L %s | sort" list-files))
-      (show
-       (format "apt-cache show %s" show))
-      (version
-       (format "dlocate -s %s | egrep '^(Package|Status|Version):'" version))
-      (where
-       (format "dlocate %s" where))))
-    t)))
-
 ;; end of eshell
 ;;;;;;;;;;;;;;;;
-
-;;;;;;;;;
-;; python
-
-(autoload 'python-mode "python-mode" "Python editing mode." t)
-(add-hook 'python-mode-hook
-          (lambda ()
-            (set beginning-of-defun-function 'py-beginning-of-def-or-class)
-            (local-set-key (kbd "RET") 'newline-and-indent)
-            (eldoc-mode 1)
-            (setq show-trailing-whitespace t)
-            ))
-
-(when
-    (require 'pymacs nil t)
-  (pymacs-load "ropemacs" "rope-")
-)
-
-;; end of python
-;;;;;;;;;;;;;;;;
-
-;;;;;;;;;
-;; erlang
-
-(autoload 'erlang-mode "erlang-mode.el"
-  "Major mode for editing Erlang source files" t)
-
-(add-hook 'erlang-mode-hook
-          (lambda ()
-            (local-set-key (kbd "RET") 'newline-and-indent)
-            (setq show-trailing-whitespace t)
-            ))
-
-;; end of erlang
-;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;
-;; various modes
-
-(autoload 'css-mode "css-mode.el"
-  "Major mode for editing CSS files" t)
-
-(autoload 'markdown-mode "markdown-mode.el"
-  "Major mode for editing Markdown files" t)
-
-(autoload 'wikipedia-mode "wikipedia-mode.el"
-  "Major mode for editing MediaWiki files" t)
-
-(autoload 'lout-mode "lout-mode.el"
-  "Major mode for editing Lout files" t)
-(autoload 'factor-mode "factor.el"
-  "factor" t)
-
-(add-hook 'css-mode-hook
-          (lambda () (setq show-trailing-whitespace t)))
-
-(add-hook 'html-mode-hook
-          (lambda () (setq show-trailing-whitespace t)))
-
-(add-hook 'latex-mode-hook
-          (lambda ()
-            (local-set-key (kbd "\"") 'self-insert-command)
-            (setq fill-column 80)
-            (auto-fill-mode)
-            ))
-
-(setq auto-mode-alist
-      (append
-       (list
-        '("\\.md$" . markdown-mode)
-        '("\\.css$" . css-mode)
-        '("\\.erl$" . erlang-mode)
-        '("\\.hs$" . haskell-mode)
-        '("\\.wiki\\.txt$" . wikipedia-mode)
-        '("\\.lout$" . lout-mode)
-        '("\\.factor" . factor-mode)
-        )
-        auto-mode-alist))
-
-(setq w3m-use-cookies t)
-
-;; end of modes
-;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;
-;; DTD mode settings
-
-(autoload 'dtd-mode "tdtd" "Major mode for SGML and XML DTDs." t)
-(autoload 'dtd-etags "tdtd"
-  "Execute etags on FILESPEC and match on DTD-specific regular expressions."
-  t)
-(autoload 'dtd-grep "tdtd" "Grep for PATTERN in files matching FILESPEC." t)
-
-;; Turn on font lock when in DTD mode
-(add-hook 'dtd-mode-hooks
-          'turn-on-font-lock)
-
-(setq auto-mode-alist
-      (append
-       (list
-    '("\\.dcl$" . dtd-mode)
-    '("\\.dec$" . dtd-mode)
-    '("\\.dtd$" . dtd-mode)
-    '("\\.ele$" . dtd-mode)
-    '("\\.ent$" . dtd-mode)
-    '("\\.mod$" . dtd-mode))
-       auto-mode-alist))
-
-;; To use resize-minibuffer-mode, uncomment this and include in your .emacs:
-;;(resize-minibuffer-mode)
-
-;; end of DTD mode settings
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;
-;; DocBook settings
-
-(autoload 'docbook-mode "docbookide" "Major mode for DocBook documents." t)
-;(add-hook 'docbook-mode-hook 'docbook-menu-mode)
-(add-hook
- 'docbook-mode-hook
- '(lambda ()
-    (local-set-key (kbd "C-<tab>") 'indent-for-tab-command)))
-
-;; You might want to make this the default for .sgml or .xml documents,
-;; or you might want to rely on -*- DocBook -*- on the first line,
-;; or perhaps buffer variables. It's up to you...
-(setq auto-mode-alist
-      (append
-       (list
-        '("\\.sgm" . docbook-mode)
-        '("\\.sgml" . docbook-mode)
-        '("\\.dbk" . docbook-mode))
-       auto-mode-alist))
-
-;; end of Docbook settings
-;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;
 ;; Functions
 
-;; alias for qrr
 (defalias 'qrr 'query-replace-regexp)
 
 ;; Autocompilation
@@ -763,16 +544,6 @@ Arg determines number of lines to be created and direction."
   (prh:duplicate-line (- arg))
 )
 
-(defun vsplit-to-hsplit ()
-  "Replicate the current vertical window split as a horizontal split.
-Only works if there are two windows."
-  (interactive)
-  (let ((n (window-height))
-        (b2 (window-buffer (next-window))))
-    (delete-other-windows)
-    (split-window-horizontally n)
-    (set-window-buffer (next-window) b2)))
-
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
 
@@ -848,37 +619,6 @@ Only works if there are two windows."
 )
 ;; end of jabber
 ;;;;;;;;;;;;;;;;
-
-;;;;;;
-;; ERC
-
-(setq
- erc-nick "piranha"
- erc-user-full-name "Alexander Solovyov"
- erc-server "irc.freenode.net"
- erc-auto-query 'buffer
- )
-
-(setq erc-modules
-      '(autoaway
-        autojoin
-        button
-        completion
-        fill
-        irccontrols
-        log
-        match
-        menu
-        netsplit
-        noncommands
-        readonly
-        ring
-        scrolltobottom
-        stamp
-        track))
-
-;; end of erc
-;;;;;;;;;;;;;
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
