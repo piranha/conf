@@ -98,63 +98,37 @@
 (put 'set-goal-column 'disabled nil)
 
 (setq
-  ;; don't show annoing startup msg
-  inhibit-startup-message t
-  ;; NO annoing backups
-  make-backup-files nil
-  ;; follow symlinks and don't ask
-  vc-follow-symlinks t
-  ;; see what you type
-  echo-keystrokes 0.01
-  ;; text scrolling
-  scroll-conservatively 50
-  scroll-preserve-screen-position 't
-  scroll-margin 10
-  ;; Insert space/slash after completion
-  comint-completion-addsuffix t
-  ;; number of chars in line
-  fill-column 72
-  ;; delete line in one stage
-  kill-whole-line t
-  ;; default mode
-  default-major-mode 'text-mode
-  ;; meaning are the same as the name :)
-  delete-key-deletes-forward t
-  ;; Scroll by one line at a time
-  scroll-step 1
-  ;; don't add new lines when scrolling down
-  next-line-add-newlines nil
-  ;; don't make sure file ends with NEWLINE
-  require-final-newline nil
-  ;; delete excess backup versions
-  delete-old-versions t
-  ;; setting the default tabulation
-  default-tab-width 4
-  ;; paste at cursor NOT at mouse pointer position
-  mouse-yank-at-point t
-  ;; apropos works better but slower
-  apropos-do-all t
-  ;; display time in the modeline
-  display-time-24hr-format t
-  display-time-day-and-date t
-  ;; calendar customizing
-  european-calendar-style t
-  calendar-week-start-day 1
-  ;; autosave every 512 keyboard inputs
-  auto-save-interval 512
-  ;; limit the number of newest versions
-  kept-new-versions 5
-  ;; limit the number of oldest versions
-  kept-old-versions 5
-  auto-save-list-file-prefix "~/.emacs.d/backups/save-"
-  ;; don't beep
-;  visible-bell t
-  cursor-in-non-selected-windows nil
-  ;; dired settings
-  dired-recursive-copies 'top
-  dired-recursive-deletes 'top
-  ;; safe variables to set in buffer
-  safe-local-variable-values '((encoding . utf-8))
+ inhibit-startup-message t                        ;; don't show annoing startup msg
+ make-backup-files nil                            ;; NO annoing backups
+ vc-follow-symlinks t                             ;; follow symlinks and don't ask
+ echo-keystrokes 0.01                             ;; see what you type
+ scroll-conservatively 50                         ;; text scrolling
+ scroll-preserve-screen-position 't
+ scroll-margin 10
+ comint-completion-addsuffix t                    ;; Insert space/slash after completion
+ fill-column 72                                   ;; number of chars in line
+ kill-whole-line t                                ;; delete line in one stage
+ default-major-mode 'text-mode                    ;; default mode
+ delete-key-deletes-forward t                     ;; meaning are the same as the name :)
+ scroll-step 1                                    ;; Scroll by one line at a time
+ next-line-add-newlines nil                       ;; don't add new lines when scrolling down
+ require-final-newline nil                        ;; don't make sure file ends with NEWLINE
+ delete-old-versions t                            ;; delete excess backup versions
+ default-tab-width 4
+ mouse-yank-at-point t                            ;; paste at cursor, NOT at mouse pointer position
+ apropos-do-all t                                 ;; apropos works better but slower
+ display-time-24hr-format t                       ;; display time in the modeline
+ display-time-day-and-date t
+ european-calendar-style t
+ calendar-week-start-day 1
+ auto-save-interval 512                           ;; autosave every 512 keyboard inputs
+ kept-new-versions 5
+ kept-old-versions 5
+ auto-save-list-file-prefix "~/.emacs.d/backups/save-"
+ cursor-in-non-selected-windows nil
+ dired-recursive-copies 'top 
+ dired-recursive-deletes 'top
+ safe-local-variable-values '((encoding . utf-8)) ;; safe variables to set in buffer
 )
 
 ;; display time
