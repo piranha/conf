@@ -277,6 +277,15 @@
     "Make sure that the selected frame is stored in `gnuserv-frame', and lowered."
     (setq gnuserv-frame (selected-frame))
     (lower-frame))
+
+  (defvar safe-language-change-flag nil)
+  (defun safe-language-change ()
+    (interactive)
+    (setq safe-language-change-flag (not safe-language-change-flag))
+    (when safe-language-change-flag
+      (toggle-input-method)
+      (w32-toggle-lock-key 'capslock)))
+  (global-set-key (kbd "<language-change>") 'safe-language-change)
 )
 
 ;; end frame setup
