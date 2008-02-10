@@ -4,7 +4,7 @@ import System.IO (hPutStrLn)
 import qualified Data.Map as M
 import Data.Bits ((.|.))
 -- XMonad
-import XMonad
+import XMonad hiding ((|||))
 import XMonad.ManageHook
 import XMonad.Operations
 import qualified XMonad.StackSet as W
@@ -16,6 +16,7 @@ import XMonad.Actions.SwapWorkspaces
 import XMonad.Actions.WmiiActions
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
+import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
@@ -51,6 +52,7 @@ ownPP h = defaultPP
           { ppOutput = hPutStrLn h
           , ppCurrent = xmobarColor "white" "" . wrap "[" "]"
           , ppVisible = xmobarColor "yellow" "" . wrap "*" "*"
+          , ppUrgent = xmobarColor "red" ""
           , ppTitle = xmobarColor "#00ee00" ""
           , ppSep    = " "
           , ppLayout = (\x -> "")
@@ -64,7 +66,7 @@ playWindow = "quodlibet --toggle-window"
 
 -- keys config
 ownKeys conf@(XConfig {modMask = modMask}) = M.fromList $
-    [ ((modMask   ,              xK_f      ), sendMessage ToggleLayout)
+    [ ((modMask,                 xK_f      ), sendMessage ToggleLayout)
     , ((modMask,                 xK_x      ), submap . M.fromList $
        [ ((0, xK_z), spawn playPrevious)
        , ((0, xK_x), spawn playToggle)
@@ -76,6 +78,11 @@ ownKeys conf@(XConfig {modMask = modMask}) = M.fromList $
     , ((modMask,                 xK_F6     ), spawn playNext)
     , ((modMask,                 xK_F7     ), spawn playOrder)
     , ((modMask,                 xK_F8     ), spawn playToggle)
+    , ((modMask,                 xK_a      ), submap . M.fromList $
+       [ ((0, xK_q), sendMessage $ JumpToLayout "tiled")
+       , ((0, xK_w), sendMessage $ JumpToLayout "tabbed")
+       , ((0, xK_a), sendMessage $ JumpToLayout "accordion")
+       ])
     , ((modMask .|. controlMask, xK_x      ), xmonadPrompt ownXPConfig)
     , ((modMask,                 xK_F1     ), windowPromptGoto ownXPConfig)
     , ((modMask,                 xK_F2     ), shellPrompt ownXPConfig)
@@ -108,7 +115,8 @@ ownManageHook = composeAll . concat $
 
 ownLayoutHook = smartBorders
                 $ toggleLayouts (noBorders Full)
-                $ Named "vert" tiled
+                $ Named "tiled" tiled
+                ||| Named "mirror" (Mirror tiled)
                 ||| Named "tabbed" (noBorders owntab)
                 ||| Named "accordion" Accordion
     where

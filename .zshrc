@@ -326,6 +326,7 @@ alias rezsh="source ~/.zshrc"
 alias ql="quodlibet"
 alias cal="cal -m"
 alias hgl="hg log --template '{date|shortdate} {author|user}: {rev} {node|short} {desc|firstline}\n'"
+alias apt="noglob aptitude"
 
 alias psg="ps -ylC"
 alias psfg="ps -ylfC"
