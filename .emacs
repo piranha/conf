@@ -105,7 +105,7 @@
  kept-old-versions 5
  auto-save-list-file-prefix "~/.emacs.d/backups/save-"
  cursor-in-non-selected-windows nil
- dired-recursive-copies 'top 
+ dired-recursive-copies 'top
  dired-recursive-deletes 'top
  safe-local-variable-values '((encoding . utf-8)) ;; safe variables to set in buffer
 )
@@ -202,10 +202,7 @@
 ;;;;;;;;;;;
 ;; bs-show
 
-(add-hook 'bs-mode-hook
-          '(lambda ()
-             (setq scroll-margin 0)
-             ))
+(add-hook 'bs-mode-hook 'no-scroll-margin)
 
 (setq bs-configurations
       '(("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
@@ -334,7 +331,7 @@
 (autoload 'wikipedia-mode "wikipedia-mode.el" "Major mode for editing MediaWiki files" t)
 (autoload 'factor-mode "factor.el" "factor" t)
 
-(setq hooks-with-traling 
+(setq hooks-with-traling
       '(
         css-mode-hook
         html-mode-hook
@@ -371,6 +368,11 @@
         auto-mode-alist))
 
 (setq w3m-use-cookies t)
+
+(autoload 'window-number-mode "window-number" nil t)
+(autoload 'window-number-control-mode "window-number" nil t)
+(window-number-mode 1)
+(window-number-control-mode 1)
 
 ;; end of modes
 ;;;;;;;;;;;;;;;;;;
@@ -441,8 +443,12 @@
 
 (defalias 'qrr 'query-replace-regexp)
 
-;; Autocompilation
-(defun autocompile()
+(defun no-scroll-margin ()
+  "Set scroll-margin to 0 buffer-locally"
+  (interactive)
+  (set (make-local-variable 'scroll-margin) 0))
+
+(defun autocompile ()
   "compile itself if ~/.emacs"
   (interactive)
   (if (string= (buffer-file-name) (concat default-directory ".emacs"))
@@ -459,7 +465,7 @@
   (insert (format-time-string "%c")))
 
 (defun whole-line ()
-  "Returns list of two values - beginning of this line 
+  "Returns list of two values - beginning of this line
 and beginning of next line, for deleting/copying"
   (list (line-beginning-position) (line-beginning-position 2)))
 
@@ -597,7 +603,7 @@ Arg determines number of lines to be created and direction."
             (lambda ()
               (setq fill-column 120)
               (local-set-key (kbd "<tab>") 'dabbrev-expand)
-              (setq scroll-margin 0)
+              (no-scroll-margin)
               ))
 
   (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
@@ -628,6 +634,33 @@ Arg determines number of lines to be created and direction."
 )
 ;; end of jabber
 ;;;;;;;;;;;;;;;;
+
+;;;;;;
+;; irc
+
+(add-hook 'rcirc-mode-hook
+          (lambda ()
+            (set (make-local-variable 'scroll-conservatively) 8192)
+            (set (make-local-variable 'bs-default-configuration) "rcirc")
+            (no-scroll-margin)
+            ))
+
+(setq
+ rcirc-default-nick "_piranha_"
+ rcirc-default-user-name "piranha"
+ rcirc-default-user-full-name "Alexander Solovyov")
+
+(eval-after-load 'rcirc
+     (when (file-exists-p "~/.secrets.el")
+       (load "~/.secrets.el")))
+(eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
+(eval-after-load 'rcirc '(require 'rcirc-color nil t))
+
+;; (setq rcirc-startup-channels-alist
+;;       '(("\\.freenode\\.net$" "#concatenative" "#conkeror" "#pocoo")))
+
+;; end of irc
+;;;;;;;;;;;;;
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
