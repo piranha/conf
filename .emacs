@@ -151,12 +151,13 @@
 ;; ido is nice thing
 (ido-mode 1)
 
-;; hardcore minibuffer completion
-(icomplete-mode 1)
 ;; Enable ^Z, ^X, ^C, ^V, select with mouse and shift-cursor-movement
 (cua-mode 1)
 ;; disable ^X, ^C, ^V
 (setq cua-enable-cua-keys nil)
+
+;; window configuration undo/redo is really useful
+(winner-mode 1)
 
 ;; end of general
 ;;;;;;;;;;;;;;;;;
@@ -650,14 +651,16 @@ Arg determines number of lines to be created and direction."
  rcirc-default-user-name "piranha"
  rcirc-default-user-full-name "Alexander Solovyov")
 
+;; following string must present in .secrets.el for auth:
+;; (setq rcirc-authinfo '(("freenode" nickserv "YOURNICK" "YOURPASS")))
 (eval-after-load 'rcirc
      (when (file-exists-p "~/.secrets.el")
        (load "~/.secrets.el")))
 (eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
 (eval-after-load 'rcirc '(require 'rcirc-color nil t))
 
-;; (setq rcirc-startup-channels-alist
-;;       '(("\\.freenode\\.net$" "#concatenative" "#conkeror" "#pocoo")))
+(setq rcirc-startup-channels-alist
+      '(("\\.freenode\\.net$" "#concatenative" "#conkeror" "#emacs")))
 
 ;; end of irc
 ;;;;;;;;;;;;;
