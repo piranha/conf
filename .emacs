@@ -211,6 +211,10 @@
          (lambda (buf)
            (with-current-buffer buf
              (not (eq major-mode 'dired-mode)))) nil)
+        ("circe" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)
         ("rcirc" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
@@ -638,26 +642,26 @@ Arg determines number of lines to be created and direction."
 ;;;;;;
 ;; irc
 
-(add-hook 'rcirc-mode-hook
-          (lambda ()
-            (set (make-local-variable 'scroll-conservatively) 8192)
-            (set (make-local-variable 'bs-default-configuration) "rcirc")
-            (no-scroll-margin)
-            ))
+(autoload 'circe "circe" "" t)
 
-(setq
- rcirc-default-nick "_piranha_"
- rcirc-default-user-name "piranha"
- rcirc-default-user-full-name "Alexander Solovyov")
+(when (file-directory-p "~/var/circe")
+  (add-to-list 'load-path "~/var/circe"))
 
-(eval-after-load 'rcirc
-     (when (file-exists-p "~/.secrets.el")
-       (load "~/.secrets.el")))
-(eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
-(eval-after-load 'rcirc '(require 'rcirc-color nil t))
+(eval-after-load "circe"
+  '(progn
+     (require 'lui-irc-colors)
+     (add-to-list 'lui-pre-output-hook 'lui-irc-colors)
+     (add-hook 'lui-mode-hook
+               (lambda ()
+                 (set (make-local-variable 'scroll-conservatively) 8192)
+                 (set (make-local-variable 'bs-default-configuration) "circe")
+                 (no-scroll-margin))
+     )))
 
-;; (setq rcirc-startup-channels-alist
-;;       '(("\\.freenode\\.net$" "#concatenative" "#conkeror" "#pocoo")))
+(defun irc ()
+  "Connect to IRC."
+  (interactive)
+  (circe "simmons.freenode.net" "6667" "freenode"))
 
 ;; end of irc
 ;;;;;;;;;;;;;
