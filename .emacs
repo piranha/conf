@@ -151,11 +151,6 @@
 ;; ido is nice thing
 (ido-mode 1)
 
-;; Enable ^Z, ^X, ^C, ^V, select with mouse and shift-cursor-movement
-(cua-mode 1)
-;; disable ^X, ^C, ^V
-(setq cua-enable-cua-keys nil)
-
 ;; window configuration undo/redo is really useful
 (winner-mode 1)
 
@@ -178,7 +173,6 @@
 (global-set-key (kbd "C-x C-a") 'imenu)
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
 (global-set-key (kbd "M-<down>") 'prh:move-line-down)
-(global-set-key (kbd "C-c l") 'copy-line)
 (global-set-key (kbd "C-M-<up>") 'prh:duplicate-line-up)
 (global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
 
@@ -475,7 +469,7 @@ and beginning of next line, for deleting/copying"
   (list (line-beginning-position) (line-beginning-position 2)))
 
 (defun prh:copy-line ()
-  "Save current line into Kill-Ring without mark the line "
+  "Save current line into Kill-Ring without marking the line "
   (buffer-substring (line-beginning-position) (line-end-position))
   )
 
@@ -645,17 +639,34 @@ Arg determines number of lines to be created and direction."
 
 (autoload 'circe "circe" "" t)
 
-(when (file-directory-p "~/var/circe")
-  (add-to-list 'load-path "~/var/circe"))
+(when (file-directory-p "~/.el/circe")
+  (add-to-list 'load-path "~/.el/circe"))
+
+(when (file-exists-p "~/.secrets.el")
+  (load-file "~/.secrets.el"))
+
+(setq
+ circe-default-nick "_piranha_"
+ circe-default-user "piranha"
+ circe-default-realname "Alexander Solovyov"
+ circe-ignore-list nil
+ circe-server-auto-join-channels
+ '(("^freenode$" "#concatenative" "#conkeror"))
+ circe-nickserv-passwords
+ `(("freenode" ,freenode-password)))
 
 (eval-after-load "circe"
   '(progn
      (require 'lui-irc-colors)
      (add-to-list 'lui-pre-output-hook 'lui-irc-colors)
+     (require 'circe-log)
+     (enable-circe-log)
      (add-hook 'lui-mode-hook
                (lambda ()
                  (set (make-local-variable 'scroll-conservatively) 8192)
-                 (set (make-local-variable 'bs-default-configuration) "circe")
+                 (local-set-key (kbd "C-,") (lambda ()
+                                              (interactive)
+                                              (bs--show-with-configuration "circe")))
                  (no-scroll-margin))
      )))
 
@@ -667,11 +678,31 @@ Arg determines number of lines to be created and direction."
 ;; end of irc
 ;;;;;;;;;;;;;
 
+;;;;;;;;;;;
+;; org-mode
+
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(setq org-log-done t)
+(setq org-return-follows-link t)
+(setq org-time-stamp-custom-formats '("<%Y-%m-%d %a %H:%M>"))
+
+(add-hook 'org-mode-hook '(lambda () (interactive)
+                            (local-set-key (kbd "C-,") 'bs-show)
+                            (setq org-display-custom-times t)
+                            ))
+
+
+;; end of org-mode
+;;;;;;;;;;;;;;;;;;
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/org/life.org" "~/org/alfa.org" "~/org/musicx.org")))
  '(safe-local-variable-values (quote ((prompt-to-byte-compile) (encoding . utf-8)))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
