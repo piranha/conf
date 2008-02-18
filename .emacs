@@ -75,6 +75,7 @@
 (put 'upcase-region 'disabled nil)
 (put 'overwrite-mode 'disabled nil)
 (put 'set-goal-column 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 (setq
  inhibit-startup-message t                        ;; don't show annoing startup msg
