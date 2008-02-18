@@ -149,8 +149,8 @@
 ;; Maximum colors
       (setq font-lock-maximum-decoration t)))
 
-;; ido is nice thing
-(ido-mode 1)
+;; iswitchb is fastest (i missed something? :)
+(iswitchb-mode 1)
 
 ;; window configuration undo/redo is really useful
 (winner-mode 1)
@@ -564,8 +564,7 @@ Arg determines number of lines to be created and direction."
   (if (and transient-mark-mode mark-active)
       (kill-region (point) (mark))
     (backward-kill-word arg)
-    )
-  )
+    ))
 
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
