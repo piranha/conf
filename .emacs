@@ -45,7 +45,7 @@
    interprogram-paste-function (quote x-cut-buffer-or-selection-value)
    ))
 
-;(prefer-coding-system 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
 
 ;;;;;;;;;;;;;
 ;; Extensions
@@ -167,8 +167,7 @@
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
-(global-set-key (kbd "C-w") 'backward-kill-word)
-(global-set-key (kbd "C-x w") 'kill-region)
+(global-set-key (kbd "C-w") 'kill-region-or-word)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "C-x C-a") 'imenu)
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
@@ -557,6 +556,15 @@ Arg determines number of lines to be created and direction."
   (or arg (setq arg 1))
   (prh:duplicate-line (- arg))
 )
+
+(defun kill-region-or-word (&optional arg)
+  "If region is active, kill it, backward kill word in other case."
+  (interactive "p")
+  (if (and transient-mark-mode mark-active)
+      (kill-region (point) (mark))
+    (backward-kill-word arg)
+    )
+  )
 
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
