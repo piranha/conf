@@ -163,7 +163,7 @@
 
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-,") 'bs-show)
-(global-set-key (kbd "C-.") 'switch-to-buffer)
+(global-set-key (kbd "C-.") 'iswitchb-buffer)
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
@@ -200,38 +200,29 @@
 (add-hook 'bs-mode-hook 'no-scroll-margin)
 
 (setq bs-configurations
-      '(("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
+      '(("files" nil nil nil files-without-org bs-sort-buffer-interns-are-last)
         ("all" nil nil nil nil nil)
         ("dired" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
              (not (eq major-mode 'dired-mode)))) nil)
+        ("org" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'org-mode)))) nil)
         ("circe" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
-             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)
-        ("rcirc" nil nil nil
-         (lambda (buf)
-           (with-current-buffer buf
-             (not (eq major-mode 'rcirc-mode))))
-         rcirc-sort-buffers)))
+             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)))
 
 (setq bs-default-configuration "files")
 (setq bs-alternative-configuration "all")
 
-(defun rcirc-sort-name (buf)
-  "Return server process and buffer name as a string."
-  (with-current-buffer buf
-    (downcase (concat (if rcirc-server-buffer
-			  (buffer-name rcirc-server-buffer)
-			" ")
-		      " "
-		      (or rcirc-target "")))))
-
-(defun rcirc-sort-buffers (a b)
-  "Sort buffers A and B using `rcirc-sort-name'."
-  (string< (rcirc-sort-name a)
-	   (rcirc-sort-name b)))
+(defun files-without-org (buffer)
+  "Return true when buffer is file and not org-mode"
+  (or
+   (not (buffer-file-name buffer))
+   (with-current-buffer buffer (eq major-mode 'org-mode))))
 
 ;; bs-show end
 ;;;;;;;;;;;;;;
@@ -244,17 +235,13 @@
 (if graf
     (progn
       ;; Title formatting
-      (setq frame-title-format (list "%b"  '(buffer-file-name " aka %f") " - Emacs " emacs-version))
+      (setq frame-title-format (list "emacs - "  '(buffer-file-name "%f" "%b")))
       (setq icon-title-format frame-title-format)
 
       ;; Font setup
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
         (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")))
-        ;(add-to-list 'default-frame-alist '(font . "-*-andale mono-*-*-*-*-15-*-*-*-*-*-iso10646-1")))
-
-      ;; Default Frame
-      ;(add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
       ;; bar setup
       (menu-bar-mode 0)
@@ -265,15 +252,6 @@
 )
 
 (when win32
-  (defadvice server-find-file (before server-find-file-in-one-frame activate)
-    "Make sure that the selected frame is stored in `gnuserv-frame', and raised."
-    (setq gnuserv-frame (selected-frame))
-    (raise-frame))
-  (defadvice server-edit (before server-edit-in-one-frame activate)
-    "Make sure that the selected frame is stored in `gnuserv-frame', and lowered."
-    (setq gnuserv-frame (selected-frame))
-    (lower-frame))
-
   (defvar safe-language-change-flag nil)
   (defun safe-language-change ()
     (interactive)
@@ -694,13 +672,12 @@ Arg determines number of lines to be created and direction."
 (global-set-key "\C-ca" 'org-agenda)
 (setq org-log-done t)
 (setq org-return-follows-link t)
-(setq org-time-stamp-custom-formats '("<%Y-%m-%d %a %H:%M>"))
 
 (add-hook 'org-mode-hook '(lambda () (interactive)
-                            (local-set-key (kbd "C-,") 'bs-show)
-                            (setq org-display-custom-times t)
+                            (local-set-key (kbd "C-,") (lambda ()
+                                                         (interactive)
+                                                         (bs--show-with-configuration "org")))
                             ))
-
 
 ;; end of org-mode
 ;;;;;;;;;;;;;;;;;;
