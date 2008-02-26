@@ -670,8 +670,12 @@ Arg determines number of lines to be created and direction."
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
-(setq org-log-done t)
-(setq org-return-follows-link t)
+(setq org-log-done t
+      org-return-follows-link t
+      org-hide-emphasis-markers t
+      org-hide-leading-stars t
+      org-odd-levels-only t
+      org-startup-folded 'content)
 
 (add-hook 'org-mode-hook '(lambda () (interactive)
                             (local-set-key (kbd "C-,") (lambda ()
@@ -687,7 +691,7 @@ Arg determines number of lines to be created and direction."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/life.org" "~/org/alfa.org" "~/org/musicx.org")))
+ '(org-agenda-files (quote ("~/org/mydeco.org" "~/org/life.org" "~/org/musicx.org")))
  '(safe-local-variable-values (quote ((prompt-to-byte-compile) (encoding . utf-8)))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
