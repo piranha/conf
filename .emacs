@@ -104,33 +104,30 @@
  auto-save-interval 512                           ;; autosave every 512 keyboard inputs
  kept-new-versions 5
  kept-old-versions 5
- auto-save-list-file-prefix "~/.emacs.d/backups/save-"
+ auto-save-list-file-prefix nil
  cursor-in-non-selected-windows nil
  dired-recursive-copies 'top
  dired-recursive-deletes 'top
- safe-local-variable-values '((encoding . utf-8)) ;; safe variables to set in buffer
+ safe-local-variable-values '((encoding . utf-8))
 )
 
-;; display time
-(display-time)
+(setq-default
+ save-place t ;; save position in files
+ case-fold-search t ;; case INsensitive search
+ indent-tabs-mode nil ;; do not use tabs for indentation
+)
 
-;; save position in files
-(setq-default save-place t)
+;; Make all "yes or no" prompts show "y or n" instead
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; no blinking cursor
 (when (fboundp 'blink-cursor-mode) (blink-cursor-mode -1))
 
-;; case INsensitive search
-(setq-default case-fold-search t)
-
-;; do not use tabs for indentation
-(setq-default indent-tabs-mode nil)
+;; display time
+(display-time)
 
 ;; This tells emacs to show the column number in each modeline.
 (column-number-mode 1)
-
-;; Make all "yes or no" prompts show "y or n" instead
-(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; highlight marked text
 (transient-mark-mode 1)
@@ -144,7 +141,6 @@
 
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
-;; Turn on font-lock in all modes that support it
       (global-font-lock-mode t)
 ;; Maximum colors
       (setq font-lock-maximum-decoration t)))
