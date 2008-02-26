@@ -78,32 +78,30 @@
 (put 'narrow-to-region 'disabled nil)
 
 (setq
- inhibit-startup-message t                        ;; don't show annoing startup msg
- make-backup-files nil                            ;; NO annoing backups
- vc-follow-symlinks t                             ;; follow symlinks and don't ask
- echo-keystrokes 0.01                             ;; see what you type
- scroll-conservatively 50                         ;; text scrolling
+ inhibit-startup-message t          ;; don't show annoing startup msg
+ make-backup-files nil              ;; NO annoing backups
+ vc-follow-symlinks t               ;; follow symlinks and don't ask
+ echo-keystrokes 0.01               ;; see what you type
+ scroll-conservatively 50
  scroll-preserve-screen-position 't
  scroll-margin 10
- comint-completion-addsuffix t                    ;; Insert space/slash after completion
- fill-column 72                                   ;; number of chars in line
- kill-whole-line t                                ;; delete line in one stage
- default-major-mode 'text-mode                    ;; default mode
- delete-key-deletes-forward t                     ;; meaning are the same as the name :)
- scroll-step 1                                    ;; Scroll by one line at a time
- next-line-add-newlines nil                       ;; don't add new lines when scrolling down
- require-final-newline nil                        ;; don't make sure file ends with NEWLINE
- delete-old-versions t                            ;; delete excess backup versions
+ scroll-step 1
+ comint-completion-addsuffix t      ;; Insert space/slash after completion
+ fill-column 72                     ;; number of chars in line
+ kill-whole-line t                  ;; delete line in one stage
+ default-major-mode 'text-mode      ;; default mode
+ delete-key-deletes-forward t       ;; meaning are the same as the name :)
+ next-line-add-newlines nil         ;; don't add new lines when scrolling down
+ require-final-newline nil          ;; don't make sure file ends with NEWLINE
+ delete-old-versions t              ;; delete excess backup versions
  default-tab-width 4
- mouse-yank-at-point t                            ;; paste at cursor, NOT at mouse pointer position
- apropos-do-all t                                 ;; apropos works better but slower
- display-time-24hr-format t                       ;; display time in the modeline
+ mouse-yank-at-point t              ;; paste at cursor position
+ apropos-do-all t                   ;; apropos works better but slower
+ display-time-24hr-format t
  display-time-day-and-date t
  european-calendar-style t
  calendar-week-start-day 1
- auto-save-interval 512                           ;; autosave every 512 keyboard inputs
- kept-new-versions 5
- kept-old-versions 5
+ auto-save-interval 512             ;; autosave every 512 keyboard inputs
  auto-save-list-file-prefix nil
  cursor-in-non-selected-windows nil
  dired-recursive-copies 'top
