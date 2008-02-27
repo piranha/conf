@@ -480,10 +480,8 @@ Arg determines number of lines to skip, negative means move up."
       (let ((prh:column (current-column)))
         (progn
           (or arg (setq arg 1))
-          (setq prh:cutted-line (prh:cut-line))
-          (setq prh:cutted-line (prh:check-newline prh:cutted-line))
-          (forward-line arg)
-          (insert prh:cutted-line)
+          (forward-line 1)
+          (transpose-lines arg)
           (forward-line -1)
           (move-to-column prh:column)))
     ))
