@@ -70,6 +70,8 @@
 ;;;;;;;;;;
 ;; General
 
+(add-hook 'after-init-hook 'session-initialize)
+
 ;; don't ask, just do it!
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -78,59 +80,54 @@
 (put 'narrow-to-region 'disabled nil)
 
 (setq
- inhibit-startup-message t                        ;; don't show annoing startup msg
- make-backup-files nil                            ;; NO annoing backups
- vc-follow-symlinks t                             ;; follow symlinks and don't ask
- echo-keystrokes 0.01                             ;; see what you type
- scroll-conservatively 50                         ;; text scrolling
+ inhibit-startup-message t           ;; don't show annoing startup msg
+ make-backup-files nil               ;; NO annoing backups
+ vc-follow-symlinks t                ;; follow symlinks and don't ask
+ echo-keystrokes 0.01                ;; see what you type
+ scroll-conservatively 50            ;; text scrolling
  scroll-preserve-screen-position 't
  scroll-margin 10
- comint-completion-addsuffix t                    ;; Insert space/slash after completion
- fill-column 72                                   ;; number of chars in line
- kill-whole-line t                                ;; delete line in one stage
- default-major-mode 'text-mode                    ;; default mode
- delete-key-deletes-forward t                     ;; meaning are the same as the name :)
- scroll-step 1                                    ;; Scroll by one line at a time
- next-line-add-newlines nil                       ;; don't add new lines when scrolling down
- require-final-newline nil                        ;; don't make sure file ends with NEWLINE
- delete-old-versions t                            ;; delete excess backup versions
+ scroll-step 1                       ;; Scroll by one line at a time
+ comint-completion-addsuffix t       ;; Insert space/slash after completion
+ fill-column 72                      ;; number of chars in line
+ kill-whole-line t                   ;; delete line in one stage
+ default-major-mode 'text-mode       ;; default mode
+ delete-key-deletes-forward t        ;; meaning are the same as the name :)
+ next-line-add-newlines nil          ;; don't add new lines when scrolling down
+ require-final-newline nil           ;; don't make sure file ends with NEWLINE
+ delete-old-versions t               ;; delete excess backup versions
  default-tab-width 4
- mouse-yank-at-point t                            ;; paste at cursor, NOT at mouse pointer position
- apropos-do-all t                                 ;; apropos works better but slower
- display-time-24hr-format t                       ;; display time in the modeline
+ mouse-yank-at-point t               ;; paste at cursor, NOT at mouse pointer position
+ apropos-do-all t                    ;; apropos works better but slower
+ display-time-24hr-format t
  display-time-day-and-date t
  european-calendar-style t
  calendar-week-start-day 1
- auto-save-interval 512                           ;; autosave every 512 keyboard inputs
- kept-new-versions 5
- kept-old-versions 5
- auto-save-list-file-prefix "~/.emacs.d/backups/save-"
+ auto-save-interval 512              ;; autosave every 512 keyboard inputs
+ auto-save-list-file-prefix nil
  cursor-in-non-selected-windows nil
  dired-recursive-copies 'top
  dired-recursive-deletes 'top
- safe-local-variable-values '((encoding . utf-8)) ;; safe variables to set in buffer
+ safe-local-variable-values '((encoding . utf-8))
 )
 
-;; display time
-(display-time)
+(setq-default
+ save-place t         ;; save position in files
+ case-fold-search t   ;; case INsensitive search
+ indent-tabs-mode nil ;; do not use tabs for indentation
+)
 
-;; save position in files
-(setq-default save-place t)
+;; Make all "yes or no" prompts show "y or n" instead
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; no blinking cursor
 (when (fboundp 'blink-cursor-mode) (blink-cursor-mode -1))
 
-;; case INsensitive search
-(setq-default case-fold-search t)
-
-;; do not use tabs for indentation
-(setq-default indent-tabs-mode nil)
+;; display time
+(display-time)
 
 ;; This tells emacs to show the column number in each modeline.
 (column-number-mode 1)
-
-;; Make all "yes or no" prompts show "y or n" instead
-(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; highlight marked text
 (transient-mark-mode 1)
@@ -144,7 +141,6 @@
 
 ;; syntax highlight
 (cond ((fboundp 'global-font-lock-mode)
-;; Turn on font-lock in all modes that support it
       (global-font-lock-mode t)
 ;; Maximum colors
       (setq font-lock-maximum-decoration t)))
@@ -163,7 +159,7 @@
 
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-,") 'bs-show)
-(global-set-key (kbd "C-.") 'switch-to-buffer)
+(global-set-key (kbd "C-.") 'iswitchb-buffer)
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
@@ -183,7 +179,7 @@
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 
-(global-set-key (kbd "C-x C-k")  (lambda () (interactive) (kill-buffer nil)))
+(global-set-key (kbd "C-c C-k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
 (global-set-key (kbd "C-M-z") (lambda (arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
 
@@ -200,38 +196,29 @@
 (add-hook 'bs-mode-hook 'no-scroll-margin)
 
 (setq bs-configurations
-      '(("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
+      '(("files" nil nil nil files-without-org bs-sort-buffer-interns-are-last)
         ("all" nil nil nil nil nil)
         ("dired" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
              (not (eq major-mode 'dired-mode)))) nil)
+        ("org" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'org-mode)))) nil)
         ("circe" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
-             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)
-        ("rcirc" nil nil nil
-         (lambda (buf)
-           (with-current-buffer buf
-             (not (eq major-mode 'rcirc-mode))))
-         rcirc-sort-buffers)))
+             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)))
 
 (setq bs-default-configuration "files")
 (setq bs-alternative-configuration "all")
 
-(defun rcirc-sort-name (buf)
-  "Return server process and buffer name as a string."
-  (with-current-buffer buf
-    (downcase (concat (if rcirc-server-buffer
-			  (buffer-name rcirc-server-buffer)
-			" ")
-		      " "
-		      (or rcirc-target "")))))
-
-(defun rcirc-sort-buffers (a b)
-  "Sort buffers A and B using `rcirc-sort-name'."
-  (string< (rcirc-sort-name a)
-	   (rcirc-sort-name b)))
+(defun files-without-org (buffer)
+  "Return true when buffer is file and not org-mode"
+  (or
+   (not (buffer-file-name buffer))
+   (with-current-buffer buffer (eq major-mode 'org-mode))))
 
 ;; bs-show end
 ;;;;;;;;;;;;;;
@@ -244,17 +231,13 @@
 (if graf
     (progn
       ;; Title formatting
-      (setq frame-title-format (list "%b"  '(buffer-file-name " aka %f") " - Emacs " emacs-version))
+      (setq frame-title-format (list "emacs - "  '(buffer-file-name "%f" "%b")))
       (setq icon-title-format frame-title-format)
 
       ;; Font setup
       (if win32
           (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
         (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")))
-        ;(add-to-list 'default-frame-alist '(font . "-*-andale mono-*-*-*-*-15-*-*-*-*-*-iso10646-1")))
-
-      ;; Default Frame
-      ;(add-to-list 'default-frame-alist '(fullscreen . fullscreen))
 
       ;; bar setup
       (menu-bar-mode 0)
@@ -265,15 +248,6 @@
 )
 
 (when win32
-  (defadvice server-find-file (before server-find-file-in-one-frame activate)
-    "Make sure that the selected frame is stored in `gnuserv-frame', and raised."
-    (setq gnuserv-frame (selected-frame))
-    (raise-frame))
-  (defadvice server-edit (before server-edit-in-one-frame activate)
-    "Make sure that the selected frame is stored in `gnuserv-frame', and lowered."
-    (setq gnuserv-frame (selected-frame))
-    (lower-frame))
-
   (defvar safe-language-change-flag nil)
   (defun safe-language-change ()
     (interactive)
@@ -571,17 +545,8 @@ Arg determines number of lines to be created and direction."
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;
-;; Custom hooks
-;(add-hook 'after-save-hook 'autocompile())
-
-(add-hook 'after-init-hook 'session-initialize)
-
-;; end of hooks
-;;;;;;;;;;;;;;;
-
 ;;;;;;;;;;
-;; Finesse
+;; Theme
 
 (when graf
   (require 'color-theme)
@@ -599,7 +564,7 @@ Arg determines number of lines to be created and direction."
     (require 'jabber nil t)
   (setq
    jabber-nickname "piranha"
-   jabber-resource "laptop"
+   jabber-resource "el"
    jabber-server "eth0.net.ua"
    jabber-username "piranha")
 
@@ -611,7 +576,6 @@ Arg determines number of lines to be created and direction."
   (add-hook 'jabber-chat-mode-hook
             (lambda ()
               (setq fill-column 120)
-              (local-set-key (kbd "<tab>") 'dabbrev-expand)
               (no-scroll-margin)
               ))
 
@@ -635,7 +599,7 @@ Arg determines number of lines to be created and direction."
       (process-send-string "jabber-xosd" message)
       (process-send-eof "jabber-xosd")))
 
-  (defun jabber-message-xosd (from buffer text propsed-alert)
+  (defun jabber-message-xosd (from buffer text proposed-alert)
     (jabber-xosd-display-message "New message"))
 
   (add-to-list 'jabber-alert-message-hooks
@@ -701,7 +665,9 @@ Arg determines number of lines to be created and direction."
       org-odd-levels-only t)
 
 (add-hook 'org-mode-hook '(lambda () (interactive)
-                            (local-set-key (kbd "C-,") 'bs-show)
+                            (local-set-key (kbd "C-,") (lambda ()
+                                                         (interactive)
+                                                         (bs--show-with-configuration "org")))
                             ))
 
 
