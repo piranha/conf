@@ -333,7 +333,6 @@
 (setq hooks-with-traling
       '(
         css-mode-hook
-        html-mode-hook
         emacs-lisp-mode-hook
         factor-mode-hook
         wikipedia-mode-hook
@@ -365,6 +364,9 @@
         '("\\.factor" . factor-mode)
         )
         auto-mode-alist))
+
+(setq factor-binary "~/bin/factor")
+(setq factor-image "~/var/factor/factor.image")
 
 (setq w3m-use-cookies t)
 
@@ -681,7 +683,7 @@ Arg determines number of lines to be created and direction."
 (defun irc ()
   "Connect to IRC."
   (interactive)
-  (circe "simmons.freenode.net" "6667" "freenode"))
+  (circe "irc.freenode.net" "6667" "freenode"))
 
 ;; end of irc
 ;;;;;;;;;;;;;
@@ -692,13 +694,14 @@ Arg determines number of lines to be created and direction."
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
-(setq org-log-done t)
-(setq org-return-follows-link t)
-(setq org-time-stamp-custom-formats '("<%Y-%m-%d %a %H:%M>"))
+(setq org-log-done t
+      org-return-follows-link t
+      org-hide-emphasis-markers t
+      org-hide-leading-stars t
+      org-odd-levels-only t)
 
 (add-hook 'org-mode-hook '(lambda () (interactive)
                             (local-set-key (kbd "C-,") 'bs-show)
-                            (setq org-display-custom-times t)
                             ))
 
 
