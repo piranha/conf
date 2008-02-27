@@ -23,7 +23,7 @@ limit -s
 
 umask 022
 
-export PATH=~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin
+export PATH=~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin:/usr/games
 if [ -x `whence -c most` ]; then
         export PAGER="most"
 else
