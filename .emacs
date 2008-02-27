@@ -713,7 +713,7 @@ Arg determines number of lines to be created and direction."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/life.org" "~/org/alfa.org" "~/org/musicx.org")))
+ '(org-agenda-files (quote ("~/org/life.org" "~/org/mydeco.org" "~/org/musicx.org")))
  '(safe-local-variable-values (quote ((prompt-to-byte-compile) (encoding . utf-8)))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
