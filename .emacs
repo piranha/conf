@@ -179,7 +179,7 @@
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 
-(global-set-key (kbd "C-c C-k")  (lambda () (interactive) (kill-buffer nil)))
+(global-set-key (kbd "C-c k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
 (global-set-key (kbd "C-M-z") (lambda (arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
 
@@ -193,23 +193,21 @@
 ;;;;;;;;;;;
 ;; bs-show
 
-(add-hook 'bs-mode-hook 'no-scroll-margin)
-
 (setq bs-configurations
       '(("files" nil nil nil files-without-org bs-sort-buffer-interns-are-last)
-        ("all" nil nil nil nil nil)
-        ("dired" nil nil nil
-         (lambda (buf)
-           (with-current-buffer buf
-             (not (eq major-mode 'dired-mode)))) nil)
         ("org" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
              (not (eq major-mode 'org-mode)))) nil)
+        ("dired" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'dired-mode)))) nil)
         ("circe" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
-             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)))
+             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)
+        ("all" nil nil nil nil nil)))
 
 (setq bs-default-configuration "files")
 (setq bs-alternative-configuration "all")
@@ -219,6 +217,18 @@
   (or
    (not (buffer-file-name buffer))
    (with-current-buffer buffer (eq major-mode 'org-mode))))
+
+(defun bs-switch-to-files-and-refresh ()
+  "Apply \"files\" configuration. Refresh whole Buffer Selection Menu."
+  (interactive)
+  (bs-set-configuration "files")
+  (setq bs-default-configuration bs-current-configuration)
+  (bs--redisplay t)
+  (bs--set-window-height))
+
+(add-hook 'bs-mode-hook 'no-scroll-margin)
+(add-hook 'bs-mode-hook '(lambda ()
+                           (local-set-key "z" 'bs-switch-to-files-and-refresh)))
 
 ;; bs-show end
 ;;;;;;;;;;;;;;
@@ -264,12 +274,10 @@
 ;;;;;;;;;
 ;; python
 
-(autoload 'python-mode "python-mode" "Python editing mode." t)
+(autoload 'python-mode "python" "Python editing mode." t)
 (add-hook 'python-mode-hook
           (lambda ()
-            (set beginning-of-defun-function 'py-beginning-of-def-or-class)
             (local-set-key (kbd "RET") 'newline-and-indent)
-            (eldoc-mode 1)
             (setq show-trailing-whitespace t)
             ))
 
