@@ -192,7 +192,7 @@
 ;;;;;;;;;;;
 ;; bs-show
 
-(eval-after-load "bs-show" '(define-key bs-mode-map "z" 'bs-switch-to-files-and-refresh))
+(eval-after-load "bs" '(define-key bs-mode-map "z" 'bs-switch-to-files-and-refresh))
 (add-hook 'bs-mode-hook 'no-scroll-margin)
 
 (setq bs-configurations
