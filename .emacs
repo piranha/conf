@@ -108,7 +108,8 @@
  dired-recursive-copies 'top
  dired-recursive-deletes 'top
  safe-local-variable-values '((encoding . utf-8) (prompt-to-byte-compile))
-)
+ dabbrev-case-fold-search nil        ;; Case is significant for dabbrev
+ )
 
 (setq-default
  save-place t         ;; save position in files
@@ -180,7 +181,8 @@
 
 (global-set-key (kbd "C-c k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
-(global-set-key (kbd "C-M-z") (lambda (arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
+(global-set-key (kbd "C-M-z") (lambda (arg) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
+(global-set-key (kbd "C-M-y") (lambda (&optional arg) (interactive "*p") (yank-pop (- arg))))
 
 (when win32
     (global-set-key (kbd "C-<f12>") '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
@@ -208,7 +210,7 @@
         ("circe" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
-             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)
+             (not (memq major-mode '(circe-channel-mode circe-server-mode circe-query-mode))))) nil)
         ("dired" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
@@ -545,16 +547,6 @@ Arg determines number of lines to be created and direction."
     (backward-kill-word arg)
     ))
 
-(defun maybe-bol ()
-  "Move to indentation first and then to real line start."
-  (interactive)
-  (let ((p (point)))
-    (back-to-indentation)
-    (if (= p (point))
-        (beginning-of-line))))
-
-(fset 'move-beginning-of-line 'maybe-bol)
-
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
 
@@ -580,7 +572,11 @@ Arg determines number of lines to be created and direction."
 (global-set-key (kbd "C-x C-j C-c") 'jabber-connect)
 
 (setq
- jabber-account-list '(("piranha@eth0.net.ua"))
+ jabber-account-list '(("asolovyov@mydeco.com"
+                        (:network-server . "chat.mydeco.com")
+                        (:port . 5223)
+                        (:connection-type . ssl))
+                       ("piranha@eth0.net.ua"))
  jabber-roster-line-format " %-25n %u %-8s  %S"
  jabber-history-enabled t
  jabber-use-global-history nil
@@ -658,7 +654,7 @@ Arg determines number of lines to be created and direction."
  circe-default-realname "Alexander Solovyov"
  circe-ignore-list nil
  circe-server-auto-join-channels
- '(("^freenode$" "#concatenative" "#conkeror"))
+ '(("^freenode$" "#concatenative" "#conkeror" "#emacs"))
  circe-nickserv-passwords
  `(("freenode" ,freenode-password)))
 
