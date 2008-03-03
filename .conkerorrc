@@ -21,9 +21,3 @@ interactive("follow-new-buffer-background", function (I) {
 });
 define_key(content_buffer_normal_keymap, "M-f", "follow-new-buffer-background");
 
-interactive("open-with-current-url", function (I) {
-    var element = yield I.read_hinted_element_with_prompt("open with", "Open with", "links");
-    var target = I.browse_target("open");
-    open_in_browser(I.buffer, target,
-                    (yield I.minibuffer.read_url($prompt = browse_target_prompt(target))));
-});
