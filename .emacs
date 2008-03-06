@@ -164,7 +164,6 @@
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
-(global-set-key (kbd "C-w") 'kill-region-or-word)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "C-x C-a") 'imenu)
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
@@ -181,7 +180,7 @@
 
 (global-set-key (kbd "C-c k")  (lambda () (interactive) (kill-buffer nil)))
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
-(global-set-key (kbd "C-M-z") (lambda (arg) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
+(global-set-key (kbd "C-M-z") (lambda (&optional arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
 (global-set-key (kbd "C-M-y") (lambda (&optional arg) (interactive "*p") (yank-pop (- arg))))
 
 (when win32
@@ -348,6 +347,9 @@
 (autoload 'window-number-control-mode "window-number" nil t)
 (window-number-mode 1)
 (window-number-control-mode 1)
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
 
 ;; end of modes
 ;;;;;;;;;;;;;;;;;;
@@ -577,6 +579,7 @@ Arg determines number of lines to be created and direction."
                         (:port . 5223)
                         (:connection-type . ssl))
                        ("piranha@eth0.net.ua"))
+ jabber-muc-autojoin '("dreamteam@conference.mydeco.com")
  jabber-roster-line-format " %-25n %u %-8s  %S"
  jabber-history-enabled t
  jabber-use-global-history nil
@@ -649,7 +652,7 @@ Arg determines number of lines to be created and direction."
   (load-file "~/.secrets.el"))
 
 (setq
- circe-default-nick "_piranha_"
+ circe-default-nick "piranha"
  circe-default-user "piranha"
  circe-default-realname "Alexander Solovyov"
  circe-ignore-list nil
@@ -665,7 +668,8 @@ Arg determines number of lines to be created and direction."
      (require 'lui-logging)
      (setq lui-logging-directory "~/.emacs.d/circe")
      (enable-lui-logging)
-     (set-face-attribute 'circe-originator-face nil :foreground "brown")
+     (require 'circe-nickcolor)
+     (enable-circe-nickcolor)
      (define-key lui-mode-map (kbd "C-,") (lambda () (interactive) (bs--show-with-configuration "circe")))
      (add-hook 'lui-mode-hook
                (lambda ()
