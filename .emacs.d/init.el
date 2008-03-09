@@ -16,10 +16,10 @@
 (defun load-init (modules)
   "Load initialization files"
   (mapc #'(lambda (name)
-            (load (format "init_%s" name)))
+            (load (format "%s_init" name)))
         modules))
 
-(setq custom-file "~/.emacs.d/load/init_custom.el")
+(setq custom-file "~/.emacs.d/load/custom_init.el")
 
 (add-to-path 'load)                     ; initialization
 (add-to-path 'packages)                 ; additional packages
@@ -33,7 +33,7 @@
   "Compile itself if this is config file"
   (interactive)
   (if (or
-       (string-match ".emacs.d/load/init_[a-z]+.el$" (buffer-file-name))
+       (string-match ".emacs.d/load/[a-z]+_init.el$" (buffer-file-name))
        (string-match ".emacs.d/init.el$" (buffer-file-name)))
       (byte-compile-file (buffer-file-name))))
 
