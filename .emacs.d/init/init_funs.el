@@ -10,12 +10,6 @@
   (interactive)
   (set (make-local-variable 'show-trailing-whitespace) t))
 
-(defun autocompile ()
-  "compile itself if ~/.emacs"
-  (interactive)
-  (if (string= (buffer-file-name) (concat default-directory ".emacs"))
-      (byte-compile-file (buffer-file-name))))
-
 (defun insert-date (format)
   "Wrapper around format-time-string."
   (interactive "MFormat: ")
@@ -45,10 +39,10 @@ and beginning of next line, for deleting/copying"
 
 (defun prh:cut-line ()
   "Kills current line"
-  (setq prh:cutted-line (apply 'buffer-substring (whole-line)))
-  (apply 'delete-region (whole-line))
-  (prh:check-newline prh:cutted-line)
-  )
+  (let ((cutted-line (apply 'buffer-substring (whole-line))))
+    (apply 'delete-region (whole-line))
+    (prh:check-newline cutted-line)
+    ))
 
 (defun prh:count-lines (arg)
   "Count lines depending on arg.
@@ -57,7 +51,7 @@ if negative, count from start to current position.
 "
   (if (> arg 0)
       (count-lines (point) (point-max))
-   (count-lines (point-min) (point)) 1))
+   (count-lines (point-min) (point))))
 
 (defun prh:move-line (&optional arg)
   "Move current line.
@@ -91,18 +85,16 @@ Arg determines number of lines to skip, negative means move up."
   "Copy current line.
 Arg determines number of lines to be created and direction."
   (interactive "p")
-  (let ((prh:column (current-column)))
+  (let ((cur-column (current-column))
+        (cutted-line (prh:copy-line)))
     (progn
       (or arg (setq arg 1))
-      (if (< arg 0)
-          (setq tomove (1+ arg))
-        (setq tomove arg))
-      (setq prh:cutted-line (prh:copy-line))
-      (end-of-line tomove)
+      (let ((tomove (if (< arg 0) (1+ arg) arg)))
+        (end-of-line tomove))
       (newline)
-      (insert prh:cutted-line)
-      (next-line (- arg))
-      (move-to-column prh:column)))
+      (insert cutted-line)
+      (forward-line (- arg))
+      (move-to-column cur-column)))
   )
 
 (defun prh:duplicate-line-down (&optional arg)

@@ -1,6 +1,7 @@
 ^.emacs.d/jabber
 ^.emacs.d/circe
 ^.emacs.d/agent
+^.emacs.d/server
 
 syntax: glob
 *.elc

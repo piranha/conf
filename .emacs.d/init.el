@@ -25,11 +25,22 @@
 (add-to-path 'load)                     ; additional packages
 (add-to-path 'load/grep+)
 (add-to-path 'load/themes)
-;(add-to-list 'load-path (expand-file-name "~/.el"))
 
 (when (file-exists-p "~/.secrets.el")
   (load-file "~/.secrets.el"))
 
+(defun autocompile ()
+  "Compile itself if this is config file"
+  (interactive)
+  (if (or
+       (string-match ".emacs.d/init/init_[a-z]+.el$" (buffer-file-name))
+       (string-match ".emacs.d/init.el$" (buffer-file-name)))
+      (byte-compile-file (buffer-file-name))))
+
+(add-hook 'after-save-hook 'autocompile)
+
 (load-init
  '(general frame lang modes keys funs
    bs eshell jabber circe org custom))
+
+

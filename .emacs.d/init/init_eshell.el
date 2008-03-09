@@ -23,7 +23,6 @@
 
 (defun eshell-add-scroll-to-bottom ()
   (interactive)
-  (make-local-hook 'window-scroll-functions)
   (add-hook 'window-scroll-functions 'eshell-scroll-to-bottom nil t))
 
 (add-hook 'eshell-mode-hook 'eshell-add-scroll-to-bottom)
