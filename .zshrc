@@ -24,6 +24,7 @@ limit -s
 umask 022
 
 export PATH=~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin:/usr/games
+
 if [ -x `whence -c most` ]; then
         export PAGER="most"
 else
@@ -109,7 +110,7 @@ zstyle ':completion:*' max-errors 2
 zstyle :compinstall filename '.zshrc'
 
 compctl -o wget make man rpm iptables
-compctl -k hosts ssh telnet ping mtr traceroute
+compctl -k $hosts ssh telnet ping mtr traceroute
 compctl -j -P "%" kill
 compctl -g '*.gz' + -g '*(-/)' gunzip gzcat
 compctl -g '*.rar' + -g '*(-/)' rar unrar
