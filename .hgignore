@@ -1,0 +1,6 @@
+^.emacs.d/jabber
+^.emacs.d/circe
+^.emacs.d/agent
+
+syntax: glob
+*.elc
