@@ -19,12 +19,12 @@
             (load (format "init_%s" name)))
         modules))
 
-(setq custom-file "~/.emacs.d/init/init_custom.el")
+(setq custom-file "~/.emacs.d/load/init_custom.el")
 
-(add-to-path 'init)                     ; initialization
-(add-to-path 'load)                     ; additional packages
-(add-to-path 'load/grep+)
-(add-to-path 'load/themes)
+(add-to-path 'load)                     ; initialization
+(add-to-path 'packages)                 ; additional packages
+(add-to-path 'packages/grep+)
+(add-to-path 'packages/themes)
 
 (when (file-exists-p "~/.secrets.el")
   (load-file "~/.secrets.el"))
@@ -33,7 +33,7 @@
   "Compile itself if this is config file"
   (interactive)
   (if (or
-       (string-match ".emacs.d/init/init_[a-z]+.el$" (buffer-file-name))
+       (string-match ".emacs.d/load/init_[a-z]+.el$" (buffer-file-name))
        (string-match ".emacs.d/init.el$" (buffer-file-name)))
       (byte-compile-file (buffer-file-name))))
 
