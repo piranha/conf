@@ -58,7 +58,6 @@
 (require 'filladapt nil t)
 (require 'session nil t)
 (require 'htmlize nil t)
-(require 'django-html-mode nil t)
 (require 'grep+ nil t)
 (require 'mercurial nil t)
 (require 'etags nil t)
@@ -69,6 +68,11 @@
 
 ;;;;;;;;;;
 ;; General
+
+(defmacro fun-for-bind (func &rest args)
+  "Returns a symbol of an anonymous interactive function,
+suitable for binding to keys."
+  `(lambda () (interactive) (,func ,@args)))
 
 (add-hook 'after-init-hook 'session-initialize)
 
@@ -89,7 +93,6 @@
  scroll-margin 10
  scroll-step 1                       ;; Scroll by one line at a time
  comint-completion-addsuffix t       ;; Insert space/slash after completion
- fill-column 72                      ;; number of chars in line
  kill-whole-line t                   ;; delete line in one stage
  default-major-mode 'text-mode       ;; default mode
  delete-key-deletes-forward t        ;; meaning are the same as the name :)
@@ -108,13 +111,15 @@
  cursor-in-non-selected-windows nil
  dired-recursive-copies 'top
  dired-recursive-deletes 'top
- safe-local-variable-values '((encoding . utf-8))
-)
+ safe-local-variable-values '((encoding . utf-8) (prompt-to-byte-compile))
+ dabbrev-case-fold-search nil        ;; Case is significant for dabbrev
+ )
 
 (setq-default
  save-place t         ;; save position in files
  case-fold-search t   ;; case INsensitive search
  indent-tabs-mode nil ;; do not use tabs for indentation
+ fill-column 72       ;; number of chars in line
 )
 
 ;; Make all "yes or no" prompts show "y or n" instead
@@ -131,6 +136,8 @@
 
 ;; highlight marked text
 (transient-mark-mode 1)
+;; But don't complain if it's not shown
+(setq mark-even-if-inactive t)
 
 ;; to highlight ( and )
 (show-paren-mode 1)
@@ -164,7 +171,6 @@
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
-(global-set-key (kbd "C-w") 'kill-region-or-word)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "C-x C-a") 'imenu)
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
@@ -179,12 +185,13 @@
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 
-(global-set-key (kbd "C-c C-k")  (lambda () (interactive) (kill-buffer nil)))
-(global-set-key (kbd "C-M-l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
-(global-set-key (kbd "C-M-z") (lambda (arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
+(global-set-key (kbd "C-c k") (fun-for-bind kill-buffer nil))
+(global-set-key (kbd "C-M-l") (fun-for-bind switch-to-buffer (other-buffer)))
+(global-set-key (kbd "C-M-z") (lambda (&optional arg char) (interactive "p\ncZap backward to char: ") (zap-to-char (- arg) char)))
+(global-set-key (kbd "C-M-y") (lambda (&optional arg) (interactive "*p") (yank-pop (- arg))))
 
 (when win32
-    (global-set-key (kbd "C-<f12>") '(lambda () (interactive) (w32-send-sys-command 61488 nil)))
+    (global-set-key (kbd "C-<f12>") (fun-for-bind w32-send-sys-command 61488 nil))
   )
 
 ;; end of keybindings
@@ -193,23 +200,28 @@
 ;;;;;;;;;;;
 ;; bs-show
 
+(eval-after-load "bs" '(define-key bs-mode-map "z" 'bs-switch-to-files-and-refresh))
 (add-hook 'bs-mode-hook 'no-scroll-margin)
 
 (setq bs-configurations
       '(("files" nil nil nil files-without-org bs-sort-buffer-interns-are-last)
-        ("all" nil nil nil nil nil)
-        ("dired" nil nil nil
-         (lambda (buf)
-           (with-current-buffer buf
-             (not (eq major-mode 'dired-mode)))) nil)
         ("org" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
-             (not (eq major-mode 'org-mode)))) nil)
+             (not (memq major-mode '(org-mode))))) nil)
+        ("jabber" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (memq major-mode '(jabber-chat-mode jabber-roster-mode))))) nil)
         ("circe" nil nil nil
          (lambda (buf)
            (with-current-buffer buf
-             (not (memq major-mode '(circe-channel-mode circe-server-mode))))) nil)))
+             (not (memq major-mode '(circe-channel-mode circe-server-mode circe-query-mode))))) nil)
+        ("dired" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (memq major-mode '(dired-mode))))) nil)
+        ("all" nil nil nil nil nil)))
 
 (setq bs-default-configuration "files")
 (setq bs-alternative-configuration "all")
@@ -219,6 +231,15 @@
   (or
    (not (buffer-file-name buffer))
    (with-current-buffer buffer (eq major-mode 'org-mode))))
+
+(defun bs-switch-to-files-and-refresh ()
+  "Apply \"files\" configuration. Refresh whole Buffer Selection Menu."
+  (interactive)
+  (bs-set-configuration "files")
+  (setq bs-default-configuration bs-current-configuration)
+  (bs--redisplay t)
+  (bs--set-window-height))
+
 
 ;; bs-show end
 ;;;;;;;;;;;;;;
@@ -264,63 +285,48 @@
 ;;;;;;;;;
 ;; python
 
-(autoload 'python-mode "python-mode" "Python editing mode." t)
-(add-hook 'python-mode-hook
-          (lambda ()
-            (set beginning-of-defun-function 'py-beginning-of-def-or-class)
-            (local-set-key (kbd "RET") 'newline-and-indent)
-            (eldoc-mode 1)
-            (setq show-trailing-whitespace t)
-            ))
+(autoload 'python-mode "python" "Python editing mode." t)
 
-(when
-    (require 'pymacs nil t)
-  (pymacs-load "ropemacs" "rope-")
-)
+(eval-after-load "python"
+  '(progn
+     (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+     (when (require 'pymacs nil t) (pymacs-load "ropemacs" "rope-"))
+     (defun rope-reload ()
+       (interactive)
+       (pymacs-terminate-services)
+       (pymacs-load "ropemacs" "rope-"))
+     ))
+
 
 ;; end of python
-;;;;;;;;;;;;;;;;
-
-;;;;;;;;;
-;; erlang
-
-(autoload 'erlang-mode "erlang-mode.el"
-  "Major mode for editing Erlang source files" t)
-
-(add-hook 'erlang-mode-hook
-          (lambda ()
-            (local-set-key (kbd "RET") 'newline-and-indent)
-            (setq show-trailing-whitespace t)
-            ))
-
-;; end of erlang
 ;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;
 ;; various modes
 
-(autoload 'css-mode "css-mode.el" "Major mode for editing CSS files" t)
-(autoload 'markdown-mode "markdown-mode.el" "Major mode for editing Markdown files" t)
-(autoload 'wikipedia-mode "wikipedia-mode.el" "Major mode for editing MediaWiki files" t)
-(autoload 'factor-mode "factor.el" "factor" t)
+(autoload 'erlang-mode "erlang-mode" "Erlang edit mode" t)
+(autoload 'css-mode "css-mode" "Major mode for editing CSS files" t)
+(autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
+(autoload 'wikipedia-mode "wikipedia-mode" "Major mode for editing MediaWiki files" t)
+(autoload 'factor-mode "factor" "factor" t)
+(autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
 
-(setq hooks-with-traling
-      '(
-        css-mode-hook
-        emacs-lisp-mode-hook
+(eval-after-load "erlang-mode" '(define-key erlang-mode-map (kbd "RET") 'newline-and-indent))
+
+(setq hooks-with-trailing
+      '(emacs-lisp-mode-hook
         factor-mode-hook
         wikipedia-mode-hook
         markdown-mode-hook
         erlang-mode-hook
         haskell-mode-hook
+        python-mode-hook
         ))
 
-(dolist (hook hooks-with-traling)
-  (add-hook hook '(lambda () (setq show-trailing-whitespace t))))
+(dolist (hook hooks-with-trailing) (add-hook hook 'display-trailing-whitespace))
 
 (setq hooks-wants-filladapt
-      '(
-        markdown-mode-hook
+      '(markdown-mode-hook
         wikipedia-mode-hook
         ))
 
@@ -348,6 +354,9 @@
 (autoload 'window-number-control-mode "window-number" nil t)
 (window-number-mode 1)
 (window-number-control-mode 1)
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
 
 ;; end of modes
 ;;;;;;;;;;;;;;;;;;
@@ -408,7 +417,7 @@
     (if (= p (point))
         (beginning-of-line))))
 
-(add-hook 'eshell-mode-hook '(lambda () (define-key eshell-mode-map "\C-a" 'eshell-maybe-bol)))
+(eval-after-load "eshell" '(define-key eshell-mode-map (kbd "C-a") 'eshell-maybe-bol))
 
 ;; end of eshell
 ;;;;;;;;;;;;;;;;
@@ -422,6 +431,11 @@
   "Set scroll-margin to 0 buffer-locally"
   (interactive)
   (set (make-local-variable 'scroll-margin) 0))
+
+(defun display-trailing-whitespace ()
+  "Enable display of trailing whitespaces buffer-locally"
+  (interactive)
+  (set (make-local-variable 'show-trailing-whitespace) t))
 
 (defun autocompile ()
   "compile itself if ~/.emacs"
@@ -540,6 +554,15 @@ Arg determines number of lines to be created and direction."
     (backward-kill-word arg)
     ))
 
+(defun toggle-file (desired-file)
+  "Toggle buffer display of desired file."
+  (when (file-exists-p desired-file)
+    (if (and (buffer-file-name)
+             (string= (expand-file-name desired-file)
+                      (expand-file-name (buffer-file-name))))
+        (bury-buffer)
+      (find-file desired-file))))
+
 ;; end of functions
 ;;;;;;;;;;;;;;;;;;;
 
@@ -551,65 +574,117 @@ Arg determines number of lines to be created and direction."
   (color-theme-initialize)
   (load-file "~/.el/pastels-on-dark-theme.el")
   (color-theme-pastels-on-dark)
-)
+  )
 
 ;; end
 ;;;;;;
 
 ;;;;;;;;;
 ;; Jabber
-(when
-    (require 'jabber nil t)
-  (setq
-   jabber-nickname "piranha"
-   jabber-resource "el"
-   jabber-server "eth0.net.ua"
-   jabber-username "piranha")
 
-  (setq jabber-roster-line-format " %-25n %u %-8s  %S")
-  (setq jabber-history-enabled t)
-  (setq jabber-use-global-history nil)
-  (setq jabber-history-dir "~/.emacs.d/jabber/")
+(when (file-directory-p "~/.el/jabber")
+  (add-to-list 'load-path "~/.el/jabber"))
+(autoload 'jabber-connect "jabber" "Emacs Jabber client" t)
+(global-set-key (kbd "C-x C-j C-c") 'jabber-connect)
 
-  (add-hook 'jabber-chat-mode-hook
-            (lambda ()
-              (setq fill-column 120)
-              (no-scroll-margin)
-              ))
+(setq
+ jabber-account-list '(("asolovyov@mydeco.com"
+                        (:network-server . "chat.mydeco.com")
+                        (:port . 5223)
+                        (:connection-type . ssl))
+                       ("piranha@eth0.net.ua"))
+ jabber-muc-autojoin '("dreamteam@conference.mydeco.com")
+ jabber-roster-line-format " %-25n %u %-8s  %S"
+ jabber-history-enabled t
+ jabber-use-global-history nil
+ jabber-history-dir "~/.emacs.d/jabber/"
+ jabber-chat-buffer-format "chat-%n"
+ jabber-groupchat-buffer-format "muc-%n"
+ )
 
-  (define-key jabber-chat-mode-map [escape] 'my-jabber-chat-bury)
+(eval-after-load "jabber"
+  '(progn
+     (add-hook 'jabber-chat-mode-hook 'no-scroll-margin)
 
-  (defun my-jabber-chat-bury ()
-    (interactive)
-    (if (eq 'jabber-chat-mode major-mode)
-        (bury-buffer)))
+     (define-key jabber-chat-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "jabber"))
+     (define-key jabber-roster-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "jabber"))
 
-  (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
-  (setq jabber-autoaway-method 'jabber-xprintidle-program)
+     (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
+     (setq jabber-autoaway-method 'jabber-xprintidle-program)
 
-  ;; stub for announce
-  (setq jabber-xosd-display-time 3)
+     (when linux
+       (setq jabber-notify-display-time 3)
+       (setq jabber-notify-max-length 30)
 
-  (defun jabber-xosd-display-message (message)
-    "Displays MESSAGE through the xosd"
-    (let ((process-connection-type nil))
-      (start-process "jabber-xosd" nil "osd_cat" "-p" "bottom" "-A" "center" "-f" "-*-courier-*-*-*-*-30" "-d" (number-to-string jabber-xosd-display-time))
-      (process-send-string "jabber-xosd" message)
-      (process-send-eof "jabber-xosd")))
+       (defun jabber-notify-display (title text)
+         "Displays MESSAGE with TITLE through the libnotify"
+         (let (
+               (process-connection-type nil)
+               (length (* 1000 jabber-notify-display-time))
+               (message (if (> (length text) jabber-notify-max-length)
+                            (concat (substring text 0 jabber-notify-max-length) "...")
+                          text))
+               )
+           (start-process "jabber-notify" nil "notify-send" "-t" (number-to-string length) title message)
+           (process-send-eof "jabber-notify")))
 
-  (defun jabber-message-xosd (from buffer text proposed-alert)
-    (jabber-xosd-display-message "New message"))
+       (defun jabber-message-notify (from buffer text proposed-alert)
+         (let ((title (car (split-string from "@"))))
+           (jabber-notify-display title text)))
 
-  (add-to-list 'jabber-alert-message-hooks
-               'jabber-message-xosd)
-)
+       (defun jabber-muc-notify (nick group buffer text proposed-alert)
+         (let ((group-name (car (split-string group "@"))))
+           (let ((title (concat nick "@" group-name)))
+             (jabber-notify-display title text))))
+
+       (defun jabber-scroll-to-bottom (window)
+         "Scroll the input line to the bottom of the window."
+         (when (and window
+                    (window-live-p window))
+           (let ((resize-mini-windows nil))
+             ;; This is to prevent an XEmacs byte compilation warning
+             ;; "variable bound but not referred to". XEmacs is trying to be
+             ;; too intelligent.
+             (when (featurep 'xemacs)
+               (declare (special resize-mini-windows)))
+             (save-selected-window
+               (select-window window)
+               (save-restriction
+                 (widen)
+                 (when (>= (point) jabber-point-insert)
+                   (save-excursion
+                     (goto-char (point-max))
+                     (recenter -1)
+                     (sit-for 0))))))))
+
+       (defun jabber-muc-stb (nick group buffer text proposed-alert)
+         (dolist (window (get-buffer-window-list buffer))
+           (jabber-scroll-to-bottom window)))
+
+       (defun jabber-message-stb (from buffer text proposed-alert)
+         (dolist (window (get-buffer-window-list buffer))
+           (jabber-scroll-to-bottom window)))
+
+       (define-personal-jabber-alert jabber-muc-notify)
+
+       (setq jabber-alert-message-hooks '(jabber-message-scroll
+                                          jabber-message-notify
+                                          jabber-message-stb))
+       (setq jabber-alert-muc-hooks '(jabber-muc-scroll
+                                      jabber-muc-notify-personal
+                                      jabber-muc-stb))
+       (setq jabber-alert-presence-hooks '())
+       (setq jabber-alert-info-message-hooks '(jabber-info-display))
+       )
+     ))
+
 ;; end of jabber
 ;;;;;;;;;;;;;;;;
 
 ;;;;;;
 ;; irc
 
-(autoload 'circe "circe" "" t)
+(autoload 'circe "circe" "Sane IRC client" t)
 
 (when (file-directory-p "~/.el/circe")
   (add-to-list 'load-path "~/.el/circe"))
@@ -618,12 +693,13 @@ Arg determines number of lines to be created and direction."
   (load-file "~/.secrets.el"))
 
 (setq
- circe-default-nick "_piranha_"
+ circe-default-nick "piranha"
  circe-default-user "piranha"
  circe-default-realname "Alexander Solovyov"
  circe-ignore-list nil
+ circe-server-killed-confirmation 'ask-and-kill-all
  circe-server-auto-join-channels
- '(("^freenode$" "#concatenative" "#conkeror"))
+ '(("^freenode$" "#concatenative" "#conkeror" "#emacs" "#org-mode"))
  circe-nickserv-passwords
  `(("freenode" ,freenode-password)))
 
@@ -631,16 +707,13 @@ Arg determines number of lines to be created and direction."
   '(progn
      (require 'lui-irc-colors)
      (add-to-list 'lui-pre-output-hook 'lui-irc-colors)
-     (require 'circe-log)
-     (enable-circe-log)
-     (add-hook 'lui-mode-hook
-               (lambda ()
-                 (set (make-local-variable 'scroll-conservatively) 8192)
-                 (local-set-key (kbd "C-,") (lambda ()
-                                              (interactive)
-                                              (bs--show-with-configuration "circe")))
-                 (no-scroll-margin))
-     )))
+     (require 'lui-logging)
+     (setq lui-logging-directory "~/.emacs.d/circe")
+     (enable-lui-logging)
+     (require 'circe-nickcolor)
+     (enable-circe-nickcolor)
+     (define-key lui-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "circe"))
+     (add-hook 'lui-mode-hook 'no-scroll-margin)))
 
 (defun irc ()
   "Connect to IRC."
@@ -662,12 +735,13 @@ Arg determines number of lines to be created and direction."
       org-hide-leading-stars t
       org-odd-levels-only t)
 
-(add-hook 'org-mode-hook '(lambda () (interactive)
-                            (local-set-key (kbd "C-,") (lambda ()
-                                                         (interactive)
-                                                         (bs--show-with-configuration "org")))
-                            ))
+(eval-after-load "org"
+  '(progn
+     (define-key org-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "org"))))
 
+(global-set-key (kbd "<f1>") (fun-for-bind toggle-file "~/org/life.org"))
+(global-set-key (kbd "<f2>") (fun-for-bind toggle-file "~/org/musicx.org"))
+(global-set-key (kbd "<f3>") (fun-for-bind toggle-file "~/org/mydeco.org"))
 
 ;; end of org-mode
 ;;;;;;;;;;;;;;;;;;
@@ -677,8 +751,7 @@ Arg determines number of lines to be created and direction."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/life.org" "~/org/mydeco.org" "~/org/musicx.org")))
- '(safe-local-variable-values (quote ((prompt-to-byte-compile) (encoding . utf-8)))))
+ '(org-agenda-files (quote ("~/org/life.org" "~/org/mydeco.org" "~/org/musicx.org"))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

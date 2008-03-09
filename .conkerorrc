@@ -1,0 +1,23 @@
+// run_external_editor_function = create_external_editor_launcher("c:\\program files\\Emacs\\bin\\gnuclient.exe", ["-s"]);
+
+define_key(default_global_keymap, "C-x C-b", "switch-to-buffer");
+define_key(default_global_keymap, "C-,", "switch-to-buffer");
+define_key(default_global_keymap, "C-c k", "kill-current-buffer");
+
+url_completion_use_history = true;
+kill_whole_line = true;
+
+add_delicious_webjumps("p1r4nh4");
+add_webjump("g", "http://www.google.com/search?q=%s");
+add_webjump("w",  "http://en.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
+add_webjump("r",  "http://ru.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
+add_webjump("q",  "http://uk.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
+
+
+interactive("follow-new-buffer-background", function (I) {
+    var target = OPEN_NEW_BUFFER_BACKGROUND;
+    var element = yield I.read_hinted_element_with_prompt("follow", "Follow", "links", target);
+    browser_element_follow(I.buffer, target, element);
+});
+define_key(content_buffer_normal_keymap, "M-f", "follow-new-buffer-background");
+
