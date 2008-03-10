@@ -37,6 +37,5 @@
 (when graf
   (require 'color-theme)
   (color-theme-initialize)
-  (load-file "~/.el/pastels-on-dark-theme.el")
-  (color-theme-pastels-on-dark)
-  )
+  (load-file "~/.emacs.d/packages/themes/pastels-on-dark-theme.el")
+  (color-theme-pastels-on-dark))
