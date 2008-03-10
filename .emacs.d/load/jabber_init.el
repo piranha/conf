@@ -30,6 +30,37 @@
      (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
      (setq jabber-autoaway-method 'jabber-xprintidle-program)
 
+     (defcustom jabber-scroll-to-bottom-p t
+       "Non-nil if jabber should keep the input line at the end of the window."
+       :type 'boolean
+       :group 'jabber-chat)
+
+     (defun jabber-scroll-to-bottom (window display-start)
+       "Scroll the input line to the bottom of the window."
+       (when (and window
+                  jabber-scroll-to-bottom-p)
+         (let ((resize-mini-windows nil))
+           ;; This is to prevent an XEmacs byte compilation warning
+           ;; "variable bound but not referred to". XEmacs is trying to be
+           ;; too intelligent.
+           (when (featurep 'xemacs)
+             (declare (special resize-mini-windows)))
+           (save-selected-window
+             (select-window window)
+             (save-restriction
+               (widen)
+               (when (>= (point) jabber-point-insert)
+                 (save-excursion
+                   (goto-char (point-max))
+                   (recenter -1)
+                   (sit-for 0))))))))
+
+     (add-hook 'jabber-chat-mode-hook
+               (lambda ()
+                 (add-hook 'window-scroll-functions
+                           'jabber-scroll-to-bottom
+                           nil t)))
+
      (when nix
        (setq jabber-notify-display-time 3)
        (setq jabber-notify-max-length 30)
@@ -55,40 +86,12 @@
            (let ((title (concat nick "@" group-name)))
              (jabber-notify-display title text))))
 
-       (defun jabber-scroll-to-bottom (buffer)
-         "Scroll the input line to the bottom of the window."
-         (dolist (window (get-buffer-window-list buffer))
-           (when (window-live-p window)
-             (let ((resize-mini-windows nil))
-               ;; This is to prevent an XEmacs byte compilation warning
-               ;; "variable bound but not referred to". XEmacs is trying to be
-               ;; too intelligent.
-               (when (featurep 'xemacs)
-                 (declare (special resize-mini-windows)))
-               (save-selected-window
-                 (select-window window)
-                 (save-restriction
-                   (widen)
-                   (when (>= (point) jabber-point-insert)
-                     (save-excursion
-                       (goto-char (point-max))
-                       (recenter -1)
-                       (sit-for 0)))))))))
-
-       (defun jabber-muc-stb (nick group buffer text proposed-alert)
-         (jabber-scroll-to-bottom buffer))
-
-       (defun jabber-message-stb (from buffer text proposed-alert)
-         (jabber-scroll-to-bottom buffer))
-
        (define-personal-jabber-alert jabber-muc-notify)
 
        (setq jabber-alert-message-hooks '(jabber-message-scroll
-                                          jabber-message-notify
-                                          jabber-message-stb))
+                                          jabber-message-notify))
        (setq jabber-alert-muc-hooks '(jabber-muc-scroll
-                                      jabber-muc-notify-personal
-                                      jabber-muc-stb))
+                                      jabber-muc-notify-personal))
        (setq jabber-alert-presence-hooks '())
        (setq jabber-alert-info-message-hooks '(jabber-info-display))
        )
