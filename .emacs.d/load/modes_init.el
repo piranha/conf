@@ -25,11 +25,11 @@
 (column-number-mode 1)
 
 ;; I hate blinking
-(when (fboundp 'blink-cursor-mode)
+(if (fboundp 'blink-cursor-mode)
   (blink-cursor-mode -1))
 
 ;; It's rare, but annoying
-(if (boundp 'global-semantic-stickyfunc-mode)
+(if (fboundp 'global-semantic-stickyfunc-mode)
     (global-semantic-stickyfunc-mode -1))
 
 ;; highlight marked text
@@ -56,7 +56,6 @@
 ;; major modes
 
 (autoload 'erlang-mode "erlang" "Erlang edit mode" t)
-(autoload 'css-mode "css-mode" "Major mode for editing CSS files" t)
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
 (autoload 'wikipedia-mode "wikipedia-mode" "Major mode for editing MediaWiki files" t)
 (autoload 'factor-mode "factor" "factor" t)
@@ -88,12 +87,11 @@
 (setq auto-mode-alist
       (append
        (list
-        '("\\.md$" . markdown-mode)
-        '("\\.css$" . css-mode)
-        '("\\.erl$" . erlang-mode)
-        '("\\.hs$" . haskell-mode)
-        '("\\.wiki\\.txt$" . wikipedia-mode)
-        '("\\.factor" . factor-mode)
+        '("\\.md\\'" . markdown-mode)
+        '("\\.erl\\'" . erlang-mode)
+        '("\\.hs\\'" . haskell-mode)
+        '("\\.wiki\\.txt\\'" . wikipedia-mode)
+        '("\\.factor\\'" . factor-mode)
         )
         auto-mode-alist))
 
