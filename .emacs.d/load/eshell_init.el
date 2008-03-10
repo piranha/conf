@@ -50,4 +50,7 @@
     (if (= p (point))
         (beginning-of-line))))
 
-(eval-after-load "eshell" '(define-key eshell-mode-map (kbd "C-a") 'eshell-maybe-bol))
+;; eshell-mode-map is buffer-local
+(add-hook 'eshell-mode-hook (lambda ()
+                              (define-key eshell-mode-map (kbd "C-a") 'eshell-maybe-bol)
+                              (define-key eshell-mode-map (kbd "<home>") 'eshell-maybe-bol)))
