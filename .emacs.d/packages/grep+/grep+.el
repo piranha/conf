@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2007, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2008, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 19 21:06:10 2007 (-28800 Pacific Standard Time)
+;; Last-Updated: Tue Jan 01 14:06:53 2008 (-28800 Pacific Standard Time)
 ;;           By: dradams
-;;     Update #: 370
+;;     Update #: 414
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs 22.x
@@ -17,8 +17,8 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `avoid', `compile', `compile+', `compile-', `fit-frame',
-;;   `font-lock', `frame-cmds', `frame-fns', `grep', `misc-fns',
-;;   `strings', `syntax', `thingatpt', `thingatpt+'.
+;;   `font-lock', `frame-fns', `grep', `misc-fns', `syntax',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -79,6 +79,12 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2007/12/04 dadams
+;;     grep, grepp-default-regexp-fn: Changed single-quote to double-quote.
+;; 2007/12/02 dadams
+;;     grep and doc strings of grepp-default-regexp-fn (option and function):
+;;       If active, nonempty region, use its (quoted) text as default regexp.
+;;         Thx to Martin Nordholts for the suggestion.
 ;; 2006/12/11 dadams
 ;;     Added: grepp-toggle-comments.  Bound to M-;.
 ;; 2006/12/09 dadams
@@ -136,14 +142,18 @@ The default value matches lines that begin with a Lisp comment."
                                        'symbol-name-nearest-point
                                      'word-at-point)
   "*Function of 0 args called to provide default search regexp to \\[grep].
-Some reasonable choices:
-`word-nearest-point', `symbol-name-nearest-point', `sexp-nearest-point'.
+Some reasonable choices: `word-nearest-point',
+`symbol-name-nearest-point', `sexp-nearest-point'.
 
-If this is nil and no prefix arg is given to `grep', then no
-defaulting is done.
+This is ignored if Transient Mark mode is on and the region is active
+and non-empty.  In that case, the quoted (\") region text is used as
+the default regexp.
 
-If this is not a function, then function `grepp-default-regexp-fn' does
-the defaulting otherwise."
+If `grepp-default-regexp-fn' is nil and no prefix arg is given to
+`grep', then no defaulting is done.
+
+Otherwise, if the value is not a function, then function
+`grepp-default-regexp-fn' does the defaulting."
   :type '(choice (const :tag "No default search regexp (unless you use `C-u')" nil)
           (function :tag "Function of zero args to provide default search regexp"))
   :group 'grep)
@@ -152,9 +162,13 @@ the defaulting otherwise."
 ;;;###autoload
 (defun grepp-default-regexp-fn ()
   "*Function of 0 args called to provide default search regexp to \\[grep].
-No defaulting is done if option `grepp-default-regexp-fn' is nil.
-Otherwise, the defaulting function is provided by the first of these
-that references a defined function:
+This is used only if both of the following are true:
+- Transient Mark mode is off or the region is inactive or empty.
+- The value of option `grepp-default-regexp-fn' is
+  `grepp-default-regexp-fn'.
+
+When this is used, the default regexp is provided by calling the
+first of these that references a defined function:
   - variable `grepp-default-regexp-fn'
   - variable `find-tag-default-function'
   - the `find-tag-default-function' property of the `major-mode'
@@ -208,8 +222,17 @@ in the *grep* output buffer, to find the text that `grep' hits refer to.
 This command uses a special history list for its COMMAND-ARGS, so you can
 easily repeat a grep command.
 
-The text (regexp) to find is defaulted, based upon
-`grepp-default-regexp-fn'.
+The text (regexp) to find is defaulted as follows:
+
+- If Transient Mark mode is on and the region is active and nonempty,
+  then the double-quoted region text is used.  (If the region contains
+  double-quotes (\"), then you will need to escape them by hand.)
+
+- If option `grepp-default-regexp-fn' is a function, then it is called
+  to return the default regexp.
+
+- If `grepp-default-regexp-fn' is nil and no prefix arg is provided,
+  then no default regexp is used.
 
 If a prefix arg is provided, then the default text is substituted
 into the last grep command in the grep command history (or into
@@ -227,8 +250,12 @@ temporarily highlight in visited source lines."
               "grep <pattern> <files> :  "
               (if current-prefix-arg
                   default
-                (concat grep-command (and grepp-default-regexp-fn
-                                          (funcall (grepp-default-regexp-fn))) " "))
+                (concat grep-command
+                        (if (and transient-mark-mode mark-active
+                                 (not (eq (region-beginning) (region-end))))
+                            (concat "\"" (buffer-substring (region-beginning) (region-end)) "\"")
+                          (and grepp-default-regexp-fn (funcall (grepp-default-regexp-fn))))
+                        " "))
               nil nil 'grep-history
               (if current-prefix-arg nil default))))))
 
@@ -342,8 +369,7 @@ between /* and */."
 (unless (featurep 'grep+)
   (setq grep-regexp-alist
         '(("^\\(.+?\\)\\(:[ \t]*\\)\\([0-9]+\\)\\2" 1 3)
-          ;; Rule to match column numbers is commented out since no known grep
-          ;; produces them
+          ;; Rule to match column numbers is commented out since no known grep produces them
           ;; ("^\\(.+?\\)\\(:[ \t]*\\)\\([0-9]+\\)\\2\\(?:\\([0-9]+\\)\\(?:-\\([0-9]+\\)\\)?\\2\\)?"
           ;;  1 3 (4 . 5))
 
