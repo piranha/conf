@@ -55,33 +55,31 @@
            (let ((title (concat nick "@" group-name)))
              (jabber-notify-display title text))))
 
-       (defun jabber-scroll-to-bottom (window)
+       (defun jabber-scroll-to-bottom (buffer)
          "Scroll the input line to the bottom of the window."
-         (when (and window
-                    (window-live-p window))
-           (let ((resize-mini-windows nil))
-             ;; This is to prevent an XEmacs byte compilation warning
-             ;; "variable bound but not referred to". XEmacs is trying to be
-             ;; too intelligent.
-             (when (featurep 'xemacs)
-               (declare (special resize-mini-windows)))
-             (save-selected-window
-               (select-window window)
-               (save-restriction
-                 (widen)
-                 (when (>= (point) jabber-point-insert)
-                   (save-excursion
-                     (goto-char (point-max))
-                     (recenter -1)
-                     (sit-for 0))))))))
+         (dolist (window (get-buffer-window-list buffer))
+           (when (window-live-p window)
+             (let ((resize-mini-windows nil))
+               ;; This is to prevent an XEmacs byte compilation warning
+               ;; "variable bound but not referred to". XEmacs is trying to be
+               ;; too intelligent.
+               (when (featurep 'xemacs)
+                 (declare (special resize-mini-windows)))
+               (save-selected-window
+                 (select-window window)
+                 (save-restriction
+                   (widen)
+                   (when (>= (point) jabber-point-insert)
+                     (save-excursion
+                       (goto-char (point-max))
+                       (recenter -1)
+                       (sit-for 0)))))))))
 
        (defun jabber-muc-stb (nick group buffer text proposed-alert)
-         (dolist (window (get-buffer-window-list buffer))
-           (jabber-scroll-to-bottom window)))
+         (jabber-scroll-to-bottom buffer))
 
        (defun jabber-message-stb (from buffer text proposed-alert)
-         (dolist (window (get-buffer-window-list buffer))
-           (jabber-scroll-to-bottom window)))
+         (jabber-scroll-to-bottom buffer))
 
        (define-personal-jabber-alert jabber-muc-notify)
 
