@@ -128,6 +128,12 @@ Arg determines number of lines to be created and direction."
         (bury-buffer)
       (find-file desired-file))))
 
+(defun toggle-buffer (buffer-name)
+  "Toggle display of desired buffer"
+  (if (string= (buffer-name) buffer-name)
+      (bury-buffer)
+    (switch-to-buffer buffer-name t)))
+
 (defun plist-maybe-get (keywords key)
   "If there is no \"key\" in \"keywords\", return nil.
 Otherwise return value."

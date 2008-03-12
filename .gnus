@@ -27,8 +27,6 @@
 ;; Loading
 ;;;;;;;;;;
 (require 'tc)
-;; (require 'gnus-alias)
-(require 'gnus-stat)
 (require 'message-x)
 (when (file-exists-p "~/.secrets.el")
   (load "~/.secrets.el"))

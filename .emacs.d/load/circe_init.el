@@ -1,7 +1,7 @@
 (autoload 'circe "circe" "Sane IRC client" t)
 
-(when (file-directory-p "~/.el/circe")
-  (add-to-list 'load-path "~/.el/circe"))
+(when (file-directory-p "~/var/circe")
+  (add-to-list 'load-path "~/var/circe"))
 
 (setq
  circe-default-nick "piranha"

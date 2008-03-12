@@ -2,7 +2,7 @@
 
 ;; experiment (require 'gnus-load nil t)
 
-(autoload 'gnus "gnus-load" "Best email client ever" t)
+(autoload 'gnus "gnus" "Best email client ever" t)
 
 ;; Use cperl-mode instead of perl-mode
 (defalias 'perl-mode 'cperl-mode)
@@ -100,6 +100,12 @@
 
 (setq w3m-use-cookies t)
 
+(add-hook 'isearch-mode-end-hook
+          (lambda ()
+            ;; it works a little better if isearch puts you
+            ;; at the start of the search, not the end
+            (when isearch-forward (goto-char isearch-other-end))
+            ))
 
 
 ;;;;;;;;;
