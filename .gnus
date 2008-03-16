@@ -89,7 +89,9 @@
   ;; highlight only good signatures
   gnus-signature-separator "^-- $"
   ;; don't insert Cancel-Lock
-  message-insert-canlock nil)
+  message-insert-canlock nil
+  sendmail-program "msmtp"
+)
 
 ;; User settings
 (setq
