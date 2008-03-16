@@ -21,6 +21,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.Accordion
+import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Prompt
 import XMonad.Prompt.Shell
@@ -63,47 +64,35 @@ playOrder = "mpc random"
 playWindow = "quodlibet --toggle-window"
 
 -- keys config
-ownKeys conf@(XConfig {modMask = modMask}) = M.fromList $
-    [ ((modMask,                 xK_f      ), sendMessage ToggleLayout)
-    , ((modMask,                 xK_x      ), submap . M.fromList $
-       [ ((0, xK_z), spawn playPrevious)
-       , ((0, xK_x), spawn playToggle)
-       , ((0, xK_c), spawn playOrder)
-       , ((0, xK_v), spawn playNext)
-       , ((0, xK_a), spawn playWindow)
-       ])
-    , ((modMask,                 xK_F5     ), spawn playPrevious)
-    , ((modMask,                 xK_F6     ), spawn playNext)
-    , ((modMask,                 xK_F7     ), spawn playOrder)
-    , ((modMask,                 xK_F8     ), spawn playToggle)
-    , ((modMask,                 xK_a      ), submap . M.fromList $
-       [ ((0, xK_q), sendMessage $ JumpToLayout "tiled")
-       , ((0, xK_w), sendMessage $ JumpToLayout "tabbed")
-       , ((0, xK_a), sendMessage $ JumpToLayout "accordion")
-       ])
-    , ((modMask .|. controlMask, xK_x      ), xmonadPrompt ownXPConfig)
-    , ((modMask,                 xK_Page_Up), spawn "xclip -selection PRIMARY -o | xclip -selection CLIPBOARD -i")
-    , ((modMask,                 xK_Page_Down), spawn "xclip -selection CLIPBOARD -o | xclip -selection PRIMARY -i")
-    , ((modMask,                 xK_F2     ), windowPromptGoto ownXPConfig)
-    , ((modMask,                 xK_F3     ), sshPrompt ownXPConfig)
-    , ((modMask,                 xK_Insert ), spawn "import -window root ~/screenshot-`date +\"%F--%H-%M-%S\"`.png")
-    , ((modMask,                 xK_Pause  ), spawn "gnome-screensaver-command --lock")
-    , ((modMask,                 xK_Return ), dwmpromote)
-    , ((modMask,                 xK_Right  ), withFocused (keysMoveWindow (20, 0)))
-    , ((modMask,                 xK_Left   ), withFocused (keysMoveWindow (-20, 0)))
-    , ((modMask,                 xK_Up     ), withFocused (keysMoveWindow (0, -20)))
-    , ((modMask,                 xK_Down   ), withFocused (keysMoveWindow (0, 20)))
-    , ((modMask .|. shiftMask,   xK_Right  ), withFocused (keysResizeWindow (20, 0) (0, 0)))
-    , ((modMask .|. shiftMask,   xK_Left   ), withFocused (keysResizeWindow (-20, 0) (0, 0)))
-    , ((modMask .|. shiftMask,   xK_Up     ), withFocused (keysResizeWindow (0, -20) (0, 0)))
-    , ((modMask .|. shiftMask,   xK_Down   ), withFocused (keysResizeWindow (0, 20) (0, 0)))
-    , ((modMask,                 xK_BackSpace), focusUrgent)
-    , ((modMask,                 xK_F12    ), spawn "amixer -q set PCM 2dB+")
-    , ((modMask,                 xK_F11    ), spawn "amixer -q set PCM 2dB-")
+addKeys =
+    [ ("M-f"   , sendMessage ToggleLayout)
+    , ("M-C-x" , xmonadPrompt ownXPConfig)
+    , ("M-<F5>", spawn playPrevious)
+    , ("M-<F6>", spawn playNext)
+    , ("M-<F7>", spawn playOrder)
+    , ("M-<F8>", spawn playToggle)
+    , ("M-a q" , sendMessage $ JumpToLayout "tiled")
+    , ("M-a w" , sendMessage $ JumpToLayout "tabbed")
+    , ("M-a a" , sendMessage $ JumpToLayout "accordion")
+    , ("M-<Page_Up>", spawn "xclip -selection PRIMARY -o | xclip -selection CLIPBOARD -i")
+    , ("M-<Page_Down>", spawn "xclip -selection CLIPBOARD -o | xclip -selection PRIMARY -i")
+    , ("M-<F2>", windowPromptGoto ownXPConfig)
+    , ("M-<F3>", sshPrompt ownXPConfig)
+    , ("M-<Insert>", spawn "import -window root ~/screenshot-`date +\"%F--%H-%M-%S\"`.png")
+    , ("M-<Pause>", spawn "gnome-screensaver-command --lock")
+    , ("M-<Return>", dwmpromote)
+    , ("M-<Right>", withFocused (keysMoveWindow (20, 0)))
+    , ("M-<Left>", withFocused (keysMoveWindow (-20, 0)))
+    , ("M-<Up>", withFocused (keysMoveWindow (0, -20)))
+    , ("M-<Down>", withFocused (keysMoveWindow (0, 20)))
+    , ("M-S-<Right>", withFocused (keysResizeWindow (20, 0) (0, 0)))
+    , ("M-S-<Left>", withFocused (keysResizeWindow (-20, 0) (0, 0)))
+    , ("M-S-<Up>", withFocused (keysResizeWindow (0, -20) (0, 0)))
+    , ("M-S-<Down>", withFocused (keysResizeWindow (0, 20) (0, 0)))
+    , ("M-<Backspace>", focusUrgent)
+    , ("M-<F12>", spawn "amixer -q set PCM 2dB+")
+    , ("M-<F11>", spawn "amixer -q set PCM 2dB-")
     ]
-    ++
-    [((modMask .|. controlMask, k), windows $ swapWithCurrent i)
-         | (i, k) <- zip (workspaces conf) [xK_1 .. xK_9]]
 
 
 ownManageHook = composeAll . concat $
@@ -134,8 +123,7 @@ ownConfig statusbar = defaultConfig
                 , logHook            = dynamicLogWithPP $ ownPP statusbar
                 , layoutHook         = ownLayoutHook
                 , manageHook         = ownManageHook
-                , keys               = \c -> ownKeys c `M.union` keys defaultConfig c
                 }
 
 main = do statusbar <- spawnPipe statusBarCmd
-          xmonad $ ownConfig statusbar
+          xmonad $ ownConfig statusbar `additionalKeysP` addKeys
