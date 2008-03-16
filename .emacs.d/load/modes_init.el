@@ -107,6 +107,9 @@
             (when isearch-forward (goto-char isearch-other-end))
             ))
 
+(setq browse-url-browser-function 'browse-url-firefox
+      browse-url-new-window-flag  t
+      browse-url-firefox-new-window-is-tab t)
 
 ;;;;;;;;;
 ;; Python
