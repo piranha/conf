@@ -6,9 +6,9 @@
   (setq icon-title-format frame-title-format)
 
   ;; Font setup
+  ;; nix font is configured in resources
   (if win
-      (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*"))
-    (add-to-list 'default-frame-alist '(font . "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso10646-1")))
+      (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")))
 
   (tool-bar-mode 0)
   (when nix
@@ -38,4 +38,7 @@
   (require 'color-theme)
   (color-theme-initialize)
   (load-file "~/.emacs.d/packages/themes/pastels-on-dark-theme.el")
-  (color-theme-pastels-on-dark))
+;;;  (color-theme-pastels-on-dark)
+;;;   (color-theme-subtle-hacker)
+;;;   (color-theme-snowish)
+)
