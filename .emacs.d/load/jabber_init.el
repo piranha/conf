@@ -4,12 +4,12 @@
 (global-set-key (kbd "C-x C-j C-c") 'jabber-connect)
 
 (setq
- jabber-account-list `(("asolovyov@mydeco.com"
+ jabber-account-list `(("asolovyov@mydeco.com/emagz"
                         (:network-server . "chat.mydeco.com")
                         (:port . 5223)
                         (:connection-type . ssl)
                         (:password . ,mydeco-jabber))
-                       ("piranha@eth0.net.ua"
+                       ("piranha@eth0.net.ua/emagz"
                         (:password . ,eth0-jabber)))
  jabber-muc-autojoin '("dreamteam@conference.mydeco.com" "ui@conference.mydeco.com")
  jabber-roster-line-format " %-25n %u %-8s  %S"
