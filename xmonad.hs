@@ -13,7 +13,6 @@ import XMonad.Actions.DwmPromote
 import XMonad.Actions.FloatKeys
 import XMonad.Actions.Submap
 import XMonad.Actions.SwapWorkspaces
-import XMonad.Actions.WmiiActions
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.LayoutCombinators
@@ -44,8 +43,7 @@ ownXPConfig = defaultXPConfig
               }
 
 -- tabbed layout config
-tabbedConf :: TConf
-tabbedConf = defaultTConf { fontName = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*-*" }
+tabbedConf = defaultTheme { fontName = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*-*" }
 
 -- dynamic log config
 ownPP h = defaultPP
@@ -58,10 +56,10 @@ ownPP h = defaultPP
           , ppLayout = (\x -> "")
           }
 
-playToggle = "quodlibet --play-pause"
-playPrevious = "quodlibet --previous"
-playNext =  "quodlibet --next"
-playOrder = "quodlibet --order=toggle"
+playToggle = "mpc toggle"
+playPrevious = "mpc prev"
+playNext =  "mpc next"
+playOrder = "mpc random"
 playWindow = "quodlibet --toggle-window"
 
 -- keys config
@@ -116,10 +114,10 @@ ownManageHook = composeAll . concat $
 
 ownLayoutHook = smartBorders
                 $ toggleLayouts (noBorders Full)
-                $ Named "tiled" tiled
-                ||| Named "mirror" (Mirror tiled)
-                ||| Named "tabbed" (noBorders owntab)
-                ||| Named "accordion" Accordion
+                $ named "tiled" tiled
+                ||| named "mirror" (Mirror tiled)
+                ||| named "tabbed" (noBorders owntab)
+                ||| named "accordion" Accordion
     where
       owntab = tabbed shrinkText tabbedConf
       tiled = Tall 1 (3/100) (1/2)
