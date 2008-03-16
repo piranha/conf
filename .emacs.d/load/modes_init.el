@@ -60,6 +60,7 @@
 (autoload 'wikipedia-mode "wikipedia-mode" "Major mode for editing MediaWiki files" t)
 (autoload 'factor-mode "factor" "factor" t)
 (autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
+(autoload 'haskell-mode "haskell-mode" "Major mode for editing Haskell sources" t)
 
 (eval-after-load "erlang-mode"
   '(define-key erlang-mode-map (kbd "RET") 'newline-and-indent))
