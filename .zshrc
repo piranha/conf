@@ -25,12 +25,12 @@ umask 022
 
 export PATH=~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin:/usr/games
 
-if [ -x `whence -c most` ]; then
+if [ -x "`whence -c most`" ]; then
         export PAGER="most"
 else
         export PAGER="less"
 fi
-if [ -x `whence -c vim` ]; then
+if [ -x "`whence -c vim`" ]; then
     export EDITOR="vim"
 else
     export EDITOR="vi"
@@ -210,7 +210,7 @@ function apt-show()
 # tail -f, possibly colorized
 function t()
 {
-    if [ -x `whence -c ccze` ]; then
+    if [ -x "`whence -c ccze`" ]; then
         tail -f $1 | ccze -A
     else
         tail -f $1
@@ -258,12 +258,12 @@ alias U2k="iconv -c -f utf-16 -t koi8-r"
 alias k2U="iconv -c -f koi8-r -t utf-16"
 
 ## LFTP
-if [ -x `whence -c lftp` ]; then
+if [ -x "`whence -c lftp`" ]; then
     alias ftp="lftp"
     function sftp() { lftp sftp://`whoami`@$1 }
 fi
 ## Mutt new generation
-if [ -x `whence -c muttng` ]; then
+if [ -x "`whence -c muttng`" ]; then
         alias m="muttng"
 else
         alias m="mutt"
@@ -275,13 +275,13 @@ else
         alias ls="/bin/ls -G"
 fi
 ## GNU Find
-if [ `uname` != "Linux" -a -x `whence -c gfind` ]; then
+if [ `uname` != "Linux" -a -x "`whence -c gfind`" ]; then
     alias find="noglob gfind"
 else
     alias find="noglob find"
 fi
 ## Editor
-if [ -x `whence -c emacsclient` ]; then
+if [ -x "`whence -c emacsclient`" ]; then
     alias e="emacsclient --no-wait"
     alias et="emacsclient -t"
     export ALTERNATE_EDITOR="emacs"
@@ -289,7 +289,7 @@ else
     alias e=$EDITOR
 fi
 
-if [ -x `whence -c rlwrap` ]; then
+if [ -x "`whence -c rlwrap`" ]; then
     alias nc='rlwrap nc'
 fi
 
@@ -308,7 +308,6 @@ alias lsa="ls -ld .*"
 alias rm="rm -f"
 alias grep="egrep"
 alias mc="mc -acx"
-alias ss="sudo -s"
 alias sr="screen -D -r"
 alias l=$PAGER
 alias g="egrep -i --color"
