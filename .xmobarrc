@@ -1,16 +1,17 @@
-Config { font = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*-*"
+Config { font = "xft:terminus:pixelsize=14"
        , bgColor = "#3f3c6d"
        , fgColor = "#a8a3f7"
        , position = Top
        , commands = [ Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    , Run Thermal "TZ0" ["-t", "<temp>C"] 10
                     , Run Memory ["-t","<usedratio>%"] 10
                     , Run Swap ["-t", "<usedratio>"] 10
-                    , Run Battery [] 10
+                    , Run BatteryP ["C238"] ["-t", "<left>"] 10
                     , Run Date "%a %d %b %H:%M:%S" "date" 10
                     , Run Com "if [ \"a`acpi -a -B|grep on-line`\" != \"a\" ]; then echo *AC*; else acpi -b|awk '{print $5}'|cut -c 2-5; fi" [] "ac" 10
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% | Mem: %memory%/%swap% | <fc=#ee9a00>%date%</fc> | %battery% %ac%"
+       , template = "%StdinReader% }{ %cpu%/%TZ0% | Mem: %memory%/%swap% | <fc=#ee9a00>%date%</fc> | %battery% %ac%"
        }
