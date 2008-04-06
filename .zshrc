@@ -41,10 +41,6 @@ if [ -d $HOME/perl ]
 then
     export PERL5LIB=${PERL5LIB:+$PERL5LIB:}$HOME/perl
 fi
-if [ -d $HOME/share/man ]
-then
-    export MANPATH=$HOME/share/man:$(manpath)
-fi
 
 # Prompt setup (c) smax 2002, adapted for zsh (c) piranha 2004
 # 0-black, 1-red, 2-green, 3-yellow, 4-blue, 5-magenta 6-cyan, 7-white
@@ -86,6 +82,9 @@ bindkey "[4~" end-of-line
 bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
 bindkey '^[z' delete-to-char
+# for rxvt
+bindkey "\e[8~" end-of-line
+bindkey "\e[7~" beginning-of-line
 
 
 # Loading builtins
@@ -117,7 +116,7 @@ compctl -g '*.rar' + -g '*(-/)' rar unrar
 compctl -g '*.bz2' + -g '*(-/)' bunzip2 bzcat
 compctl -g '*(-*)' + -g '*(-/)' strip
 compctl -g '*.ps *.eps' + -g '*(-/)' gs ghostview psnup psduplex ps2ascii
-compctl -g '*.dvi *.pdf *.ps *.ps.gz' + -g '*(-/)' evince
+compctl -g '*.dvi *.pdf *.ps *.ps.gz' + -g '*(-/)' evince epdfview
 compctl -g '*.xpm *.xpm.gz' + -g '*(-/)' xpmroot sxpm pixmap xpmtoppm
 compctl -g '*.fig' + -g '*(-/)' xfig
 compctl -g '*(-/) .*(-/)' cd
@@ -231,7 +230,7 @@ function totalram()
 }
 
 # funny function to slow print it's input
-slow_print() {
+function slow_print() {
     for argument in "${@}"
     do
         for ((i = 1; i <= ${#1} ;i++)) {
