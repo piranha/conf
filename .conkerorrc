@@ -3,9 +3,11 @@
 define_key(default_global_keymap, "C-x C-b", "switch-to-buffer");
 define_key(default_global_keymap, "C-,", "switch-to-buffer");
 define_key(default_global_keymap, "C-c k", "kill-current-buffer");
+define_key(content_buffer_text_keymap, "C-z", "cmd_undo");
 
 url_completion_use_history = true;
 kill_whole_line = true;
+can_kill_last_buffer = false;
 
 add_delicious_webjumps("p1r4nh4");
 add_webjump("g", "http://www.google.com/search?q=%s");
@@ -14,10 +16,23 @@ add_webjump("r",  "http://ru.wikipedia.org/wiki/Special:Search?search=%s&go=Go")
 add_webjump("q",  "http://uk.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
 
 
-interactive("follow-new-buffer-background", function (I) {
-    var target = OPEN_NEW_BUFFER_BACKGROUND;
-    var element = yield I.read_hinted_element_with_prompt("follow", "Follow", "links", target);
-    browser_element_follow(I.buffer, target, element);
-});
+interactive("follow-new-buffer-background", 
+            "follow to a link in new buffer, opened in background",
+            function (I) {
+                var target = OPEN_NEW_BUFFER_BACKGROUND;
+                var element = yield I.read_browser_object("follow", "Follow", "links", target);
+                browser_element_follow(I.buffer, target, element);
+            });
 define_key(content_buffer_normal_keymap, "M-f", "follow-new-buffer-background");
 
+function other_buffer (window)
+{
+    window.buffers.current = window.buffers.buffer_list[1];
+}
+interactive("switch-other-buffer", 
+            "Switch to previously selected buffer",
+            function (I) {
+                other_buffer(I.window);
+            });
+define_key(content_buffer_normal_keymap, "C-M-l", "switch-other-buffer");
+    
