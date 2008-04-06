@@ -101,13 +101,6 @@
 
 (setq w3m-use-cookies t)
 
-(add-hook 'isearch-mode-end-hook
-          (lambda ()
-            ;; it works a little better if isearch puts you
-            ;; at the start of the search, not the end
-            (when isearch-forward (goto-char isearch-other-end))
-            ))
-
 (setq browse-url-browser-function 'browse-url-firefox
       browse-url-new-window-flag  t
       browse-url-firefox-new-window-is-tab t)
