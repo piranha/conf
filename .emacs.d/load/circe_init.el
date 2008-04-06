@@ -22,6 +22,10 @@
      (setq lui-logging-directory "~/.emacs.d/circe")
      (enable-lui-logging)
      (require 'circe-nickcolor)
+     (setq circe-nickcolor-list
+           '("NavyBlue" "DarkGreen" "SeaGreen" "ForestGreen" "OliveDrab"
+             "SaddleBrown" "brown" "red" "DarkViolet" "yellow4" "DarkRed"
+             "brown" "purple"))
      (enable-circe-nickcolor)
      (define-key lui-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "circe"))
      (add-hook 'lui-mode-hook 'no-scroll-margin)))
