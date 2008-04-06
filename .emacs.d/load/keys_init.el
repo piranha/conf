@@ -16,8 +16,6 @@ suitable for binding to keys."
 
 (global-set-key (kbd "C-x C-d") 'dired-jump)
 
-(global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
-
 (global-set-key (kbd "C-c k") (fun-for-bind kill-buffer nil))
 (global-set-key (kbd "C-M-l") (fun-for-bind switch-to-buffer (other-buffer)))
 (global-set-key (kbd "C-M-z") (lambda (&optional arg char)
@@ -30,6 +28,9 @@ suitable for binding to keys."
 (global-set-key (kbd "M-<down>") 'prh:move-line-down)
 (global-set-key (kbd "C-M-<up>") 'prh:duplicate-line-up)
 (global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
+
+(global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
+(global-set-key (kbd "<f11>") 'jabber-activity-switch-to)
 
 (when win
   (global-set-key (kbd "C-<f12>") (fun-for-bind w32-send-sys-command 61488 nil))
