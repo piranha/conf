@@ -105,6 +105,8 @@
       browse-url-new-window-flag  t
       browse-url-firefox-new-window-is-tab t)
 
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;;;;;;;;;
 ;; Python
 ;;;;;;;;;
