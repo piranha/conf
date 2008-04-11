@@ -14,6 +14,7 @@ import XMonad.Actions.FloatKeys
 import XMonad.Actions.Submap
 import XMonad.Actions.SwapWorkspaces
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.Named
@@ -21,21 +22,22 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.Accordion
-import XMonad.Util.EZConfig (additionalKeysP)
-import XMonad.Util.Run (spawnPipe)
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Window
 import XMonad.Prompt.XMonad
+import XMonad.Util.EZConfig (additionalKeysP)
+import XMonad.Util.Run (spawnPipe)
+import XMonad.Util.Scratchpad
+
 
 statusBarCmd = "xmobar"
--- statusBarCmd = "mymon.sh | dzen2 -bg '#3f3c6d' -fg '#a8a3f7' -sa c -e 'button1=togglecollapse' -fn '-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*' -ta l -xs 1 -u"
 
 -- prompt config
 ownXPConfig :: XPConfig
 ownXPConfig = defaultXPConfig
-              { font              = "-*-terminus-*-*-*-*-14-*-*-*-*-*-*-*"
+              { font              = "xft:Terminus:pixelsize=14"
               , bgColor           = "#3f3c6d"
               , fgColor           = "#a8a3f7"
               , fgHLight          = "#a8a3f7"
@@ -44,14 +46,14 @@ ownXPConfig = defaultXPConfig
               }
 
 -- tabbed layout config
-tabbedConf = defaultTheme { fontName = "-xos4-terminus-medium-r-normal-*-16-*-*-*-*-*-*-*" }
+tabbedConf = defaultTheme { fontName = "xft:Terminus:pixelsize=14" }
 
 -- dynamic log config
 ownPP h = defaultPP
           { ppOutput = hPutStrLn h
           , ppCurrent = xmobarColor "white" "" . wrap "[" "]"
           , ppVisible = xmobarColor "yellow" "" . wrap "*" "*"
-          , ppUrgent = xmobarColor "red" ""
+          , ppUrgent = xmobarColor "red" "" . wrap "|" "|"
           , ppTitle = xmobarColor "#00ee00" ""
           , ppSep    = " "
           , ppLayout = (\x -> "")
@@ -61,16 +63,17 @@ playToggle = "mpc toggle"
 playPrevious = "mpc prev"
 playNext =  "mpc next"
 playOrder = "mpc random"
-playWindow = "quodlibet --toggle-window"
 
 -- keys config
 addKeys =
     [ ("M-f"   , sendMessage ToggleLayout)
+    , ("M-b"   , sendMessage ToggleStruts)
     , ("M-C-x" , xmonadPrompt ownXPConfig)
     , ("M-<F5>", spawn playPrevious)
     , ("M-<F6>", spawn playNext)
     , ("M-<F7>", spawn playOrder)
     , ("M-<F8>", spawn playToggle)
+    , ("M-s"   , spawn "urxvtc -title scratchpad")
     , ("M-a q" , sendMessage $ JumpToLayout "tiled")
     , ("M-a w" , sendMessage $ JumpToLayout "tabbed")
     , ("M-a a" , sendMessage $ JumpToLayout "accordion")
@@ -95,13 +98,15 @@ addKeys =
     ]
 
 
-ownManageHook = composeAll . concat $
+ownManageHook = scratchpadManageHookDefault <+>
+              (composeAll . concat $
                 [ [ className =? c --> doFloat | c <- floats]
-                , [ className =? "Gecko" --> doF (W.shift "web") ]]
+                , [ className =? "Gecko" --> doF (W.shift "web") ] ])
     where floats = ["MPlayer", "Gimp", "qiv", "Galculator", "Gcalctool"]
 
 
 ownLayoutHook = smartBorders
+                $ avoidStruts
                 $ toggleLayouts (noBorders Full)
                 $ named "tiled" tiled
                 ||| named "mirror" (Mirror tiled)
@@ -118,7 +123,6 @@ ownConfig statusbar = defaultConfig
                 , normalBorderColor  = "#3f3c6d"
                 , focusedBorderColor = "#FF0000"
                 , terminal           = "urxvtc"
-                , defaultGaps        = [(18,0,0,0), (18,0,0,0)]
                 , modMask            = mod4Mask
                 , logHook            = dynamicLogWithPP $ ownPP statusbar
                 , layoutHook         = ownLayoutHook
