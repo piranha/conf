@@ -13,8 +13,6 @@ syntax enable
 set nofen
 filetype on
 filetype plugin on
-"filetype indent on
-set langmap=ΚΓΥΛΕΞΗΫέΪΘίΖΩΧΑΠÒΟΜΔΦάΡήΣΝΙΤΨΒΐ/κγυλεξηϋύϊθÿζωχαπςομδφόρώσνιτψβΰ/;qwertyuiop[]asdfghjkl;'zxcvbnm,./QWERTYUIOP[]ASDFGHJKL:'ZXCVBNM,./
 
 " For Python
 let python_highlight_all = 1
@@ -162,8 +160,8 @@ imap <C-D> <Esc>:call SafeLineDelete()<CR>i
 " Search for the current Visual selection.
 vmap S y/<C-R>=escape(@",'/\')<CR>
 
-map <F7> !tr "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>" "£ΚΓΥΛΕΞΗΫέΪΘίΖΩΧΑΠÒΟΜΔΦάΡήΣΝΙΤΨΒΐ³\"\'*:,.;κγυλεHηϋύϊθÿζωχαπςομδφόρώσνιτψβΰ"<CR>
-map <F8> !tr "£ΚΓΥΛΕΞΗΫέΪΘίΖΩΧΑΠÒΟΜΔΦάΡήΣΝΙΤΨΒΐ³\"\'*:,.;κγυλεHηϋύϊθÿζωχαπςομδφόρώσνιτψβΰ" "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>"<CR>
+map <F7> !tr "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>" "Β£ΓΓƒΓ•Γ‹Γ…ΓΓ‡Γ›ΓΓΓΓΓ†Γ™Γ—ΓΓΓ’ΓΓΓ„Γ–ΓΓ‘ΓΓ“ΓΓ‰Γ”ΓΓ‚Γ€Β³\"\'*:,.;ΓªΓ£ΓµΓ«Γ¥HΓ§Γ»Γ½ΓΊΓ¨ΓΏΓ¦ΓΉΓ·Γ΅Γ°Γ²Γ―Γ¬Γ¤Γ¶ΓΌΓ±ΓΎΓ³Γ­Γ©Γ΄ΓΈΓΆΓ "<CR>
+map <F8> !tr "Β£ΓΓƒΓ•Γ‹Γ…ΓΓ‡Γ›ΓΓΓΓΓ†Γ™Γ—ΓΓΓ’ΓΓΓ„Γ–ΓΓ‘ΓΓ“ΓΓ‰Γ”ΓΓ‚Γ€Β³\"\'*:,.;ΓªΓ£ΓµΓ«Γ¥HΓ§Γ»Γ½ΓΊΓ¨ΓΏΓ¦ΓΉΓ·Γ΅Γ°Γ²Γ―Γ¬Γ¤Γ¶ΓΌΓ±ΓΎΓ³Γ­Γ©Γ΄ΓΈΓΆΓ " "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>"<CR>
 
 map <F5> :set hls!<bar>set hls?<CR>
 
