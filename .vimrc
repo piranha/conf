@@ -160,9 +160,6 @@ imap <C-D> <Esc>:call SafeLineDelete()<CR>i
 " Search for the current Visual selection.
 vmap S y/<C-R>=escape(@",'/\')<CR>
 
-map <F7> !tr "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>" "£ÊÃÕËÅÎÇÛÝÚÈßÆÙ×ÁÐÒÏÌÄÖÜÑÞÓÍÉÔØÂÀ³\"\'*:,.;êãõëåHçûýúèÿæù÷áðòïìäöüñþóíéôøâà"<CR>
-map <F8> !tr "£ÊÃÕËÅÎÇÛÝÚÈßÆÙ×ÁÐÒÏÌÄÖÜÑÞÓÍÉÔØÂÀ³\"\'*:,.;êãõëåHçûýúèÿæù÷áðòïìäöüñþóíéôøâà" "\`qwertyuiop[]asdfghjkl;'zxcvbnm,.~@\#$\%^&*QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>"<CR>
-
 map <F5> :set hls!<bar>set hls?<CR>
 
 "Tabs
