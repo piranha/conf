@@ -1,4 +1,4 @@
-Config { font = "xft:terminus:pixelsize=14"
+Config { font = "xft:Consolas:size=12"
        , bgColor = "#3f3c6d"
        , fgColor = "#a8a3f7"
        , position = Top

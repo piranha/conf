@@ -76,13 +76,12 @@ addKeys =
     , ("M-s"   , spawn "urxvtc -title scratchpad")
     , ("M-a q" , sendMessage $ JumpToLayout "tiled")
     , ("M-a w" , sendMessage $ JumpToLayout "tabbed")
-    , ("M-a a" , sendMessage $ JumpToLayout "accordion")
     , ("M-<Page_Up>", spawn "xclip -selection PRIMARY -o | xclip -selection CLIPBOARD -i")
     , ("M-<Page_Down>", spawn "xclip -selection CLIPBOARD -o | xclip -selection PRIMARY -i")
     , ("M-<F2>", windowPromptGoto ownXPConfig)
     , ("M-<F3>", sshPrompt ownXPConfig)
     , ("M-<Insert>", spawn "import -window root ~/screenshot-`date +\"%F--%H-%M-%S\"`.png")
-    , ("M-<Pause>", spawn "gnome-screensaver-command --lock")
+    , ("M-<Pause>", spawn "slock")
     , ("M-<Return>", dwmpromote)
     , ("M-<Right>", withFocused (keysMoveWindow (20, 0)))
     , ("M-<Left>", withFocused (keysMoveWindow (-20, 0)))
@@ -111,7 +110,6 @@ ownLayoutHook = smartBorders
                 $ named "tiled" tiled
                 ||| named "mirror" (Mirror tiled)
                 ||| named "tabbed" (noBorders owntab)
-                ||| named "accordion" Accordion
     where
       owntab = tabbed shrinkText tabbedConf
       tiled = Tall 1 (3/100) (1/2)
