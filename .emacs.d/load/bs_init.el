@@ -1,4 +1,5 @@
 (add-hook 'bs-mode-hook 'no-scroll-margin)
+(autoload 'bs--show-with-configuration "bs")
 
 (defmacro bs-filter (modes)
   `(lambda (buf)

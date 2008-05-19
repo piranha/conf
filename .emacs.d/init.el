@@ -40,7 +40,5 @@
 (add-hook 'after-save-hook 'autocompile)
 
 (load-init
- '(general frame lang modes keys funs
+ '(general frame lang funs modes keys
    bs eshell jabber circe org custom))
-
-

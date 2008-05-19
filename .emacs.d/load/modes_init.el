@@ -98,6 +98,10 @@
 
 (setq factor-binary "~/bin/factor")
 (setq factor-image "~/var/factor/factor.image")
+(eval-after-load "factor"
+  '(progn
+     (define-key factor-mode-map (kbd "C-M-l") (fun-for-bind switch-to-buffer (other-buffer)))
+     (define-key factor-listener-mode-map (kbd "C-M-l") (fun-for-bind switch-to-buffer (other-buffer)))))
 
 (setq w3m-use-cookies t)
 
@@ -117,6 +121,7 @@
   '(progn
      (define-key python-mode-map (kbd "RET") 'newline-and-indent)
      (when (require 'pymacs nil t) (pymacs-load "ropemacs" "rope-"))
+     (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
      (defun rope-reload ()
        (interactive)
        (pymacs-terminate-services)
