@@ -11,11 +11,12 @@ can_kill_last_buffer = false;
 
 add_delicious_webjumps("p1r4nh4");
 add_webjump("g", "http://www.google.com/search?q=%s");
-add_webjump("w",  "http://en.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
-add_webjump("r",  "http://ru.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
-add_webjump("q",  "http://uk.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
+add_webjump("w", "http://en.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
+add_webjump("r", "http://ru.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
+add_webjump("q", "http://uk.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
 
 
+// new functions
 interactive("follow-new-buffer-background", 
             "follow to a link in new buffer, opened in background",
             function (I) {
@@ -23,7 +24,6 @@ interactive("follow-new-buffer-background",
                 var element = yield I.read_browser_object("follow", "Follow", "links", target);
                 browser_element_follow(I.buffer, target, element);
             });
-define_key(content_buffer_normal_keymap, "M-f", "follow-new-buffer-background");
 
 function other_buffer (window)
 {
@@ -34,5 +34,10 @@ interactive("switch-other-buffer",
             function (I) {
                 other_buffer(I.window);
             });
+
+
+// new keys
+define_key(content_buffer_normal_keymap, "M-f", "follow-new-buffer-background");
 define_key(content_buffer_normal_keymap, "C-M-l", "switch-other-buffer");
+
     
