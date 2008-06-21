@@ -5,7 +5,7 @@ suitable for binding to keys."
 
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-,") 'bs-show)
-(global-set-key (kbd "C-.") 'iswitchb-buffer)
+(global-set-key (kbd "C-.") 'ido-switch-buffer)
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
@@ -32,6 +32,14 @@ suitable for binding to keys."
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 (global-set-key (kbd "<f11>") 'jabber-activity-switch-to)
 
+;; windows
+(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-2") 'split-window-vertically)
+(global-set-key (kbd "M-3") 'split-window-horizontally)
+(global-set-key (kbd "M-0") 'delete-window)
+
 (when win
-  (global-set-key (kbd "C-<f12>") (fun-for-bind w32-send-sys-command 61488 nil))
+  (global-set-key (kbd "C-<f12>") (fun-for-bind w32-send-sys-command #xf030 nil)) ; maximize
+  (global-set-key (kbd "C-<f11>") (fun-for-bind w32-send-sys-command #xf120 nil)) ; restore original size
   )

@@ -22,7 +22,6 @@ Read documentation of `bs-configurations' for more details."
         (plist-maybe-get keywords :hide-f)
         (plist-maybe-get keywords :sort)))
 
-
 (setq bs-configurations
       `(,(bs-conf "files"  `(:hide-f files-without-org
                              :sort bs-sort-buffer-interns-are-last))
@@ -34,8 +33,6 @@ Read documentation of `bs-configurations' for more details."
                                                    circe-query-mode))))
         ,(bs-conf "dired"  `(:hide-f ,(bs-filter '(dired-mode))))
         ,(bs-conf "all" '())))
-
-
 
 (setq bs-default-configuration "files")
 (setq bs-alternative-configuration "all")

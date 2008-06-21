@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -83,7 +83,7 @@
    django-html-font-lock-keywords-1
    django-html-font-lock-keywords-2
 
-      `(;; comment
+   `( ;; comment
      (,(rx (eval django-html-open-comment)
            (1+ space)
            (0+ (not (any "#")))
@@ -112,7 +112,7 @@
      (,(rx (eval django-html-open-block)
            (1+ space)
            (group (and "end"
-                        ;; end prefix keywords
+                       ;; end prefix keywords
                        (or "if" "for" "ifequal" "block" "ifnotequal" "spaceless" "filter" "with")))
            (1+ space)
            (eval django-html-close-block))
@@ -146,7 +146,7 @@
            (1+ space)
            (group "in")
            (1+ space)
-           
+
            (group (1+ (or word ?_ ?.)))
 
            (group (? (1+ space) "reverse"))

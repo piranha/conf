@@ -4,14 +4,8 @@
 (global-set-key (kbd "C-x C-j C-c") 'jabber-connect)
 
 (setq
- jabber-account-list `(("asolovyov@mydeco.com/emagz"
-                        (:network-server . "chat.mydeco.com")
-                        (:port . 5223)
-                        (:connection-type . ssl)
-                        (:password . ,mydeco-jabber))
-                       ("piranha@eth0.net.ua/emagz"
+ jabber-account-list `(("piranha@eth0.net.ua/emagz"
                         (:password . ,eth0-jabber)))
- jabber-muc-autojoin '("dreamteam@conference.mydeco.com" "ui@conference.mydeco.com")
  jabber-roster-line-format " %-25n %u %-8s  %S"
  jabber-history-enabled t
  jabber-use-global-history nil
@@ -63,6 +57,11 @@
 
      (global-set-key (kbd "<f12>") (fun-for-bind toggle-buffer "*-jabber-*"))
 
+     (setq jabber-alert-message-hooks '(jabber-message-scroll))
+     (setq jabber-alert-muc-hooks '(jabber-muc-scroll))
+     (setq jabber-alert-presence-hooks '())
+     (setq jabber-alert-info-message-hooks '(jabber-info-display))
+
      (when nix
        (setq jabber-notify-display-time 3)
        (setq jabber-notify-max-length 30)
@@ -90,11 +89,7 @@
 
        (define-personal-jabber-alert jabber-muc-notify)
 
-       (setq jabber-alert-message-hooks '(jabber-message-scroll
-                                          jabber-message-notify))
-       (setq jabber-alert-muc-hooks '(jabber-muc-scroll
-                                      jabber-muc-notify-personal))
-       (setq jabber-alert-presence-hooks '())
-       (setq jabber-alert-info-message-hooks '(jabber-info-display))
+       (add-hook jabber-alert-message-hooks 'jabber-message-notify)
+       (add-hook jabber-alert-muc-hooks 'jabber-muc-notify-personal)
        )
      ))

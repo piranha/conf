@@ -17,10 +17,14 @@
 (autoload 'session-initialize "session" "Use variables, registers and buffer places across sessions" t)
 (add-hook 'after-init-hook 'session-initialize)
 
-(setq dired-bind-jump nil)
+(setq
+ dired-bind-jump nil
+ dired-omit-extensions '(".pyc"))
 (autoload 'dired-jump "dired-x" "Jump to dir of current file" t)
-
-(display-time)
+(autoload 'dired-omit-mode "dired-x" "Omit unnecessary files in dired view" t)
+(add-hook 'dired-mode-hook 'dired-omit-mode)
+(eval-after-load "dired"
+  '(define-key dired-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "dired")))
 
 (column-number-mode 1)
 
@@ -40,15 +44,17 @@
 (show-paren-mode 1)
 
 ;; iswitchb is fastest (i missed something? :)
-(iswitchb-mode 1)
+;(iswitchb-mode 1)
 
-;; window configuration undo/redo is really useful
-(winner-mode 1)
+;; IDO, I need to learn your power
+(ido-mode 1)
+(setq
+ ido-enable-flex-matching 1
+ ido-show-dot-for-dired t
+ ido-auto-merge-work-directories-length -1 ; disable auto-merging
+ ido-confirm-unique-completion t)
 
-(autoload 'window-number-mode "window-number" nil t)
-(autoload 'window-number-control-mode "window-number" nil t)
-(window-number-mode 1)
-(window-number-control-mode 1)
+(winner-mode 1) ;; window configuration undo/redo
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
@@ -73,6 +79,7 @@
         erlang-mode-hook
         haskell-mode-hook
         python-mode-hook
+        django-html-mode-hook
         ))
 
 (dolist (hook hooks-with-trailing) (add-hook hook 'display-trailing-whitespace))
@@ -93,6 +100,7 @@
         '("\\.hs\\'" . haskell-mode)
         '("\\.wiki\\.txt\\'" . wikipedia-mode)
         '("\\.factor\\'" . factor-mode)
+        '("\\.html\\'" . django-html-mode)
         )
         auto-mode-alist))
 
@@ -105,9 +113,10 @@
 
 (setq w3m-use-cookies t)
 
-(setq browse-url-browser-function 'browse-url-firefox
-      browse-url-new-window-flag  t
-      browse-url-firefox-new-window-is-tab t)
+(when nix
+  (setq browse-url-browser-function 'browse-url-firefox
+        browse-url-new-window-flag  t
+        browse-url-firefox-new-window-is-tab t))
 
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
@@ -115,7 +124,7 @@
 ;; Python
 ;;;;;;;;;
 
-(autoload 'python-mode "python" "Python editing mode." t)
+;(autoload 'python-mode "python" "Python editing mode." t)
 
 (eval-after-load "python"
   '(progn
@@ -127,3 +136,15 @@
        (pymacs-terminate-services)
        (pymacs-load "ropemacs" "rope-"))
      ))
+
+
+;; Snippets
+
+(require 'yasnippet nil t)
+(eval-after-load "yasnippet"
+'(progn
+   (setq
+    yas/trigger-key (kbd "C-/")
+    yas/next-field-key (kbd "C-/"))
+   (yas/initialize)
+   (yas/load-directory "~/.emacs.d/snippets/")))
