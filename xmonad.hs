@@ -37,16 +37,17 @@ statusBarCmd = "xmobar"
 -- prompt config
 ownXPConfig :: XPConfig
 ownXPConfig = defaultXPConfig
-              { font              = "xft:Terminus:pixelsize=14"
+              { font              = "xft:Consolas:size=12"
               , bgColor           = "#3f3c6d"
               , fgColor           = "#a8a3f7"
               , fgHLight          = "#a8a3f7"
               , bgHLight          = "blue"
               , borderColor       = "#FFFFFF"
+              , position          = Top
               }
 
 -- tabbed layout config
-tabbedConf = defaultTheme { fontName = "xft:Terminus:pixelsize=14" }
+tabbedConf = defaultTheme { fontName = "xft:Consolas:size=12" }
 
 -- dynamic log config
 ownPP h = defaultPP
@@ -94,6 +95,7 @@ addKeys =
     , ("M-<Backspace>", focusUrgent)
     , ("M-<F12>", spawn "amixer -q set PCM 2dB+")
     , ("M-<F11>", spawn "amixer -q set PCM 2dB-")
+    , ("M-p", shellPrompt ownXPConfig)
     ]
 
 
