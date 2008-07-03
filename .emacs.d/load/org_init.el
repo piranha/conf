@@ -151,9 +151,16 @@ START-TIME and END-OF-DAY are the number of minutes past midnight."
                                   (quote regexp) "<[^>\n]+>")))
      (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
 
+(defun prh/org-open-at-point (&optional not-in-emacs)
+  "Open link at point, by default in emacs. Based on `org-open-at-point`."
+  (interactive "P")
+  (org-open-at-point (not not-in-emacs)))
+
 (eval-after-load "org"
   '(progn
-     (define-key org-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "org"))))
+     (define-key org-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "org"))
+     (define-key org-mouse-map [(return)] 'prh/org-open-at-point)))
+
 
 (global-set-key (kbd "<f1>") (fun-for-bind toggle-file "~/org/life.org"))
 (global-set-key (kbd "<f2>") (fun-for-bind toggle-file "~/org/musicx.org"))
