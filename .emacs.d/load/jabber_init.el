@@ -1,7 +1,7 @@
 (when (file-directory-p "~/var/jabber.el")
   (add-to-list 'load-path "~/var/jabber.el"))
-(autoload 'jabber-connect "jabber" "Emacs Jabber client" t)
-(global-set-key (kbd "C-x C-j C-c") 'jabber-connect)
+(autoload 'jabber-connect-all "jabber" "Emacs Jabber client" t)
+(global-set-key (kbd "C-x C-j C-c") 'jabber-connect-all)
 
 (setq
  jabber-account-list `(("piranha@eth0.net.ua/emagz"

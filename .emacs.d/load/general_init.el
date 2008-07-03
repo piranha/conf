@@ -56,7 +56,7 @@
  save-place t         ;; save position in files
  case-fold-search t   ;; case INsensitive search
  indent-tabs-mode nil ;; do not use tabs for indentation
- fill-column 77       ;; number of chars in line
+ fill-column 80       ;; number of chars in line
 )
 
 ;; Ask questions with short answers

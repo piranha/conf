@@ -90,7 +90,8 @@
         ))
 
 (dolist (hook hooks-wants-filladapt)
-  (add-hook hook '(lambda () (filladapt-mode t))))
+  (add-hook hook '(lambda () (filladapt-mode t)))
+  (add-hook hook '(lambda () (auto-fill-mode t))))
 
 (setq auto-mode-alist
       (append
