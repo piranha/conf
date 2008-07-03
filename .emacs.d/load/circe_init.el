@@ -10,9 +10,22 @@
  circe-ignore-list nil
  circe-server-killed-confirmation 'ask-and-kill-all
  circe-server-auto-join-channels
- '(("^freenode$" "#concatenative" "#conkeror" "#mercurial" "#org-mode"))
+ '(("freenode" "#concatenative" "#conkeror" "#mercurial" "#org-mode"))
  circe-nickserv-passwords
- `(("freenode" ,freenode-password)))
+ `(("freenode" ,freenode-password))
+ circe-nick-next-function 'prh/circe-nick-next)
+
+(defun prh/circe-nick-next (oldnick)
+  "Return a new nick to try for OLDNICK."
+  (cond
+   ;; If the nick ends with digit, increase it
+   ((string-match "^\\(.*\\)\\([0-9]\+\\)$" oldnick)
+    (concat (match-string 1 oldnick)
+            (number-to-string (1+ (string-to-number
+                                   (match-string 2 oldnick))))))
+   ;; Else just append 1
+   (t
+    (concat oldnick "1"))))
 
 (eval-after-load "circe"
   '(progn
