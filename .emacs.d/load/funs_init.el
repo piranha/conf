@@ -140,3 +140,17 @@ Otherwise return value."
   (if (plist-member keywords key)
       (plist-get keywords key)
     nil))
+
+(defun wc (region-min region-max)
+  "Word count of whole buffer, if mark is active - of marked region"
+  (interactive "r")
+  (if (and transient-mark-mode mark-active)
+      (message "Word count: %s" (how-many "\\w+" region-min region-max))
+    (message "Word count: %s" (how-many "\\w+" (point-min) (point-max)))))
+
+(defun sc (region-min region-max)
+  "Symbol count of whole buffer, if mark is active - of marked region"
+  (interactive "r")
+  (if (and transient-mark-mode mark-active)
+      (message "Symbol count: %s" (how-many "." region-min region-max))
+    (message "Symbol count: %s" (how-many "." (point-min) (point-max)))))
