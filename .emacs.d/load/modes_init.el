@@ -84,14 +84,14 @@
 
 (dolist (hook hooks-with-trailing) (add-hook hook 'display-trailing-whitespace))
 
-(setq hooks-wants-filladapt
+(setq hooks-want-fill
       '(markdown-mode-hook
         wikipedia-mode-hook
         ))
 
-(dolist (hook hooks-wants-filladapt)
+(dolist (hook hooks-want-fill)
   (add-hook hook '(lambda () (filladapt-mode t)))
-  (add-hook hook '(lambda () (auto-fill-mode t))))
+  (add-hook hook 'turn-on-auto-fill))
 
 (setq auto-mode-alist
       (append
