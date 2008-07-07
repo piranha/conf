@@ -57,10 +57,10 @@
 
      (global-set-key (kbd "<f12>") (fun-for-bind toggle-buffer "*-jabber-*"))
 
-     (setq jabber-alert-message-hooks '(jabber-message-scroll))
-     (setq jabber-alert-muc-hooks '(jabber-muc-scroll))
-     (setq jabber-alert-presence-hooks '())
-     (setq jabber-alert-info-message-hooks '(jabber-info-display))
+     (remove-hook 'jabber-alert-message-hooks 'jabber-message-echo)
+     (remove-hook 'jabber-alert-muc-hooks 'jabber-muc-echo)
+     (remove-hook 'jabber-alert-presence-hooks 'jabber-presence-echo)
+     (remove-hook 'jabber-alert-info-message-hooks 'jabber-info-echo)
 
      (when nix
        (setq jabber-notify-display-time 3)
@@ -89,7 +89,7 @@
 
        (define-personal-jabber-alert jabber-muc-notify)
 
-       (add-hook jabber-alert-message-hooks 'jabber-message-notify)
-       (add-hook jabber-alert-muc-hooks 'jabber-muc-notify-personal)
+       (add-hook 'jabber-alert-message-hooks 'jabber-message-notify)
+       (add-hook 'jabber-alert-muc-hooks 'jabber-muc-notify-personal)
        )
      ))
