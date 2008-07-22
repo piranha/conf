@@ -90,7 +90,6 @@
   gnus-signature-separator "^-- $"
   ;; don't insert Cancel-Lock
   message-insert-canlock nil
-  sendmail-program "msmtp"
 )
 
 ;; User settings
@@ -127,11 +126,9 @@
         ("news"     "piranha" nil nil (("X-keywords" . x-keyword)) nil nil)
         ("viii"     "piranha" "\"Alexander Solovyov\" <piranha@viii.ntu-kpi.kiev.ua>" nil nil nil nil)
         ("gmail"    "piranha" "\"Alexander Solovyov\" <alexander.solovyov@gmail.com>" nil nil nil nil)
-        ("softheme" "piranha" "\"Alexander Solovyov\" <alexander.solovyov@softheme.com>" nil nil nil nil)
         ))
 (setq gnus-alias-identity-rules
      '(
-       ("mydeco" ("to" "\\(softheme\\|mydeco\\).com" current) "softheme")
        ("ntu-kpi" ("newsgroup" "^ntu-kpi" both) "news")
        ))
 (setq gnus-alias-default-identity "piranha")
@@ -154,10 +151,10 @@
 ;; News
 ;;;;;;;
 
-(setq gnus-select-method '(nntp "localhost"))
+;(setq gnus-select-method '(nntp "localhost"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
-;(setq gnus-select-method '(nnimap "eth0.net.ua"))
+(setq gnus-select-method '(nnimap "localhost"))
 
 ;; headers displayed
 (setq gnus-visible-headers
@@ -603,6 +600,11 @@
 ;;;;;;;;;;
 ;; Various hooks
 ;;;;;;;;;;
+
+(define-key gnus-group-mode-map (kbd "vo")
+  '(lambda ()
+     (interactive)
+     (shell-command "offlineimap &" "*offlineimap*" nil)))
 
 (add-hook
   'message-setup-hook

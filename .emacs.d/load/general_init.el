@@ -41,7 +41,7 @@
  apropos-do-all t                    ;; apropos works better but slower
  display-time-24hr-format t
  display-time-day-and-date t
- european-calendar-style t
+ calendar-date-style 'european
  calendar-week-start-day 1
  auto-save-interval 512              ;; autosave every 512 keyboard inputs
  auto-save-list-file-prefix nil
@@ -50,6 +50,7 @@
  dired-recursive-deletes 'top
  safe-local-variable-values '((encoding . utf-8) (prompt-to-byte-compile))
  dabbrev-case-fold-search nil        ;; Case is significant for dabbrev
+ split-width-threshold 200           ;; I don't like horizontal splitting
  )
 
 (setq-default
@@ -61,3 +62,5 @@
 
 ;; Ask questions with short answers
 (fset 'yes-or-no-p 'y-or-n-p)
+
+(setq ring-bell-function (lambda () ())) ;; I hate beeps

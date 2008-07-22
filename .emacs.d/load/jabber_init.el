@@ -7,6 +7,7 @@
  jabber-account-list `(("piranha@eth0.net.ua/emagz"
                         (:password . ,eth0-jabber)))
  jabber-roster-line-format " %-25n %u %-8s  %S"
+ jabber-chat-buffer-show-avatar nil
  jabber-history-enabled t
  jabber-use-global-history nil
  jabber-history-dir "~/.emacs.d/jabber/"
