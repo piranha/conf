@@ -8,8 +8,8 @@ import IPython.ipapi
 ip = IPython.ipapi.get()
 
 def main():
-    import ipy_stock_completers 
-    
+    import ipy_stock_completers
+
     o = ip.options
     o.autocall = 0
 
@@ -26,8 +26,12 @@ def main():
     # I like my banner minimal.
     from IPython import Release
     import sys
-    o.banner = "Py %s IPy %s\n" % (sys.version.split('\n')[0],Release.version)
+    o.banner = "Py %s IPy %s\n" % (sys.version.split('\n', 1)[0], Release.version)
 
     o.confirm_exit = 0
+    try:
+        ip.ex("from ipy_addons import *")
+    except ImportError:
+        pass
 
 main()
