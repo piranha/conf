@@ -123,6 +123,7 @@ compctl -g '*(-/) .*(-/)' cd
 compctl -g '(^(*.o|*.class|*.jar|*.gz|*.gif|*.a|*.Z|*.bz2))' + -g '.*' less vim
 compctl -g '(^(*.o|*.class|*.jar|*.gif|*.a))' + -g '.*' most
 compctl -g '*.ltx' + -g '*(-/)' pdflatex
+compctl -g '*.wav' auCDtect
 
 autoload -U compinit
 compinit
@@ -181,6 +182,10 @@ function apt-show()
         apt-cache show $1|egrep --color -v \(^Size\|^MD5sum\|^Filename\|^Suggests\|^SHA\|^Architecture\|^Maintainer\|^Section\|^Priority\)
     fi
 }
+
+if [ -x "`whence -c inotail`" ]; then
+    alias tail="inotail"
+fi
 
 # tail -f, possibly colorized
 function t()
@@ -299,7 +304,8 @@ alias yapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo"
 alias -g C="|ccze -A"
 alias rezsh="source ~/.zshrc"
 alias cal="cal -m"
-alias apt="noglob sudo aptitude"
+alias apt="noglob sudo apt-get"
+alias tran="sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)'"
 
 alias psg="ps -ylC"
 alias psfg="ps -ylfC"
