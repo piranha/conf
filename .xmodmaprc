@@ -1,2 +1,1 @@
-keysym Menu = Super_R
-add Mod4 = Super_R
+keycode 0x75 =	Super_R
