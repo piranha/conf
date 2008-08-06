@@ -10,7 +10,7 @@
  circe-ignore-list nil
  circe-server-killed-confirmation 'ask-and-kill-all
  circe-server-auto-join-channels
- '(("freenode" "#concatenative" "#conkeror" "#mercurial" "#org-mode"))
+ '(("freenode" "#concatenative" "#conkeror" "#mercurial" "#org-mode" "#io-ru"))
  circe-nickserv-passwords
  `(("freenode" ,freenode-password))
  circe-nick-next-function 'prh/circe-nick-next)
