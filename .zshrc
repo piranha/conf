@@ -47,7 +47,8 @@ fi
 Cr() { echo '%{\033[3'$1'm%}'; }
 hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 2`
 [ $UID = 0 ] && at=$r%B'#'%b || at=$w'@'
-PS1="$wc%n$at$hc%m $wc%~$w>$n"
+err="%(?..$r%B%?%b )"
+PS1="$wc%n$at$hc%m $err$wc%~$w>$n"
 #export RPROMPT=$(echo "$gr%T$n")
 unset n b Cr uc hc wc tc tty at r y gr
 
@@ -223,6 +224,15 @@ function slow_print() {
     print ""
 }
 
+function split2flac { 
+    if [ -z "$2" ]; then
+        echo "Usage: split2flac cue-file sound-file"
+    else
+        cuebreakpoints $1 | shnsplit -o flac $2
+        cuetag $1 split-track*.flac
+    fi
+}
+
 #############        ALIASES         ###############
 # Nocorrect
 #alias mv="nocorrect mv"
@@ -288,7 +298,7 @@ alias lsa="ls -ld .*"
 alias rm="rm -f"
 alias grep="egrep"
 alias mc="mc -acx"
-alias sr="screen -D -r"
+alias sd="screen -D -r"
 alias l=$PAGER
 alias g="egrep -i --color"
 function gr() { egrep -i --color -r $1 . }
@@ -305,7 +315,8 @@ alias -g C="|ccze -A"
 alias rezsh="source ~/.zshrc"
 alias cal="cal -m"
 alias apt="noglob sudo apt-get"
-alias tran="sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)'"
+alias wa="wajig"
+function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
 alias psg="ps -ylC"
 alias psfg="ps -ylfC"
