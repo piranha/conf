@@ -151,10 +151,10 @@
 ;; News
 ;;;;;;;
 
-;(setq gnus-select-method '(nntp "localhost"))
+;(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
-(setq gnus-select-method '(nnimap "localhost"))
+(setq gnus-select-method '(nnnil ""))
 
 ;; headers displayed
 (setq gnus-visible-headers
@@ -187,11 +187,9 @@
 ;; Mail
 ;;;;;;;
 
+(setq mail-sources nil)
 (setq gnus-secondary-select-methods
-     '((nnmaildir "mail"
-                  (directory "~/.mail/")
-                  (expire-age never)
-                  )))
+      '((nnimap "mail" (nnimap-address "localhost"))))
 
 ;(setq imap-ssl-program "openssl s_client -tls1 -connect %s:%p")
 ;; (setq gnus-secondary-select-methods
@@ -244,8 +242,8 @@
 (defun prh:archive-mailbox-date (mailbox)
   (concat mailbox (format-time-string ".%Y.%m" (current-time))))
 (setq gnus-message-archive-group '(
-     (if (message-news-p) (prh:archive-mailbox-date "nnmaildir+mail:sent-news")
-       (prh:archive-mailbox-date "nnmaildir+mail:sent-mail"))))
+     (if (message-news-p) (prh:archive-mailbox-date "nnimap+mail:sent-news")
+       (prh:archive-mailbox-date "nnimap+mail:sent-mail"))))
 
 ;;;;;;;;;;;;
 ;; Threading
@@ -434,16 +432,16 @@
 ;; BBDB
 ;;;;;;;
 
+(autoload 'bbdb-initialize "bbdb-autoloads")
 ;(require 'bbdb-autoloads)
 ;(require 'bbdb)
 ;(require 'bbdb-com)
-;(bbdb-initialize 'gnus 'message)
+(bbdb-initialize 'gnus 'message)
 
 ;; complete names in To:
-;(add-hook 'message-mode-hook
-;   (function (lambda()
-;      (local-set-key (kbd "<tab>") 'bbdb-complete-name)
-;   )))
+(add-hook 'message-mode-hook
+          (function (lambda()
+                      (local-set-key (kbd "<tab>") 'bbdb-complete-name))))
 
 ;(setq
 ;  ;; allow cycling when completing already complete addresses
@@ -529,7 +527,7 @@
 ;; Functions
 ;;;;;;;;;;;;;
 
-;; Moderatoring
+;; Moderating
 (defun YSZ:award (name)
   (let ((group (message-fetch-reply-field "Newsgroups")))
         (cond
@@ -622,6 +620,8 @@
   'message-setup-hook
   '(lambda ()
      (local-set-key "\C-c\C-c" 'message-send-and-exit)))
+
+(add-hook 'gnus-summary-mode-hook 'no-scroll-margin)
 
 ;; for now-playing and citation lines
 ;(add-hook 'message-setup-hook 'prh:random-cite)
