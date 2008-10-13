@@ -48,7 +48,7 @@ Cr() { echo '%{\033[3'$1'm%}'; }
 hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 2`
 [ $UID = 0 ] && at=$r%B'#'%b || at=$w'@'
 err="%(?..$r%B%?%b )"
-PS1="$wc%n$at$hc%m $err$wc%~$w>$n"
+PS1="$wc%n$at$hc%m $wc%~$w>$n"
 #export RPROMPT=$(echo "$gr%T$n")
 unset n b Cr uc hc wc tc tty at r y gr
 
@@ -65,6 +65,8 @@ setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt hist_reduce_blanks
 setopt autocd
+setopt auto_pushd
+setopt pushd_ignore_dups
 
 # Another important options
 setopt extended_glob # don't forget to quote '^', '~' and '#'!
@@ -104,9 +106,20 @@ bindkey '\ee' edit-command-line
 #hostsmy=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
 hosts=(${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*})
 #???#zstyle ':completion:*:processes' command 'ps -au$USER'
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zcompcache
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z} r:|[._-]=* r:|=*' 'm:{a-zA-Z}={A-Za-z} r:|[._-]=* r:|=*' 'm:{a-zA-Z}={A-Za-z} r:|[._-]=* r:|=*' 'm:{a-zA-Z}={A-Za-z} r:|[._-]=* r:|=*'
-zstyle ':completion:*' max-errors 2
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*' max-errors 1 numeric
+
+# Completing process IDs with menu selection
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*'   force-list always
+
+# cd will never select the parent directory (e.g.: cd ../<TAB>)
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+
 zstyle :compinstall filename '.zshrc'
 
 compctl -o wget make man rpm iptables
@@ -184,10 +197,6 @@ function apt-show()
     fi
 }
 
-if [ -x "`whence -c inotail`" ]; then
-    alias tail="inotail"
-fi
-
 # tail -f, possibly colorized
 function t()
 {
@@ -204,7 +213,7 @@ function totalram()
         echo "First argument - pattern to grep from processes"
     else
         SUM=0
-        for i in `ps aux|grep $1|awk '{print $5}'`; do
+        for i in `ps aux|grep $1|awk '{print $6}'`; do
             SUM=`expr $i + $SUM`
         done
         echo $SUM
@@ -230,6 +239,14 @@ function split2flac {
     else
         cuebreakpoints $1 | shnsplit -o flac $2
         cuetag $1 split-track*.flac
+    fi
+}
+
+function myeditor {
+    if [ -z `ps -C emacs -o pid=` ]; then
+        vim ${@}
+    else
+        emacsclient -t -c ${@}
     fi
 }
 
@@ -285,8 +302,10 @@ fi
 
 # extensions
 alias -s jpg=gliv
-alias -s flv=mplayer
-alias -s avi=mplayer
+alias -s png=gliv
+alias -s gif=gliv
+alias -s flv=smplayer
+alias -s avi=smplayer
 
 # ls
 alias ll="ls -lh"
@@ -302,7 +321,6 @@ alias sd="screen -D -r"
 alias l=$PAGER
 alias g="egrep -i --color"
 function gr() { egrep -i --color -r $1 . }
-alias c="cat"
 alias h="head"
 alias p="ping"
 alias df="df -h"
