@@ -7,8 +7,8 @@ ignore = ~/.hgignore
 #changegroup = hgpull-diffstat
 
 [defaults]
-#branches = -a
-view = -l 20
+stats = --aliases /home/piranha/.churnaliases
+churn = --aliases /home/piranha/.churnaliases
 
 [extensions]
 hgext.alias=
@@ -26,17 +26,19 @@ hgext.purge=
 hgext.hgk=
 hgext.record=
 hgext.children=
-hgext.highlight=
+hgext.highlight=!
 hgext.qct=
-hgext.inotify=!
-#hgext.bookmarks=
-
-#localbranch=/home/piranha/dev/hgext/localbranch/localbranch.py
-
-#ipatchbomb=/home/piranha/dev/hgext/ipatchbomb.py
+hgext.inotify=
+hgext.rebase=
+hgext.zeroconf=
+hgshelve=/home/piranha/dev/hg/hgext/hgshelve/hgshelve.py
+bookmarks=/home/piranha/dev/hg/hgbookmarks/hgext/bookmarks.py
 
 [diff]
 git = 1
+
+[inotify]
+autostart = True
 
 [alias]
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
@@ -44,3 +46,6 @@ sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}
 sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sglog = glog --template '[{rev}:{node|short}] by {author|person} \n{desc|fill68}\n\n'
+
+[email]
+method = sendmail

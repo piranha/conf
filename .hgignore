@@ -3,6 +3,8 @@
 ^.emacs.d/agent
 ^.emacs.d/server
 ^.emacs.d/snippets
+.ropeproject/
 
 syntax: glob
 *.elc
+hgext/qct.py
