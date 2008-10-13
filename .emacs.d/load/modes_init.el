@@ -43,9 +43,6 @@
 
 (show-paren-mode 1)
 
-;; iswitchb is fastest (i missed something? :)
-;(iswitchb-mode 1)
-
 ;; IDO, I need to learn your power
 (ido-mode 1)
 (setq
@@ -61,15 +58,13 @@
 
 ;; major modes
 
-(autoload 'erlang-mode "erlang" "Erlang edit mode" t)
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
 (autoload 'wikipedia-mode "wikipedia-mode" "Major mode for editing MediaWiki files" t)
 (autoload 'factor-mode "factor" "factor" t)
 (autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
 (autoload 'haskell-mode "haskell-mode" "Major mode for editing Haskell sources" t)
-
-(eval-after-load "erlang-mode"
-  '(define-key erlang-mode-map (kbd "RET") 'newline-and-indent))
+(autoload 'io-mode "io-mode" "Major mode for editing Io sources" t)
+(autoload 'js2-mode "js2" nil t)
 
 (setq hooks-with-trailing
       '(emacs-lisp-mode-hook
@@ -79,16 +74,12 @@
         erlang-mode-hook
         haskell-mode-hook
         python-mode-hook
-        django-html-mode-hook
-        ))
-
+        django-html-mode-hook))
 (dolist (hook hooks-with-trailing) (add-hook hook 'display-trailing-whitespace))
 
 (setq hooks-want-fill
       '(markdown-mode-hook
-        wikipedia-mode-hook
-        ))
-
+        wikipedia-mode-hook))
 (dolist (hook hooks-want-fill)
   (add-hook hook '(lambda () (filladapt-mode t)))
   (add-hook hook 'turn-on-auto-fill))
@@ -102,6 +93,9 @@
         '("\\.wiki\\.txt\\'" . wikipedia-mode)
         '("\\.factor\\'" . factor-mode)
         '("\\.html\\'" . django-html-mode)
+        '("\\.egg\\'" . archive-mode)
+        '("\\.io\\'" . io-mode)
+        '("\\.js\\'" . js2-mode)
         )
         auto-mode-alist))
 
@@ -138,6 +132,38 @@
        (pymacs-load "ropemacs" "rope-"))
      ))
 
+;; Erlang
+
+(when (file-directory-p "~/var/distel/elisp")
+  (add-to-list 'load-path "~/var/distel/elisp"))
+(autoload 'distel-setup "distel" nil t)
+
+(add-hook 'erlang-mode-hook
+          (lambda ()
+            ;; when starting an Erlang shell in Emacs, default in the node name
+            (setq inferior-erlang-machine-options '("-sname" "emacs"))))
+
+(defconst distel-shell-keys
+  '(("\C-\M-i"   erl-complete)
+    ("\M-?"      dabbrev-expand)
+    ("\M-/"      dabbrev-expand)
+    ("\M-."      erl-find-source-under-point)
+    ("\M-,"      erl-find-source-unwind)
+    ("\M-*"      erl-find-source-unwind)
+    )
+  "Additional keys to bind when in Erlang shell.")
+
+(add-hook 'erlang-shell-mode-hook
+          (lambda ()
+            ;; add some Distel bindings to the Erlang shell
+            (dolist (spec distel-shell-keys)
+              (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
+
+(eval-after-load "erlang"
+  '(progn
+     (distel-setup)
+     (define-key erlang-extended-mode-map (kbd "RET") 'newline-and-indent)
+     (define-key erlang-extended-mode-map (kbd "M-/") 'dabbrev-expand)))
 
 ;; Snippets
 

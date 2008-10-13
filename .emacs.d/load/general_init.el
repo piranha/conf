@@ -33,8 +33,8 @@
  default-major-mode 'text-mode       ;; default mode
  delete-key-deletes-forward t        ;; meaning are the same as the name :)
  next-line-add-newlines nil          ;; don't add new lines when scrolling down
- require-final-newline nil           ;; don't make sure file ends with NEWLINE
- mode-require-final-newline nil      ;; same, set more generally
+ require-final-newline t             ;; make sure file ends with NEWLINE
+ mode-require-final-newline t        ;; same as above, set more generally
  delete-old-versions t               ;; delete excess backup versions
  default-tab-width 4
  mouse-yank-at-point t               ;; paste at cursor, NOT at mouse pointer position

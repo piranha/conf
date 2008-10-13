@@ -10,7 +10,7 @@
  circe-ignore-list nil
  circe-server-killed-confirmation 'ask-and-kill-all
  circe-server-auto-join-channels
- '(("freenode" "#concatenative" "#conkeror" "#mercurial" "#org-mode" "#io-ru"))
+ '(("freenode" "#concatenative" "#mercurial" "#org-mode" "#io-ru" "#io"))
  circe-nickserv-passwords
  `(("freenode" ,freenode-password))
  circe-nick-next-function 'prh/circe-nick-next)
@@ -32,7 +32,9 @@
      (require 'lui-irc-colors)
      (add-to-list 'lui-pre-output-hook 'lui-irc-colors)
      (require 'lui-logging)
-     (setq lui-logging-directory "~/.emacs.d/circe")
+     (setq
+      lui-logging-directory "~/.emacs.d/circe"
+      lui-logging-file-format "{buffer}/%Y-%m-%d.txt")
      (enable-lui-logging)
      (require 'circe-nickcolor)
      (setq circe-nickcolor-list
