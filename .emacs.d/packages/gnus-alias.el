@@ -823,7 +823,7 @@ Identity, but don't actually use it (just return it)"
 
        ;; .........................
        ;; a function
-       ((message-functionp first-elem)
+       ((functionp first-elem)
         ;; call function; if it returns non-nil, use the identity
         (when (funcall first-elem)
           (setq identity (cadr current-choice))
@@ -864,7 +864,7 @@ Identity, but don't actually use it (just return it)"
 
          ;; .........................
          ;; FUNCTION
-         ((message-functionp gnus-alias-unknown-identity-rule)
+         ((functionp gnus-alias-unknown-identity-rule)
           (setq identity (funcall gnus-alias-unknown-identity-rule
                                   identity)))
 
@@ -1180,7 +1180,7 @@ If none of the above, return \"\"."
 
    ;; .........................
    ;; FUNCTION
-   ((message-functionp element)
+   ((functionp element)
     (funcall element))
 
    ;; .........................
