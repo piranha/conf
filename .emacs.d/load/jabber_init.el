@@ -25,37 +25,6 @@
      (add-hook 'jabber-post-connect-hook 'jabber-autoaway-start)
      (setq jabber-autoaway-method 'jabber-xprintidle-program)
 
-;;      (defcustom jabber-scroll-to-bottom-p t
-;;        "Non-nil if jabber should keep the input line at the end of the window."
-;;        :type 'boolean
-;;        :group 'jabber-chat)
-
-;;      (defun jabber-scroll-to-bottom (window display-start)
-;;        "Scroll the input line to the bottom of the window."
-;;        (when (and window
-;;                   jabber-scroll-to-bottom-p)
-;;          (let ((resize-mini-windows nil))
-;;            ;; This is to prevent an XEmacs byte compilation warning
-;;            ;; "variable bound but not referred to". XEmacs is trying to be
-;;            ;; too intelligent.
-;;            (when (featurep 'xemacs)
-;;              (declare (special resize-mini-windows)))
-;;            (save-selected-window
-;;              (select-window window)
-;;              (save-restriction
-;;                (widen)
-;;                (when (>= (point) jabber-point-insert)
-;;                  (save-excursion
-;;                    (goto-char (point-max))
-;;                    (recenter -1)
-;;                    (sit-for 0))))))))
-
-;;      (add-hook 'jabber-chat-mode-hook
-;;                (lambda ()
-;;                  (add-hook 'window-scroll-functions
-;;                            'jabber-scroll-to-bottom
-;;                            nil t)))
-
      (global-set-key (kbd "<f12>") (fun-for-bind toggle-buffer "*-jabber-*"))
 
      (remove-hook 'jabber-alert-message-hooks 'jabber-message-echo)
