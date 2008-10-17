@@ -478,50 +478,23 @@
 ;(setq bbdb-use-pop-up nil)
 
 ;;;;;;;;;;
-;; Trivial Cite
+;; Cite
 ;;;;;;;;;;
 
-(autoload 'trivial-cite "tc" t t)
-(add-hook 'mail-citation-hook 'trivial-cite)
-(setq
-  message-cite-function 'trivial-cite
-  tc-time-format "%e.%m at %H:%M"
-  tc-make-attribution 'tc-piranha-attribution
-	tc-remove-signature "^\\(-- \\|_______________________________________________\\)$"
-	tc-guess-cite-marks nil
-  ;; don't rearrange quoted text
-  tc-fill-column nil)
+(autoload 'cite-cite "cite" "A simple cite function for Emacs" nil)
+(setq message-cite-function 'cite-cite
+      cite-remove-trailing-lines t
+      cite-make-attribution-function #'prh-cite-attribution)
 
-;; attribution
-(defun tc-piranha-attribution ()
-	      "Produce attribution string, using the real name, as piranha wish. :)"
-  (let ((date (assoc "date" tc-strings-list))
-	(email (assoc "email-addr" tc-strings-list))
-        (name (assoc "real-name" tc-strings-list)))
+(defun prh-cite-attribution ()
+  (let ((email (cite-get-header "email"))
+        (name  (cite-get-header "name"))
+        (date  (cite-get-header "date")))
     (if (and (null name) (null email))
-	"An unnamed person wrote:\n\n"
+        "An unnamed person wrote:\n\n"
       (if (null date)
-	  (concat "Ave, " (cdr (or name email)) ". You wrote:\n\n")
-        (concat "Ave, " (cdr (or name email)) ", on " (cdr date) " you wrote:\n\n")))))
-
-;; blank quoted lines removal
-(defun rs-message-remove-blank-cited-lines (&optional remove)
-   "Remove cited lines containing only blanks.
- If REMOVE is non-nil, remove newlines, too."
-   ;; Idea by Karl Pla"sterer,
-   ;; see <m3adiiup8o.fsf@hamster.pflaesterer.de> ff.
-   (interactive "P")
-   (let ((citexp
-          (concat
-    "^\\("
-    tc-citation-string
-    "\\)+ *$"
-    (if remove "\n" ""))))
-     (save-excursion
-       (while (re-search-forward citexp nil t)
-         (replace-match "")))))
-(add-hook 'tc-post-hook 'rs-message-remove-blank-cited-lines 't)
-
+          (concat (or name email) " wrote:\n\n")
+        (concat "On " date ", " (or name email) " wrote:\n\n")))))
 
 ;;;;;;;;;;;;;
 ;; Functions
