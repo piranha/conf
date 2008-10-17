@@ -33,6 +33,7 @@ import XMonad.Util.Scratchpad
 
 
 statusBarCmd = "xmobar"
+--statusBarCmd = "cat"
 
 -- prompt config
 ownXPConfig :: XPConfig
