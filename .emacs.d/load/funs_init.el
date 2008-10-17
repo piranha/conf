@@ -154,3 +154,5 @@ Otherwise return value."
   (if (and transient-mark-mode mark-active)
       (message "Symbol count: %s" (how-many "." region-min region-max))
     (message "Symbol count: %s" (how-many "." (point-min) (point-max)))))
+
+(defalias 'cal 'calendar)
