@@ -170,6 +170,7 @@
 (require 'yasnippet nil t)
 (eval-after-load "yasnippet"
 '(progn
+   (global-set-key (kbd "C-/") '(lambda () ()))
    (setq
     yas/trigger-key (kbd "C-/")
     yas/next-field-key (kbd "C-/"))
