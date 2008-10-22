@@ -28,11 +28,11 @@ hgext.record=
 hgext.children=
 hgext.highlight=!
 hgext.qct=
-hgext.inotify=
+#hgext.inotify=
 hgext.rebase=
 hgext.zeroconf=
-hgshelve=/home/piranha/dev/hg/hgext/hgshelve/hgshelve.py
-bookmarks=/home/piranha/dev/hg/hgbookmarks/hgext/bookmarks.py
+#hgshelve=/home/piranha/dev/hg/hgext/hgshelve/hgshelve.py
+#bookmarks=/home/piranha/dev/hg/hgbookmarks/hgext/bookmarks.py
 
 [diff]
 git = 1
