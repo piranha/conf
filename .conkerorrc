@@ -1,11 +1,5 @@
-// run_external_editor_function = create_external_editor_launcher("c:\\program files\\Emacs\\bin\\gnuclient.exe", ["-s"]);
-
-define_key(default_global_keymap, "C-x C-b", "switch-to-buffer");
-define_key(default_global_keymap, "C-,", "switch-to-buffer");
-define_key(default_global_keymap, "C-c k", "kill-current-buffer");
-define_key(content_buffer_text_keymap, "C-z", "cmd_undo");
-
 url_completion_use_history = true;
+url_completion_use_bookmarks = false;
 kill_whole_line = true;
 can_kill_last_buffer = false;
 
@@ -14,16 +8,6 @@ add_webjump("g", "http://www.google.com/search?q=%s");
 add_webjump("w", "http://en.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
 add_webjump("r", "http://ru.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
 add_webjump("q", "http://uk.wikipedia.org/wiki/Special:Search?search=%s&go=Go");
-
-
-// new functions
-interactive("follow-new-buffer-background", 
-            "follow to a link in new buffer, opened in background",
-            function (I) {
-                var target = OPEN_NEW_BUFFER_BACKGROUND;
-                var element = yield I.read_browser_object("follow", "Follow", "links", target);
-                browser_element_follow(I.buffer, target, element);
-            });
 
 function other_buffer (window)
 {
@@ -35,9 +19,20 @@ interactive("switch-other-buffer",
                 other_buffer(I.window);
             });
 
-
 // new keys
 define_key(content_buffer_normal_keymap, "M-f", "follow-new-buffer-background");
 define_key(content_buffer_normal_keymap, "C-M-l", "switch-other-buffer");
+define_key(default_global_keymap, "C-,", "switch-to-buffer");
+define_key(content_buffer_text_keymap, "C-z", "cmd_undo");
 
-    
+require("clicks-in-new-buffer.js");
+clicks_in_new_buffer_target = OPEN_NEW_BUFFER_BACKGROUND;
+
+function define_key_buffer_switch(key, buf_num) {
+    define_key(content_buffer_normal_keymap, key, function (I) {
+            switch_to_buffer(I.window, I.window.buffers.get_buffer(buf_num));
+        });
+}
+
+for (let i = 0; i < 10; ++i)
+    define_key_buffer_switch(i == 9 ? "0" : (i+1).toString(), i);
