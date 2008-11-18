@@ -19,7 +19,7 @@
 
 (setq
  dired-bind-jump nil
- dired-omit-extensions '(".pyc"))
+ dired-omit-extensions '(".pyc" ".elc"))
 (autoload 'dired-jump "dired-x" "Jump to dir of current file" t)
 (autoload 'dired-omit-mode "dired-x" "Omit unnecessary files in dired view" t)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
