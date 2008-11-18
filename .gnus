@@ -26,7 +26,6 @@
 ;;;;;;;;;;
 ;; Loading
 ;;;;;;;;;;
-(require 'tc)
 (require 'message-x)
 (when (file-exists-p "~/.secrets.el")
   (load "~/.secrets.el"))
@@ -151,10 +150,10 @@
 ;; News
 ;;;;;;;
 
-;(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
+(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
-(setq gnus-select-method '(nnnil ""))
+;(setq gnus-select-method '(nnnil ""))
 
 ;; headers displayed
 (setq gnus-visible-headers
@@ -189,7 +188,9 @@
 
 (setq mail-sources nil)
 (setq gnus-secondary-select-methods
-      '((nnimap "mail" (nnimap-address "localhost"))))
+      '((nnimap "mail"
+                (nnimap-address "localhost")
+                (nnimap-stream network))))
 
 ;(setq imap-ssl-program "openssl s_client -tls1 -connect %s:%p")
 ;; (setq gnus-secondary-select-methods
