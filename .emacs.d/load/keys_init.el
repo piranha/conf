@@ -21,15 +21,21 @@ suitable for binding to keys."
 (global-set-key (kbd "C-M-z") (lambda (&optional arg char)
                                 (interactive "p\ncZap backward to char: ")
                                 (zap-to-char (- arg) char)))
-(global-set-key (kbd "C-M-y") (lambda (&optional arg)
-                                (interactive "*p")
-                                (yank-pop (- arg))))
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
 (global-set-key (kbd "M-<down>") 'prh:move-line-down)
 (global-set-key (kbd "C-M-<up>") 'prh:duplicate-line-up)
 (global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
 (global-set-key (kbd "C-a") 'dev-studio-beginning-of-line)
 (global-set-key (kbd "<home>") 'dev-studio-beginning-of-line)
+
+(global-set-key (kbd "M-Y") (lambda (&optional arg)
+                              (interactive "*p")
+                              (yank-pop (- arg))))
+(autoload 'kill-ring-search "kill-ring-search"
+  "Search the kill ring in the minibuffer."
+  (interactive))
+(global-set-key (kbd "C-M-y") 'kill-ring-search)
+
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 (global-set-key (kbd "<f11>") 'jabber-activity-switch-to)
@@ -41,7 +47,9 @@ suitable for binding to keys."
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-0") 'delete-window)
 
-(when win
-  (global-set-key (kbd "C-<f12>") (fun-for-bind w32-send-sys-command #xf030 nil)) ; maximize
-  (global-set-key (kbd "C-<f11>") (fun-for-bind w32-send-sys-command #xf120 nil)) ; restore original size
-  )
+(if (fboundp 'w32-send-sys-command)
+    (progn
+      (global-set-key (kbd "C-<f12>") ; maximize
+                      (fun-for-bind w32-send-sys-command #xf030 nil))
+      (global-set-key (kbd "C-<f11>") ; restore original size
+                      (fun-for-bind w32-send-sys-command #xf120 nil))))
