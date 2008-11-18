@@ -250,6 +250,10 @@ function myeditor {
     fi
 }
 
+function gkill {
+    awk '{print $2}'|xargs kill
+}
+
 #############        ALIASES         ###############
 # Nocorrect
 #alias mv="nocorrect mv"
