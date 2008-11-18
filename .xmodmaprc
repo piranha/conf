@@ -1,1 +1,4 @@
 keycode 0x75 =	Super_R
+remove Lock = Caps_Lock
+keysym Caps_Lock = Control_L
+add Control = Control_L
