@@ -1,11 +1,6 @@
 ;; various small modes configuration
 
-;; experiment (require 'gnus-load nil t)
-
-(autoload 'gnus "gnus" "Best email client ever" t)
-
-;; Use cperl-mode instead of perl-mode
-(defalias 'perl-mode 'cperl-mode)
+;(autoload 'gnus "gnus" "Best email client ever" t)
 
 (autoload 'filladapt-mode "filladapt" "Minor mode to adaptively set fill-prefix and overload filling functions" t)
 (autoload 'htmlize-buffer "htmlize" "Convert buffer text and decorations to HTML" t)
@@ -17,6 +12,7 @@
 (autoload 'session-initialize "session" "Use variables, registers and buffer places across sessions" t)
 (add-hook 'after-init-hook 'session-initialize)
 
+;; dired
 (setq
  dired-bind-jump nil
  dired-omit-extensions '(".pyc" ".elc"))
@@ -102,8 +98,10 @@
 (setq factor-image "~/var/factor/factor.image")
 (eval-after-load "factor"
   '(progn
-     (define-key factor-mode-map (kbd "C-M-l") (fun-for-bind switch-to-buffer (other-buffer)))
-     (define-key factor-listener-mode-map (kbd "C-M-l") (fun-for-bind switch-to-buffer (other-buffer)))))
+     (define-key factor-mode-map (kbd "C-M-l")
+       (fun-for-bind switch-to-buffer (other-buffer)))
+     (define-key factor-listener-mode-map (kbd "C-M-l")
+       (fun-for-bind switch-to-buffer (other-buffer)))))
 
 (setq w3m-use-cookies t)
 
@@ -137,11 +135,6 @@
   (add-to-list 'load-path "~/var/distel/elisp"))
 (autoload 'distel-setup "distel" nil t)
 
-(add-hook 'erlang-mode-hook
-          (lambda ()
-            ;; when starting an Erlang shell in Emacs, default in the node name
-            (setq inferior-erlang-machine-options '("-sname" "emacs"))))
-
 (defconst distel-shell-keys
   '(("\C-\M-i"   erl-complete)
     ("\M-?"      dabbrev-expand)
@@ -152,17 +145,20 @@
     )
   "Additional keys to bind when in Erlang shell.")
 
-(add-hook 'erlang-shell-mode-hook
-          (lambda ()
-            ;; add some Distel bindings to the Erlang shell
-            (dolist (spec distel-shell-keys)
-              (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
-
 (eval-after-load "erlang"
   '(progn
      (distel-setup)
      (define-key erlang-extended-mode-map (kbd "RET") 'newline-and-indent)
-     (define-key erlang-extended-mode-map (kbd "M-/") 'dabbrev-expand)))
+     (define-key erlang-extended-mode-map (kbd "M-/") 'dabbrev-expand)
+     (add-hook 'erlang-shell-mode-hook
+               (lambda ()
+                 ;; add some Distel bindings to the Erlang shell
+                 (dolist (spec distel-shell-keys)
+                   (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
+     (add-hook 'erlang-mode-hook
+               (lambda ()
+                 ;; when starting an Erlang shell in Emacs, default in the node name
+                 (setq inferior-erlang-machine-options '("-sname" "emacs"))))))
 
 ;; Snippets
 
@@ -183,3 +179,10 @@
       '("Universal (Ru-En)" "LingvoUniversal (En-Ru)" "Computers (En-Ru)"
         "Universal (Ru-En)" "LingvoUniversal (Ru-En)" "Computers (Ru-En)"))
 (global-set-key (kbd "C-c d") 'sdcv-search)
+
+
+;; highlight parentheses
+(autoload 'highlight-parentheses-mode "highlight-parentheses" nil t)
+(dolist (hook '(python-mode-hook
+                emacs-lisp-mode-hook))
+  (add-hook hook 'highlight-parentheses-mode))
