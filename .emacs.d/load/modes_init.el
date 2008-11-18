@@ -95,7 +95,6 @@
         '("\\.html\\'" . django-html-mode)
         '("\\.egg\\'" . archive-mode)
         '("\\.io\\'" . io-mode)
-        '("\\.js\\'" . js2-mode)
         )
         auto-mode-alist))
 
