@@ -64,3 +64,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (setq ring-bell-function (lambda () ())) ;; I hate beeps
+
+;; this should help with console when ^H behaves like backspace
+(if (not graf)
+    (normal-erase-is-backspace-mode))
