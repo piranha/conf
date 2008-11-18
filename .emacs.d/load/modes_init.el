@@ -175,3 +175,11 @@
     yas/next-field-key (kbd "C-/"))
    (yas/initialize)
    (yas/load-directory "~/.emacs.d/snippets/")))
+
+
+;; stardict
+(autoload 'sdcv-search "sdcv-mode" nil t)
+(setq sdcv-dictionary-list
+      '("Universal (Ru-En)" "LingvoUniversal (En-Ru)" "Computers (En-Ru)"
+        "Universal (Ru-En)" "LingvoUniversal (Ru-En)" "Computers (Ru-En)"))
+(global-set-key (kbd "C-c d") 'sdcv-search)
