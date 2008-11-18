@@ -1,4 +1,5 @@
 -- xmonad.hs
+-- (c) Alexander Solovyov 2007-2008
 import Graphics.X11
 import System.IO (hPutStrLn)
 import qualified Data.Map as M

@@ -1,6 +1,6 @@
-# -*- mode: sh; mode: fold -*-
+# -*- mode: sh -*-
 # zsh configuration
-# (c) 2003-2007 Alexander Solovyov
+# (c) 2003-2008 Alexander Solovyov
 # piranha AT piranha.org.ua
 #
 # Thanks to:

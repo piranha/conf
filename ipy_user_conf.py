@@ -1,4 +1,8 @@
 """ User configuration file for IPython
+(c) Alexander Solovyov 2007-2008
+
+This config has input prompts like in usual python shell to avoid
+confusion and simplification of doctest creation.
 
 See http://ipython.scipy.org/moin/IpythonExtensionApi for detailed
 description on what you could do here.
