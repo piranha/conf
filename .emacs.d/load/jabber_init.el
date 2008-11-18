@@ -49,13 +49,16 @@
            (process-send-eof "jabber-notify")))
 
        (defun jabber-message-notify (from buffer text proposed-alert)
-         (let ((title (car (split-string from "@"))))
-           (jabber-notify-display title text)))
+         (if (member *jabber-current-show* '("" "chat"))
+             (let ((title (car (split-string from "@"))))
+               (jabber-notify-display title text))))
 
        (defun jabber-muc-notify (nick group buffer text proposed-alert)
-         (let ((group-name (car (split-string group "@"))))
-           (let ((title (concat nick "@" group-name)))
-             (jabber-notify-display title text))))
+         (message "%s" group)
+         (if (member *jabber-current-show* '("" "chat"))
+             (let ((group-name (car (split-string group "@"))))
+               (let ((title (concat nick "@" group-name)))
+                 (jabber-notify-display title text)))))
 
        (define-personal-jabber-alert jabber-muc-notify)
 
