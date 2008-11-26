@@ -481,7 +481,8 @@
 (autoload 'cite-cite "cite" "A simple cite function for Emacs" nil)
 (setq message-cite-function 'cite-cite
       cite-remove-trailing-lines t
-      cite-make-attribution-function #'prh-cite-attribution)
+      cite-make-attribution-function #'prh-cite-attribution
+      cite-prefix-regexp "[>]") ; don't allow fancy quoting
 
 (defun prh-cite-attribution ()
   (let ((email (cite-get-header "email"))
@@ -568,11 +569,6 @@
 ;;;;;;;;;;
 ;; Various hooks
 ;;;;;;;;;;
-
-(define-key gnus-group-mode-map (kbd "vo")
-  '(lambda ()
-     (interactive)
-     (shell-command "offlineimap &" "*offlineimap*" nil)))
 
 (add-hook
   'message-setup-hook
