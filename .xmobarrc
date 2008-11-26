@@ -5,9 +5,10 @@ Config { font = "xft:Consolas:size=12"
        , commands = [ Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
                     , Run Memory ["-t","<usedratio>%"] 10
                     , Run Date "%a %d %b %H:%M:%S" "date" 10
+                    , Run Com "amixer sget Master|grep 'Left: Playback'|awk '{print $5}'" [] "vol" 10
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% | Mem: %memory% | <fc=#ee9a00>%date%</fc>"
+       , template = "%StdinReader% }{ Vol: <fc=#ee9a00>%vol%</fc> | %cpu% | Mem: %memory% | <fc=#ee9a00>%date%</fc>"
        }

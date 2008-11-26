@@ -28,7 +28,7 @@ import XMonad.Prompt.Shell
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Window
 import XMonad.Prompt.XMonad
-import XMonad.Util.EZConfig (additionalKeysP)
+import XMonad.Util.EZConfig (additionalKeys, additionalKeysP)
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.Scratchpad
 
@@ -62,30 +62,16 @@ ownPP h = defaultPP
           , ppLayout = (\x -> "")
           }
 
-playToggle = "mpc toggle"
-playPrevious = "mpc prev"
-playNext =  "mpc next"
-playOrder = "mpc random"
-
 -- keys config
 addKeys =
     [ ("M-f"   , sendMessage ToggleLayout)
     , ("M-b"   , sendMessage ToggleStruts)
     , ("M-C-x" , xmonadPrompt ownXPConfig)
-    , ("M-<F5>", spawn playPrevious)
-    , ("M-<F6>", spawn playNext)
-    , ("M-<F7>", spawn playOrder)
-    , ("M-<F8>", spawn playToggle)
     , ("M-s"   , spawn "urxvtc -title scratchpad")
     , ("M-a q" , sendMessage $ JumpToLayout "tiled")
     , ("M-a w" , sendMessage $ JumpToLayout "tabbed")
-    , ("M-<Page_Up>", spawn "xclip -selection PRIMARY -o | xclip -selection CLIPBOARD -i")
-    , ("M-<Page_Down>", spawn "xclip -selection CLIPBOARD -o | xclip -selection PRIMARY -i")
     , ("M-<F2>", windowPromptGoto ownXPConfig)
     , ("M-<F3>", sshPrompt ownXPConfig)
-    , ("M-<Insert>", spawn "import -window root ~/screenshot-`date +\"%F--%H-%M-%S\"`.png")
-    , ("M-<Pause>", spawn "slock")
-    , ("M-<Return>", dwmpromote)
     , ("M-<Right>", withFocused (keysMoveWindow (20, 0)))
     , ("M-<Left>", withFocused (keysMoveWindow (-20, 0)))
     , ("M-<Up>", withFocused (keysMoveWindow (0, -20)))
@@ -95,9 +81,23 @@ addKeys =
     , ("M-S-<Up>", withFocused (keysResizeWindow (0, -20) (0, 0)))
     , ("M-S-<Down>", withFocused (keysResizeWindow (0, 20) (0, 0)))
     , ("M-<Backspace>", focusUrgent)
-    , ("M-<F12>", spawn "amixer -q set PCM 2dB+")
-    , ("M-<F11>", spawn "amixer -q set PCM 2dB-")
     , ("M-p", shellPrompt ownXPConfig)
+      -- non-wm-specific binds
+    , ("M-<Page_Up>", spawn "xclip -selection PRIMARY -o | xclip -selection CLIPBOARD -i")
+    , ("M-<Page_Down>", spawn "xclip -selection CLIPBOARD -o | xclip -selection PRIMARY -i")
+    , ("M-<Insert>", spawn "import -window root ~/screenshot-`date +\"%F--%H-%M-%S\"`.png")
+    , ("M-<F11>", spawn "setxkbmap -option '' 'us'")
+    , ("M-<F12>", spawn "setxkbmap -option 'grp:alt_shift_toggle' 'us,ua(winkeys)'")
+    ]
+
+mmKeys =
+    [ ((0 , 0x1008ff11), spawn "amixer sset Master 2%-")    -- XF86AudioLowerVolume
+    , ((0 , 0x1008ff12), spawn "amixer sset Master toggle") -- XF86AudioMute
+    , ((0 , 0x1008ff13), spawn "amixer sset Master 2%+")    -- XF86AudioRaiseVolume
+    , ((0 , 0x1008ff14), spawn "amarok -t") -- XF86AudioPlay
+    , ((0 , 0x1008ff15), spawn "amarok -s") -- XF86AudioStop
+    , ((0 , 0x1008ff16), spawn "amarok -r") -- XF86AudioPrev
+    , ((0 , 0x1008ff17), spawn "amarok -f") -- XF86AudioNext
     ]
 
 
@@ -132,4 +132,4 @@ ownConfig statusbar = defaultConfig
                 }
 
 main = do statusbar <- spawnPipe statusBarCmd
-          xmonad $ ownConfig statusbar `additionalKeysP` addKeys
+          xmonad $ ownConfig statusbar `additionalKeysP` addKeys `additionalKeys` mmKeys
