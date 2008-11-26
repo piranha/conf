@@ -73,12 +73,12 @@
         django-html-mode-hook))
 (dolist (hook hooks-with-trailing) (add-hook hook 'display-trailing-whitespace))
 
-(setq hooks-want-fill
+(setq hooks-want-longlines
       '(markdown-mode-hook
-        wikipedia-mode-hook))
-(dolist (hook hooks-want-fill)
-  (add-hook hook '(lambda () (filladapt-mode t)))
-  (add-hook hook 'turn-on-auto-fill))
+        wikipedia-mode-hook
+        rst-mode-hook))
+(dolist (hook hooks-want-longlines)
+  (add-hook hook 'longlines-mode))
 
 (setq auto-mode-alist
       (append
@@ -186,3 +186,8 @@
 (dolist (hook '(python-mode-hook
                 emacs-lisp-mode-hook))
   (add-hook hook 'highlight-parentheses-mode))
+
+;; aHg
+
+(require 'ahg nil t)
+(setq ahg-global-key-prefix (kbd "C-c h"))
