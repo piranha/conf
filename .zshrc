@@ -338,6 +338,8 @@ alias rezsh="source ~/.zshrc"
 alias cal="cal -m"
 alias apt="noglob sudo apt-get"
 alias wa="wajig"
+alias s="sudo"
+alias sm="smplayer"
 function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
 alias psg="ps -ylC"
