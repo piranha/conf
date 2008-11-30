@@ -15,8 +15,8 @@
 
 (defun load-init (modules)
   "Load initialization files"
-  (mapc #'(lambda (name)
-            (load (format "%s_init" name)))
+  (mapc (lambda (name)
+          (load (format "%s_init" name)))
         modules))
 
 (setq custom-file "~/.emacs.d/load/custom_init.el")
