@@ -51,6 +51,7 @@
  safe-local-variable-values '((encoding . utf-8) (prompt-to-byte-compile))
  dabbrev-case-fold-search nil        ;; Case is significant for dabbrev
  split-width-threshold 200           ;; I don't like horizontal splitting
+ kill-ring-max 2000                  ;; oh yes! long killring!
  )
 
 (setq-default
