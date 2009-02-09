@@ -39,7 +39,7 @@
 
 (show-paren-mode 1)
 
-;; IDO, I need to learn your power
+;; IDO, you are very nice
 (ido-mode 1)
 (setq
  ido-enable-flex-matching 1
