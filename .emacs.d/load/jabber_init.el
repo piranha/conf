@@ -5,7 +5,9 @@
 
 (setq
  jabber-account-list `(("piranha@eth0.net.ua/emagz"
-                        (:password . ,eth0-jabber)))
+                        (:password . ,eth0-jabber))
+                       ("asolovyov@rainboo.com/emagz"
+                        (:password . ,rainboo-jabber)))
  jabber-roster-line-format " %-25n %u %-8s  %S"
  jabber-chat-buffer-show-avatar nil
  jabber-history-enabled t

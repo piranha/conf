@@ -2,6 +2,7 @@
 
 ;(autoload 'gnus "gnus" "Best email client ever" t)
 
+(require 'imenu)
 (autoload 'filladapt-mode "filladapt" "Minor mode to adaptively set fill-prefix and overload filling functions" t)
 (autoload 'htmlize-buffer "htmlize" "Convert buffer text and decorations to HTML" t)
 (autoload 'grep "grep+" "Extensions to standard library `grep.el'" t)
@@ -52,15 +53,19 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
+(add-hook 'isearch-mode-end-hook
+          (lambda ()
+            (when isearch-forward (goto-char isearch-other-end))))
+
 ;; major modes
 
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
 (autoload 'wikipedia-mode "wikipedia-mode" "Major mode for editing MediaWiki files" t)
-(autoload 'factor-mode "factor" "factor" t)
 (autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
 (autoload 'haskell-mode "haskell-mode" "Major mode for editing Haskell sources" t)
 (autoload 'io-mode "io-mode" "Major mode for editing Io sources" t)
 (autoload 'js2-mode "js2" nil t)
+(load "fuel/fu" t)
 
 (setq hooks-with-trailing
       '(emacs-lisp-mode-hook
@@ -73,12 +78,12 @@
         django-html-mode-hook))
 (dolist (hook hooks-with-trailing) (add-hook hook 'display-trailing-whitespace))
 
-(setq hooks-want-longlines
+(setq hooks-want-short-lines
       '(markdown-mode-hook
         wikipedia-mode-hook
         rst-mode-hook))
-(dolist (hook hooks-want-longlines)
-  (add-hook hook 'longlines-mode))
+(dolist (hook hooks-want-short-lines)
+  (add-hook hook 'auto-fill-mode))
 
 (setq auto-mode-alist
       (append
@@ -87,20 +92,17 @@
         '("\\.erl\\'" . erlang-mode)
         '("\\.hs\\'" . haskell-mode)
         '("\\.wiki\\.txt\\'" . wikipedia-mode)
-        '("\\.factor\\'" . factor-mode)
         '("\\.html\\'" . django-html-mode)
         '("\\.egg\\'" . archive-mode)
         '("\\.io\\'" . io-mode)
         )
         auto-mode-alist))
 
-(setq factor-binary "~/bin/factor")
-(setq factor-image "~/var/factor/factor.image")
-(eval-after-load "factor"
+(setq fuel-listener-factor-binary "~/bin/factor")
+(setq fuel-listener-factor-image "~/dev/misc/factor/factor.image")
+(eval-after-load "comint"
   '(progn
-     (define-key factor-mode-map (kbd "C-M-l")
-       (fun-for-bind switch-to-buffer (other-buffer)))
-     (define-key factor-listener-mode-map (kbd "C-M-l")
+     (define-key comint-mode-map (kbd "C-M-l")
        (fun-for-bind switch-to-buffer (other-buffer)))))
 
 (setq w3m-use-cookies t)
@@ -125,12 +127,12 @@
 (eval-after-load "python"
   '(progn
      (define-key python-mode-map (kbd "RET") 'newline-and-indent)
-     (when (require 'pymacs nil t) (pymacs-load "ropemacs" "rope-"))
-     (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
-     (defun rope-reload ()
-       (interactive)
-       (pymacs-terminate-services)
-       (pymacs-load "ropemacs" "rope-"))
+;;;      (when (require 'pymacs nil t) (pymacs-load "ropemacs" "rope-"))
+;;;      (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
+;;;      (defun rope-reload ()
+;;;        (interactive)
+;;;        (pymacs-terminate-services)
+;;;        (pymacs-load "ropemacs" "rope-"))
      ))
 
 ;; Erlang
@@ -169,7 +171,7 @@
 (require 'yasnippet nil t)
 (eval-after-load "yasnippet"
 '(progn
-   (global-set-key (kbd "C-/") '(lambda () ()))
+   (global-unset-key (kbd "C-/"))
    (setq
     yas/trigger-key (kbd "C-/")
     yas/next-field-key (kbd "C-/"))
@@ -195,3 +197,34 @@
 
 (require 'ahg nil t)
 (setq ahg-global-key-prefix (kbd "C-c h"))
+
+(require 'project-root)
+
+(setq project-roots
+      `(("Django project"
+         :root-contains-files ("manage.py")
+         :filename-regex ,(regexify-ext-list '(py html css js))
+         :exclude-paths '("contrib"))
+        ("Mercurial"
+         :root-contains-files ("hg" "hgeditor")
+         :filename-regex ,(regexify-ext-list '(py tmpl))
+         :exclude-paths '("tests"))
+        ("Generic Python project"
+         :root-contains-files ("setup.py")
+         :filename-regex ,(regexify-ext-list '(py)))
+         ))
+
+(global-set-key (kbd "C-c p f") 'project-root-find-file)
+(global-set-key (kbd "C-c p g") 'project-root-grep)
+(global-set-key (kbd "C-c p a") 'project-root-ack)
+(global-set-key (kbd "C-c p d") 'project-root-goto-root)
+
+
+;; mail
+
+(autoload 'post-mode "post" nil t)
+(add-to-list 'auto-mode-alist
+             '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$"
+               . post-mode))
+(setq post-emoticon-pattern nil
+      post-news-poster-regexp "^Exceprts from .* of .*:$")
