@@ -164,3 +164,29 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
 \(move-beginning-of-line arg) instead."
   (interactive "p")
   (if (and (looking-at "^") (= arg 1)) (skip-chars-forward " \t") (move-beginning-of-line arg)))
+
+
+(defvar django-closable-tags
+  '("for" "block" "comment" "filter" "ifchanged" "ifequal"
+    "ifnotequal" "spaceless" "if" "pyif" "with"))
+
+(defvar django-tag-re
+  (concat "{%\\s *\\(end\\)?\\("
+          (mapconcat 'identity django-closable-tags "\\|")
+          "\\)[^%]*%}"))
+
+(defun django-find-open-tag ()
+  (if (search-backward-regexp django-tag-re nil t)
+      (if (match-string 1) ; If it's an end tag
+          (if (not (string= (match-string 2) (django-find-open-tag)))
+              (error "Unmatched Django tag")
+            (django-find-open-tag))
+        (match-string 2)) ; Otherwise, return the match
+    nil))
+
+(defun django-close-tag ()
+  (interactive)
+  (let ((open-tag (save-excursion (django-find-open-tag))))
+    (if open-tag
+        (insert "{% end" open-tag " %}")
+      (error "Nothing to close"))))

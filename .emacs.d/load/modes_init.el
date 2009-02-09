@@ -116,6 +116,10 @@
 ;; Python
 ;;;;;;;;;
 
+(eval-after-load "django-html-mode"
+  '(progn
+     (define-key django-html-mode-map "\C-c]" 'django-close-tag)))
+
 ;(autoload 'python-mode "python" "Python editing mode." t)
 
 (eval-after-load "python"
