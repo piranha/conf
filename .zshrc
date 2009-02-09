@@ -52,6 +52,9 @@ PS1="$wc%n$at$hc%m $wc%~$w>$n"
 #export RPROMPT=$(echo "$gr%T$n")
 unset n b Cr uc hc wc tc tty at r y gr
 
+# make ls looks nice
+eval $(dircolors ~/.dircolors)
+
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
 
@@ -69,7 +72,7 @@ setopt auto_pushd
 setopt pushd_ignore_dups
 
 # Another important options
-setopt extended_glob # don't forget to quote '^', '~' and '#'!
+unsetopt extended_glob # it's quite annoying
 setopt notify # report the status of backgrounds jobs immediately
 setopt completeinword
 setopt hash_list_all
@@ -138,6 +141,7 @@ compctl -g '(^(*.o|*.class|*.jar|*.gz|*.gif|*.a|*.Z|*.bz2))' + -g '.*' less vim
 compctl -g '(^(*.o|*.class|*.jar|*.gif|*.a))' + -g '.*' most
 compctl -g '*.ltx' + -g '*(-/)' pdflatex
 compctl -g '*.wav' auCDtect
+compctl -g '*.fb2 *.fb2.zip' FBReader
 
 autoload -U compinit
 compinit
@@ -340,8 +344,12 @@ alias apt="noglob sudo apt-get"
 alias wa="wajig"
 alias s="sudo"
 alias sm="smplayer"
+function qhg() { hg -R $(hg root)/.hg/patches/ $@ }
 function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
 alias psg="ps -ylC"
 alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
+
+# for emacs' tramp
+[ $TERM = "dumb" ] && unsetopt zle && PS1='$ ' && unalias ls
