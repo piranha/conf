@@ -66,28 +66,22 @@ ownPP h = defaultPP
 addKeys =
     [ ("M-f"   , sendMessage ToggleLayout)
     , ("M-b"   , sendMessage ToggleStruts)
-    , ("M-C-x" , xmonadPrompt ownXPConfig)
-    , ("M-s"   , spawn "urxvtc -title scratchpad")
-    , ("M-a q" , sendMessage $ JumpToLayout "tiled")
-    , ("M-a w" , sendMessage $ JumpToLayout "tabbed")
-    , ("M-<F2>", windowPromptGoto ownXPConfig)
-    , ("M-<F3>", sshPrompt ownXPConfig)
-    , ("M-<Right>", withFocused (keysMoveWindow (20, 0)))
-    , ("M-<Left>", withFocused (keysMoveWindow (-20, 0)))
-    , ("M-<Up>", withFocused (keysMoveWindow (0, -20)))
-    , ("M-<Down>", withFocused (keysMoveWindow (0, 20)))
-    , ("M-S-<Right>", withFocused (keysResizeWindow (20, 0) (0, 0)))
-    , ("M-S-<Left>", withFocused (keysResizeWindow (-20, 0) (0, 0)))
-    , ("M-S-<Up>", withFocused (keysResizeWindow (0, -20) (0, 0)))
-    , ("M-S-<Down>", withFocused (keysResizeWindow (0, 20) (0, 0)))
+    , ("M-s"   , spawn "urxvt -title scratchpad")
+    , ("M-S-g" , windowPromptGoto ownXPConfig)
+    , ("M-<Right>"   , withFocused (keysMoveWindow   (20,  0)))
+    , ("M-<Left>"    , withFocused (keysMoveWindow   (-20, 0)))
+    , ("M-<Up>"      , withFocused (keysMoveWindow   (0, -20)))
+    , ("M-<Down>"    , withFocused (keysMoveWindow   (0,  20)))
+    , ("M-S-<Right>" , withFocused (keysResizeWindow (20,  0) (0, 0)))
+    , ("M-S-<Left>"  , withFocused (keysResizeWindow (-20, 0) (0, 0)))
+    , ("M-S-<Up>"    , withFocused (keysResizeWindow (0, -20) (0, 0)))
+    , ("M-S-<Down>"  , withFocused (keysResizeWindow (0,  20) (0, 0)))
     , ("M-<Backspace>", focusUrgent)
     , ("M-p", shellPrompt ownXPConfig)
       -- non-wm-specific binds
-    , ("M-<Page_Up>", spawn "xclip -selection PRIMARY -o | xclip -selection CLIPBOARD -i")
-    , ("M-<Page_Down>", spawn "xclip -selection CLIPBOARD -o | xclip -selection PRIMARY -i")
-    , ("M-<Insert>", spawn "import -window root ~/screenshot-`date +\"%F--%H-%M-%S\"`.png")
-    , ("M-<F11>", spawn "setxkbmap -option '' 'us'")
-    , ("M-<F12>", spawn "setxkbmap -option 'grp:alt_shift_toggle' 'us,ua(winkeys)'")
+    , ("M-<Page_Up>"   , spawn "xclip -selection PRIMARY -o | xclip -selection CLIPBOARD -i")
+    , ("M-<Page_Down>" , spawn "xclip -selection CLIPBOARD -o | xclip -selection PRIMARY -i")
+    , ("M-<Insert>"    , spawn "scrot 'screenshot-%F-%H-%M-%S.png' -e 'mv $f ~'")
     ]
 
 mmKeys =
@@ -124,7 +118,7 @@ ownConfig statusbar = defaultConfig
                 { borderWidth        = 1
                 , normalBorderColor  = "#3f3c6d"
                 , focusedBorderColor = "#FF0000"
-                , terminal           = "urxvtc"
+                , terminal           = "urxvt"
                 , modMask            = mod4Mask
                 , logHook            = dynamicLogWithPP $ ownPP statusbar
                 , layoutHook         = ownLayoutHook
