@@ -10,7 +10,7 @@
  circe-ignore-list nil
  circe-server-killed-confirmation 'ask-and-kill-all
  circe-server-auto-join-channels
- '(("freenode" "#concatenative" "#mercurial" "#org-mode" "#io-ru" "#io"))
+ '(("freenode" "#mercurial" "#io-ru" "#firepython"))
  circe-nickserv-passwords
  `(("freenode" ,freenode-password))
  circe-nick-next-function 'prh/circe-nick-next)
@@ -39,8 +39,7 @@
      (require 'circe-nickcolor)
      (setq circe-nickcolor-list
            '("NavyBlue" "DarkGreen" "SeaGreen" "ForestGreen" "OliveDrab"
-             "SaddleBrown" "brown" "red" "DarkViolet" "yellow4" "DarkRed"
-             "brown" "purple"))
+             "brown" "red" "purple" "orange red"))
      (enable-circe-nickcolor)
      (define-key lui-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "circe"))
      (add-hook 'lui-mode-hook 'no-scroll-margin)))
