@@ -7,7 +7,6 @@ ignore = ~/.hgignore
 #changegroup = hgpull-diffstat
 
 [defaults]
-stats = --aliases /home/piranha/.churnaliases
 churn = --aliases /home/piranha/.churnaliases
 
 [extensions]
@@ -27,12 +26,21 @@ hgext.hgk=
 hgext.record=
 hgext.children=
 hgext.highlight=!
-hgext.qct=
-#hgext.inotify=
+hgext.inotify=!
 hgext.rebase=
 hgext.zeroconf=
+#hgext.bookmarks=
+hgsubversion=/home/piranha/dev/hg/hgsubversion
+#attic=/home/piranha/dev/hg/hgattic/attic.py
 #hgshelve=/home/piranha/dev/hg/hgext/hgshelve/hgshelve.py
-#bookmarks=/home/piranha/dev/hg/hgbookmarks/hgext/bookmarks.py
+#cdiff=/home/piranha/dev/hg/cdiff/cdiff.py
+autopager=/home/piranha/dev/hg/autopager/autopager.py
+crecord=/home/piranha/incoming/crecord.py
+qup=/home/piranha/dev/hg/qup.py
+fastimport=/home/piranha/dev/hg/hg-fastimport/fastimport
+rdiff=/home/piranha/dev/hg/rdiff/rdiff.py
+pbranch=/home/piranha/dev/hg/hgext/pbranch.py
+#cutehg=/home/piranha/dev/hg/cutehg/hgext/cutehg.py
 
 [diff]
 git = 1
@@ -40,12 +48,20 @@ git = 1
 [inotify]
 autostart = True
 
-[alias]
-slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
-sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sglog = glog --template '[{rev}:{node|short}] by {author|person} \n{desc|fill68}\n\n'
+[bookmarks]
+track.current = True
 
 [email]
 method = sendmail
+
+[alias]
+slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
+dlog = log --template '{date|shortdate} [{rev}:{node|short}] {diffstat} {author|person}: {desc|firstline}\n' -l 10
+flog = log --template '{date|shortdate} [{rev}:{node|short}] {size} {author|person}: {desc|firstline}\n' -l 10
+wlog = log --style short -l 10
+sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
+sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
+sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
+sglog = glog --style short -l 10
+#sg = glog --template '[{rev}:{node|short}] by {author|person} ({date|isodate})\n{desc|firstline|fill68}\n\n' -l 8
+p = log --style=short -p -r
