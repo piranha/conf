@@ -22,7 +22,6 @@
 ;;;;;;;;;;
 ;; Loading
 ;;;;;;;;;;
-(require 'message-x)
 (when (file-exists-p "~/.secrets.el")
   (load "~/.secrets.el"))
 
@@ -35,15 +34,6 @@
 (setq gnus-group-charset-alist nil)
 (push '(".*" koi8-u t) gnus-group-posting-charset-alist)
 (push '(".*" koi8-u t) gnus-group-charset-alist)
-
-;;;;;;;;;;;;
-;; Extension config
-;;;;;;;;;;;;
-
-;; various
-
-;; message-x
-(setq message-x-body-function '(lambda () (interactive) (hippie-expand nil)))
 
 ;;;;;;;;;;
 ;; General
@@ -108,11 +98,7 @@
 
 (autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
 (add-hook 'message-setup-hook 'gnus-alias-determine-identity)
-(add-hook 'message-load-hook
-          '(lambda ()
-             (gnus-alias-init)
-             (add-hook 'message-x-after-completion-functions 'gnus-alias-message-x-completion)
-             ))
+(add-hook 'message-load-hook '(lambda () (gnus-alias-init)))
 
 (setq gnus-alias-identity-alist
       '(
@@ -592,6 +578,8 @@
 ;; for now-playing and citation lines
 ;(add-hook 'message-setup-hook 'prh:random-cite)
 ;(add-hook 'message-setup-hook 'prh:now-playing)
+
+(global-set-key (kbd "<f9>") (fun-for-bind toggle-buffer "*Group*"))
 
 ;;;;;;;;;;;;;;;;;;
 ;; Autocompilation
