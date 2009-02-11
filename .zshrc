@@ -347,6 +347,7 @@ alias wa="wajig"
 alias s="sudo"
 alias sm="smplayer"
 function qhg() { hg -R $(hg root)/.hg/patches/ $@ }
+function qser() { vim $(hg root)/.hg/patches/series }
 function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
 alias psg="ps -ylC"
