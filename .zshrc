@@ -1,6 +1,6 @@
 # -*- mode: sh -*-
 # zsh configuration
-# (c) 2003-2008 Alexander Solovyov
+# (c) 2003-2009 Alexander Solovyov
 # piranha AT piranha.org.ua
 #
 # Thanks to:
@@ -8,9 +8,7 @@
 # Alexander Zayats
 # "XAKEP" journal
 
-if [ -f ~/.zshlocal ]; then
-    source ~/.zshlocal
-fi
+export LANG=en_US.UTF-8
 export LC_TIME=C
 export LC_NUMERIC=C
 
@@ -23,7 +21,10 @@ limit -s
 
 umask 022
 
-export PATH=~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin:/usr/games
+export PATH=~/bin:/opt/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
+if [ -x /usr/libexec/path_helper ]; then
+    eval `/usr/libexec/path_helper -s`
+fi
 
 if [ -x "`whence -c most`" ]; then
         export PAGER="most"
@@ -37,9 +38,10 @@ else
 fi
 export BROWSER="links"
 export LESS="-R"
-if [ -d $HOME/perl ]
-then
-    export PERL5LIB=${PERL5LIB:+$PERL5LIB:}$HOME/perl
+
+# local settings can override some settings
+if [ -f ~/.zshlocal ]; then
+    source ~/.zshlocal
 fi
 
 # Prompt setup (c) smax 2002, adapted for zsh (c) piranha 2004
