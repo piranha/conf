@@ -33,11 +33,10 @@ hgext.zeroconf=
 hgsubversion=/home/piranha/dev/hg/hgsubversion
 #attic=/home/piranha/dev/hg/hgattic/attic.py
 #hgshelve=/home/piranha/dev/hg/hgext/hgshelve/hgshelve.py
-#cdiff=/home/piranha/dev/hg/cdiff/cdiff.py
 autopager=/home/piranha/dev/hg/autopager/autopager.py
 crecord=/home/piranha/incoming/crecord.py
 qup=/home/piranha/dev/hg/qup.py
-fastimport=/home/piranha/dev/hg/hg-fastimport/fastimport
+#fastimport=/home/piranha/dev/hg/hg-fastimport/fastimport
 rdiff=/home/piranha/dev/hg/rdiff/rdiff.py
 pbranch=/home/piranha/dev/hg/hgext/pbranch.py
 #cutehg=/home/piranha/dev/hg/cutehg/hgext/cutehg.py
@@ -53,6 +52,9 @@ track.current = True
 
 [email]
 method = sendmail
+
+[autopager]
+ignore = serve
 
 [alias]
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
