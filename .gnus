@@ -82,6 +82,8 @@
   user-name "piranha"
   user-full-name "Alexander Solovyov"
   user-mail-address "piranha@piranha.org.ua"
+  message-alternative-emails
+  (regexp-opt '("asolovyov@rainboo.com" "alexander.solovyov@gmail.com"))
 )
 
 ;; Send mail via SMTP
@@ -183,13 +185,6 @@
 ;;                (nnimap-stream ssl)
 ;; ;               (nnimap-list-pattern ("INBOX" ".*"))
 ;;                )))
-
-;; (load-library "mail-source")
-;; (setq mail-sources
-;;       '((pop :server "mail.softheme.com"
-;;              :user "alexander.solovyov"
-;; ;             :program "fetchmail %u@%s -P %p %t"
-;;             )))
 
 (defun prh:mail-date (u) (concat u (format-time-string ".%Y.%m" (current-time))))
 (defun prh:mail-date2 (u) (concat u (format-time-string ".%Y" (current-time))))
