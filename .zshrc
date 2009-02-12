@@ -38,6 +38,7 @@ else
 fi
 export BROWSER="links"
 export LESS="-R"
+export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then
@@ -350,7 +351,7 @@ function qhg() { hg -R $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
 function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
-alias psg="ps -ylC"
+alias psc="ps -C"
 alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
 
