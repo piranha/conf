@@ -203,16 +203,19 @@
 (setq project-roots
       `(("Django project"
          :root-contains-files ("manage.py")
-         :filename-regex ,(regexify-ext-list '(py html css js))
+         :filename-regex ,(regexify-ext-list '(py html css js sh))
          :exclude-paths '("contrib"))
         ("Mercurial"
          :root-contains-files ("hg" "hgeditor")
          :filename-regex ,(regexify-ext-list '(py tmpl))
          :exclude-paths '("tests"))
+        ("Sphinx project"
+         :root-contains-files ("Makefile" "conf.py")
+         :filename-regex ,(regexify-ext-list '(py rst))
+         :exclude-paths '("_build"))
         ("Generic Python project"
          :root-contains-files ("setup.py")
-         :filename-regex ,(regexify-ext-list '(py)))
-         ))
+         :filename-regex ,(regexify-ext-list '(py)))))
 
 (global-set-key (kbd "C-c p f") 'project-root-find-file)
 (global-set-key (kbd "C-c p g") 'project-root-grep)
