@@ -16,7 +16,7 @@ filetype plugin on
 
 " For Python
 let python_highlight_all = 1
-au FileType python source ~/.vim/scripts/python.vim
+"au FileType python source ~/.vim/scripts/python.vim
 " SmartIndent
 autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 " Remove trailing whitespaces
