@@ -26,7 +26,7 @@
  echo-keystrokes 0.01                ;; see what you type
  scroll-conservatively 50            ;; text scrolling
  scroll-preserve-screen-position nil
- scroll-margin 10
+ scroll-margin 5
  scroll-step 1                       ;; Scroll by one line at a time
  comint-completion-addsuffix t       ;; Insert space/slash after completion
  kill-whole-line t                   ;; delete line in one stage
@@ -59,6 +59,8 @@
  case-fold-search t   ;; case INsensitive search
  indent-tabs-mode nil ;; do not use tabs for indentation
  fill-column 80       ;; number of chars in line
+ c-basic-offset 4     ;; don't use 2 or 8 spaces to indent C code
+ left-fringe-width 0
 )
 
 ;; Ask questions with short answers
