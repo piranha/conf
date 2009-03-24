@@ -261,3 +261,10 @@
       (global-set-key (kbd "M-X") 'smex-major-mode-commands)
       (global-set-key (kbd "C-c M-x") 'smex-update-and-run)
       (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)))
+
+
+;; sudo
+(autoload 'sudo-unset-ro-or-save "sudo" "" t)
+(autoload 'sudo-find-file "sudo" "" t)
+(global-set-key (kbd "C-x M-s") 'sudo-unset-ro-or-save)
+(global-set-key (kbd "C-x M-f") 'sudo-find-file)

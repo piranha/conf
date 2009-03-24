@@ -1,6 +1,7 @@
 [ui]
 username = Alexander Solovyov <piranha@piranha.org.ua>
 ignore = ~/.hgignore
+ssh = ssh -C
 
 [hooks]
 #pretxncommit.whitespace = hg export tip | (! egrep -q '^\+.*[ \t]$')
@@ -20,42 +21,35 @@ cmd.opendiff = opendiff-w
 churn = --aliases /home/piranha/.churnaliases
 
 [extensions]
-hgext.alias=
-hgext.patchbomb=
-hgext.transplant=
-hgext.mq=
-hgext.parentrevspec=
-hgext.convert=
-hgext.graphlog=
-hgext.color=
-hgext.fetch=
-hgext.churn=
-hgext.pager=!
-hgext.purge=
-hgext.hgk=
-hgext.record=
-hgext.children=
-hgext.highlight=!
-hgext.inotify=!
-hgext.rebase=
-hgext.zeroconf=
-hgext.bookmarks=
-hgext.extdiff=
+alias=
+patchbomb=
+mq=
+graphlog=
+color=
+churn=
+purge=
+record=
+rebase=
+zeroconf=
+bookmarks=
+extdiff=
+inotify=!
+
 perf=~/dev/hg/hg/contrib/perf.py
 #hgsubversion=~/dev/hg/hgsubversion
 #attic=~/dev/hg/hgattic/attic.py
-#hgshelve=~/dev/hg/hgext/hgshelve/hgshelve.py
 autopager=~/dev/hg/autopager/autopager.py
 crecord=~/dev/hg/hgext/crecord.py
 qup=~/dev/hg/qup.py
 #fastimport=~/dev/hg/hg-fastimport/fastimport
 rdiff=~/dev/hg/rdiff/rdiff.py
-pbranch=~/dev/hg/hgext/pbranch.py
+#pbranch=~/dev/hg/hgext/pbranch.py
 cutehg=~/dev/hg/cutehg/cutehg
 schemes=~/dev/hg/schemes/schemes.py
 
 [diff]
-git = 1
+git = True
+showfunc = True
 
 [inotify]
 autostart = True
@@ -67,7 +61,7 @@ track.current = True
 method = sendmail
 
 [autopager]
-ignore = serve, pull, push, clone, churn
+attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip
 
 [alias]
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
