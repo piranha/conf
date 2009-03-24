@@ -1,10 +1,20 @@
 [ui]
 username = Alexander Solovyov <piranha@piranha.org.ua>
-merge = emacs-merge
 ignore = ~/.hgignore
 
 [hooks]
-#changegroup = hgpull-diffstat
+#pretxncommit.whitespace = hg export tip | (! egrep -q '^\+.*[ \t]$')
+
+[merge-tools]
+p4.priority = 60
+p4.premerge = True
+p4.executable = /Applications/p4merge.app/Contents/MacOS/p4merge
+p4.gui = True
+p4.args = $base $local $other $output
+p4.binary = False
+
+[extdiff]
+cmd.opendiff = opendiff-w
 
 [defaults]
 churn = --aliases /home/piranha/.churnaliases
@@ -30,17 +40,19 @@ hgext.inotify=!
 hgext.rebase=
 hgext.zeroconf=
 hgext.bookmarks=
+hgext.extdiff=
+perf=~/dev/hg/hg/contrib/perf.py
 #hgsubversion=~/dev/hg/hgsubversion
 #attic=~/dev/hg/hgattic/attic.py
 #hgshelve=~/dev/hg/hgext/hgshelve/hgshelve.py
-#autopager=~/dev/hg/autopager/autopager.py
 autopager=~/dev/hg/autopager/autopager.py
 crecord=~/dev/hg/hgext/crecord.py
 qup=~/dev/hg/qup.py
 #fastimport=~/dev/hg/hg-fastimport/fastimport
 rdiff=~/dev/hg/rdiff/rdiff.py
 pbranch=~/dev/hg/hgext/pbranch.py
-#cutehg=~/dev/hg/cutehg/hgext/cutehg.py
+cutehg=~/dev/hg/cutehg/cutehg
+schemes=~/dev/hg/schemes/schemes.py
 
 [diff]
 git = 1
@@ -55,7 +67,7 @@ track.current = True
 method = sendmail
 
 [autopager]
-ignore = serve
+ignore = serve, pull, push, clone, churn
 
 [alias]
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
@@ -67,4 +79,8 @@ sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person
 sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sglog = glog --style short -l 10
 #sg = glog --template '[{rev}:{node|short}] by {author|person} ({date|isodate})\n{desc|firstline|fill68}\n\n' -l 8
-p = log --style=short -p -r
+p = log -v --style=short -p -r
+
+[schemes]
+p = ssh://piranha.org.ua/hg/
+p+http = http://hg.piranha.org.ua/
