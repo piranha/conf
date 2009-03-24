@@ -122,18 +122,35 @@
   '(progn
      (define-key django-html-mode-map "\C-c]" 'django-close-tag)))
 
-;(autoload 'python-mode "python" "Python editing mode." t)
-
 (eval-after-load "python"
   '(progn
-     (define-key python-mode-map (kbd "RET") 'newline-and-indent)
-;;;      (when (require 'pymacs nil t) (pymacs-load "ropemacs" "rope-"))
-;;;      (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
-;;;      (defun rope-reload ()
-;;;        (interactive)
-;;;        (pymacs-terminate-services)
-;;;        (pymacs-load "ropemacs" "rope-"))
-     ))
+     (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)
+     (if (file-executable-p "/opt/local/bin/python")
+         (setenv "PYMACS_PYTHON" "/opt/local/bin/python"))
+     (when (require 'pymacs nil t) (pymacs-load "ropemacs" "rope-"))
+     (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
+     (defun rope-reload ()
+       (interactive)
+       (pymacs-terminate-services)
+       (pymacs-load "ropemacs" "rope-"))))
+
+; flymake/pyflakes
+(when (load "flymake" t)
+  (if (file-executable-p "/opt/local/bin/pyflakes")
+      (setq pyflakes-executable "/opt/local/bin/pyflakes")
+    (setq pyflakes-executable "pyflakes"))
+  (defun flymake-pyflakes-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list pyflakes-executable (list local-file))))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pyflakes-init)))
+(add-hook 'python-mode-hook '(lambda () (flymake-mode 1)))
+
+(require 'flymake-point nil t)
 
 ;; Erlang
 
@@ -154,7 +171,7 @@
 (eval-after-load "erlang"
   '(progn
      (distel-setup)
-     (define-key erlang-extended-mode-map (kbd "RET") 'newline-and-indent)
+     (define-key erlang-extended-mode-map (kbd "RET") 'newline-maybe-indent)
      (define-key erlang-extended-mode-map (kbd "M-/") 'dabbrev-expand)
      (add-hook 'erlang-shell-mode-hook
                (lambda ()
@@ -231,3 +248,16 @@
                . post-mode))
 (setq post-emoticon-pattern nil
       post-news-poster-regexp "^Exceprts from .* of .*:$")
+
+;; smex
+
+(require 'smex nil t)
+
+(if (fboundp 'smex)
+    (progn
+      (smex-initialize)
+      (smex-auto-update)
+      (global-set-key (kbd "M-x") 'smex)
+      (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+      (global-set-key (kbd "C-c M-x") 'smex-update-and-run)
+      (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)))

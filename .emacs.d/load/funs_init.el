@@ -223,3 +223,19 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (let* ((selected-symbol (ido-completing-read "Symbol: " symbol-names))
            (position (cdr (assoc selected-symbol name-and-pos))))
       (goto-char position))))
+
+(defun toggle-current-window-dedication ()
+  (interactive)
+  (let* ((window (selected-window))
+         (dedicated (window-dedicated-p window)))
+    (set-window-dedicated-p window (not dedicated))
+    (message "Window %sdedicated to %s"
+             (if dedicated "no longer " "")
+             (buffer-name))))
+
+(defun newline-maybe-indent ()
+  "Like newline-and-indent, but doesn't indent if the previous line is blank"
+  (interactive "*")
+  (if (= (line-beginning-position) (line-end-position))
+      (newline)
+    (newline-and-indent)))

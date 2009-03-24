@@ -13,6 +13,7 @@ suitable for binding to keys."
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 (global-set-key (kbd "M-A") 'ido-goto-symbol)
 (global-set-key (kbd "M-.") 'find-tag)
+(global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
 
 (global-set-key (kbd "C-x C-d") 'dired-jump)
 
