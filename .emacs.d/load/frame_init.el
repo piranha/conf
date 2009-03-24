@@ -33,10 +33,12 @@
 ;; Maximum colors
       (setq font-lock-maximum-decoration t)))
 
-(when win
+(when graf
   (require 'color-theme)
   (color-theme-initialize)
+  (load-file "~/.emacs.d/packages/themes/color-theme-mods.el")
   (load-file "~/.emacs.d/packages/themes/pastels-on-dark-theme.el")
+  (color-theme-gtk-ide)
 ;  (color-theme-charcoal-black)
-  (color-theme-pastels-on-dark)
+;  (color-theme-pastels-on-dark)
 )
