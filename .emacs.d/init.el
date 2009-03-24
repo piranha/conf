@@ -23,8 +23,8 @@
 
 (add-to-path 'load)                     ; initialization
 (add-to-path 'packages)                 ; additional packages
-(add-to-path 'packages/grep+)
-(add-to-path 'packages/themes)
+(let ((default-directory "~/.emacs.d/packages/"))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (when (file-exists-p "~/.secrets.el")
   (load-file "~/.secrets.el"))
