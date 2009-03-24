@@ -51,12 +51,17 @@ Cr() { echo '%{\033[3'$1'm%}'; }
 hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 2`
 [ $UID = 0 ] && at=$r%B'#'%b || at=$w'@'
 err="%(?..$r%B%?%b )"
-PS1="$wc%n$at$hc%m $wc%~$w>$n"
+PS1="$wc%n$at$hc%m $err$wc%~$w>$n"
+# for white background
+#wc=`Cr 4`
+#PS1="$gr%B%n%b$n@$wc%m $err$wc%~>$n"
 #export RPROMPT=$(echo "$gr%T$n")
 unset n b Cr uc hc wc tc tty at r y gr
 
 # make ls looks nice
-eval $(dircolors ~/.dircolors)
+if [ -f ~/.dircolors ]; then
+    eval $(dircolors ~/.dircolors)
+fi
 
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
@@ -177,7 +182,8 @@ esac
 
 
 # Search file, containing string in name
-function ff() { find . -type f -iname '*'$*'*' -ls ; }
+#function ff() { find . -type f -iname '*'$*'*' -ls ; }
+function ff() { ls -lh **/*$** ; }
 
 # rename file to lowercase
 function lowercase()
@@ -240,7 +246,7 @@ function slow_print() {
     print ""
 }
 
-function split2flac { 
+function split2flac {
     if [ -z "$2" ]; then
         echo "Usage: split2flac cue-file sound-file"
     else
