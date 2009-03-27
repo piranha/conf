@@ -1,8 +1,3 @@
-(defmacro fun-for-bind (func &rest args)
-  "Returns a symbol of an anonymous interactive function,
-suitable for binding to keys."
-  `(lambda () (interactive) (,func ,@args)))
-
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-,") 'bs-show)
 (global-set-key (kbd "C-.") 'ido-switch-buffer)

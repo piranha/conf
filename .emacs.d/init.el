@@ -19,6 +19,11 @@
           (load (format "%s_init" name)))
         modules))
 
+(defmacro fun-for-bind (func &rest args)
+  "Returns a symbol of an anonymous interactive function,
+suitable for binding to keys."
+  `(lambda () (interactive) (,func ,@args)))
+
 (setq custom-file "~/.emacs.d/load/custom_init.el")
 
 (add-to-path 'load)                     ; initialization

@@ -71,3 +71,7 @@
 ;; this should help with console when ^H behaves like backspace
 (if (not graf)
     (normal-erase-is-backspace-mode))
+
+(if (eq system-type 'darwin)
+    (setq ns-extended-platform-support-mode t
+          ns-command-modifier 'meta))
