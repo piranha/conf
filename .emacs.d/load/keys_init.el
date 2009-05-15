@@ -9,6 +9,7 @@
 (global-set-key (kbd "M-A") 'ido-goto-symbol)
 (global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
+(global-set-key (kbd "C-S-k") (lambda () (interactive) (kill-line 0)))
 
 (global-set-key (kbd "C-x C-d") 'dired-jump)
 
