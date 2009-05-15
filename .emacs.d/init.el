@@ -34,6 +34,10 @@ suitable for binding to keys."
 (when (file-exists-p "~/.secrets.el")
   (load-file "~/.secrets.el"))
 
+;;; ELPA
+(when (load (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
+
 (defun autocompile ()
   "Compile itself if this is config file"
   (interactive)

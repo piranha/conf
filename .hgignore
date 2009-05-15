@@ -3,6 +3,7 @@
 ^.emacs.d/agent
 ^.emacs.d/server
 ^.emacs.d/snippets
+^.emacs.d/elpa
 
 syntax: glob
 *.elc
