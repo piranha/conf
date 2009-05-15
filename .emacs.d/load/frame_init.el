@@ -11,10 +11,12 @@
       (add-to-list 'default-frame-alist '(font . "-outline-Unifont-normal-r-normal-normal-16-120-96-96-c-*-*")))
 
   (tool-bar-mode 0)
-  (scroll-bar-mode -1)
-)
+  (scroll-bar-mode -1))
 
-(menu-bar-mode 0)
+(if (or (not (eq system-type 'darwin))
+        (not graf))
+    (menu-bar-mode 0)
+  (menu-bar-mode 1))
 
 ;; switch emacs lang by windows' system key (capslock in my case)
 (when win
@@ -28,10 +30,9 @@
   (global-set-key (kbd "<language-change>") 'safe-language-change))
 
 ;; syntax highlight
-(cond ((fboundp 'global-font-lock-mode)
-      (global-font-lock-mode t)
-;; Maximum colors
-      (setq font-lock-maximum-decoration t)))
+(when (fboundp 'global-font-lock-mode)
+  (global-font-lock-mode t)
+  (setq font-lock-maximum-decoration t))
 
 (when graf
   (require 'color-theme)
