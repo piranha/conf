@@ -5,11 +5,6 @@
   (interactive)
   (set (make-local-variable 'scroll-margin) 0))
 
-(defun display-trailing-whitespace ()
-  "Enable display of trailing whitespaces buffer-locally"
-  (interactive)
-  (set (make-local-variable 'show-trailing-whitespace) t))
-
 (defun insert-date (format)
   "Wrapper around format-time-string."
   (interactive "MFormat: ")

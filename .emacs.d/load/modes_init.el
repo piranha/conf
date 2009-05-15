@@ -67,16 +67,15 @@
 (autoload 'js2-mode "js2" nil t)
 (load "fuel/fu" t)
 
-(setq hooks-with-trailing
-      '(emacs-lisp-mode-hook
-        factor-mode-hook
+(setq whitespace-style '(lines-tail trailing))
+(setq hooks-with-whitespaces
+      '(factor-mode-hook
         wikipedia-mode-hook
         markdown-mode-hook
         erlang-mode-hook
         haskell-mode-hook
-        python-mode-hook
-        django-html-mode-hook))
-(dolist (hook hooks-with-trailing) (add-hook hook 'display-trailing-whitespace))
+        python-mode-hook))
+(dolist (hook hooks-with-whitespaces) (add-hook hook 'whitespace-mode))
 
 (setq hooks-want-short-lines
       '(markdown-mode-hook
