@@ -60,8 +60,7 @@
  indent-tabs-mode nil ;; do not use tabs for indentation
  fill-column 80       ;; number of chars in line
  c-basic-offset 4     ;; don't use 2 or 8 spaces to indent C code
- left-fringe-width 0
-)
+ left-fringe-width 0) ;; no need for left fringe
 
 ;; Ask questions with short answers
 (fset 'yes-or-no-p 'y-or-n-p)
