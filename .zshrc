@@ -234,19 +234,6 @@ function ram()
     fi
 }
 
-# funny function to slow print it's input
-function slow_print() {
-    for argument in "${@}"
-    do
-        for ((i = 1; i <= ${#1} ;i++)) {
-            print -n "${argument[i]}"
-            sleep 0.08
-        }
-        print -n " "
-    done
-    print ""
-}
-
 function split2flac {
     if [ -z "$2" ]; then
         echo "Usage: split2flac cue-file sound-file"
@@ -273,14 +260,6 @@ function gkill {
 #alias mv="nocorrect mv"
 #alias cp="nocorrect cp"
 alias mkdir="nocorrect mkdir"
-
-# Recode aliases
-alias w2k="iconv -c -f cp1251 -t koi8-r"
-alias k2w="iconv -c -f koi8-r -t cp1251"
-alias u2k="iconv -c -f utf-8 -t koi8-r"
-alias k2u="iconv -c -f koi8-r -t utf-8"
-alias U2k="iconv -c -f utf-16 -t koi8-r"
-alias k2U="iconv -c -f koi8-r -t utf-16"
 
 ## LFTP
 if [ -x "`whence -c lftp`" ]; then
