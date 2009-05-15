@@ -284,65 +284,6 @@
 (setq gnus-inhibit-mime-unbuttonizing t)
 
 
-;;;;;;;;
-;; Faces
-;(setq custom-background-mode 'light)
-;(defface my-group-face-1
-;  '((t (:foreground "Red" :bold t))) "First group face")
-;(defface my-group-face-2
-;  '((t (:foreground "DarkSeaGreen4" :bold t))) "Second group face")
-;(defface my-group-face-3
-;  '((t (:foreground "Blue4" :bold t))) "Third group face")
-;(defface my-group-face-4
-;  '((t (:foreground "CornflowerBlue" :bold t))) "Fourth group face")
-;(defface my-group-face-5
-;  '((t (:foreground "DeepSkyBlue" :bold t))) "Fifth group face")
-;
-;(copy-face 'default 'mysubject)
-;(setq gnus-face-1 'mysubject)
-;
-;(copy-face 'default 'mytime)
-;(set-face-foreground 'mytime "green3")
-;(setq gnus-face-2 'mytime)
-;
-;(copy-face 'default 'mythreads)
-;(set-face-foreground 'mythreads "indianred1")
-;(setq gnus-face-3 'mythreads)
-;
-;(copy-face 'default 'mygrey)
-;(set-face-foreground 'mygrey "grey")
-;(setq gnus-face-4 'mygrey)
-;
-;(copy-face 'default 'myblack)
-;(set-face-foreground 'myblack "grey60")
-;(setq gnus-face-5 'myblack)
-;
-;(copy-face 'default 'mybiggernumbers)
-;(set-face-foreground 'mybiggernumbers "indianred4")
-;(setq gnus-face-6 'mybiggernumbers)
-;
-;(set-face-foreground 'gnus-summary-normal-ancient-face "LightSteelBlue")
-;
-;;; to view my own postings
-;(require 'gnus-sum)
-;(defface dz-gnus-own-posting-face nil
-;  "Use this face to display own postings in Summary Buffer")
-;(copy-face 'gnus-summary-high-unread-face 'dz-gnus-own-posting-face)
-;(set-face-foreground 'dz-gnus-own-posting-face "aquamarine")
-;
-;(defface dz-gnus-direct-fup-face nil
-;  "Use this face to display direct fups to my postings.")
-;(copy-face 'gnus-summary-high-unread-face 'dz-gnus-dir-fup-face)
-;(set-face-foreground 'dz-gnus-direct-fup-face "yellow")
-;
-;(defface dz-gnus-indirect-fup-face nil
-;  "Use this face to display indirect fups to my postings")
-;(copy-face 'gnus-summary-high-unread-face 'dz-gnus-indir-fup-face)
-;(set-face-foreground 'dz-gnus-indirect-fup-face "lightgreen")
-;;; end of faces
-;;;;;;;;;;;;;;;
-
-
 ;;;;;;
 ;; PGG
 ;;;;;;
