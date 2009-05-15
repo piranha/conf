@@ -154,6 +154,11 @@
                '("\\.py\\'" flymake-pyflakes-init)))
 (add-hook 'python-mode-hook '(lambda () (flymake-mode 1)))
 
+(set-face-attribute 'flymake-errline nil
+                    :background 'unspecified
+                    :underline "orange")
+(setq flymake-gui-warnings-enabled nil)
+
 (require 'flymake-point nil t)
 
 ;; Erlang
