@@ -1,9 +1,13 @@
+# -*- mode: conf -*-
+
 [ui]
 username = Alexander Solovyov <piranha@piranha.org.ua>
 ignore = ~/.hgignore
 ssh = ssh -C
 
 [hooks]
+commit.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
+changegroup.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
 #pretxncommit.whitespace = hg export tip | (! egrep -q '^\+.*[ \t]$')
 
 [merge-tools]
@@ -19,6 +23,8 @@ cmd.opendiff = opendiff-w
 
 [defaults]
 churn = --aliases /home/piranha/.churnaliases
+qrefresh = -U -D
+qnew = -U
 
 [extensions]
 alias=
@@ -26,7 +32,9 @@ patchbomb=
 mq=
 graphlog=
 color=
+children=
 churn=
+parentrevspec=
 purge=
 record=
 rebase=
@@ -34,6 +42,7 @@ zeroconf=
 bookmarks=
 extdiff=
 inotify=!
+convert=
 
 perf=~/dev/hg/hg/contrib/perf.py
 #hgsubversion=~/dev/hg/hgsubversion
@@ -46,6 +55,13 @@ rdiff=~/dev/hg/rdiff/rdiff.py
 #pbranch=~/dev/hg/hgext/pbranch.py
 cutehg=~/dev/hg/cutehg/cutehg
 schemes=~/dev/hg/schemes/schemes.py
+chart=~/dev/hg/hg-chart-extension/hgext/chart.py
+hgactivity=~/dev/hg/hgactivity/activity.py
+#index=~/dev/hg/indexes-extension/indexes/
+qimprovements=~/dev/hg/qimprovements/qimprovements.py
+tasks = ~/dev/hg/hgtasks/hgext/tasks.py
+hg-git = ~/dev/hg/hg-git/
+histedit = ~/dev/hg/histedit/
 
 [diff]
 git = True
@@ -61,20 +77,24 @@ track.current = True
 method = sendmail
 
 [autopager]
-attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip
+attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog
 
 [alias]
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
 dlog = log --template '{date|shortdate} [{rev}:{node|short}] {diffstat} {author|person}: {desc|firstline}\n' -l 10
 flog = log --template '{date|shortdate} [{rev}:{node|short}] {size} {author|person}: {desc|firstline}\n' -l 10
-wlog = log --style short -l 10
+wlog = log --style compact -l 10
 sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sglog = glog --style short -l 10
+sglog = glog --style compact -l 10
+zlog = glog --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
 #sg = glog --template '[{rev}:{node|short}] by {author|person} ({date|isodate})\n{desc|firstline|fill68}\n\n' -l 8
-p = log -v --style=short -p -r
+p = log -v --style=compact -p -r
 
 [schemes]
 p = ssh://piranha.org.ua/hg/
 p+http = http://hg.piranha.org.ua/
+
+[tasks]
+auto.track.new = True
