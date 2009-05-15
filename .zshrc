@@ -342,4 +342,4 @@ alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
 
 # for emacs' tramp
-[ $TERM = "dumb" ] && unsetopt zle && PS1='$ ' && unalias ls
+[ $TERM = "dumb" ] && unsetopt zle && PS1='$ ' && unalias ls || return
