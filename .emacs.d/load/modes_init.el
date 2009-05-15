@@ -57,6 +57,11 @@
           (lambda ()
             (when isearch-forward (goto-char isearch-other-end))))
 
+;; saving place in file
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file "~/.emacs.d/places/")
+
 ;; major modes
 
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
