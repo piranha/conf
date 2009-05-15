@@ -62,6 +62,7 @@ unset n b Cr uc hc wc tc tty at r y gr
 if [ -f ~/.dircolors ]; then
     eval $(dircolors ~/.dircolors)
 fi
+export LSCOLORS="Cxfxcxdxbxegedabagacad"
 
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
