@@ -24,7 +24,7 @@
  make-backup-files nil               ;; NO annoing backups
  vc-follow-symlinks t                ;; follow symlinks and don't ask
  echo-keystrokes 0.01                ;; see what you type
- scroll-conservatively 50            ;; text scrolling
+ scroll-conservatively 0             ;; text scrolling
  scroll-preserve-screen-position nil
  scroll-margin 5
  scroll-step 1                       ;; Scroll by one line at a time
@@ -52,15 +52,19 @@
  dabbrev-case-fold-search nil        ;; Case is significant for dabbrev
  split-width-threshold 200           ;; I don't like horizontal splitting
  kill-ring-max 2000                  ;; oh yes! long killring!
+ dabbrev-abbrev-skip-leading-regexp "[^ ]*[<>=*.]"
  )
 
 (setq-default
- save-place t         ;; save position in files
- case-fold-search t   ;; case INsensitive search
- indent-tabs-mode nil ;; do not use tabs for indentation
- fill-column 80       ;; number of chars in line
- c-basic-offset 4     ;; don't use 2 or 8 spaces to indent C code
- left-fringe-width 0) ;; no need for left fringe
+ save-place t                   ;; save position in files
+ case-fold-search t             ;; case INsensitive search
+ indent-tabs-mode nil           ;; do not use tabs for indentation
+ fill-column 80                 ;; number of chars in line
+ c-basic-offset 4               ;; don't use 2 or 8 spaces to indent C code
+ left-fringe-width 0            ;; no need for left fringe
+ scroll-up-aggressively 0.01    ;; smooth scrolling
+ scroll-down-aggressively 0.01)
+
 
 ;; Ask questions with short answers
 (fset 'yes-or-no-p 'y-or-n-p)
