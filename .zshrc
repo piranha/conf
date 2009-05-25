@@ -60,6 +60,8 @@ if [ -f ~/.dircolors ]; then
 fi
 export LSCOLORS="Cxfxcxdxbxegedabagacad"
 
+fpath=(~/.zsh.d $fpath)
+
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
 
@@ -110,7 +112,7 @@ zle -N edit-command-line
 bindkey '\ee' edit-command-line
 
 
-######## Completition #######
+######## Completion #######
 #hostsmy=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
 hosts=(${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*})
 #???#zstyle ':completion:*:processes' command 'ps -au$USER'
@@ -150,8 +152,6 @@ compctl -g '*.fb2 *.fb2.zip' FBReader
 
 autoload -U compinit
 compinit
-# End of lines added by compinstall
-
 
 # xterm header
 case $TERM in
