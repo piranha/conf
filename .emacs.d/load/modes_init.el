@@ -72,7 +72,12 @@
 (autoload 'js2-mode "js2" nil t)
 (load "fuel/fu" t)
 
+(require 'whitespace)
 (setq whitespace-style '(lines-tail trailing))
+(set-face-attribute 'whitespace-line nil
+                    :foreground 'unspecified
+                    :background "yellow")
+
 (setq hooks-with-whitespaces
       '(factor-mode-hook
         wikipedia-mode-hook
