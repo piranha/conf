@@ -26,11 +26,7 @@ if [ -x /usr/libexec/path_helper ]; then
     eval `/usr/libexec/path_helper -s`
 fi
 
-if [ -x "`whence -c most`" ]; then
-        export PAGER="most"
-else
-        export PAGER="less"
-fi
+export PAGER="less"
 if [ -x "`whence -c vim`" ]; then
     export EDITOR="vim"
 else
