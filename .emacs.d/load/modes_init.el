@@ -134,14 +134,18 @@
 (eval-after-load "python"
   '(progn
      (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)
-     (if (file-executable-p "/opt/local/bin/python")
-         (setenv "PYMACS_PYTHON" "/opt/local/bin/python"))
-     (when (require 'pymacs nil t) (pymacs-load "ropemacs" "rope-"))
-     (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
-     (defun rope-reload ()
-       (interactive)
-       (pymacs-terminate-services)
-       (pymacs-load "ropemacs" "rope-"))))
+
+     (when (file-executable-p "/opt/local/bin/python")
+       (setq python-python-command "/opt/local/bin/python")
+       (setenv "PYMACS_PYTHON" "/opt/local/bin/python"))
+
+     (when (require 'pymacs nil t)
+       (pymacs-load "ropemacs" "rope-")
+       (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
+       (defun rope-reload ()
+         (interactive)
+         (pymacs-terminate-services)
+         (pymacs-load "ropemacs" "rope-")))))
 
 ; flymake/pyflakes
 (when (load "flymake" t)
