@@ -342,7 +342,7 @@ alias apt="noglob sudo apt-get"
 alias wa="wajig"
 alias s="sudo"
 alias sm="smplayer"
-function qhg() { hg -R $(hg root)/.hg/patches/ $@ }
+function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
 function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
@@ -351,4 +351,4 @@ alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
 
 # for emacs' tramp
-[ $TERM = "dumb" ] && unsetopt zle && PS1='$ ' && unalias ls || return
+[ $TERM = "dumb" ] && unsetopt zle && PS1='$ ' && unalias ls || return 0
