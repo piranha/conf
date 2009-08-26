@@ -37,5 +37,9 @@ def main():
         ip.ex("from ipy_addons import *")
     except ImportError:
         pass
+    try:
+        ip.ex("from ipipe import *")
+    except ImportError:
+        pass
 
 main()
