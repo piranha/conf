@@ -69,7 +69,8 @@
 (autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
 (autoload 'haskell-mode "haskell-mode" "Major mode for editing Haskell sources" t)
 (autoload 'io-mode "io-mode" "Major mode for editing Io sources" t)
-(autoload 'js2-mode "js2" nil t)
+(autoload 'yaml-mode "yaml-mode" nil t)
+(autoload 'lua-mode "lua-mode" nil t)
 (load "fuel/fu" t)
 
 (require 'whitespace)
@@ -84,8 +85,10 @@
         markdown-mode-hook
         erlang-mode-hook
         haskell-mode-hook
-        python-mode-hook))
+        python-mode-hook
+        lua-mode-hook))
 (dolist (hook hooks-with-whitespaces) (add-hook hook 'whitespace-mode))
+
 
 (setq hooks-want-short-lines
       '(markdown-mode-hook
@@ -104,7 +107,9 @@
         '("\\.html\\'" . django-html-mode)
         '("\\.egg\\'" . archive-mode)
         '("\\.io\\'" . io-mode)
-        )
+        '("\\.yml\\'" . yaml-mode)
+        '("\\.yaml\\'" . yaml-mode)
+        '("\\.lua\\'" . lua-mode))
         auto-mode-alist))
 
 (setq fuel-listener-factor-binary "~/bin/factor")
@@ -147,21 +152,45 @@
          (pymacs-terminate-services)
          (pymacs-load "ropemacs" "rope-")))))
 
-; flymake/pyflakes
+;;;;;;;;;;
+;; Flymake
+;;;;;;;;;;
+
+(defun find-executable (path fallback)
+  (if (file-executable-p path)
+      path
+    fallback))
+
 (when (load "flymake" t)
-  (if (file-executable-p "/opt/local/bin/pyflakes")
-      (setq pyflakes-executable "/opt/local/bin/pyflakes")
-    (setq pyflakes-executable "pyflakes"))
+  (setq pyflakes-exe (find-executable "/opt/local/bin/pyflakes" "pyflakes"))
+  (setq luac-exe (find-executable "/opt/local/bin/luac" "luac"))
+
   (defun flymake-pyflakes-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-inplace))
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
-      (list pyflakes-executable (list local-file))))
+      (list pyflakes-exe (list local-file))))
+
+  (defun flymake-lua-init ()
+    "Invoke luac with '-p' to get syntax checking"
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list luac-exe (list "-p" local-file))))
+
   (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init)))
+               '("\\.py\\'" flymake-pyflakes-init))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.lua\\'" flymake-lua-init))
+  (push '("^.*luac[0-9.]*\\(.exe\\)?: *\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 2 3 nil 4)
+        flymake-err-line-patterns))
+
 (add-hook 'python-mode-hook '(lambda () (flymake-mode 1)))
+(add-hook 'lua-mode-hook '(lambda () (flymake-mode 1)))
 
 (set-face-attribute 'flymake-errline nil
                     :background 'unspecified
@@ -169,6 +198,11 @@
 (setq flymake-gui-warnings-enabled nil)
 
 (require 'flymake-point nil t)
+
+;; Lua
+
+(defvaralias 'lua-indent-level 'tab-width)
+(add-hook 'lua-mode-hook (lambda () (setq indent-tabs-mode t)))
 
 ;; Erlang
 
@@ -256,7 +290,6 @@
 (global-set-key (kbd "C-c p g") 'project-root-grep)
 (global-set-key (kbd "C-c p a") 'project-root-ack)
 (global-set-key (kbd "C-c p d") 'project-root-goto-root)
-
 
 ;; mail
 

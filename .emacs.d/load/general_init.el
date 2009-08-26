@@ -61,10 +61,10 @@
  indent-tabs-mode nil           ;; do not use tabs for indentation
  fill-column 80                 ;; number of chars in line
  c-basic-offset 4               ;; don't use 2 or 8 spaces to indent C code
+ sgml-basic-offset 4
  left-fringe-width 0            ;; no need for left fringe
  scroll-up-aggressively 0.01    ;; smooth scrolling
  scroll-down-aggressively 0.01)
-
 
 ;; Ask questions with short answers
 (fset 'yes-or-no-p 'y-or-n-p)

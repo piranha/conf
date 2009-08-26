@@ -186,6 +186,7 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
         (insert "{% end" open-tag " %}")
       (error "Nothing to close"))))
 
+(setq imenu-auto-rescan t)
 (defun ido-goto-symbol ()
   "Will update the imenu index and then use ido to select a
    symbol to navigate to"

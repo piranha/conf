@@ -164,7 +164,7 @@ START-TIME and END-OF-DAY are the number of minutes past midnight."
 
 (global-set-key (kbd "<f1>") (fun-for-bind toggle-file "~/org/life.org"))
 (global-set-key (kbd "<f2>") (fun-for-bind toggle-file "~/org/musicx.org"))
-(global-set-key (kbd "<f3>") (fun-for-bind toggle-file "~/org/mh.org"))
+(global-set-key (kbd "<f3>") (fun-for-bind toggle-file "~/org/hg.org"))
 
 (when (file-directory-p "~/var/remember")
   (add-to-list 'load-path "~/var/remember"))

@@ -6,7 +6,7 @@
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
  '(org-agenda-files (quote ("~/org/life.org" "~/org/musicx.org")))
- '(safe-local-variable-values (quote ((test-case-name . openid\.test\.test_consumer) (encoding . utf-8) (prompt-to-byte-compile)))))
+ '(safe-local-variable-values (quote ((folded-file . t) (test-case-name . openid\.test\.test_consumer) (encoding . utf-8) (prompt-to-byte-compile)))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

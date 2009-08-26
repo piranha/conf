@@ -1,6 +1,7 @@
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-,") 'bs-show)
 (global-set-key (kbd "C-.") 'ido-switch-buffer)
+(define-key global-map (kbd "RET") 'newline-and-indent)
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)
