@@ -151,7 +151,7 @@ compctl -g '*.wav' auCDtect
 compctl -g '*.fb2 *.fb2.zip' FBReader
 
 autoload -U compinit
-compinit
+compinit -i
 
 # xterm header
 case $TERM in
@@ -341,7 +341,6 @@ alias cal="cal -m"
 alias apt="noglob sudo apt-get"
 alias wa="wajig"
 alias s="sudo"
-alias sm="smplayer"
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
 function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
