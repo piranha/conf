@@ -205,8 +205,8 @@ augroup END
 
 " Colors {{{
 
-"colorscheme torte
-colorscheme elflord
+colorscheme delek
+"colorscheme elflord
 
 " statusline:  coloring the status line
 hi StatusLine   term=NONE cterm=NONE ctermfg=white  ctermbg=blue
