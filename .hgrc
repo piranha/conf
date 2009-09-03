@@ -35,6 +35,7 @@ graphlog=
 color=
 children=
 churn=
+pager=
 parentrevspec=
 purge=
 record=
@@ -49,7 +50,6 @@ share=
 perf=~/dev/hg/hg/contrib/perf.py
 hgsubversion=~/dev/hg/hgsubversion/hgsubversion
 attic=~/dev/hg/hgattic/attic.py
-autopager=~/dev/hg/autopager/autopager.py
 crecord=~/dev/hg/crecord/crecord/
 qup=~/dev/hg/qup.py
 #fastimport=~/dev/hg/hg-fastimport/fastimport
@@ -81,7 +81,7 @@ track.current = True
 [email]
 method = sendmail
 
-[autopager]
+[pager] # with export LESS="FRQX"
 attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog
 
 [alias]
