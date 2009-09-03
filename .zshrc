@@ -33,7 +33,7 @@ else
     export EDITOR="vi"
 fi
 export BROWSER="links"
-export LESS="-R"
+export LESS="FRQX"
 export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 
 # local settings can override some settings
@@ -50,7 +50,7 @@ err="%(?..$r%B%?%b )"
 #PS1="$wc%n$at$hc%m $err$wc%~$w>$n"
 # for white background
 wc=`Cr 4`
-PS1="$wc%n$n@$wc%m $err$wc%~>$n"
+PS1="$wc%n$n@$wc%m $err$wc%~>$n "
 #export RPROMPT=$(echo "$gr%T$n")
 unset n b Cr uc hc wc tc tty at r y gr
 
