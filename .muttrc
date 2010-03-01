@@ -1,4 +1,4 @@
-# -*- muttrc -*-
+# -*- mode: muttrc; mode: conf -*-
 # mutt configuration (c) 2003-2007
 # by Alexander Solovyov   aka piranha
 # thx to: Max Krasilnikov aka pseudo
@@ -23,15 +23,12 @@ unignore "X-Priority:"
 unignore "X-Confirm-Reading-To:"
 unignore "X-Spam_score:"
 
-#alternates piranha@piranha.org.ua
+alternates piranha@piranha.org.ua
 alternates piranha@eth0.net.ua
-alternates piranha@9.org.ua
-alternates piranha@anarxi.st
 alternates piranha@viii.ntu-kpi.kiev.ua
 alternates piranha@library.ntu-kpi.kiev.ua
 alternates alexander.solovyov@gmail.com
-
-reset spoolfile
+alternates asolovyov@rainboo.com
 
 set abort_nosubject=no
 set abort_unmodified=yes
@@ -56,6 +53,7 @@ set bounce_delivered=no
 set check_new=yes
 set beep_new=yes
 set mail_check=3
+set timeout=60
 set collapse_unread=yes
 set uncollapse_jump=no
 set compose_format="-- Mutt: Compose  [Approx. msg size: %l   Atts: %a]%>-"
@@ -72,9 +70,11 @@ set digest_collapse=yes
 set duplicate_threads=yes
 set edit_headers=yes
 #set editor="jed %s -tmp -f '{mail_mode;email_prepare_reply;email_prepare_body;}'"
-set editor="vim -c EraseSignature -c 'set nopaste' -c 'set tw=72' %s"
+#set editor="vim -c EraseSignature -c 'set nopaste' -c 'set tw=72' %s"
+set editor='emacsclient -t'
 set fast_reply=yes
-#set folder="~/.mail/"
+set folder="~/Mail/"
+set spoolfile="+inbox"
 set followup_to=yes
 set force_name=no
 set forward_edit=yes
@@ -98,8 +98,9 @@ set index_format="%4C %Z %[!%d.%m.%y] %-20.20F (%4c) %s"
 set keep_flagged=no
 set markers=no
 set mask="!^\\.[^.]"
-set mark_old=no
+set mark_old=yes
 #set mbox=$HOME/.mail/received-`date +"%Y.%m"`
+set mbox=$HOME/Mail/inbox/
 set mbox_type=Maildir
 set metoo=no
 set menu_scroll=yes
@@ -170,16 +171,14 @@ set write_inc=10
 set write_bcc=no
 set sendmail_wait=10
 #set list_reply=ask-yes
-set assumed_charset="cp1251:koi8-u:utf-8"
-
-#IMAP
-#set spoolfile=imap://piranha@piranha.org.ua@localhost/
-#set folder=imap://piranha@piranha.org.ua@localhost/
-#set imap_mail_check=5
-#set imap_authenticators="crypt"
+set assumed_charset="utf-8:cp1251:koi8-u"
+set signature='~/.signature'
+set folder_format='%2C %t %N %8s   %d   %f'
+#set header_cache='~/.mutt-cache'
 
 #mailboxes ! `~/bin/mailboxes.sh`
-mailboxes `echo -n "+ ";find ~/.mail -type d -name ".*" -printf "+'%f' "`
+#mailboxes `echo -n "+ ";find ~/Mail/ -type d -name ".*" -printf "+'%f' "`
+mailboxes `find ~/Mail/ -maxdepth 1 -mindepth 1 -type d -name '*' -printf "=%f "`
 
 set default_hook="~f %s !~P | (~P ~C %s)"
 
@@ -192,13 +191,12 @@ folder-hook 'trash' set sort=date-received
 #fcc-hook piranha@.* =piranha
 #fcc-hook anime_kpi@yahoogroups\.com =anime_kpi
 #fcc-hook talk@news\.ntu-kpi\.kiev\.ua =news-talk
-fcc-hook . +.sent.`date +"%Y.%m"`
+fcc-hook . +sent-mail.`date "+%Y.%m"`
 
 #send-hook . "set signature='~/bin/sig_random.sh |'"
-send-hook . "set signature='~/.signature'"
+#send-hook . "set signature='~/.signature'"
 send-hook . "set attribution='Hi, %n. You wrote:\n'"
-send-hook . "my_hdr From: Alexander Solovyov <piranha@eth0.net.ua>"
-#send-hook . "my_hdr From: Achtung Killer <achtung.killer@gmail.com>"
+send-hook . "my_hdr From: Alexander Solovyov <piranha@piranha.org.ua>"
 send-hook django-developers@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 send-hook pythagora-ua@googlegroups.com "my_hdr From: Alexander Solovyov <alexander.solovyov@gmail.com>"
 
