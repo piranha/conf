@@ -21,10 +21,7 @@ limit -s
 
 umask 022
 
-export PATH=~/bin:/opt/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
-if [ -x /usr/libexec/path_helper ]; then
-    eval `/usr/libexec/path_helper -s`
-fi
+export PATH=~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 export PAGER="less"
 if [ -x "`whence -c vim`" ]; then
@@ -33,8 +30,9 @@ else
     export EDITOR="vi"
 fi
 export BROWSER="links"
-export LESS="FRQX"
+export LESS="FRQXi"
 export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
+export PIP_RESPECT_VIRTUALENV=true
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then
@@ -45,13 +43,11 @@ fi
 # 0-black, 1-red, 2-green, 3-yellow, 4-blue, 5-magenta 6-cyan, 7-white
 Cr() { echo '%{\033[3'$1'm%}'; }
 hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 2`
-[ $UID = 0 ] && at=$r%B'#'%b || at=$w'@'
-err="%(?..$r%B%?%b )"
+[ $UID = 0 ] && at=$r%B'#'%b || at='@'
 #PS1="$wc%n$at$hc%m $err$wc%~$w>$n"
 # for white background
 wc=`Cr 4`
-PS1="$wc%n$n@$wc%m $err$wc%~>$n "
-#export RPROMPT=$(echo "$gr%T$n")
+PS1="$wc%n$n$at$wc%m $err$wc%~>$n "
 unset n b Cr uc hc wc tc tty at r y gr
 
 # make ls looks nice
@@ -67,7 +63,7 @@ typeset -U path cdpath fpath manpath
 
 # History
 HISTFILE=~/.zhistory
-HISTSIZE=5000
+HISTSIZE=10000
 SAVEHIST=10000
 setopt append_history
 setopt extended_history
@@ -151,18 +147,22 @@ compctl -g '*.wav' auCDtect
 compctl -g '*.fb2 *.fb2.zip' FBReader
 
 autoload -U compinit
-compinit -i
+if [ $UID -eq 0 ]; then
+    compinit -i -d ~/.zrootcompdump
+else
+    compinit -i
+fi
 
 # xterm header
 case $TERM in
 xterm*|rxvt*)
     precmd () {
-        print -Pn "\033]0;%n@%M (%y) - %/\a"
-        print -Pn "\033]1;%n@%m (tty%l)\a"
+        print -Pn "\033]0;%n@%M - %/\a"
+        print -Pn "\033]1;%n@%m \a"
     }
     preexec () {
-        print -Pn "\033]0;%n@%M (%y) - %/ - ($1)\a"
-        print -Pn "\033]1;%n@%m (tty%l)\a"
+        print -Pn "\033]0;%n@%M - %/ - ($1)\a"
+        print -Pn "\033]1;%n@%m \a"
     }
 ;;
 screen)
@@ -208,7 +208,7 @@ function apt-show()
 }
 
 # tail -f, possibly colorized
-function t()
+function t() # f == follow
 {
     if [ -x "`whence -c ccze`" ]; then
         tail -f $1 | ccze -A
@@ -248,7 +248,7 @@ function myeditor {
 }
 
 function gkill {
-    awk '{print $2}'|xargs kill
+    awk '{print $2}'|xargs kill ${@}
 }
 
 # sorted du -sh
@@ -340,9 +340,13 @@ alias rezsh="source ~/.zshrc"
 alias cal="cal -m"
 alias apt="noglob sudo apt-get"
 alias wa="wajig"
-alias s="sudo"
+alias s="mdfind -name"
+alias ri="ri -f ansi"
+alias -g E="2>&1"
+function b() { t --task-dir $(hg root) --list bugs $@ }
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
+function hgrc() { vim $(hg root)/.hg/hgrc }
 function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
 alias psc="ps -C"
