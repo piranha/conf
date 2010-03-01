@@ -4,11 +4,12 @@
 username = Alexander Solovyov <piranha@piranha.org.ua>
 ignore = ~/.hgignore
 ssh = ssh -C
+merge = internal:merge
 
 [hooks]
 #commit.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
 #changegroup.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
-#pretxncommit.whitespace = hg export tip | (! egrep -q '^\+.*[ \t]$')
+#pretxncommit.whitespace = hg export tip | (! egrep -q '^\+.*[[:space:]]$')
 
 [merge-tools]
 p4.priority = 60
@@ -22,30 +23,33 @@ p4.binary = False
 cmd.opendiff = opendiff-w
 
 [defaults]
-churn = --aliases /home/piranha/.churnaliases
-activity = --aliases /home/piranha/.churnaliases
-qrefresh = -D
-qnew = -U
+churn = --aliases ~/.churnaliases
+activity = --aliases ~/.churnaliases
+#qrefresh = -D
+qseries = -s
 
 [extensions]
-hgk=
+progress=
 patchbomb=
 mq=
 graphlog=
+churn=
 color=
 children=
-churn=
 pager=
 parentrevspec=
 purge=
 record=
 rebase=
-zeroconf=
+#zeroconf=
 bookmarks=
 extdiff=
 inotify=!
 convert=
 share=
+transplant=
+relink=
+schemes=
 
 perf=~/dev/hg/hg/contrib/perf.py
 hgsubversion=~/dev/hg/hgsubversion/hgsubversion
@@ -55,15 +59,18 @@ qup=~/dev/hg/qup.py
 #fastimport=~/dev/hg/hg-fastimport/fastimport
 rdiff=~/dev/hg/rdiff/rdiff.py
 #pbranch=~/dev/hg/hgext/pbranch.py
-schemes=~/dev/hg/schemes/schemes.py
 hgactivity=~/dev/hg/hgactivity/activity.py
 #index=~/dev/hg/indexes-extension/indexes/
 qimprovements=~/dev/hg/qimprovements/qimprovements.py
 #tasks = ~/dev/hg/hgtasks/hgext/tasks.py
-hg-git = ~/dev/hg/hg-git/
+hg-git = ~/dev/hg/hg-git/hggit/
 histedit = ~/dev/hg/histedit/
 speed = ~/dev/hg/speed/speed.py
-hgkeychain=
+#hgkeychain=
+branchspec = ~/dev/hg/branchspec/branchspec.py
+extrevspec = ~/dev/hg/extrevspec/extrevspec.py
+artemis = ~/dev/hg/artemis/artemis.py
+hg-review = ~/dev/hg/hg-review/review/
 
 [diff]
 git = True
@@ -82,9 +89,10 @@ track.current = True
 method = sendmail
 
 [pager] # with export LESS="FRQX"
-attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog
+attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, cat, .
 
 [alias]
+slog = log --template '{rev}:{node|short} {desc|firstline} ({date|shortdate} by {author|person})\t{tags}\n' -l 10
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
 dlog = log --template '{date|shortdate} [{rev}:{node|short}] {diffstat} {author|person}: {desc|firstline}\n' -l 10
 flog = log --template '{date|shortdate} [{rev}:{node|short}] {size} {author|person}: {desc|firstline}\n' -l 10
@@ -92,14 +100,21 @@ wlog = log --style compact -l 10
 sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sglog = glog --style compact -l 10
+sglog = glog --style concise -l 10
 zlog = glog --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
 #sg = glog --template '[{rev}:{node|short}] by {author|person} ({date|isodate})\n{desc|firstline|fill68}\n\n' -l 8
 p = log -v --style=compact -p -r
+nudge = push --rev .
+sqr = summary -q --remote
+. = slog -f -r .:null
+, = sglog
+qnew = qnew -D -U
 
 [schemes]
 p = ssh://piranha.org.ua/hg/
 p+http = http://hg.piranha.org.ua/
+s = ssh://sapientisat.org/
+w = file:~/dev/web/
 
 [tasks]
 auto.track.new = True
