@@ -343,11 +343,12 @@ alias wa="wajig"
 alias s="mdfind -name"
 alias ri="ri -f ansi"
 alias -g E="2>&1"
-function b() { t --task-dir $(hg root) --list bugs $@ }
+alias rcp="rsync -av -P -e ssh"
+alias clive="noglob clive"
+
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
 function hgrc() { vim $(hg root)/.hg/hgrc }
-function tran() { sdcv -u 'Universal (Ru-En)' -u 'LingvoUniversal (En-Ru)' $1 | sed "s/&apos;\|'//g" }
 
 alias psc="ps -C"
 alias psfg="ps -ylfC"
