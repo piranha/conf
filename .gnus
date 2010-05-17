@@ -42,8 +42,10 @@
 ;; auto word-wrap
 (add-hook 'message-mode-hook
 	(lambda ()
-    (setq fill-column 72)
-		(turn-on-auto-fill)))
+      (setq fill-column 72)
+      (turn-on-auto-fill)))
+
+(add-hook 'message-mode-hook 'turn-on-orgstruct++)
 
 ;; remove thouse ugly red line endings
 (defun disable-trailing-whitespace ()
@@ -72,7 +74,7 @@
   ;; split long outgoing mail
 ;  message-send-mail-partially-limit 380000
   ;; highlight only good signatures
-  gnus-signature-separator "^-- $"
+  gnus-signature-separator "^-- |______+$"
   ;; don't insert Cancel-Lock
   message-insert-canlock nil
 )
@@ -83,8 +85,11 @@
   user-full-name "Alexander Solovyov"
   user-mail-address "piranha@piranha.org.ua"
   message-alternative-emails
-  (regexp-opt '("asolovyov@rainboo.com" "alexander.solovyov@gmail.com"))
+  (regexp-opt '("asolovyov@rainboo.com" "alexander.solovyov@gmail.com" "alexander.solovyov@willowcode.com"))
 )
+
+;; Send mail via sendmail
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
 
 ;; Send mail via SMTP
 ;(setq
@@ -134,7 +139,7 @@
 ;; News
 ;;;;;;;
 
-(setq gnus-select-method '(nntp "news.ntu-kpi.kiev.ua"))
+(setq gnus-select-method  '(nntp "news.ntu-kpi.kiev.ua"))
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 ;(setq gnus-select-method '(nnnil ""))
@@ -351,30 +356,36 @@
 ;; BBDB
 ;;;;;;;
 
+(when (file-directory-p "~/var/bbdb/lisp")
+  (add-to-list 'load-path "~/var/bbdb/lisp"))
+
 (autoload 'bbdb-initialize "bbdb-autoloads")
 ;(require 'bbdb-autoloads)
 ;(require 'bbdb)
 ;(require 'bbdb-com)
 (bbdb-initialize 'gnus 'message)
 
+(add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
 ;; complete names in To:
 (add-hook 'message-mode-hook
           (function (lambda()
                       (local-set-key (kbd "<tab>") 'bbdb-complete-name))))
 
-;(setq
-;  ;; allow cycling when completing already complete addresses
-;  bbdb-complete-name-allow-cycling t
-;  ;; see C-h, v for description
-;;  bbdb-canonicalize-redundant-nets-p t
-;  ;; save db wo/asking
-;  bbdb-offer-save 1
-;  ;; display layout
-;  bbdb-display-layout 'multi-line
-;  ;; number of lines in pop-up bbdb window
-;  bbdb-pop-up-target-lines 2
-;  ;; C-h, v
-;  bbdb-north-american-phone-numbers-p nil)
+(setq
+ ;; allow cycling when completing already complete addresses
+ bbdb-complete-name-allow-cycling t
+ bbdb-canonicalize-redundant-nets-p t
+ ;; save db wo/asking
+; bbdb-offer-save 1
+ ;; display layout
+ bbdb-display-layout 'multi-line
+ ;; number of lines in pop-up bbdb window
+ bbdb-pop-up-target-lines 2
+ bbdb-north-american-phone-numbers-p nil
+ bbdb-default-country "Ukraine")
+
+
 
 ;;* Gnus soll im Article View eine dreigeteilte Ansicht haben:
 ;;* |----------------------------|
