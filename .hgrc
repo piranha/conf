@@ -22,12 +22,6 @@ p4.binary = False
 [extdiff]
 cmd.opendiff = opendiff-w
 
-[defaults]
-churn = --aliases ~/.churnaliases
-activity = --aliases ~/.churnaliases
-#qrefresh = -D
-qseries = -s
-
 [extensions]
 progress=
 patchbomb=
@@ -41,7 +35,7 @@ parentrevspec=
 purge=
 record=
 rebase=
-#zeroconf=
+zeroconf=
 bookmarks=
 extdiff=
 inotify=!
@@ -51,12 +45,12 @@ transplant=
 relink=
 schemes=
 
+shrink=~/dev/hg/hg/contrib/shrink-revlog.py
 perf=~/dev/hg/hg/contrib/perf.py
 hgsubversion=~/dev/hg/hgsubversion/hgsubversion
 attic=~/dev/hg/hgattic/attic.py
 crecord=~/dev/hg/crecord/crecord/
 qup=~/dev/hg/qup.py
-#fastimport=~/dev/hg/hg-fastimport/fastimport
 rdiff=~/dev/hg/rdiff/rdiff.py
 #pbranch=~/dev/hg/hgext/pbranch.py
 hgactivity=~/dev/hg/hgactivity/activity.py
@@ -65,12 +59,8 @@ qimprovements=~/dev/hg/qimprovements/qimprovements.py
 #tasks = ~/dev/hg/hgtasks/hgext/tasks.py
 hg-git = ~/dev/hg/hg-git/hggit/
 histedit = ~/dev/hg/histedit/
-speed = ~/dev/hg/speed/speed.py
 #hgkeychain=
-branchspec = ~/dev/hg/branchspec/branchspec.py
-extrevspec = ~/dev/hg/extrevspec/extrevspec.py
 artemis = ~/dev/hg/artemis/artemis.py
-hg-review = ~/dev/hg/hg-review/review/
 
 [diff]
 git = True
@@ -89,7 +79,7 @@ track.current = True
 method = sendmail
 
 [pager] # with export LESS="FRQX"
-attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, cat, .
+attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, cat, ., /
 
 [alias]
 slog = log --template '{rev}:{node|short} {desc|firstline} ({date|shortdate} by {author|person})\t{tags}\n' -l 10
@@ -107,8 +97,12 @@ p = log -v --style=compact -p -r
 nudge = push --rev .
 sqr = summary -q --remote
 . = slog -f -r .:null
-, = sglog
+/ = sglog
 qnew = qnew -D -U
+qseries = qseries -s
+cm = ci -m
+churn = churn --aliases ~/.churnaliases
+activity = activity --aliases ~/.churnaliases
 
 [schemes]
 p = ssh://piranha.org.ua/hg/
