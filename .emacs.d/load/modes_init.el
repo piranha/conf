@@ -29,7 +29,7 @@
 (if (fboundp 'blink-cursor-mode)
   (blink-cursor-mode -1))
 
-;; It's rare, but annoying
+;; It's annoying
 (if (fboundp 'global-semantic-stickyfunc-mode)
     (global-semantic-stickyfunc-mode -1))
 
@@ -43,19 +43,17 @@
 ;; IDO, you are very nice
 (ido-mode 1)
 (setq
- ido-enable-flex-matching 1
+ ido-enable-flex-matching t
  ido-show-dot-for-dired t
  ido-auto-merge-work-directories-length -1 ; disable auto-merging
  ido-confirm-unique-completion t)
 
 (winner-mode 1) ;; window configuration undo/redo
+(require 'pointback)
+(global-pointback-mode)
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
-
-(add-hook 'isearch-mode-end-hook
-          (lambda ()
-            (when isearch-forward (goto-char isearch-other-end))))
 
 ;; saving place in file
 (require 'saveplace)
@@ -71,7 +69,6 @@
 (autoload 'io-mode "io-mode" "Major mode for editing Io sources" t)
 (autoload 'yaml-mode "yaml-mode" nil t)
 (autoload 'lua-mode "lua-mode" nil t)
-(load "fuel/fu" t)
 
 (require 'whitespace)
 (setq whitespace-style '(lines-tail trailing))
@@ -86,9 +83,9 @@
         erlang-mode-hook
         haskell-mode-hook
         python-mode-hook
-        lua-mode-hook))
+        lua-mode-hook
+        coffee-mode-hook))
 (dolist (hook hooks-with-whitespaces) (add-hook hook 'whitespace-mode))
-
 
 (setq hooks-want-short-lines
       '(markdown-mode-hook
@@ -112,19 +109,15 @@
         '("\\.lua\\'" . lua-mode))
         auto-mode-alist))
 
-(setq fuel-listener-factor-binary "~/bin/factor")
-(setq fuel-listener-factor-image "~/dev/misc/factor/factor.image")
+(ignore-errors (load-file "~/var/factor/misc/fuel/fu1.el"))
+(setq fuel-listener-factor-binary "~/var/factor/factor")
+(setq fuel-listener-factor-image "~/var/factor/factor.image")
 (eval-after-load "comint"
   '(progn
      (define-key comint-mode-map (kbd "C-M-l")
        (fun-for-bind switch-to-buffer (other-buffer)))))
 
 (setq w3m-use-cookies t)
-
-(when nix
-  (setq browse-url-browser-function 'browse-url-firefox
-        browse-url-new-window-flag  t
-        browse-url-firefox-new-window-is-tab t))
 
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
@@ -134,53 +127,39 @@
 
 (eval-after-load "django-html-mode"
   '(progn
-     (define-key django-html-mode-map "\C-c]" 'django-close-tag)))
+     (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)))
 
 (eval-after-load "python"
   '(progn
-     (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)
+     (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)))
 
-     (when (file-executable-p "/opt/local/bin/python")
-       (setq python-python-command "/opt/local/bin/python")
-       (setenv "PYMACS_PYTHON" "/opt/local/bin/python"))
-
-     (when (require 'pymacs nil t)
-       (pymacs-load "ropemacs" "rope-")
-       (define-key ropemacs-local-keymap (kbd "M-/") 'dabbrev-expand)
-       (defun rope-reload ()
-         (interactive)
-         (pymacs-terminate-services)
-         (pymacs-load "ropemacs" "rope-")))))
+(add-hook 'python-mode-hook (lambda () (setq imenu-create-index-function
+                                        'python-imenu-create-index)))
 
 ;;;;;;;;;;
 ;; Flymake
 ;;;;;;;;;;
 
-(defun find-executable (path fallback)
-  (if (file-executable-p path)
-      path
-    fallback))
-
 (when (load "flymake" t)
-  (setq pyflakes-exe (find-executable "/opt/local/bin/pyflakes" "pyflakes"))
-  (setq luac-exe (find-executable "/opt/local/bin/luac" "luac"))
-
   (defun flymake-pyflakes-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list pyflakes-exe (list local-file))))
+    ;; Make sure it's not a remote buffer or flymake would not work
+    (when (not (member (current-buffer) (tramp-list-remote-buffers)))
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list "pyflakes" (list local-file)))))
 
   (defun flymake-lua-init ()
     "Invoke luac with '-p' to get syntax checking"
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list luac-exe (list "-p" local-file))))
+    (when (not (member (current-buffer) (tramp-list-remote-buffers)))
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list "luac" (list "-p" local-file)))))
 
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init))
@@ -204,36 +183,24 @@
 (defvaralias 'lua-indent-level 'tab-width)
 (add-hook 'lua-mode-hook (lambda () (setq indent-tabs-mode t)))
 
-;; Erlang
+;; Ruby
 
-(when (file-directory-p "~/var/distel/elisp")
-  (add-to-list 'load-path "~/var/distel/elisp"))
-(autoload 'distel-setup "distel" nil t)
-
-(defconst distel-shell-keys
-  '(("\C-\M-i"   erl-complete)
-    ("\M-?"      dabbrev-expand)
-    ("\M-/"      dabbrev-expand)
-    ("\M-."      erl-find-source-under-point)
-    ("\M-,"      erl-find-source-unwind)
-    ("\M-*"      erl-find-source-unwind)
-    )
-  "Additional keys to bind when in Erlang shell.")
-
-(eval-after-load "erlang"
+(eval-after-load "ruby-mode"
   '(progn
-     (distel-setup)
-     (define-key erlang-extended-mode-map (kbd "RET") 'newline-maybe-indent)
-     (define-key erlang-extended-mode-map (kbd "M-/") 'dabbrev-expand)
-     (add-hook 'erlang-shell-mode-hook
-               (lambda ()
-                 ;; add some Distel bindings to the Erlang shell
-                 (dolist (spec distel-shell-keys)
-                   (define-key erlang-shell-mode-map (car spec) (cadr spec)))))
-     (add-hook 'erlang-mode-hook
-               (lambda ()
-                 ;; when starting an Erlang shell in Emacs, default in the node name
-                 (setq inferior-erlang-machine-options '("-sname" "emacs"))))))
+     (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)))
+
+;; Javascript
+
+(eval-after-load "js-mode"
+  '(progn
+     (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
+
+;; Coffee
+
+(autoload 'coffee-mode "coffee-mode" "" t)
+(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
+(add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
+(setq coffee-js-mode 'javascript-mode)
 
 ;; Snippets
 
@@ -262,12 +229,15 @@
                 emacs-lisp-mode-hook))
   (add-hook hook 'highlight-parentheses-mode))
 
-;; aHg
+;; version control/projects
 
 (require 'ahg nil t)
 (setq ahg-global-key-prefix (kbd "C-c h"))
 
+(require 'egg "egg/egg.el" t)
+
 (require 'project-root)
+(autoload 'ack "ack" "" t)
 
 (setq project-roots
       `(("Django project"
@@ -277,35 +247,49 @@
         ("Mercurial"
          :root-contains-files ("hg" "hgeditor")
          :filename-regex ,(regexify-ext-list '(py tmpl))
-         :exclude-paths '("tests"))
-        ("Sphinx project"
+         :exclude-paths '("tests" "build"))
+        ("Sphinx documentation"
          :root-contains-files ("Makefile" "conf.py")
          :filename-regex ,(regexify-ext-list '(py rst))
          :exclude-paths '("_build"))
+        ("Python project with buildout"
+         :root-contains-files ("../../buildout.cfg")
+         :filename-regex ,(regexify-ext-list '(py)))
         ("Generic Python project"
          :root-contains-files ("setup.py")
-         :filename-regex ,(regexify-ext-list '(py)))))
+         :filename-regex ,(regexify-ext-list '(py)))
+        ("Ruby web project"
+         :root-contains-files ("config.ru")
+         :filename-regex ,(regexify-ext-list '(rb ru haml erb css js)))
+        ("Cyrax site"
+         :root-contains-files ("index.html" "settings.cfg")
+         :filename-regex ,(regexify-ext-list '(html js css cfg))
+         :exlude-paths '("_build"))
+        ("Generic Mercurial project"
+         :root-contains-files (".hg"))
+        ("Generic git project"
+         :root-contains-files (".git"))))
 
 (global-set-key (kbd "C-c p f") 'project-root-find-file)
 (global-set-key (kbd "C-c p g") 'project-root-grep)
 (global-set-key (kbd "C-c p a") 'project-root-ack)
 (global-set-key (kbd "C-c p d") 'project-root-goto-root)
+(global-set-key (kbd "C-c p l") 'project-root-browse-seen-projects)
+(global-set-key (kbd "C-c p b") 'project-root-switch-buffer)
 
 ;; mail
 
 (autoload 'post-mode "post" nil t)
-(add-to-list 'auto-mode-alist
-             '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$"
-               . post-mode))
+(add-to-list 'auto-mode-alist '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . post-mode))
+(add-to-list 'auto-mode-alist '("\\.*mutt-\\.*" . post-mode))
 (setq post-emoticon-pattern nil
       post-news-poster-regexp "^Exceprts from .* of .*:$")
 
 ;; smex
 
-(require 'smex nil t)
-
-(if (fboundp 'smex)
+(if (require 'smex nil t)
     (progn
+      (setq smex-save-file "~/.emacs.d/smex.save")
       (smex-initialize)
       (smex-auto-update)
       (global-set-key (kbd "M-x") 'smex)
@@ -319,3 +303,12 @@
 (autoload 'sudo-find-file "sudo" "" t)
 (global-set-key (kbd "C-x M-s") 'sudo-unset-ro-or-save)
 (global-set-key (kbd "C-x M-f") 'sudo-find-file)
+
+;; elisp
+(defun lambda-elisp-mode-hook ()
+  (font-lock-add-keywords
+   nil `(("\\<lambda\\>"
+          (0 (progn (compose-region (match-beginning 0) (match-end 0)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+(add-hook 'emacs-lisp-mode-hook 'lambda-elisp-mode-hook)

@@ -25,10 +25,12 @@
 (global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
 (global-set-key (kbd "C-a") 'dev-studio-beginning-of-line)
 (global-set-key (kbd "<home>") 'dev-studio-beginning-of-line)
+(global-set-key (kbd "M-j") 'org-footnote-action)
 
 (global-set-key (kbd "M-Y") (lambda (&optional arg)
                               (interactive "*p")
                               (yank-pop (- arg))))
+
 (autoload 'kill-ring-search "kill-ring-search"
   "Search the kill ring in the minibuffer."
   (interactive))
@@ -51,3 +53,22 @@
                       (fun-for-bind w32-send-sys-command #xf030 nil))
       (global-set-key (kbd "C-<f11>") ; restore original size
                       (fun-for-bind w32-send-sys-command #xf120 nil))))
+
+(autoload 'piu "piu" "paste buffer or region")
+(global-set-key (kbd "C-x p") 'piu)
+
+(autoload 'nosetests-all "nosemacs/nose" "" t)
+(autoload 'nosetests-module "nosemacs/nose" "" t)
+(autoload 'nosetests-one "nosemacs/nose" "" t)
+(setq nose-use-verbose nil)
+(add-hook 'python-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c t") 'nosetests-all)
+            (local-set-key (kbd "C-c m") 'nosetests-module)
+            (local-set-key (kbd "C-c .") 'nosetests-one)))
+
+(if (fboundp 'ns-toggle-fullscreen)
+    (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen))
+
+(autoload 'iedit-mode "iedit" "" t)
+(global-set-key (kbd "C-;") 'iedit-mode)

@@ -13,7 +13,7 @@
 (defun insert-standard-date ()
   "Inserts standard date time string."
   (interactive)
-  (insert (format-time-string "%c")))
+  (insert (format-time-string "%F %T")))
 
 (defun whole-line ()
   "Returns list of two values - beginning of this line
@@ -160,65 +160,54 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
   (interactive "p")
   (if (and (looking-at "^") (= arg 1)) (skip-chars-forward " \t") (move-beginning-of-line arg)))
 
-
-(defvar django-closable-tags
-  '("for" "block" "comment" "filter" "ifchanged" "ifequal"
-    "ifnotequal" "spaceless" "if" "pyif" "with"))
-
-(defvar django-tag-re
-  (concat "{%\\s *\\(end\\)?\\("
-          (mapconcat 'identity django-closable-tags "\\|")
-          "\\)[^%]*%}"))
-
-(defun django-find-open-tag ()
-  (if (search-backward-regexp django-tag-re nil t)
-      (if (match-string 1) ; If it's an end tag
-          (if (not (string= (match-string 2) (django-find-open-tag)))
-              (error "Unmatched Django tag")
-            (django-find-open-tag))
-        (match-string 2)) ; Otherwise, return the match
-    nil))
-
-(defun django-close-tag ()
-  (interactive)
-  (let ((open-tag (save-excursion (django-find-open-tag))))
-    (if open-tag
-        (insert "{% end" open-tag " %}")
-      (error "Nothing to close"))))
-
 (setq imenu-auto-rescan t)
-(defun ido-goto-symbol ()
-  "Will update the imenu index and then use ido to select a
-   symbol to navigate to"
+(defun ido-goto-symbol (&optional symbol-list)
+  "Refresh imenu and jump to a place in the buffer using Ido."
   (interactive)
-  (imenu--make-index-alist)
-  (let ((name-and-pos '())
-        (symbol-names '()))
-    (flet ((addsymbols
-            (symbol-list)
-            (when (listp symbol-list)
-              (dolist (symbol symbol-list)
-                (let ((name nil) (position nil))
-                  (cond
-                   ((and (listp symbol) (imenu--subalist-p symbol))
-                    (addsymbols symbol))
-
-                   ((listp symbol)
-                    (setq name (car symbol))
-                    (setq position (cdr symbol)))
-
-                   ((stringp symbol)
-                    (setq name symbol)
-                    (setq position (get-text-property
-                                    1 'org-imenu-marker symbol))))
-
-                  (unless (or (null position) (null name))
-                    (add-to-list 'symbol-names name)
-                    (add-to-list 'name-and-pos (cons name position))))))))
-      (addsymbols imenu--index-alist))
-    (let* ((selected-symbol (ido-completing-read "Symbol: " symbol-names))
-           (position (cdr (assoc selected-symbol name-and-pos))))
-      (goto-char position))))
+  (unless (featurep 'imenu)
+    (require 'imenu nil t))
+  (cond
+   ((not symbol-list)
+    (let ((ido-mode ido-mode)
+          (ido-enable-flex-matching
+           (if (boundp 'ido-enable-flex-matching)
+               ido-enable-flex-matching t))
+          name-and-pos symbol-names position)
+      (unless ido-mode
+        (ido-mode 1)
+        (setq ido-enable-flex-matching t))
+      (while (progn
+               (imenu--cleanup)
+               (setq imenu--index-alist nil)
+               (ido-goto-symbol (imenu--make-index-alist))
+               (setq selected-symbol
+                     (ido-completing-read "Symbol? " symbol-names))
+               (string= (car imenu--rescan-item) selected-symbol)))
+      (unless (and (boundp 'mark-active) mark-active)
+        (push-mark nil t nil))
+      (setq position (cdr (assoc selected-symbol name-and-pos)))
+      (cond
+       ((overlayp position)
+        (goto-char (overlay-start position)))
+       (t
+        (goto-char position)))))
+   ((listp symbol-list)
+    (dolist (symbol symbol-list)
+      (let (name position)
+        (cond
+         ((and (listp symbol) (imenu--subalist-p symbol))
+          (ido-goto-symbol symbol))
+         ((listp symbol)
+          (setq name (car symbol))
+          (setq position (cdr symbol)))
+         ((stringp symbol)
+          (setq name symbol)
+          (setq position
+                (get-text-property 1 'org-imenu-marker symbol))))
+        (unless (or (null position) (null name)
+                    (string= (car imenu--rescan-item) name))
+          (add-to-list 'symbol-names name)
+          (add-to-list 'name-and-pos (cons name position))))))))
 
 (defun toggle-current-window-dedication ()
   (interactive)
@@ -235,3 +224,21 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
   (if (= (line-beginning-position) (line-end-position))
       (newline)
     (newline-and-indent)))
+
+(defun djcb-snip (b e summ)
+  "remove selected lines, and replace it with [snip:summary (n lines)]"
+  (interactive "r\nsSummary:")
+  (let ((n (count-lines b e)))
+    (delete-region b e)
+    (insert (format "[snip%s (%d line%s)]"
+                    (if (= 0 (length summ)) "" (concat ": " summ))
+                    n
+                    (if (= 1 n) "" "s")))))
+
+(defun time-to-number (time)
+  "Convert time from format 9:30 to number"
+  (let ((time (if (string-match ":" time)
+                  (mapcar 'string-to-number (split-string time ":"))
+                `(,(string-to-number time) 0))))
+    (+ (car time) (/ (float (cadr time)) 60))))
+
