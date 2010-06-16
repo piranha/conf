@@ -140,10 +140,15 @@
 ;; Flymake
 ;;;;;;;;;;
 
+(defun buffer-is-local ()
+  (if (fboundp 'tramp-list-remote-buffers)
+      (not (member (current-buffer) (tramp-list-remote-buffers)))
+    t))
+
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
     ;; Make sure it's not a remote buffer or flymake would not work
-    (when (not (member (current-buffer) (tramp-list-remote-buffers)))
+    (when (buffer-is-local)
       (let* ((temp-file (flymake-init-create-temp-buffer-copy
                          'flymake-create-temp-inplace))
              (local-file (file-relative-name
@@ -153,7 +158,7 @@
 
   (defun flymake-lua-init ()
     "Invoke luac with '-p' to get syntax checking"
-    (when (not (member (current-buffer) (tramp-list-remote-buffers)))
+    (when (buffer-is-local)
       (let* ((temp-file (flymake-init-create-temp-buffer-copy
                          'flymake-create-temp-inplace))
              (local-file (file-relative-name

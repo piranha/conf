@@ -6,7 +6,9 @@
   ;; If there is more than one, they won't work right.
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
- '(org-agenda-files (quote ("~/dev/work/djoint.org" "~/org/timesheet.org" "~/org/life.org")))
+ '(org-agenda-files (quote ("~/org/timesheet.org" "~/org/life.org" "~/dev/work/core2.org")))
+ '(safe-local-variable-values (quote ((folded-file . t) (test-case-name . openid\.test\.test_consumer) (encoding . utf-8) (prompt-to-byte-compile))))
+ '(semantic-default-submodes (quote (global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
  '(vc-handled-backends nil))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
