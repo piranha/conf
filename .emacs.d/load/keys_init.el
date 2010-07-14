@@ -41,6 +41,7 @@
 (global-set-key (kbd "<f11>") 'jabber-activity-switch-to)
 
 ;; windows
+(global-set-key (kbd "M-`") 'other-frame)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-1") 'delete-other-windows)
 (global-set-key (kbd "M-2") 'split-window-vertically)
@@ -57,15 +58,19 @@
 (autoload 'piu "piu" "paste buffer or region")
 (global-set-key (kbd "C-x p") 'piu)
 
-(autoload 'nosetests-all "nosemacs/nose" "" t)
-(autoload 'nosetests-module "nosemacs/nose" "" t)
-(autoload 'nosetests-one "nosemacs/nose" "" t)
+(dolist (nose-func '(nosetests-all nosetests-module nosetests-one
+                     nosetests-pdb-all nosetests-pdb-module nosetests-pdb-one))
+  (autoload nose-func "nosemacs/nose" "" t))
 (setq nose-use-verbose nil)
+
 (add-hook 'python-mode-hook
           (lambda ()
             (local-set-key (kbd "C-c t") 'nosetests-all)
             (local-set-key (kbd "C-c m") 'nosetests-module)
-            (local-set-key (kbd "C-c .") 'nosetests-one)))
+            (local-set-key (kbd "C-c .") 'nosetests-one)
+            (local-set-key (kbd "C-c p t") 'nosetests-pdb-all)
+            (local-set-key (kbd "C-c p m") 'nosetests-pdb-module)
+            (local-set-key (kbd "C-c p .") 'nosetests-pdb-one)))
 
 (if (fboundp 'ns-toggle-fullscreen)
     (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen))
