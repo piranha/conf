@@ -12,7 +12,7 @@ export LANG=en_US.UTF-8
 export LC_TIME=C
 export LC_NUMERIC=C
 
-stty pass8
+[[ $TERM = "xterm" ]] && stty pass8
 
 unlimit
 limit stack 8192
@@ -102,7 +102,7 @@ autoload -U zmv
 # load on reference
 zmodload -a zsh/zpty zpty
 
-# press esc-e for editing command line in $EDITOR or $VISUAL
+# press meta-e for editing command line in $EDITOR or $VISUAL
 autoload -U edit-command-line
 zle -N edit-command-line
 bindkey '\ee' edit-command-line
@@ -342,9 +342,10 @@ alias apt="noglob sudo apt-get"
 alias wa="wajig"
 alias s="mdfind -name"
 alias ri="ri -f ansi"
-alias -g E="2>&1"
+alias -g E='2>&1'
 alias rcp="rsync -av -P -e ssh"
 alias clive="noglob clive"
+alias preview='groff -Tps | open -f -a Preview'
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
@@ -355,4 +356,4 @@ alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
 
 # for emacs' tramp
-[ $TERM = "dumb" ] && unsetopt zle && PS1='$ ' && unalias ls || return 0
+[[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls || return 0
