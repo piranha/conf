@@ -24,6 +24,13 @@
   '(define-key dired-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "dired")))
 
 (column-number-mode 1)
+(show-paren-mode 1)
+(global-subword-mode 1)
+
+;; store recent files list
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key (kbd "C-c C-r") 'recentf-open-files)
 
 ;; I hate blinking
 (if (fboundp 'blink-cursor-mode)
@@ -37,8 +44,6 @@
 (transient-mark-mode 1)
 ;; but work even without it
 (setq mark-even-if-inactive t)
-
-(show-paren-mode 1)
 
 ;; IDO, you are very nice
 (ido-mode 1)
@@ -199,6 +204,7 @@
 (eval-after-load "js-mode"
   '(progn
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
+(autoload 'js2-mode "js2" nil t)
 
 ;; Coffee
 
@@ -206,6 +212,8 @@
 (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
 (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
 (setq coffee-js-mode 'javascript-mode)
+(eval-after-load "coffee-mode"
+  '(define-key coffee-mode-map (kbd "RET") 'newline-maybe-indent))
 
 ;; Snippets
 

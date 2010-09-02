@@ -21,6 +21,7 @@
 
 (setq
  inhibit-startup-message t           ;; don't show annoing startup msg
+ initial-scratch-message nil
  make-backup-files nil               ;; NO annoing backups
  vc-follow-symlinks t                ;; follow symlinks and don't ask
  echo-keystrokes 0.01                ;; see what you type
