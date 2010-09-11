@@ -21,6 +21,8 @@ p4.binary = False
 
 [extdiff]
 cmd.opendiff = opendiff-w
+cmd.ksdiff = ksdiff-wrapper
+opts.ksdiff = hg
 
 [extensions]
 progress=
@@ -47,7 +49,7 @@ schemes=
 
 shrink=~/dev/hg/hg/contrib/shrink-revlog.py
 perf=~/dev/hg/hg/contrib/perf.py
-hgsubversion=~/dev/hg/hgsubversion/hgsubversion
+#hgsubversion=~/dev/hg/hgsubversion/hgsubversion
 attic=~/dev/hg/hgattic/attic.py
 crecord=~/dev/hg/crecord/crecord/
 qup=~/dev/hg/qup.py
@@ -57,10 +59,11 @@ hgactivity=~/dev/hg/hgactivity/activity.py
 #index=~/dev/hg/indexes-extension/indexes/
 qimprovements=~/dev/hg/qimprovements/qimprovements.py
 #tasks = ~/dev/hg/hgtasks/hgext/tasks.py
-hg-git = ~/dev/hg/hg-git/hggit/
+#hg-git = ~/dev/hg/hg-git/hggit/
 histedit = ~/dev/hg/histedit/
 #hgkeychain=
 artemis = ~/dev/hg/artemis/artemis.py
+review = ~/dev/hg/hg-review/review/
 
 [diff]
 git = True
