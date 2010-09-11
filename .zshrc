@@ -33,6 +33,7 @@ export BROWSER="links"
 export LESS="FRQXi"
 export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 export PIP_RESPECT_VIRTUALENV=true
+export WORKON_HOME=~/.virtualenvs
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then
@@ -251,19 +252,6 @@ function gkill {
     awk '{print $2}'|xargs kill ${@}
 }
 
-# sorted du -sh
-function duf {
-    du -sk ${@} | sort -n | while read size fname; do
-        for unit in k M G T P E Z Y; do
-            if [ $size -lt 1024 ]; then
-                echo -e "${size}${unit}\t${fname}"
-                break
-            fi
-            size=$((size/1024))
-        done
-    done
-}
-
 #############        ALIASES         ###############
 # Nocorrect
 #alias mv="nocorrect mv"
@@ -346,6 +334,7 @@ alias -g E='2>&1'
 alias rcp="rsync -av -P -e ssh"
 alias clive="noglob clive"
 alias preview='groff -Tps | open -f -a Preview'
+alias depyc='noglob find . -name *.pyc -delete'
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
