@@ -291,7 +291,6 @@
 (global-set-key (kbd "C-c p b") 'project-root-switch-buffer)
 
 ;; mail
-
 (autoload 'post-mode "post" nil t)
 (add-to-list 'auto-mode-alist '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . post-mode))
 (add-to-list 'auto-mode-alist '("\\.*mutt-\\.*" . post-mode))
@@ -299,7 +298,6 @@
       post-news-poster-regexp "^Exceprts from .* of .*:$")
 
 ;; smex
-
 (if (require 'smex nil t)
     (progn
       (setq smex-save-file "~/.emacs.d/smex.save")
@@ -325,3 +323,8 @@
                                     ,(make-char 'greek-iso8859-7 107))
                     nil))))))
 (add-hook 'emacs-lisp-mode-hook 'lambda-elisp-mode-hook)
+
+;; highlight
+(autoload 'rainbow-mode "rainbow/rainbow-mode" "" t)
+(if (fboundp 'rainbow-mode)
+    (rainbow-mode))
