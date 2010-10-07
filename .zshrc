@@ -263,27 +263,38 @@ if [ -x "`whence -c lftp`" ]; then
     alias ftp="lftp"
     function sftp() { lftp sftp://`whoami`@$1 }
 fi
+
 ## Mutt new generation
 if [ -x "`whence -c muttng`" ]; then
         alias m="muttng"
 else
         alias m="mutt"
 fi
+
 ## color ls
 if [ `uname` = "Linux" ]; then
         alias ls="/bin/ls --color"
 else
         alias ls="/bin/ls -G"
 fi
+
 ## GNU Find
 if [ `uname` != "Linux" -a -x "`whence -c gfind`" ]; then
     alias find="noglob gfind"
 else
     alias find="noglob find"
 fi
+
 ## Editor
 if [ -x "`whence -c emacsclient`" ]; then
-    alias e="emacsclient --no-wait"
+    function e() {
+        if [ -z $1 ]
+        then
+            xargs emacsclient --no-wait $LINE
+        else
+            emacsclient --no-wait $1
+        fi
+    }
     alias et="emacsclient -t"
     export ALTERNATE_EDITOR="emacs"
 else
