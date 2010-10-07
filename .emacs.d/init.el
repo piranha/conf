@@ -50,4 +50,4 @@ suitable for binding to keys."
 
 (load-init
  '(general frame lang funs modes keys
-   bs eshell jabber circe org custom))
+   bs eshell org custom))
