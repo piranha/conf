@@ -1,0 +1,3 @@
+bind -e
+bind ^w ed-delete-prev-word
+bind ^i rl_complete
