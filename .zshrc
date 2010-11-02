@@ -108,6 +108,10 @@ autoload -U edit-command-line
 zle -N edit-command-line
 bindkey '\ee' edit-command-line
 
+autoload -U select-word-style
+select-word-style Normal
+# don't contains -_/= - and thus breaks words on them
+zstyle ':zle:*' word-chars '*?.[]~&;!#$%^(){}<>'
 
 ######## Completion #######
 #hostsmy=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
@@ -354,6 +358,14 @@ function hgrc() { vim $(hg root)/.hg/hgrc }
 alias psc="ps -C"
 alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
+
+function mv() {
+    if [ $# -lt 2 ]; then
+        /bin/mv $1 .
+    else
+        /bin/mv "$@"
+    fi
+}
 
 # for emacs' tramp
 [[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls || return 0
