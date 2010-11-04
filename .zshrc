@@ -75,11 +75,12 @@ setopt autocd
 setopt auto_pushd
 setopt pushd_ignore_dups
 
-# Another important options
+# other important options
 unsetopt extended_glob # it's quite annoying
 setopt notify # report the status of backgrounds jobs immediately
 setopt completeinword
 setopt hash_list_all
+setopt printexitvalue
 REPORTTIME=5
 watch=(notme root)
 
