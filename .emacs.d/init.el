@@ -49,5 +49,5 @@ suitable for binding to keys."
 (add-hook 'after-save-hook 'autocompile)
 
 (load-init
- '(general frame lang funs modes keys
+ '(general frame funs modes keys
    bs eshell org custom))

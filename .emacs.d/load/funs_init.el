@@ -160,6 +160,8 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
   (interactive "p")
   (if (and (looking-at "^") (= arg 1)) (skip-chars-forward " \t") (move-beginning-of-line arg)))
 
+(defvar selected-symbol)
+
 (setq imenu-auto-rescan t)
 (defun ido-goto-symbol (&optional symbol-list)
   "Refresh imenu and jump to a place in the buffer using Ido."
@@ -242,3 +244,10 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
                 `(,(string-to-number time) 0))))
     (+ (car time) (/ (float (cadr time)) 60))))
 
+(defun path-to-clipboard ()
+  "Copy the current file's path to the clipboard.
+  If the current buffer has no file, copy the buffer's default directory."
+  (interactive)
+  (let ((path (expand-file-name (or (buffer-file-name) default-directory))))
+    (kill-new path)
+    (message "%s" path)))

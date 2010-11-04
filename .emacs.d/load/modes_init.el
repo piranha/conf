@@ -74,9 +74,10 @@
 (autoload 'io-mode "io-mode" "Major mode for editing Io sources" t)
 (autoload 'yaml-mode "yaml-mode" nil t)
 (autoload 'lua-mode "lua-mode" nil t)
+(autoload 'clevercss-mode "CleverCSS-Mode/clevercss" nil t)
 
 (require 'whitespace)
-(setq whitespace-style '(lines-tail trailing))
+(setq whitespace-style '(trailing tabs lines-tail))
 (set-face-attribute 'whitespace-line nil
                     :foreground 'unspecified
                     :background "yellow")
@@ -99,6 +100,12 @@
 (dolist (hook hooks-want-short-lines)
   (add-hook hook 'auto-fill-mode))
 
+;; FIXME/TODO highlighting
+(autoload 'turn-on-fic-mode "fic-mode" "" t)
+(dolist (hook '(python-mode-hook
+                emacs-lisp-mode-hook))
+  (add-hook hook 'turn-on-fic-mode))
+
 (setq auto-mode-alist
       (append
        (list
@@ -111,7 +118,8 @@
         '("\\.io\\'" . io-mode)
         '("\\.yml\\'" . yaml-mode)
         '("\\.yaml\\'" . yaml-mode)
-        '("\\.lua\\'" . lua-mode))
+        '("\\.lua\\'" . lua-mode)
+        '("\\.ccss\\'" . clevercss-mode))
         auto-mode-alist))
 
 (ignore-errors (load-file "~/var/factor/misc/fuel/fu1.el"))
@@ -204,7 +212,7 @@
 (eval-after-load "js-mode"
   '(progn
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
-(autoload 'js2-mode "js2" nil t)
+(autoload 'js2-mode "js2-mode" nil t)
 
 ;; Coffee
 
@@ -253,7 +261,10 @@
 (autoload 'ack "ack" "" t)
 
 (setq project-roots
-      `(("Django project"
+      `(("Paylogic project"
+         :root-contains-files ("../paylogic/" "../fabfile.py")
+         :filename-regex ,(regexify-ext-list '(py html css js sh)))
+        ("Django project"
          :root-contains-files ("manage.py")
          :filename-regex ,(regexify-ext-list '(py html css js sh))
          :exclude-paths '("contrib"))
@@ -328,3 +339,11 @@
 (autoload 'rainbow-mode "rainbow/rainbow-mode" "" t)
 (if (fboundp 'rainbow-mode)
     (rainbow-mode))
+
+;; breadcrumbs
+(require 'breadcrumb)
+(global-set-key [?\S- ] 'bc-set) ;; Shift-SPACE
+(global-set-key (kbd "M-j") 'bc-previous)
+(global-set-key (kbd "M-J") 'bc-next)
+(global-set-key (kbd "C-c j") 'bc-goto-current)
+(global-set-key (kbd "C-c M-j") 'bc-list)

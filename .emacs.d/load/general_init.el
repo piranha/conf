@@ -50,6 +50,7 @@
  dabbrev-case-fold-search nil        ;; Case is significant for dabbrev
  split-width-threshold 200           ;; I don't like horizontal splitting
  kill-ring-max 2000                  ;; oh yes! long killring!
+ default-input-method "russian-computer"
  )
 
 (setq-default
@@ -67,6 +68,9 @@
 
 ;; Ask questions with short answers
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;; I like having unix lineendings even on windows
+(prefer-coding-system 'utf-8-unix)
 
 (setq ring-bell-function (lambda () ())) ;; I hate beeps
 

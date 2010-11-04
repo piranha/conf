@@ -40,6 +40,8 @@
   (load-file "~/.emacs.d/packages/themes/color-theme-mods.el")
   (load-file "~/.emacs.d/packages/themes/pastels-on-dark-theme.el")
   (color-theme-gtk-ide)
+  (set-face-attribute 'cursor nil
+                      :background "grey40")
 ;  (color-theme-charcoal-black)
 ;  (color-theme-pastels-on-dark)
 )
