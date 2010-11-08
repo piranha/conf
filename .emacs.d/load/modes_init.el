@@ -77,7 +77,7 @@
 (autoload 'clevercss-mode "CleverCSS-Mode/clevercss" nil t)
 
 (require 'whitespace)
-(setq whitespace-style '(trailing tabs lines-tail))
+(setq whitespace-style '(face trailing tabs lines-tail))
 (set-face-attribute 'whitespace-line nil
                     :foreground 'unspecified
                     :background "yellow")
