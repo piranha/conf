@@ -123,7 +123,8 @@
                         ;; end prefix keywords
                        (or "autoescape" "block" "blocktrans" "cache" "comment"
                            "filter" "for" "if" "ifchanged" "ifequal"
-                           "ifnotequal" "spaceless" "trans" "with")))
+                           "ifnotequal" "spaceless" "trans" "with"
+                           "macro")))
            (1+ space)
            (eval django-html-close-block))
       (1 font-lock-keyword-face))
@@ -135,7 +136,7 @@
                       "cycle" "debug" "else" "empty" "extends" "filter" "firstof" "for"
                       "if" "ifchanged" "ifequal" "ifnotequal" "include"
                       "load" "now" "regroup" "spaceless" "ssi" "templatetag"
-                      "trans" "url" "widthratio" "with"))
+                      "trans" "url" "widthratio" "with" "macro"))
 
            ;; TODO: is there a more beautiful way?
            (0+ (not (any "}")))
