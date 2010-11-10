@@ -264,6 +264,10 @@
       `(("Paylogic project"
          :root-contains-files ("../paylogic/" "../fabfile.py")
          :filename-regex ,(regexify-ext-list '(py html css js sh)))
+        ("Svarga project"
+         :root-contains-files ("manage.py" "venv")
+         :filename-regex ,(regexify-ext-list '(py html css js sh))
+         :exclude-paths '("venv"))
         ("Django project"
          :root-contains-files ("manage.py")
          :filename-regex ,(regexify-ext-list '(py html css js sh))

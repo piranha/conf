@@ -7,7 +7,10 @@
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
-(global-set-key (kbd "M-A") 'ido-goto-symbol)
+
+(autoload 'idomenu "idomenu" nil t)
+(global-set-key (kbd "M-A") 'idomenu)
+
 (global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
 (global-set-key (kbd "C-S-k") (lambda () (interactive) (kill-line 0)))
@@ -23,9 +26,8 @@
 (global-set-key (kbd "M-<down>") 'prh:move-line-down)
 (global-set-key (kbd "C-M-<up>") 'prh:duplicate-line-up)
 (global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
-(global-set-key (kbd "C-a") 'dev-studio-beginning-of-line)
-(global-set-key (kbd "<home>") 'dev-studio-beginning-of-line)
-(global-set-key (kbd "M-j") 'org-footnote-action)
+(global-set-key (kbd "C-a") 'beginning-of-line-dwim)
+(global-set-key (kbd "<home>") 'beginning-of-line-dwim)
 
 (global-set-key (kbd "M-Y") (lambda (&optional arg)
                               (interactive "*p")
