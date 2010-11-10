@@ -78,6 +78,7 @@
 
 (require 'whitespace)
 (setq whitespace-style '(face trailing tabs lines-tail))
+(setq whitespace-line-column 120)
 (set-face-attribute 'whitespace-line nil
                     :foreground 'unspecified
                     :background "yellow")
@@ -351,3 +352,15 @@
 (global-set-key (kbd "M-J") 'bc-next)
 (global-set-key (kbd "C-c j") 'bc-goto-current)
 (global-set-key (kbd "C-c M-j") 'bc-list)
+
+;; whole-line-or-region
+(require 'whole-line-or-region nil t)
+
+(defun whole-line-or-region-comment-dwim (prefix)
+  "Call `comment-dwim' on current region or current line."
+  (interactive "*p")
+  (whole-line-or-region-call-with-prefix 'comment-dwim prefix nil t))
+
+(add-to-list 'whole-line-or-region-extensions-alist
+             '(comment-dwim whole-line-or-region-comment-dwim))
+(whole-line-or-region-mode)
