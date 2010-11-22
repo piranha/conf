@@ -1,3 +1,4 @@
 bind -e
 bind ^w ed-delete-prev-word
 bind ^i rl_complete
+bind ^r em-inc-search-prev
