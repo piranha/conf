@@ -21,7 +21,7 @@ limit -s
 
 umask 022
 
-export PATH=~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=~/bin:~/.cabal/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 export PAGER="less"
 if [ -x "`whence -c vim`" ]; then
@@ -93,6 +93,8 @@ bindkey "[4~" end-of-line
 bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
 bindkey '^[z' delete-to-char
+bindkey '^[[5D' emacs-backward-word
+bindkey '^[[5C' emacs-forward-word
 # for rxvt
 bindkey "\e[8~" end-of-line
 bindkey "\e[7~" beginning-of-line
@@ -351,6 +353,7 @@ alias rcp="rsync -av -P -e ssh"
 alias clive="noglob clive"
 alias preview='groff -Tps | open -f -a Preview'
 alias depyc='noglob find . -name *.pyc -delete'
+alias ve='virtualenv --distribute --no-site-packages'
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
