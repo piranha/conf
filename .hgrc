@@ -82,7 +82,8 @@ track.current = True
 [email]
 method = sendmail
 
-[pager] # with export LESS="FRQX"
+[pager]
+pager = LESS='FRQX' less
 attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, cat, ., /
 
 [alias]
