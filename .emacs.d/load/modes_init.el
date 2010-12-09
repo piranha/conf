@@ -65,6 +65,8 @@
 (setq-default save-place t)
 (setq save-place-file "~/.emacs.d/places/")
 
+(which-function-mode)
+
 ;; major modes
 
 (autoload 'markdown-mode "markdown-mode" "Major mode for editing Markdown files" t)
@@ -267,7 +269,7 @@
          :filename-regex ,(regexify-ext-list '(py html css js sh)))
         ("Svarga project"
          :root-contains-files ("manage.py" "venv")
-         :filename-regex ,(regexify-ext-list '(py html css js sh))
+         :filename-regex ,(regexify-ext-list '(py html css js sh ccss))
          :exclude-paths '("venv"))
         ("Django project"
          :root-contains-files ("manage.py")
