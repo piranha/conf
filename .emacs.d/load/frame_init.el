@@ -35,7 +35,8 @@
   (setq font-lock-maximum-decoration t))
 
 (when graf
-  (require 'color-theme)
-  (color-theme-initialize)
-  (color-theme-gtk-ide)
-)
+  (el-get-add
+   (:name color-theme
+    :after (lambda ()
+             (color-theme-initialize)
+             (color-theme-gtk-ide)))))

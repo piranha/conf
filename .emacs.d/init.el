@@ -24,6 +24,9 @@
 suitable for binding to keys."
   `(lambda () (interactive) (,func ,@args)))
 
+(defmacro el-get-add (item)
+  `(add-to-list 'el-get-sources ',item))
+
 (setq custom-file "~/.emacs.d/load/custom_init.el")
 
 (add-to-path 'load)                     ; initialization
@@ -35,8 +38,9 @@ suitable for binding to keys."
   (load-file "~/.secrets.el"))
 
 ;;; ELPA
-(when (load (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
+(setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
 
 (defun autocompile ()
   "Compile itself if this is config file"
@@ -48,6 +52,13 @@ suitable for binding to keys."
 
 (add-hook 'after-save-hook 'autocompile)
 
+;; initialize el-get
+(load "~/.emacs.d/el-get/el-get/el-get.el")
+(setq el-get-sources '())
+
 (load-init
  '(general frame funs modes keys
    bs eshell org custom))
+
+;; run el-get now
+(el-get)

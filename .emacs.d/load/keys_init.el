@@ -8,8 +8,11 @@
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
-(autoload 'idomenu "idomenu" nil t)
-(global-set-key (kbd "M-A") 'idomenu)
+(el-get-add
+ (:name idomenu
+  :type emacswiki
+  :features idomenu
+  :after (lambda () (global-set-key (kbd "M-A") 'idomenu))))
 
 (global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
@@ -33,11 +36,12 @@
                               (interactive "*p")
                               (yank-pop (- arg))))
 
-(autoload 'kill-ring-search "kill-ring-search"
-  "Search the kill ring in the minibuffer."
-  (interactive))
-(global-set-key (kbd "C-M-y") 'kill-ring-search)
-
+(el-get-add
+ (:name kill-ring-search
+  :type http
+  :url "http://nschum.de/src/emacs/kill-ring-search/kill-ring-search.el"
+  :features kill-ring-search
+  :after (lambda () (global-set-key (kbd "C-M-y") 'kill-ring-search))))
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 (global-set-key (kbd "<f11>") 'jabber-activity-switch-to)
@@ -51,31 +55,35 @@
 (global-set-key (kbd "M-0") 'delete-window)
 
 (if (fboundp 'w32-send-sys-command)
-    (progn
-      (global-set-key (kbd "C-<f12>") ; maximize
-                      (fun-for-bind w32-send-sys-command #xf030 nil))
-      (global-set-key (kbd "C-<f11>") ; restore original size
-                      (fun-for-bind w32-send-sys-command #xf120 nil))))
-
-(autoload 'piu "piu" "paste buffer or region")
-(global-set-key (kbd "C-x p") 'piu)
-
-(dolist (nose-func '(nosetests-all nosetests-module nosetests-one
-                     nosetests-pdb-all nosetests-pdb-module nosetests-pdb-one))
-  (autoload nose-func "nosemacs/nose" "" t))
-(setq nose-use-verbose nil)
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-c t") 'nosetests-all)
-            (local-set-key (kbd "C-c m") 'nosetests-module)
-            (local-set-key (kbd "C-c .") 'nosetests-one)
-            (local-set-key (kbd "C-c p t") 'nosetests-pdb-all)
-            (local-set-key (kbd "C-c p m") 'nosetests-pdb-module)
-            (local-set-key (kbd "C-c p .") 'nosetests-pdb-one)))
+    (global-set-key (kbd "M-M") ; maximize
+                    (fun-for-bind w32-send-sys-command #xf030 nil)))
 
 (if (fboundp 'ns-toggle-fullscreen)
     (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen))
 
-(autoload 'iedit-mode "iedit" "" t)
-(global-set-key (kbd "C-;") 'iedit-mode)
+(el-get-add
+ (:name piu
+  :type http
+  :url "http://paste.in.ua/piu.el"
+  :features piu
+  :after (lambda () (global-set-key (kbd "C-x p") 'piu))))
+
+(el-get-add
+ (:name nosemacs
+  :type hg
+  :url "http://bitbucket.org/durin42/nosemacs/"
+  :features "nose"
+  :after (lambda () 
+           (setq nose-use-verbose nil)
+           (eval-after-load "python"
+             '(progn
+                (define-key python-mode-map (kbd "C-c t") 'nosetests-all)
+                (define-key python-mode-map (kbd "C-c m") 'nosetests-module)
+                (define-key python-mode-map (kbd "C-c .") 'nosetests-one)
+                (define-key python-mode-map (kbd "C-c p t") 'nosetests-pdb-all)
+                (define-key python-mode-map (kbd "C-c p m") 'nosetests-pdb-module)
+                (define-key python-mode-map (kbd "C-c p .") 'nosetests-pdb-one))))))
+
+(el-get-add
+ (:name iedit
+  :after (lambda () (global-set-key (kbd "C-;") 'iedit-mode))))

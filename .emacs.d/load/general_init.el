@@ -51,6 +51,8 @@
  split-width-threshold 200           ;; I don't like horizontal splitting
  kill-ring-max 2000                  ;; oh yes! long killring!
  default-input-method "russian-computer"
+ w3m-use-cookies t
+ ediff-window-setup-function 'ediff-setup-windows-plain
  )
 
 (setq-default
@@ -81,8 +83,3 @@
 (if (eq system-type 'darwin)
     (setq ns-extended-platform-support-mode t
           ns-command-modifier 'meta))
-
-(if (require 'edit-server nil t)
-    (progn
-      (setq edit-server-new-frame nil)
-      (edit-server-start)))
