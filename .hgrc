@@ -1,9 +1,10 @@
 # -*- mode: conf -*-
 
+%include ~/.hgauth
+
 [ui]
 username = Alexander Solovyov <alexander@solovyov.net>
-#piranha@piranha.org.ua>
-ignore = ~/.hgignore
+ignore=~/.hgignore
 ssh = ssh -C
 merge = internal:merge
 
@@ -20,10 +21,21 @@ p4.gui = True
 p4.args = $base $local $other $output
 p4.binary = False
 
+sourcetreemerge.gui=True
+sourcetreemerge.premerge=False
+sourcetreemerge.executable=/Applications/SourceTree.app/Contents/Resources/opendiff-w.sh
+sourcetreemerge.args="$local" "$other" -ancestor "$base" -merge "$output"
+sourcetreemerge.checkconflicts=True
+sourcetreemerge.binary=False
+
 [extdiff]
 cmd.opendiff = opendiff-w
 cmd.ksdiff = ksdiff-wrapper
 opts.ksdiff = hg
+cmd.codediff = codediff.py
+
+opts.sourcetreediff=
+cmd.sourcetreediff=opendiff
 
 [extensions]
 progress=
@@ -32,9 +44,7 @@ mq=
 graphlog=
 churn=
 color=
-children=
 pager=
-parentrevspec=
 purge=
 record=
 rebase=
@@ -65,6 +75,8 @@ histedit = ~/dev/hg/histedit/hg_histedit.py
 #hgkeychain=
 artemis = ~/dev/hg/artemis/artemis.py
 review = ~/dev/hg/hg-review/review/
+hg-dotlog = ~/dev/hg/hg-dotlog/dotlog.py
+graphviz = ~/dev/hg/graphviz/graphviz.py
 
 [diff]
 git = True
@@ -87,27 +99,23 @@ pager = LESS='FRQX' less
 attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, cat, ., /
 
 [alias]
-slog = log --template '{rev}:{node|short} {desc|firstline} ({date|shortdate} by {author|person})\t{tags}\n' -l 10
-slog = log --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
-dlog = log --template '{date|shortdate} [{rev}:{node|short}] {diffstat} {author|person}: {desc|firstline}\n' -l 10
-flog = log --template '{date|shortdate} [{rev}:{node|short}] {size} {author|person}: {desc|firstline}\n' -l 10
-wlog = log --style compact -l 10
+slog = log --template '{date|shortdate} [{rev}:{node|short}] {tags} {author|person}: {desc|firstline}\n' -l 10
+. = slog
+sglog = glog --style ~/.hgconcise -l 10
+/ = sglog
+wlog = log --style ~/.hgconcise -l 10
 sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sglog = glog --style concise -l 10
-zlog = glog --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n' -l 10
-#sg = glog --template '[{rev}:{node|short}] by {author|person} ({date|isodate})\n{desc|firstline|fill68}\n\n' -l 8
-p = log -v --style=compact -p -r
+p = log -v --style ~/.hgconcise -p -r
 nudge = push --rev .
 sqr = summary -q --remote
-. = slog -f -r .:null
-/ = sglog
 qnew = qnew -D -U
 qseries = qseries -s
 cm = ci -m
 churn = churn --aliases ~/.churnaliases
 activity = activity --aliases ~/.churnaliases
+notreleased = / -r "reverse(not ancestors(tagged()))"
+release = bookmark -f release --noswitch
 
 [schemes]
 p = ssh://piranha.org.ua/hg/
