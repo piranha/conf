@@ -354,6 +354,7 @@ alias clive="noglob clive"
 alias preview='groff -Tps | open -f -a Preview'
 alias depyc='noglob find . -name *.pyc -delete'
 alias ve='virtualenv --distribute --no-site-packages'
+alias wget='wget --no-check-certificate'
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
