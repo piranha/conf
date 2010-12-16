@@ -24,6 +24,10 @@
 suitable for binding to keys."
   `(lambda () (interactive) (,func ,@args)))
 
+;; initialize el-get
+(if (not (load "~/.emacs.d/el-get/el-get/el-get" t))
+    (throw 'not-configured "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
+(setq el-get-sources '())
 (defmacro el-get-add (item)
   `(add-to-list 'el-get-sources ',item))
 
@@ -51,10 +55,6 @@ suitable for binding to keys."
       (byte-compile-file (buffer-file-name))))
 
 (add-hook 'after-save-hook 'autocompile)
-
-;; initialize el-get
-(load "~/.emacs.d/el-get/el-get/el-get.el")
-(setq el-get-sources '())
 
 (load-init
  '(general frame funs modes keys
