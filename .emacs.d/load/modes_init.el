@@ -70,6 +70,9 @@
   :after (lambda () (require 'pointback)
            (global-pointback-mode))))
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
+
 ;; saving place in file
 (require 'saveplace)
 (setq-default save-place t)
