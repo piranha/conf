@@ -10,8 +10,7 @@
 
 (el-get-add
  (:name grep+
-  :type http
-  :url "http://www.emacswiki.org/emacs/download/grep%2b.el"
+  :type emacswiki
   :after (lambda () (autoload 'grep "grep+" nil t))))
 
 (setq tags-file-name (expand-file-name "~/TAGS"))
@@ -110,8 +109,8 @@
 ;; FIXME/TODO highlighting
 (el-get-add
  (:name fic-ext-mode
-  :type http
-  :url "http://www.emacswiki.org/emacs/download/fic-ext-mode.el"
+  :type emacswiki
+  :load "fic-ext-mode"
   :features turn-on-fic-ext-mode
   :after (lambda ()
            (dolist (hook '(python-mode-hook
@@ -130,8 +129,7 @@
 
 (el-get-add
  (:name wikipedia-mode
-  :type http
-  :url "http://www.emacswiki.org/cgi-bin/wiki/download/wikipedia-mode.el"
+  :type emacswiki
   :features wikipedia-mode
   :after (lambda ()
            (add-to-list 'auto-mode-alist
@@ -293,6 +291,7 @@
  (:name ack
   :type http
   :url "http://repo.or.cz/w/ShellArchive.git?a=blob_plain;hb=HEAD;f=ack.el"
+  :build '("mv ShellArchive*ack.el ack.el")
   :features ack))
 
 (el-get-add
@@ -365,8 +364,7 @@
 ;; sudo
 (el-get-add
  (:name sudo-save
-  :type http
-  :url "http://www.emacswiki.org/emacs/download/sudo-save.el"
+  :type emacswiki
   :features sudo-save))
 
 ;; elisp
