@@ -103,24 +103,6 @@
 
 ;(setq smtpmail-debug-info t)
 
-(autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
-(add-hook 'message-setup-hook 'gnus-alias-determine-identity)
-(add-hook 'message-load-hook '(lambda () (gnus-alias-init)))
-
-(setq gnus-alias-identity-alist
-      '(
-        ;;(name    inherit    from    organization    headers    body    signature)
-        ("piranha"  nil "\"Alexander Solovyov\" <piranha@piranha.org.ua>" nil nil nil "~/.signature")
-        ("news"     "piranha" nil nil (("X-keywords" . x-keyword)) nil nil)
-        ("viii"     "piranha" "\"Alexander Solovyov\" <piranha@viii.ntu-kpi.kiev.ua>" nil nil nil nil)
-        ("gmail"    "piranha" "\"Alexander Solovyov\" <alexander.solovyov@gmail.com>" nil nil nil nil)
-        ))
-(setq gnus-alias-identity-rules
-     '(
-       ("ntu-kpi" ("newsgroup" "^ntu-kpi" both) "news")
-       ))
-(setq gnus-alias-default-identity "piranha")
-
 ;; gnus-parameters
 (setq gnus-parameters
       '((".*"
@@ -406,26 +388,6 @@
 ;                   ("*BBDB*" 1.0))))) ; 2. Teil *BBDB*
 ;                                      ; Buffer
 ;(setq bbdb-use-pop-up nil)
-
-;;;;;;;;;;
-;; Cite
-;;;;;;;;;;
-
-(autoload 'cite-cite "cite" "A simple cite function for Emacs" nil)
-(setq message-cite-function 'cite-cite
-      cite-remove-trailing-lines t
-      cite-make-attribution-function #'prh-cite-attribution
-      cite-prefix-regexp "[>]") ; don't allow fancy quoting
-
-(defun prh-cite-attribution ()
-  (let ((email (cite-get-header "email"))
-        (name  (cite-get-header "name"))
-        (date  (cite-get-header "date")))
-    (if (and (null name) (null email))
-        "An unnamed person wrote:\n\n"
-      (if (null date)
-          (concat (or name email) " wrote:\n\n")
-        (concat "On " date ", " (or name email) " wrote:\n\n")))))
 
 ;;;;;;;;;;;;;
 ;; Functions

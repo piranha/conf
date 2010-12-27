@@ -1,4 +1,4 @@
-;; various small modes configuration
+;; various modes configuration
 
 ;(autoload 'gnus "gnus" "Best email client ever" t)
 
@@ -10,8 +10,7 @@
 
 (el-get-add
  (:name grep+
-  :type emacswiki
-  :after (lambda () (autoload 'grep "grep+" nil t))))
+  :features grep+))
 
 (setq tags-file-name (expand-file-name "~/TAGS"))
 
@@ -64,10 +63,8 @@
 
 (el-get-add
  (:name pointback
-  :type http
-  :url "http://stud1.tuwien.ac.at/~e0225855/pointback/pointback.el"
-  :after (lambda () (require 'pointback)
-           (global-pointback-mode))))
+  :features pointback
+  :after (lambda () (global-pointback-mode))))
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
@@ -109,55 +106,28 @@
 ;; FIXME/TODO highlighting
 (el-get-add
  (:name fic-ext-mode
-  :type emacswiki
-  :load "fic-ext-mode"
-  :features turn-on-fic-ext-mode
+  :features fic-ext-mode
   :after (lambda ()
            (dolist (hook '(python-mode-hook
                            emacs-lisp-mode-hook))
-             (add-hook hook 'turn-on-fic-ext-mode)))))
+             (add-hook hook 'fic-ext-mode)))))
 
 ;; major modes
 
 (el-get-add
- (:name markdown-mode
-  :type http
-  :url "http://jblevins.org/projects/markdown-mode/markdown-mode.el"
-  :features markdown-mode
-  :after (lambda ()
-           (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))))
+ (:name markdown-mode))
 
 (el-get-add
- (:name wikipedia-mode
-  :type emacswiki
-  :features wikipedia-mode
-  :after (lambda ()
-           (add-to-list 'auto-mode-alist
-                        '("\\.wiki\\.txt\\'" . wikipedia-mode)))))
+ (:name wikipedia-mode))
 
 (el-get-add
- (:name yaml-mode
-  :type git
-  :url "git://github.com/yoshiki/yaml-mode.git"
-  :features yaml-mode
-  :after (lambda ()
-           (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-           (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode)))))
+ (:name yaml-mode))
+
+;; (el-get-add
+;;  (:name lua-mode))
 
 (el-get-add
- (:name lua-mode
-  :type http
-  :url "http://luaforge.net/plugins/scmcvs/cvsweb.php/lua-mode/lua-mode.el?rev=HEAD;content-type=text%2Fplain;cvsroot=lua-mode"
-  :after (lambda () (autoload 'lua-mode "lua-mode" nil t)
-           (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode)))))
-
-(el-get-add
- (:name clevercss
-  :type git
-  :url "git://github.com/jschaf/CleverCSS-Mode.git"
-  :after (lambda () (autoload 'clevercss-mode "clevercss" nil t)
-           (add-to-list 'auto-mode-alist
-                        '("\\.ccss\\'" . clevercss-mode)))))
+ (:name clevercss))
 
 ;; modified and stored in my repo
 (autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
@@ -165,6 +135,8 @@
 
 (add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
 
+(el-get-add
+ (:name go-mode))
 
 ;;;;;;;;;
 ;; Python
@@ -228,9 +200,7 @@
 
 (el-get-add
  (:name flymake-point
-  :type http
-  :url "http://bitbucket.org/brodie/dotfiles/raw/tip/.emacs.d/plugins/flymake-point.el"
-  :after (lambda () (require 'flymake-point))))
+  :features flymake-point))
 
 ;; Lua
 
@@ -251,16 +221,12 @@
 ;; Coffee
 
 (el-get-add
- (:name coffee-mode
-  :type git
-  :url "git://github.com/defunkt/coffee-mode.git"
-  :features coffee-mode
-  :after (lambda ()
-           (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
-           (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
-           (setq coffee-js-mode 'javascript-mode)
-           (eval-after-load "coffee-mode"
-             '(define-key coffee-mode-map (kbd "RET") 'newline-maybe-indent)))))
+ (:name coffee-mode))
+  ;; :after (lambda ()
+  ;;          (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
+  ;;          (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
+  ;;          (setq coffee-js-mode 'javascript-mode)
+  ;;          (define-key coffee-mode-map (kbd "C-m") 'newline-maybe-indent))))
 
 ;; Snippets
 
@@ -271,9 +237,10 @@
              '(progn
                 (global-unset-key (kbd "C-/"))
                 (setq
-                 yas/trigger-key (kbd "C-/")
-                 yas/next-field-key (kbd "C-/"))
+                 yas/trigger-key "C-/"
+                 yas/next-field-key "C-/")
                 (yas/initialize)
+                (yas/load-directory "~/.emacs.d/el-get/yasnippet/snippets/")
                 (yas/load-directory "~/.emacs.d/snippets/"))))))
 
 
@@ -288,11 +255,7 @@
 ;; version control/projects
 
 (el-get-add
- (:name ack
-  :type http
-  :url "http://repo.or.cz/w/ShellArchive.git?a=blob_plain;hb=HEAD;f=ack.el"
-  :build '("mv ShellArchive*ack.el ack.el")
-  :features ack))
+ (:name ack))
 
 (el-get-add
  (:name project-root
@@ -349,8 +312,6 @@
 ;; smex
 (el-get-add
  (:name smex
-  :type git
-  :url "git://github.com/nonsequitur/smex.git"
   :features smex
   :after (lambda ()
            (setq smex-save-file "~/.emacs.d/smex.save")
@@ -384,9 +345,6 @@
 ;; breadcrumbs
 (el-get-add
  (:name breadcrumb
-  :type http
-  :url "http://downloads.sourceforge.net/project/breadcrumbemacs/Breadcrumb%20for%20Emacs/1.1.3/breadcrumb-1.1.3.zip"
-  :build ("unzip breadcrumb-1.1.3.zip")
   :features breadcrumb
   :after (lambda ()
            (global-set-key [?\S- ] 'bc-set) ;; Shift-SPACE
@@ -398,8 +356,6 @@
 ;; whole-line-or-region
 (el-get-add
  (:name whole-line-or-region
-  :type http
-  :url "http://www.northbound-train.com/emacs/whole-line-or-region.el"
   :features whole-line-or-region
   :after (lambda ()
            (defun whole-line-or-region-comment-dwim (prefix)
