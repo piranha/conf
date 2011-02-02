@@ -52,9 +52,13 @@ PS1="$wc%n$n$at$wc%m $err$wc%~>$n "
 unset n b Cr uc hc wc tc tty at r y gr
 
 # make ls looks nice
-#if [ -f ~/.dircolors ]; then
-#    eval $(dircolors ~/.dircolors)
-#fi
+if [ -f ~/.dircolors ]; then
+    if [ -x "$(whence -c gdircolors)" ]; then
+        eval $(gdircolors ~/.dircolors)
+    else
+        eval $(dircolors ~/.dircolors)
+    fi
+fi
 #export LSCOLORS="Cxfxcxdxbxegedabagacad"
 
 fpath=(~/.zsh.d $fpath)
@@ -216,10 +220,12 @@ function apt-show()
 }
 
 # tail -f, possibly colorized
-function t() # f == follow
+function t()
 {
     if [ -x "`whence -c ccze`" ]; then
         tail -f $1 | ccze -A
+    elif [ -x "`whence -c colorize`"]; then
+        tail -f $1 | colorize
     else
         tail -f $1
     fi
@@ -271,20 +277,6 @@ if [ -x "`whence -c lftp`" ]; then
     function sftp() { lftp sftp://`whoami`@$1 }
 fi
 
-## Mutt new generation
-if [ -x "`whence -c muttng`" ]; then
-        alias m="muttng"
-else
-        alias m="mutt"
-fi
-
-## color ls
-if [ `uname` = "Linux" ]; then
-        alias ls="/bin/ls --color"
-else
-        alias ls="/bin/ls -G"
-fi
-
 ## GNU Find
 if [ `uname` != "Linux" -a -x "`whence -c gfind`" ]; then
     alias find="noglob gfind"
@@ -312,20 +304,21 @@ if [ -x "`whence -c rlwrap`" ]; then
     alias nc='rlwrap nc'
 fi
 
-# extensions
-alias -s jpg=gliv
-alias -s png=gliv
-alias -s gif=gliv
-alias -s flv=smplayer
-alias -s avi=smplayer
-
 # ls
+if [ $(uname) = "Linux" ]; then
+    alias ls="/bin/ls --color"
+elif [ -x "$(whence -c gls)" ]; then
+    alias ls="gls --color"
+else
+    alias ls="/bin/ls -G"
+fi
 alias ll="ls -lh"
 alias la="ls -lA"
 alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
 
 # Other
+alias m="mutt"
 alias rm="rm -f"
 alias grep="egrep"
 alias mc="mc -acx"
@@ -359,6 +352,8 @@ alias wget='wget --no-check-certificate'
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
 function hgrc() { vim $(hg root)/.hg/hgrc }
+function blog() { hg slog -l 500 -r "reverse(..$1 - ..master)" $2 $3 $4 }
+function bdiff() { hg diff -r "ancestor($1, master)" -r "$1" $2 $3 $4 }
 
 alias psc="ps -C"
 alias psfg="ps -ylfC"
