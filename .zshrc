@@ -51,16 +51,6 @@ wc=`Cr 4`
 PS1="$wc%n$n$at$wc%m $err$wc%~>$n "
 unset n b Cr uc hc wc tc tty at r y gr
 
-# make ls looks nice
-if [ -f ~/.dircolors ]; then
-    if [ -x "$(whence -c gdircolors)" ]; then
-        eval $(gdircolors ~/.dircolors)
-    else
-        eval $(dircolors ~/.dircolors)
-    fi
-fi
-#export LSCOLORS="Cxfxcxdxbxegedabagacad"
-
 fpath=(~/.zsh.d $fpath)
 
 # automatically remove duplicates from these arrays
@@ -192,7 +182,7 @@ esac
 
 # Search file, containing string in name
 #function ff() { find . -type f -iname '*'$*'*' -ls ; }
-function ff() { ls -lh **/*$** ; }
+function ff() { ls -lhd **/*$** ; }
 
 # rename file to lowercase
 function lowercase()

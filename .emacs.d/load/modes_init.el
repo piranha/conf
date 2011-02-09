@@ -103,7 +103,7 @@
 (dolist (hook hooks-want-short-lines)
   (add-hook hook 'auto-fill-mode))
 
-;; FIXME/TODO highlighting
+;; highlighting of FIXME/TODO
 (el-get-add
  (:name fic-ext-mode
   :features fic-ext-mode
@@ -123,8 +123,9 @@
 (el-get-add
  (:name yaml-mode))
 
-;; (el-get-add
-;;  (:name lua-mode))
+(setq save-abbrevs nil)
+(el-get-add
+ (:name lua-mode))
 
 (el-get-add
  (:name clevercss))
@@ -222,11 +223,6 @@
 
 (el-get-add
  (:name coffee-mode))
-  ;; :after (lambda ()
-  ;;          (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
-  ;;          (add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
-  ;;          (setq coffee-js-mode 'javascript-mode)
-  ;;          (define-key coffee-mode-map (kbd "C-m") 'newline-maybe-indent))))
 
 ;; Snippets
 
@@ -308,7 +304,6 @@
                    ("Generic git project"
                     :root-contains-files (".git")))))))
 
-
 ;; smex
 (el-get-add
  (:name smex
@@ -366,3 +361,13 @@
            (add-to-list 'whole-line-or-region-extensions-alist
                         '(comment-dwim whole-line-or-region-comment-dwim))
            (whole-line-or-region-mode))))
+
+;; smerge
+(defun sm-try-smerge ()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-mode 1))))
+
+(add-hook 'find-file-hook 'sm-try-smerge t)
+(setq smerge-command-prefix (kbd "C-c ]"))

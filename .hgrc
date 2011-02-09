@@ -48,7 +48,7 @@ pager=
 purge=
 record=
 rebase=
-zeroconf=
+#zeroconf=
 bookmarks=
 extdiff=
 inotify=!
@@ -57,6 +57,7 @@ share=
 transplant=
 relink=
 schemes=
+parentrevspec=
 
 shrink=~/dev/hg/hg/contrib/shrink-revlog.py
 perf=~/dev/hg/hg/contrib/perf.py
@@ -70,13 +71,13 @@ hgactivity=~/dev/hg/hgactivity/activity.py
 #index=~/dev/hg/indexes-extension/indexes/
 qimprovements=~/dev/hg/qimprovements/qimprovements.py
 #tasks = ~/dev/hg/hgtasks/hgext/tasks.py
-hg-git = ~/dev/hg/hg-git/hggit/
+#hg-git = ~/dev/hg/hg-git/hggit/
 histedit = ~/dev/hg/histedit/hg_histedit.py
 #hgkeychain=
 artemis = ~/dev/hg/artemis/artemis.py
 review = ~/dev/hg/hg-review/review/
-hg-dotlog = ~/dev/hg/hg-dotlog/dotlog.py
-graphviz = ~/dev/hg/graphviz/graphviz.py
+#hg-dotlog = ~/dev/hg/hg-dotlog/dotlog.py
+#graphviz = ~/dev/hg/graphviz/graphviz.py
 
 [diff]
 git = True
@@ -96,10 +97,12 @@ method = sendmail
 
 [pager]
 pager = LESS='FRQX' less
-attend = annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, cat, ., /
+attend = help, annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, wlog, cat, ., /
 
 [alias]
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {tags} {author|person}: {desc|firstline}\n' -l 10
+blog = !hg slog -r "reverse(..$1 - ..master)" -l 500
+bdiff = !hg diff -r "ancestor($1, master)" -r "$1"
 . = slog
 sglog = glog --style ~/.hgconcise -l 10
 / = sglog
@@ -122,6 +125,9 @@ p = ssh://piranha.org.ua/hg/
 p+http = http://hg.piranha.org.ua/
 s = ssh://sapientisat.org/
 w = file:~/dev/web/
+h = file:~/dev/hg/
+pl = ssh://code.paylogic.eu//var/hg/
+u = ssh://code.paylogic.eu//var/hg/users/alexander/
 
 [tasks]
 auto.track.new = True

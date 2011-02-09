@@ -38,8 +38,7 @@ suitable for binding to keys."
 (let ((default-directory "~/.emacs.d/packages/"))
   (normal-top-level-add-subdirs-to-load-path))
 
-(when (file-exists-p "~/.secrets.el")
-  (load-file "~/.secrets.el"))
+(load "~/.secrets.el" t)
 
 ;;; ELPA
 (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
