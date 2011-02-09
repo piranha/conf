@@ -5,7 +5,7 @@
 " Thanks to all, who has helped me in creation, especially to:
 " Max Krasilnikov
 
-" Settings {{{
+" Settings
 set paste
 " To be secure & Vi nocompatible
 set secure nocompatible
@@ -16,17 +16,13 @@ filetype plugin on
 
 " For Python
 let python_highlight_all = 1
-"au FileType python source ~/.vim/scripts/python.vim
 " SmartIndent
 autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
-" Remove trailing whitespaces
-autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
 
-" History and viminfo settings {{{
+" History and viminfo settings
 set history=10000
 if has("viminfo")
-	if filewritable(expand("$HOME/.vim/viminfo")) == 1 || 
-				\ filewritable(expand("$HOME/.vim/")) == 2
+	if filewritable(expand("$HOME/.vim/viminfo")) == 1 || filewritable(expand("$HOME/.vim/")) == 2
 		set viminfo=!,%,'5000,\"10000,:10000,/10000,n~/.vim/viminfo
 	else
 		set viminfo=
@@ -34,29 +30,21 @@ if has("viminfo")
 endif
 " Don't save backups of files.
 set nobackup
-" }}}
 
-" Status line settings {{{
-" Display a status-bar.
+" Display a status bar.
 set laststatus=2
 if has("statusline")
 	set statusline=%5*%0*%<%f\ %3*%m%1*%r%0*\ %2*%y%4*%w%0*%=[%b\ 0x%B]\ \ %8l,%10([%c%V/%{strlen(getline(line('.')))}]%)\ %P
 endif
-" }}}
 
-
-" The cursor is kept in the same column (if possible).  This applies to the
-" commands: CTRL-D, CTRL-U, CTRL-B, CTRL-F, "G", "H", "M", "L", , and to the
-" commands "d", "<<" and ">>" with a linewise operator, with "%" with a count
-" and to buffer changing commands (CTRL-^, :bnext, :bNext, etc.).  Also for an
-" Ex command that only has a line number, e.g., ":25" or ":+".
+" The cursor is kept in the same column (if possible).
 set nostartofline
 
 " Automatically setting options in various files
 set modeline
 
 " Available TAGS files
-set tags=./TAGS,./tags,tags
+set tags=./TAGS,./tags,tags,~/TAGS
 
 " Don't add EOF at end of file
 set noendofline
@@ -78,9 +66,6 @@ set shiftwidth=4
 set softtabstop=4
 set smarttab
 set expandtab
-
-" Need more undolevels ??
-" (default 100, 1000 for Unix, VMS, Win32 and OS/2)
 set undolevels=1000
 
 " Settings for mouse (gvim under Xwindows)
@@ -120,9 +105,8 @@ let g:fold_long_lines=300
 "set backspace=indent,eol,start      
 set   backspace=2
 
-" }}}
 
-" Keybord mappings {{{
+" Keybord mappings
 "
 " Deny annoying help!
 map <F1> <Esc>
@@ -142,17 +126,6 @@ set remap
 map <C-O><C-O> :split 
 imap <C-O><C-O> <Esc>:split 
 
-" Open new window with the file ~/.zshrc (my shell configuration file)
-map <C-O><C-T> :split ~/.zshrc<CR>
-imap <C-O><C-T> <Esc>:split ~/.zshrc<CR>
-
-" Open new window with file ~/.vimrc (ViM configuration file)
-map <C-O><C-K> :split ~/.vimrc<CR>
-imap <C-O><C-K> <Esc>:split ~/.vimrc<CR>
-" Open new window with dir ~/.vim (ViM configuration dir)
-map <C-O><C-V> :split ~/.vim<CR>
-imap <C-O><C-V> <Esc>:split ~/.vim<CR>
-
 " Safe delete line (don't add line to registers)
 ":imap <C-D> <Esc>"_ddi
 imap <C-D> <Esc>:call SafeLineDelete()<CR>i
@@ -162,48 +135,7 @@ vmap S y/<C-R>=escape(@",'/\')<CR>
 
 map <F5> :set hls!<bar>set hls?<CR>
 
-"Tabs
-map gn :tabnew<CR>
-map gc :tabclose<CR>
-map <A-1> :tabfirst<CR>
-map <A-2> :tabfirst<CR>gt
-map <A-3> :tabfirst<CR>:tabn 3<CR>
-map <A-4> :tabfirst<CR>:tabn 4<CR>
-map <A-5> :tabfirst<CR>:tabn 5<CR>
-map <A-6> :tabfirst<CR>:tabn 6<CR>
-map <A-7> :tabfirst<CR>:tabn 7<CR>
-map <A-8> :tabfirst<CR>:tabn 8<CR>
-map <A-9> :tabfirst<CR>:tabn 9<CR>
-map <A-0> :tabfirst<CR>:tabn 10<CR>
-
-" Encoding {{{
-
-menu Encoding.koi8-r       :e! ++enc=koi8-r<CR>
-menu Encoding.windows-1251 :e! ++enc=cp1251<CR>
-menu Encoding.ibm-866      :e! ++enc=ibm866<CR>
-menu Encoding.utf-8        :e! ++enc=utf-8 <CR>
-set wildmenu
-set wcm=<Tab>
-map <C-C> :emenu Encoding.<TAB>
-
-"}}}
-
-map <Leader>re :help regexpref<cr>
-
-map <F9> <Esc>:1<CR>/^$<CR>o--=off<CR>piranha<CR><CR><Up>
-
-"}}}
-
-" Autocomands for ~/.vimrc {{{
-augroup VimConfig
-	autocmd!
-" Reread configuration of ViM if file ~/.vimrc is saved
-	autocmd BufWritePost ~/.vimrc	so ~/.vimrc | exec "normal zv"
-	autocmd BufWritePost vimrc   	so ~/.vimrc | exec "normal zv"
-augroup END
-" }}}
-
-" Colors {{{
+" Colors
 
 colorscheme delek
 "colorscheme elflord
@@ -212,12 +144,10 @@ colorscheme delek
 hi StatusLine   term=NONE cterm=NONE ctermfg=white  ctermbg=blue
 hi StatusLineNC term=NONE cterm=NONE ctermfg=black  ctermbg=white
 
-set ft=conf
-"syn on
+cmap w!! w !sudo tee % >/dev/null
+cmap x!! x !sudo tee % >/dev/null
+nmap ; :
 
-" }}}
-
-" Modeline {{{
+" Modeline
 " vim:set ts=4:
 " vim600:fdm=marker fdl=0 fdc=3 vb:
-" }}}
