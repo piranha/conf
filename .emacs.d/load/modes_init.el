@@ -36,7 +36,12 @@
 ;; store recent files list
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
-(global-set-key (kbd "C-c C-r") 'recentf-open-files)
+(global-set-key (kbd "C-c C-f")
+                '(lambda ()
+                   (interactive)
+                   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+                       (message "Opening file...")
+                     (message "Aborting"))))
 
 ;; I hate blinking
 (if (fboundp 'blink-cursor-mode)
@@ -57,7 +62,9 @@
  ido-enable-flex-matching t
  ido-show-dot-for-dired t
  ido-auto-merge-work-directories-length -1 ; disable auto-merging
- ido-confirm-unique-completion t)
+ ido-confirm-unique-completion t
+ ido-ignore-files '("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"
+                    "\\.pyc$" "\\.6$" "\\.o$"))
 
 (winner-mode 1) ;; window configuration undo/redo
 
@@ -67,7 +74,7 @@
   :after (lambda () (global-pointback-mode))))
 
 (require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward)
+(setq uniquify-buffer-name-style 'reverse)
 
 ;; saving place in file
 (require 'saveplace)
@@ -145,7 +152,10 @@
 
 (eval-after-load "django-html-mode"
   '(progn
-     (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)))
+     (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)
+     (define-key django-html-mode-map (kbd "C-t") "{%  %}\C-b\C-b\C-b")
+     (define-key django-html-mode-map (kbd "M-t") "{{  }}\C-b\C-b\C-b")
+     ))
 
 (eval-after-load "python"
   '(progn
@@ -314,7 +324,6 @@
            (smex-auto-update)
            (global-set-key (kbd "M-x") 'smex)
            (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-           (global-set-key (kbd "C-c M-x") 'smex-update-and-run)
            (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))))
 
 ;; sudo
@@ -353,14 +362,24 @@
  (:name whole-line-or-region
   :features whole-line-or-region
   :after (lambda ()
-           (defun whole-line-or-region-comment-dwim (prefix)
-             "Call `comment-dwim' on current region or current line."
+           (defun whole-line-kill-region-or-word-backward (prefix)
+             "Kill (cut) region or just a single word backward"
              (interactive "*p")
-             (whole-line-or-region-call-with-prefix 'comment-dwim prefix nil t))
+             (if (not (and mark-active (/= (point) (mark))))
+                 (subword-backward-kill prefix)
+               (whole-line-or-region-call-with-region 'kill-region prefix t)))
 
-           (add-to-list 'whole-line-or-region-extensions-alist
-                        '(comment-dwim whole-line-or-region-comment-dwim))
+           (setq whole-line-or-region-extensions-alist
+                 '((comment-dwim whole-line-or-region-comment-dwim)
+                   (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
+                   (kill-region whole-line-kill-region-or-word-backward nil)
+                   (kill-ring-save whole-line-or-region-kill-ring-save nil)
+                   (yank whole-line-or-region-yank nil)))
+
            (whole-line-or-region-mode))))
+
+(el-get-add
+ (:name browse-kill-ring))
 
 ;; smerge
 (defun sm-try-smerge ()
@@ -371,3 +390,6 @@
 
 (add-hook 'find-file-hook 'sm-try-smerge t)
 (setq smerge-command-prefix (kbd "C-c ]"))
+
+(el-get-add
+ (:name rudel))

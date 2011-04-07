@@ -83,3 +83,6 @@
 (if (eq system-type 'darwin)
     (setq ns-extended-platform-support-mode t
           ns-command-modifier 'meta))
+
+(add-hook 'after-save-hook
+  'executable-make-buffer-file-executable-if-script-p)

@@ -60,8 +60,6 @@
 
 
 (global-set-key (kbd "<f1>") (fun-for-bind toggle-file "~/org/life.org"))
-(global-set-key (kbd "<f2>") (fun-for-bind toggle-file "~/dev/work/core2.org"))
-(global-set-key (kbd "<f3>") (fun-for-bind toggle-file "~/org/hg.org"))
 
 (autoload 'remember "remember" "Remember note")
 (global-set-key (kbd "M-R") 'remember)

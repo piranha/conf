@@ -44,7 +44,8 @@
   :after (lambda () (global-set-key (kbd "C-M-y") 'kill-ring-search))))
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
-(global-set-key (kbd "<f11>") 'jabber-activity-switch-to)
+(global-set-key (kbd "C-M--") 'flymake-goto-prev-error)
+(global-set-key (kbd "C-M-=") 'flymake-goto-next-error)
 
 ;; windows
 (global-set-key (kbd "M-`") 'other-frame)
