@@ -32,6 +32,7 @@
 (global-set-key (kbd "C-a") 'beginning-of-line-dwim)
 (global-set-key (kbd "<home>") 'beginning-of-line-dwim)
 
+(global-set-key (kbd "M-v") 'yank) ;; jumpcut support
 (global-set-key (kbd "M-Y") (lambda (&optional arg)
                               (interactive "*p")
                               (yank-pop (- arg))))
