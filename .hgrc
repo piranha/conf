@@ -8,6 +8,9 @@ ignore=~/.hgignore
 ssh = ssh -C
 merge = internal:merge
 
+[web]
+cacerts = /etc/hg-dummy-cert.pem
+
 [hooks]
 #commit.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
 #changegroup.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
@@ -48,8 +51,8 @@ pager=
 purge=
 record=
 rebase=
-#zeroconf=
-bookmarks=
+zeroconf=
+#bookmarks=
 extdiff=
 inotify=!
 convert=
@@ -58,6 +61,9 @@ transplant=
 relink=
 schemes=
 parentrevspec=
+
+curbookmark = ~/dev/hg/curbookmark.py
+remote-bookmarks = ~/dev/hg/remote-bookmarks/remote-bookmarks.py
 
 shrink=~/dev/hg/hg/contrib/shrink-revlog.py
 perf=~/dev/hg/hg/contrib/perf.py
@@ -75,7 +81,7 @@ qimprovements=~/dev/hg/qimprovements/qimprovements.py
 histedit = ~/dev/hg/histedit/hg_histedit.py
 #hgkeychain=
 artemis = ~/dev/hg/artemis/artemis.py
-review = ~/dev/hg/hg-review/review/
+#review = ~/dev/hg/hg-review/review/
 #hg-dotlog = ~/dev/hg/hg-dotlog/dotlog.py
 #graphviz = ~/dev/hg/graphviz/graphviz.py
 
@@ -101,14 +107,15 @@ attend = help, annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sgl
 
 [alias]
 slog = log --template '{date|shortdate} [{rev}:{node|short}] {tags} {author|person}: {desc|firstline}\n' -l 10
-blog = !hg slog -r "reverse(..$1 - ..master)" -l 500
-bdiff = !hg diff -r "ancestor($1, master)" -r "$1"
+blog = !$HG slog -r "reverse(..$1 - ..master)" -l 500
+bdiff = !$HG diff -r "ancestor($1, master)" -r "$1"
 . = slog
 sglog = glog --style ~/.hgconcise -l 10
 / = sglog
 wlog = log --style ~/.hgconcise -l 10
 sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
+sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {tags} {author|person}: {desc|firstline}\n'
 p = log -v --style ~/.hgconcise -p -r
 nudge = push --rev .
 sqr = summary -q --remote
@@ -118,7 +125,9 @@ cm = ci -m
 churn = churn --aliases ~/.churnaliases
 activity = activity --aliases ~/.churnaliases
 notreleased = / -r "reverse(not ancestors(tagged()))"
-release = bookmark -f release --noswitch
+release = hg bookmark -f release
+fixed = resolve -m
+pb = push -B . -f
 
 [schemes]
 p = ssh://piranha.org.ua/hg/
@@ -131,3 +140,6 @@ u = ssh://code.paylogic.eu//var/hg/users/alexander/
 
 [tasks]
 auto.track.new = True
+
+[paths]
+release = pl://stable/paylogic/release
