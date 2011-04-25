@@ -1,6 +1,6 @@
 # -*- mode: sh -*-
 # zsh configuration
-# (c) 2003-2009 Alexander Solovyov
+# (c) 2003-2011 Alexander Solovyov
 # piranha AT piranha.org.ua
 #
 # Thanks to:
@@ -78,6 +78,11 @@ setopt printexitvalue
 REPORTTIME=5
 watch=(notme root)
 
+# Loading builtins
+autoload -U zmv
+# load on reference
+zmodload -a zsh/zpty zpty
+
 # ZLE
 bindkey -e
 bindkey "[2~" transpose-words
@@ -86,19 +91,11 @@ bindkey "[1~" beginning-of-line
 bindkey "[4~" end-of-line
 bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
-bindkey '^[z' delete-to-char
 bindkey '^[[5D' emacs-backward-word
 bindkey '^[[5C' emacs-forward-word
 # for rxvt
 bindkey "\e[8~" end-of-line
 bindkey "\e[7~" beginning-of-line
-
-
-# Loading builtins
-zmodload zsh/deltochar
-autoload -U zmv
-# load on reference
-zmodload -a zsh/zpty zpty
 
 # press meta-e for editing command line in $EDITOR or $VISUAL
 autoload -U edit-command-line
@@ -106,7 +103,7 @@ zle -N edit-command-line
 bindkey '\ee' edit-command-line
 
 autoload -U select-word-style
-select-word-style Normal
+select-word-style normal
 # don't contains -_/= - and thus breaks words on them
 zstyle ':zle:*' word-chars '*?.[]~&;!#$%^(){}<>'
 
@@ -181,44 +178,12 @@ esac
 
 
 # Search file, containing string in name
-#function ff() { find . -type f -iname '*'$*'*' -ls ; }
 function ff() { ls -lhd **/*$** ; }
 
 # rename file to lowercase
 function lowercase()
 {
     zmv "($1)" '${(L)1}'
-}
-
-function isomake()
-{
-	if [ -z "$1" ]; then
-		echo "isomake: first parameter - iso-file name"
-		echo "isomake: second parameter - input dir/file name"
-	else
-		mkisofs -v -J -r -o $1 $2
-	fi
-}
-
-function apt-show()
-{
-    if [ -z "$1" ]; then
-        echo "First argument - name of package"
-    else
-        apt-cache show $1|egrep --color -v \(^Size\|^MD5sum\|^Filename\|^Suggests\|^SHA\|^Architecture\|^Maintainer\|^Section\|^Priority\)
-    fi
-}
-
-# tail -f, possibly colorized
-function t()
-{
-    if [ -x "`whence -c ccze`" ]; then
-        tail -f $1 | ccze -A
-    elif [ -x "`whence -c colorize`"]; then
-        tail -f $1 | colorize
-    else
-        tail -f $1
-    fi
 }
 
 function ram()
@@ -285,7 +250,7 @@ if [ -x "`whence -c emacsclient`" ]; then
         fi
     }
     alias et="emacsclient -t"
-    export ALTERNATE_EDITOR="emacs"
+    export ALTERNATE_EDITOR="vim"
 else
     alias e=$EDITOR
 fi
@@ -307,6 +272,21 @@ alias la="ls -lA"
 alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
 
+# ZSH Directory Bookmarks
+alias m1='alias g1="cd `pwd`"'
+alias m2='alias g2="cd `pwd`"'
+alias m3='alias g3="cd `pwd`"'
+alias m4='alias g4="cd `pwd`"'
+alias m5='alias g5="cd `pwd`"'
+alias m6='alias g6="cd `pwd`"'
+alias m7='alias g7="cd `pwd`"'
+alias m8='alias g8="cd `pwd`"'
+alias m9='alias g9="cd `pwd`"'
+alias mdump='alias | awk "/^g[0-9]/ { print \"alias \" \$0 }" > ~/.bookmarks'
+alias lm='alias | grep "^g[0-9]"'
+touch ~/.bookmarks
+source ~/.bookmarks
+
 # Other
 alias m="mutt"
 alias rm="rm -f"
@@ -315,7 +295,6 @@ alias mc="mc -acx"
 alias sd="screen -D -r"
 alias l=$PAGER
 alias g="egrep -i --color"
-function gr() { egrep -i --color -r $1 . }
 alias h="head"
 alias p="ping"
 alias df="df -h"
@@ -332,18 +311,20 @@ alias wa="wajig"
 alias s="mdfind -name"
 alias ri="ri -f ansi"
 alias -g E='2>&1'
-alias rcp="rsync -av -P -e ssh"
 alias clive="noglob clive"
 alias preview='groff -Tps | open -f -a Preview'
 alias depyc='noglob find . -name *.pyc -delete'
 alias ve='virtualenv --distribute --no-site-packages'
 alias wget='wget --no-check-certificate'
+alias ho="sudo vim /etc/hosts"
+
+alias pc="rsync -P"
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
 function hgrc() { vim $(hg root)/.hg/hgrc }
-function blog() { hg slog -l 500 -r "reverse(..$1 - ..master)" $2 $3 $4 }
-function bdiff() { hg diff -r "ancestor($1, master)" -r "$1" $2 $3 $4 }
+function blog() { hg slog -l 500 -r "reverse(..'$1' - ..master)" $2 $3 $4 }
+function bdiff() { hg diff -r "ancestor('$1', master)" -r "$1" $2 $3 $4 }
 
 alias psc="ps -C"
 alias psfg="ps -ylfC"
@@ -354,6 +335,15 @@ function mv() {
         /bin/mv $1 .
     else
         /bin/mv "$@"
+    fi
+}
+
+function rtun() {
+    if [ -z $1 ]; then
+        echo "Usage: rtunnel PORT [DESTPORT]"
+    else
+        echo "sapientisat.org:${2-$1}"
+        ssh -q -f -N -R 0.0.0.0:${2-$1}:localhost:$1 sapientisat.org > /dev/null 2&>1
     fi
 }
 
