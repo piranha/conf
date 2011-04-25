@@ -334,6 +334,7 @@ function mv() {
 function rtun() {
     if [ -z $1 ]; then
         echo "Usage: rtun PORT [DESTPORT]"
+        echo "Setup tunnel from remote host to local; show off local work"
     else
         DPORT=${2-$1}
         echo "sapientisat.org:$DPORT"
