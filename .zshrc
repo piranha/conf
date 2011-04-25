@@ -290,7 +290,6 @@ source ~/.bookmarks
 # Other
 alias m="mutt"
 alias rm="rm -f"
-alias grep="egrep"
 alias mc="mc -acx"
 alias sd="screen -D -r"
 alias l=$PAGER
@@ -299,13 +298,8 @@ alias h="head"
 alias p="ping"
 alias df="df -h"
 alias bc="bc -l"
-alias slrn="slrn --nntp -h localhost"
-alias ml="ledit -h ~/.mldonkey_history -x nc localhost 4000"
-alias myapg="apg -n 8 -x 9 -M NCL -s"
-alias yapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo"
-alias -g C="|ccze -A"
+alias myapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo"
 alias rezsh="source ~/.zshrc"
-alias cal="cal -m"
 alias apt="noglob sudo apt-get"
 alias wa="wajig"
 alias s="mdfind -name"
@@ -317,7 +311,6 @@ alias depyc='noglob find . -name *.pyc -delete'
 alias ve='virtualenv --distribute --no-site-packages'
 alias wget='wget --no-check-certificate'
 alias ho="sudo vim /etc/hosts"
-
 alias pc="rsync -P"
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
@@ -340,10 +333,11 @@ function mv() {
 
 function rtun() {
     if [ -z $1 ]; then
-        echo "Usage: rtunnel PORT [DESTPORT]"
+        echo "Usage: rtun PORT [DESTPORT]"
     else
-        echo "sapientisat.org:${2-$1}"
-        ssh -q -f -N -R 0.0.0.0:${2-$1}:localhost:$1 sapientisat.org > /dev/null 2&>1
+        DPORT=${2-$1}
+        echo "sapientisat.org:$DPORT"
+        ssh -q -f -N -R 0.0.0.0:$DPORT:localhost:$1 sapientisat.org > /dev/null 2&>1
     fi
 }
 
