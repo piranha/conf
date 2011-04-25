@@ -1,0 +1,23 @@
+[user]
+    email = alexander@solovyov.net
+    name = Alexander Solovyov
+[alias]
+    co = checkout
+    st = status -sb
+    ci = commit -a
+    cm = commit -a -m
+    p = log -p
+    pl = log -p HEAD@{1}..HEAD
+    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit
+    ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit HEAD@{1}..HEAD
+    w = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit
+    wl = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit HEAD@{1}..HEAD
+    serve = daemon --reuseaddr --verbose  --base-path=. --export-all
+[color]
+    diff = auto
+    interactive = auto
+    status = auto
+[core]
+	excludesfile = /Users/piranha/.gitignore
+[branch]
+    autosetupmerge = true
