@@ -234,6 +234,7 @@
   '(progn
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
 
+;; argh, this one wants 'npm install formidable'
 (el-get-add
  (:name jshint-mode
   :type git
