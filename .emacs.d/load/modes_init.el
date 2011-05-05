@@ -87,7 +87,7 @@
 
 (require 'whitespace)
 (setq whitespace-style '(face trailing tabs lines-tail))
-(setq whitespace-line-column 120)
+(setq whitespace-line-column 80)
 (set-face-attribute 'whitespace-line nil
                     :foreground 'unspecified
                     :background "yellow")
@@ -164,6 +164,11 @@
 (add-hook 'python-mode-hook (lambda () (setq imenu-create-index-function
                                         'python-imenu-create-index)))
 
+(add-hook 'python-mode-hook
+          (lambda ()
+            (if (string-prefix-p "/Users/piranha/dev/work" (buffer-file-name))
+                (set (make-local-variable 'whitespace-line-column) 120))))
+
 ;;;;;;;;;;
 ;; Flymake
 ;;;;;;;;;;
@@ -229,10 +234,22 @@
   '(progn
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
 
+(el-get-add
+ (:name jshint-mode
+  :type git
+  :url "https://github.com/daleharvey/jshint-mode.git"
+  :features flymake-jshint
+  :after (lambda () (add-hook 'js-mode-hook '(lambda () (flymake-mode 1))))))
+
 ;; Coffee
 
 (el-get-add
  (:name coffee-mode))
+
+(eval-after-load "coffee-mode"
+  '(progn
+     (define-key coffee-mode-map (kbd "C-]") "@$.")
+     ))
 
 ;; Snippets
 
