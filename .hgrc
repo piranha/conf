@@ -7,6 +7,7 @@ username = Alexander Solovyov <alexander@solovyov.net>
 ignore=~/.hgignore
 ssh = ssh -C
 merge = internal:merge
+usehttp2 = True
 
 [web]
 cacerts = /etc/hg-dummy-cert.pem
@@ -52,7 +53,6 @@ purge=
 record=
 rebase=
 zeroconf=
-#bookmarks=
 extdiff=
 inotify=!
 convert=
@@ -62,8 +62,9 @@ relink=
 schemes=
 parentrevspec=
 
-curbookmark = ~/dev/hg/curbookmark.py
+hgpaylogic = ~/dev/hg/hgpaylogic/
 remote-bookmarks = ~/dev/hg/remote-bookmarks/remote-bookmarks.py
+hgstash = ~/dev/hg/hgstash/hgstash.py
 
 shrink=~/dev/hg/hg/contrib/shrink-revlog.py
 perf=~/dev/hg/hg/contrib/perf.py
@@ -74,16 +75,14 @@ qup=~/dev/hg/qup.py
 rdiff=~/dev/hg/rdiff/rdiff.py
 #pbranch=~/dev/hg/hgext/pbranch.py
 hgactivity=~/dev/hg/hgactivity/activity.py
-#index=~/dev/hg/indexes-extension/indexes/
 qimprovements=~/dev/hg/qimprovements/qimprovements.py
-#tasks = ~/dev/hg/hgtasks/hgext/tasks.py
 #hg-git = ~/dev/hg/hg-git/hggit/
 histedit = ~/dev/hg/histedit/hg_histedit.py
-#hgkeychain=
 artemis = ~/dev/hg/artemis/artemis.py
 #review = ~/dev/hg/hg-review/review/
 #hg-dotlog = ~/dev/hg/hg-dotlog/dotlog.py
 #graphviz = ~/dev/hg/graphviz/graphviz.py
+#mergediff = ~/dev/hg/hg-mergediff/mergediff.py
 
 [diff]
 git = True
@@ -103,19 +102,21 @@ method = sendmail
 
 [pager]
 pager = LESS='FRQX' less
-attend = help, annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, wlog, cat, ., /
+attend = help, annotate, diff, glog, incoming, log, outgoing, qdiff, tip, p, sglog, slog, wlog, cat, ., /, mergediff
 
 [alias]
-slog = log --template '{date|shortdate} [{rev}:{node|short}] {tags} {author|person}: {desc|firstline}\n' -l 10
-blog = !$HG slog -r "reverse(..$1 - ..master)" -l 500
+positional = log --template '{$2} {$1} | {date|isodate}\n'
+slog = log --template '{date|shortdate} [{rev}:{node|short}] {tags} {bookmarks} {author|person}: {desc|firstline}\n' -l 10
 bdiff = !$HG diff -r "ancestor($1, master)" -r "$1"
 . = slog
 sglog = glog --style ~/.hgconcise -l 10
+xlog = sglog -r "..'$1' - ..master" -l 500
 / = sglog
+blog = / -r "b($1, master)" -l 500
 wlog = log --style ~/.hgconcise -l 10
 sin = incoming --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
 sout = outgoing --template '{date|shortdate} [{rev}:{node|short}] {author|person}: {desc|firstline}\n'
-sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {tags} {author|person}: {desc|firstline}\n'
+sheads = heads --template '{date|shortdate} [{rev}:{node|short}] {tags} {bookmarks} {author|person}: {desc|firstline}\n'
 p = log -v --style ~/.hgconcise -p -r
 nudge = push --rev .
 sqr = summary -q --remote
@@ -128,6 +129,10 @@ notreleased = / -r "reverse(not ancestors(tagged()))"
 release = hg bookmark -f release
 fixed = resolve -m
 pb = push -B . -f
+
+[revsetalias]
+h = heads(ancestors(tip))
+b($1, $2) = ancestors($1) - ancestors($2)
 
 [schemes]
 p = ssh://piranha.org.ua/hg/
@@ -143,3 +148,6 @@ auto.track.new = True
 
 [paths]
 release = pl://stable/paylogic/release
+
+[paylogic]
+repos = ~/dev/work/paylogic

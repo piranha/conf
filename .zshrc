@@ -316,7 +316,6 @@ alias pc="rsync -P"
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
 function hgrc() { vim $(hg root)/.hg/hgrc }
-function blog() { hg slog -l 500 -r "reverse(..'$1' - ..master)" $2 $3 $4 }
 function bdiff() { hg diff -r "ancestor('$1', master)" -r "$1" $2 $3 $4 }
 
 alias psc="ps -C"

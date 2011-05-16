@@ -6,6 +6,7 @@
     st = status -sb
     ci = commit -a
     cm = commit -a -m
+    dfc = diff --cached
     p = log -p
     pl = log -p HEAD@{1}..HEAD
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit
