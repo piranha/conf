@@ -166,7 +166,8 @@
 
 (add-hook 'python-mode-hook
           (lambda ()
-            (if (string-prefix-p "/Users/piranha/dev/work" (buffer-file-name))
+            (if (or (string-prefix-p "/Users/piranha/dev/work" (buffer-file-name))
+                    (string-prefix-p "/Volumes/paylogic" (buffer-file-name)))
                 (set (make-local-variable 'whitespace-line-column) 120))))
 
 ;;;;;;;;;;
