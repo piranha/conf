@@ -1,153 +1,90 @@
 " Vim config
-" (c) Alexander Solovyov, 2003-2006
-" piranha AT piranha.org.ua
-"
-" Thanks to all, who has helped me in creation, especially to:
-" Max Krasilnikov
+" (c) 2011 Alexander Solovyov
 
-" Settings
-set paste
-" To be secure & Vi nocompatible
-set secure nocompatible
 syntax enable
-set nofen
-filetype on
 filetype plugin on
+filetype indent on
 
-" For Python
-let python_highlight_all = 1
-" SmartIndent
-autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
-
-" History and viminfo settings
-set history=10000
-if has("viminfo")
-	if filewritable(expand("$HOME/.vim/viminfo")) == 1 || filewritable(expand("$HOME/.vim/")) == 2
-		set viminfo=!,%,'5000,\"10000,:10000,/10000,n~/.vim/viminfo
-	else
-		set viminfo=
-	endif
-endif
-" Don't save backups of files.
-set nobackup
+" autoreload vimrc on saved change
+autocmd! bufwritepost .vimrc source %
 
 " Display a status bar.
 set laststatus=2
 if has("statusline")
-	set statusline=%5*%0*%<%f\ %3*%m%1*%r%0*\ %2*%y%4*%w%0*%=[%b\ 0x%B]\ \ %8l,%10([%c%V/%{strlen(getline(line('.')))}]%)\ %P
+    set statusline=%5*%0*%<%f\ %3*%m%1*%r%0*\ %2*%y%4*%w%0*%=[%b\ 0x%B]\ \ %8l,%10([%c%V/%{strlen(getline(line('.')))}]%)\ %P
 endif
 
-" The cursor is kept in the same column (if possible).
-set nostartofline
-
-" Automatically setting options in various files
-set modeline
-
-" Available TAGS files
-set tags=./TAGS,./tags,tags,~/TAGS
-
-" Don't add EOF at end of file
-set noendofline
-
-" Do case insensitive matching
-set ignorecase
-set noautoindent
-" set textwidth=80 
-set showfulltag 
-" set showmatch
-
-set ch=2 bs=2 
-set incsearch report=0 title
-set showcmd showmatch showmode
-
-" Indent of 1 tab with size of 4 spaces
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-set smarttab
-set expandtab
-set undolevels=1000
-
-" Settings for mouse (gvim under Xwindows)
-set nomousefocus mousehide
-
-" Cursor never touch end of screen
-set scrolloff=5
-
-" Make window maximalized
-set winheight=20
-
-" The screen will not be redrawn while executing macros, registers
-" and other commands that have not been typed. To force an updates use |:redraw|.
-set lazyredraw
-
-" time out on mapping after one second, time out on key codes after
-" a tenth of a second
-set timeout timeoutlen=1000 ttimeoutlen=100
+" some settings
+set autoread " reload file when changed outside
+set ruler " show current position
+set wildmenu " better minibuffer autocomplete
+set backspace=indent,eol,start
+set whichwrap+=<,>,h,l
+set ignorecase " when searching
+set smartcase " huh, like Emacs!
+set incsearch
+set showmatch " parentheses
+set mat=1 "How many tenths of a second to blink
+set nostartofline " try to keep position of cursor
+set scrolloff=5 " do not touch end of display
 
 set noerrorbells
 set novisualbell
+set nobackup
+set nowb
+set noswapfile
+set history=10000
+if has("viminfo")
+    if filewritable(expand("$HOME/.vim/viminfo")) == 1 || filewritable(expand("$HOME/.vim/")) == 2
+        set viminfo=!,%,'5000,\"10000,:10000,/10000,n~/.vim/viminfo
+    else
+        set viminfo=
+    endif
+endif
 
-" Set this, if you will open all windows for files specified
-" on the commandline at vim startup.
-"let g:open_all_win=1
-let g:open_all_win=0
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set smarttab
 
-" Settings for folding long lines
-let g:fold_long_lines=300
+set paste
 
-" set list
-" set listchars=tab:>-,trail:-
+" python
+autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 
-" backspace:  '2' allows backspacing" over
-" indentation, end-of-line, and start-of-line.
-" see also "help bs".
-"set backspace=indent,eol,start      
-set   backspace=2
+colorscheme delek
 
+" bindings
 
-" Keybord mappings
-"
-" Deny annoying help!
+let mapleader = ","
+let g:mapleader = ","
+
+nmap <leader>w :w!<cr>
+nmap <leader>x :x<cr>
+nmap <leader>q :q<cr>
+
+map <leader>s :setlocal spell!<cr>
+map <leader>p :setlocal paste!<cr>
+
+" disable annoying help
 map <F1> <Esc>
 imap <F1> <Esc>
 
-" Switching between windows by pressing one time CTRL-X keys.
-noremap <C-X> <C-W><C-W>
+" Smart way to move between windows
+map <C-j> <C-W>j<C-W>_
+map <C-k> <C-W>k<C-W>_
+map <C-h> <C-W>h<C-W>_
+map <C-l> <C-W>l<C-W>_
+map <leader>j <C-W>j
+map <leader>k <C-W>k
+map <leader>h <C-W>h
+map <leader>l <C-W>l
 
-" Tip from http://vim.sourceforge.net/tips/tip.php?tip_id=173
-noremap <C-J> <C-W>j<C-W>_
-noremap <C-K> <C-W>k<C-W>_
-
-" Make Insert-mode completion more convenient:
-imap <C-L> <C-X><C-L>
-
-set remap
-map <C-O><C-O> :split 
-imap <C-O><C-O> <Esc>:split 
-
-" Safe delete line (don't add line to registers)
-":imap <C-D> <Esc>"_ddi
-imap <C-D> <Esc>:call SafeLineDelete()<CR>i
-
-" Search for the current Visual selection.
-vmap S y/<C-R>=escape(@",'/\')<CR>
-
-map <F5> :set hls!<bar>set hls?<CR>
-
-" Colors
-
-colorscheme delek
-"colorscheme elflord
-
-" statusline:  coloring the status line
-hi StatusLine   term=NONE cterm=NONE ctermfg=white  ctermbg=blue
-hi StatusLineNC term=NONE cterm=NONE ctermfg=black  ctermbg=white
+noremap <C-a>      <Home>
+noremap <C-e>      <End>
+inoremap <C-a> <esc>^i
+inoremap <C-e> <esc>$a
 
 cmap w!! w !sudo tee % >/dev/null
 cmap x!! x !sudo tee % >/dev/null
 nmap ; :
-
-" Modeline
-" vim:set ts=4:
-" vim600:fdm=marker fdl=0 fdc=3 vb:
