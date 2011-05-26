@@ -286,6 +286,13 @@ alias mdump='alias | awk "/^g[0-9]/ { print \"alias \" \$0 }" > ~/.bookmarks'
 alias lm='alias | grep "^g[0-9]"'
 touch ~/.bookmarks
 source ~/.bookmarks
+function jm {
+    EPATH=""
+    while [ -z $EPATH ]; do
+        EPATH=$(emacsclient -e "(with-current-buffer (window-buffer (frame-selected-window)) default-directory)")
+    done
+    cd $(echo $EPATH | sed -E 's/(^\")|(\"$)//g')
+}
 
 # Other
 alias m="mutt"
@@ -295,6 +302,7 @@ alias sd="screen -D -r"
 alias l=$PAGER
 alias g="egrep -i --color"
 alias h="head"
+alias t="tail -f"
 alias p="ping"
 alias df="df -h"
 alias bc="bc -l"
