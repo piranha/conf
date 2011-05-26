@@ -210,10 +210,13 @@
 (add-hook 'python-mode-hook '(lambda () (flymake-mode 1)))
 (add-hook 'lua-mode-hook '(lambda () (flymake-mode 1)))
 
+(push '("\\([^:]+\\):\\([0-9]+\\)\\(([0-9]+)\\)?: \\[.\\] \\(.*\\)"
+        1 2 3 4)
+      flymake-err-line-patterns)
+
 (set-face-attribute 'flymake-errline nil
                     :background 'unspecified
                     :underline "orange")
-(setq flymake-gui-warnings-enabled nil)
 
 (el-get-add
  (:name flymake-point
@@ -400,6 +403,10 @@
 (el-get-add
  (:name browse-kill-ring))
 
+;; VC mode
+;; do not ever annoy me with slow file loading time
+(remove-hook 'find-file-hook 'vc-find-file-hook)
+
 ;; smerge
 (defun sm-try-smerge ()
   (save-excursion
@@ -412,3 +419,14 @@
 
 (el-get-add
  (:name rudel))
+
+(el-get-add
+ (:name puppet-mode))
+
+(el-get-add
+ (:name cfengine-mode))
+
+(el-get-add
+ (:name smooth-scroll
+  :after (lambda ()
+           (smooth-scroll-mode t))))
