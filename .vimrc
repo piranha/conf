@@ -53,6 +53,7 @@ set paste
 autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 
 colorscheme delek
+hi StatusLine cterm=bold       ctermbg=blue ctermfg=white guibg=gold guifg=blue
 
 " bindings
 
@@ -84,6 +85,8 @@ noremap <C-a>      <Home>
 noremap <C-e>      <End>
 inoremap <C-a> <esc>^i
 inoremap <C-e> <esc>$a
+
+" TODO: M-; to comment/uncomment
 
 cmap w!! w !sudo tee % >/dev/null
 cmap x!! x !sudo tee % >/dev/null
