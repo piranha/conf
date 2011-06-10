@@ -6,8 +6,8 @@
  ;; If there is more than one, they won't work right.
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
- '(org-agenda-files (quote ("~/org/timesheet.org" "~/org/life.org")))
- '(safe-local-variable-values (quote ((folded-file . t) (test-case-name . openid\.test\.test_consumer) (encoding . utf-8) (prompt-to-byte-compile))))
+ '(org-agenda-files (quote ("~/org/life.org")))
+ '(safe-local-variable-values (quote ((js-indent-level . 2) (encoding . utf-8) (prompt-to-byte-compile))))
  '(semantic-default-submodes (quote (global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
  '(vc-handled-backends nil))
 (custom-set-faces

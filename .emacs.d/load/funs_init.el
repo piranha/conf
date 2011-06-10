@@ -248,6 +248,6 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
   "Copy the current file's path to the clipboard.
   If the current buffer has no file, copy the buffer's default directory."
   (interactive)
-  (let ((path (expand-file-name (or (buffer-file-name) default-directory))))
+  (let ((path (file-truename (or (buffer-file-name) default-directory))))
     (kill-new path)
     (message "%s" path)))

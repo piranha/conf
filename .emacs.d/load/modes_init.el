@@ -155,6 +155,8 @@
      (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)
      (define-key django-html-mode-map (kbd "C-t") "{%  %}\C-b\C-b\C-b")
      (define-key django-html-mode-map (kbd "M-t") "{{  }}\C-b\C-b\C-b")
+     (define-key django-html-mode-map (kbd "C-'") "<%  %>\C-b\C-b\C-b")
+     (define-key django-html-mode-map (kbd "M-'") "<%=  %>\C-b\C-b\C-b")
      ))
 
 (eval-after-load "python"
@@ -253,8 +255,7 @@
 
 (eval-after-load "coffee-mode"
   '(progn
-     (define-key coffee-mode-map (kbd "C-]") "@$.")
-     ))
+     (define-key coffee-mode-map (kbd "C-]") "@$.")))
 
 ;; Snippets
 
