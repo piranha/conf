@@ -431,3 +431,29 @@
  (:name smooth-scroll
   :after (lambda ()
            (smooth-scroll-mode t))))
+
+(el-get-add
+ (:name multi-mode
+  :type http
+  :url "http://www.tex.ac.uk/ctan/support/iso-tex/multi-mode.el"
+  :features multi-mode
+  :after (lambda ()
+           (defun enyo-mode () (interactive)
+             (multi-mode 1
+                         'coffee-mode
+                         '("yaml.parse('''" yaml-mode)
+                         '("''')" coffee-mode)))
+
+           (defun better-django-html-mode () (interactive)
+             (multi-mode 1
+                         'django-html-mode
+                         '("<script type=\"text/javascript\">" js-mode)
+                         '("</script>" django-html-mode)
+                         '("<style type=\"text/css\">" css-mode)
+                         '("</style>" django-html-mode)))
+
+           (delete '("\\.html\\'" . django-html-mode) auto-mode-alist)
+           (add-to-list 'auto-mode-alist '("\\.html\\'" . better-django-html-mode))
+
+           (delete '("\\.html?\\'" flymake-xml-init)
+                   flymake-allowed-file-name-masks))))
