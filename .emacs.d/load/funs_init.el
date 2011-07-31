@@ -1,4 +1,6 @@
 (defalias 'qrr 'query-replace-regexp)
+(defalias 'dtw 'delete-trailing-whitespace)
+(defalias 'rof 'recentf-open-files)
 
 (defun no-scroll-margin ()
   "Set scroll-margin to 0 buffer-locally"
@@ -244,7 +246,7 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
                 `(,(string-to-number time) 0))))
     (+ (car time) (/ (float (cadr time)) 60))))
 
-(defun path-to-clipboard ()
+(defun copy-path-to-clipboard ()
   "Copy the current file's path to the clipboard.
   If the current buffer has no file, copy the buffer's default directory."
   (interactive)

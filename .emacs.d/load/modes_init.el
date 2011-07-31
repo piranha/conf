@@ -35,7 +35,8 @@
 
 ;; store recent files list
 (recentf-mode 1)
-(setq recentf-max-menu-items 25)
+(setq recentf-max-menu-items 2000
+      recentf-max-saved-items 2000)
 (global-set-key (kbd "C-c C-f")
                 '(lambda ()
                    (interactive)
@@ -65,6 +66,7 @@
  ido-confirm-unique-completion t
  ido-ignore-files '("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"
                     "\\.pyc$" "\\.6$" "\\.o$"))
+(defalias 'list-buffers 'ido-switch-buffer)
 
 (winner-mode 1) ;; window configuration undo/redo
 
@@ -115,8 +117,10 @@
  (:name fic-ext-mode
   :features fic-ext-mode
   :after (lambda ()
+           (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "NOTE"))
            (dolist (hook '(python-mode-hook
-                           emacs-lisp-mode-hook))
+                           emacs-lisp-mode-hook
+                           coffee-mode))
              (add-hook hook 'fic-ext-mode)))))
 
 ;; major modes
