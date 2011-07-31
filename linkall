@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+typeset -A mapping
+mapping=(
+    .zshrc .zshrc
+    .editrc .editrc
+    .emacs.d .emacs.d
+    .gitconfig .gitconfig
+    .hgconcise .hgconcise
+    .hgrc .hgrc
+    .vimrc .vimrc
+    DefaultKeyBinding Library/KeyBindings/DefaultKeyBinding.dict
+    ipython_config.py .config/ipython/profile_default/ipython_config.py
+    )
+
+for k in ${(k)mapping}; do
+    if [ -L ~/${mapping[$k]} ]; then
+    else
+        echo "~/${mapping[$k]} -> $k"
+        ln -s ~/conf/$k ~/${mapping[$k]}
+    fi
+done
