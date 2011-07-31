@@ -8,8 +8,14 @@ See http://ipython.scipy.org/moin/IpythonExtensionApi for detailed
 description on what you could do here.
 """
 
+import os
 import IPython.ipapi
 ip = IPython.ipapi.get()
+
+
+def execf(path):
+    ip.ex('execfile("%s")' % os.path.realpath(os.path.expanduser(path)))
+
 
 def main():
     import ipy_stock_completers
@@ -41,5 +47,7 @@ def main():
         ip.ex("from ipipe import *")
     except ImportError:
         pass
+
+    execf('~/.ipython/ipyvenv.py')
 
 main()
