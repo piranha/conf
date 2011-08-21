@@ -54,11 +54,14 @@ autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,
 
 colorscheme delek
 hi StatusLine cterm=bold       ctermbg=blue ctermfg=white guibg=gold guifg=blue
+hi Comment    cterm=NONE ctermfg=darkgray     gui=NONE guifg=red2
+hi Special    cterm=NONE ctermfg=darkred    gui=NONE guifg=deeppink
 
 " bindings
 
 let mapleader = ","
 let g:mapleader = ","
+noremap ; :
 
 nmap <leader>w :w!<cr>
 nmap <leader>x :x<cr>
