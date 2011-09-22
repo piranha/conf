@@ -14,10 +14,10 @@ mapping=(
     .inputrc .inputrc
     )
 
-for k in ${(k)mapping}; do
-    if [ -L ~/${mapping[$k]} ]; then
-    else
-        echo "~/${mapping[$k]} -> $k"
-        ln -s ~/conf/$k ~/${mapping[$k]}
+for src in ${(k)mapping}; do
+    dst=${mapping[$src]}
+    if [ ! -L ~/$dst ]; then
+        echo "~/$dst -> $src"
+        ln -s $PWD/$src ~/$dst
     fi
 done
