@@ -273,15 +273,15 @@ alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
 
 # ZSH Directory Bookmarks
-alias m1='alias g1="cd `pwd`"'
-alias m2='alias g2="cd `pwd`"'
-alias m3='alias g3="cd `pwd`"'
-alias m4='alias g4="cd `pwd`"'
-alias m5='alias g5="cd `pwd`"'
-alias m6='alias g6="cd `pwd`"'
-alias m7='alias g7="cd `pwd`"'
-alias m8='alias g8="cd `pwd`"'
-alias m9='alias g9="cd `pwd`"'
+alias m1='alias g1="cd \"`pwd`\""'
+alias m2='alias g2="cd \"`pwd`\""'
+alias m3='alias g3="cd \"`pwd`\""'
+alias m4='alias g4="cd \"`pwd`\""'
+alias m5='alias g5="cd \"`pwd`\""'
+alias m6='alias g6="cd \"`pwd`\""'
+alias m7='alias g7="cd \"`pwd`\""'
+alias m8='alias g8="cd \"`pwd`\""'
+alias m9='alias g9="cd \"`pwd`\""'
 alias mdump='alias | awk "/^g[0-9]/ { print \"alias \" \$0 }" > ~/.bookmarks'
 alias lm='alias | grep "^g[0-9]"'
 touch ~/.bookmarks
@@ -294,12 +294,20 @@ function jm {
     cd $(echo $EPATH | sed -E 's/(^\")|(\"$)//g')
 }
 
+function l() {
+    if [ $# -gt 0 -a -d $1 ]; then
+        ls $@
+    else
+        $PAGER $@
+    fi
+}
+
 # Other
 alias m="mutt"
 alias rm="rm -f"
 alias mc="mc -acx"
 alias sd="screen -D -r"
-alias l=$PAGER
+#alias l=$PAGER
 alias g="egrep -i --color"
 alias h="head"
 alias t="tail -f"
@@ -314,7 +322,7 @@ alias s="mdfind -name"
 alias ri="ri -f ansi"
 alias -g E='2>&1'
 alias clive="noglob clive"
-alias preview='groff -Tps | open -f -a Preview'
+function preview { man -t $1 | open -f -a Preview }
 alias depyc='noglob find . -name *.pyc -delete'
 alias ve='virtualenv --distribute --no-site-packages'
 alias wget='wget --no-check-certificate'
