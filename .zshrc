@@ -283,7 +283,7 @@ alias m7='alias g7="cd \"`pwd`\""'
 alias m8='alias g8="cd \"`pwd`\""'
 alias m9='alias g9="cd \"`pwd`\""'
 alias mdump='alias | awk "/^g[0-9]/ { print \"alias \" \$0 }" > ~/.bookmarks'
-alias lm='alias | grep "^g[0-9]"'
+alias ml='alias | grep "^g[0-9]"'
 touch ~/.bookmarks
 source ~/.bookmarks
 function jm {
@@ -328,6 +328,7 @@ alias ve='virtualenv --distribute --no-site-packages'
 alias wget='wget --no-check-certificate'
 alias ho="sudo vim /etc/hosts"
 alias pc="rsync -P"
+alias sudo="sudo " # this carries aliases to sudo calls
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
