@@ -102,7 +102,8 @@
         python-mode-hook
         lua-mode-hook
         coffee-mode-hook
-        js-mode-hook))
+        js-mode-hook
+        go-mode-hook))
 (dolist (hook hooks-with-whitespaces) (add-hook hook 'whitespace-mode))
 
 (setq hooks-want-short-lines
@@ -120,13 +121,16 @@
            (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "NOTE"))
            (dolist (hook '(python-mode-hook
                            emacs-lisp-mode-hook
-                           coffee-mode))
+                           coffee-mode-hook))
              (add-hook hook 'fic-ext-mode)))))
 
 ;; major modes
 
 (el-get-add
- (:name markdown-mode))
+ (:name markdown-mode
+  :after (lambda ()
+           (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+           (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))))
 
 (el-get-add
  (:name wikipedia-mode))
@@ -150,6 +154,14 @@
 (el-get-add
  (:name go-mode))
 
+(el-get-add
+ (:name haml-mode))
+
+(el-get-add
+ (:name sass-mode
+  :after (lambda ()
+           (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode)))))
+
 ;;;;;;;;;
 ;; Python
 ;;;;;;;;;
@@ -169,12 +181,6 @@
 
 (add-hook 'python-mode-hook (lambda () (setq imenu-create-index-function
                                         'python-imenu-create-index)))
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            (if (or (string-prefix-p "/Users/piranha/dev/work" (buffer-file-name))
-                    (string-prefix-p "/Volumes/paylogic" (buffer-file-name)))
-                (set (make-local-variable 'whitespace-line-column) 120))))
 
 ;;;;;;;;;;
 ;; Flymake
@@ -196,25 +202,10 @@
                           (file-name-directory buffer-file-name))))
         (list "pyflakes" (list local-file)))))
 
-  (defun flymake-lua-init ()
-    "Invoke luac with '-p' to get syntax checking"
-    (when (buffer-is-local)
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list "luac" (list "-p" local-file)))))
-
   (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init))
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.lua\\'" flymake-lua-init))
-  (push '("^.*luac[0-9.]*\\(.exe\\)?: *\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 2 3 nil 4)
-        flymake-err-line-patterns))
+               '("\\.py\\'" flymake-pyflakes-init)))
 
 (add-hook 'python-mode-hook '(lambda () (flymake-mode 1)))
-(add-hook 'lua-mode-hook '(lambda () (flymake-mode 1)))
 
 (push '("\\([^:]+\\):\\([0-9]+\\)\\(([0-9]+)\\)?: \\[.\\] \\(.*\\)"
         1 2 3 4)
@@ -223,6 +214,9 @@
 (set-face-attribute 'flymake-errline nil
                     :background 'unspecified
                     :underline "orange")
+
+(el-get-add
+ (:name flymake-lua))
 
 (el-get-add
  (:name flymake-point
@@ -244,6 +238,11 @@
   '(progn
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
 
+(add-hook 'js-mode-hook
+          (lambda ()
+            (if (string-prefix-p "/Users/piranha/dev/work" (buffer-file-name))
+                (set (make-local-variable 'js-indent-level) 2))))
+
 ;; argh, this one wants 'npm install formidable'
 (el-get-add
  (:name jshint-mode
@@ -255,11 +254,16 @@
 ;; Coffee
 
 (el-get-add
- (:name coffee-mode))
-
-(eval-after-load "coffee-mode"
-  '(progn
-     (define-key coffee-mode-map (kbd "C-]") "@$.")))
+ (:name coffee-mode
+  :after (lambda ()
+           (add-hook 'coffee-mode-hook
+                     (lambda ()
+                       (define-key coffee-mode-map (kbd "C-]") "@$.")
+                       (if (string-prefix-p "/Users/piranha/dev/work"
+                                            (buffer-file-name))
+                           (progn
+                             (set (make-local-variable 'tab-width) 2)
+                             (set (make-local-variable 'coffee-tab-width) 2))))))))
 
 ;; Snippets
 
@@ -336,6 +340,10 @@
                     :root-contains-files ("index.html" "settings.cfg")
                     :filename-regex ,(regexify-ext-list '(html js css cfg))
                     :exlude-paths '("_build"))
+                   ("webfs"
+                    :root-contains-files ("Cakefile" "config.yaml")
+                    :filename-regex ,(regexify-ext-list '(coffee eco sass yaml json html))
+                    :exclude-paths '(".sass-cache"))
                    ("Generic Mercurial project"
                     :root-contains-files (".hg"))
                    ("Generic git project"
@@ -461,3 +469,35 @@
 
            (delete '("\\.html?\\'" flymake-xml-init)
                    flymake-allowed-file-name-masks))))
+
+;; go
+(add-hook 'go-mode-hook
+          (lambda ()
+            (set (make-local-variable 'whitespace-style)
+                 '(face trailing lines-tail))))
+
+(el-get-add
+ (:name highlight-symbol
+  :after (lambda ()
+           (global-set-key (kbd "C-=") 'highlight-symbol-at-point)
+           (global-set-key (kbd "C-c ]") 'highlight-symbol-next)
+           (global-set-key (kbd "C-c [") 'highlight-symbol-prev))))
+
+(el-get-add
+ (:name less-css-mode
+  :type http
+  :url "http://jdhuntington.com/emacs/less-css-mode.el"
+  :load "less-css-mode.el"))
+
+(el-get-add
+ (:name deft
+  :type http
+  :url "http://jblevins.org/projects/deft/deft.el"
+  :features deft
+  :after (lambda ()
+           (setq deft-directory "~/Dropbox/PlainText/")
+           (setq deft-text-mode 'markdown-mode))))
+
+
+(el-get-add
+ (:name htmlize))
