@@ -6,17 +6,26 @@
     st = status -sb
     ci = commit -a
     cm = commit -a -m
+    com = commit -m
+    df = diff
     dfc = diff --cached
+    dfa = diff HEAD
     p = log -p
     pl = log -p HEAD@{1}..HEAD
+    sl = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit
     ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit HEAD@{1}..HEAD
     w = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit
     wl = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit HEAD@{1}..HEAD
     serve = daemon --reuseaddr --verbose  --base-path=. --export-all
+    b = branch
+    # track localbranch remote/remotebranch
+    track = branch --set-upstream
+    hard = reset --hard HEAD
 [color]
     ui = auto
 [core]
 	excludesfile = /Users/piranha/.gitignore
+	quotepath = false
 [branch]
     autosetupmerge = true
