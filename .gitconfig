@@ -22,6 +22,14 @@
     # track localbranch remote/remotebranch
     track = branch --set-upstream
     hard = reset --hard HEAD
+    sub = submodule
+    map = submodule foreach
+    mag = submodule foreach git
+
+    req = "!f() { git push origin $(git symbolic-ref HEAD) && hub pull-request -h socialabs:$(git symbolic-ref HEAD) \"${1:-$(git log --pretty=format:'%s' -1)}\"; }; f"
+    getm = !git fetch && git branch -f master origin/master
+    comerge = "!f() { target=$(git symbolic-ref HEAD); git co ${1:-master}; git merge $target; }; f"
+
 [color]
     ui = auto
 [core]

@@ -1,4 +1,4 @@
-^.emacs.d/(el-get|jabber|circe|agent|server|snippets|elpa|tramp|packages|.project-roots|url|bookmarks|smex.save|places)
+^.emacs.d/(el-get|jabber|circe|agent|server|snippets|elpa|tramp|packages|.project-roots|url|bookmarks|smex.save|places|history)
 
 syntax: glob
 *.elc

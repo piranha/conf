@@ -1,23 +1,17 @@
 ;; various modes configuration
 
-;(autoload 'gnus "gnus" "Best email client ever" t)
-
 (require 'imenu)
+(setq imenu-auto-rescan t)
 
 (el-get-add
  (:name filladapt
-  :after (lambda () (autoload 'filladapt-mode "filladapt" nil t))))
+  :after (progn (autoload 'filladapt-mode "filladapt" nil t))))
 
 (el-get-add
  (:name grep+
   :features grep+))
 
 (setq tags-file-name (expand-file-name "~/TAGS"))
-
-(el-get-add
- (:name session
-  :after (lambda () (autoload 'session-initialize "session" nil t)
-           (add-hook 'after-init-hook 'session-initialize))))
 
 ;; dired
 (setq
@@ -73,7 +67,7 @@
 (el-get-add
  (:name pointback
   :features pointback
-  :after (lambda () (global-pointback-mode))))
+  :after (progn (global-pointback-mode))))
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
@@ -82,6 +76,16 @@
 (require 'saveplace)
 (setq-default save-place t)
 (setq save-place-file "~/.emacs.d/places")
+
+;; saving history
+(savehist-mode 1)
+(setq savehist-additional-variables
+      '(search-ring
+        regexp-search-ring
+        kill-ring
+        file-name-history
+        command-history
+        shell-command-history))
 
 (which-function-mode)
 
@@ -117,18 +121,20 @@
 (el-get-add
  (:name fic-ext-mode
   :features fic-ext-mode
-  :after (lambda ()
+  :after (progn
            (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "NOTE"))
            (dolist (hook '(python-mode-hook
                            emacs-lisp-mode-hook
-                           coffee-mode-hook))
+                           coffee-mode-hook
+                           go-mode-hook
+                           js-mode-hook))
              (add-hook hook 'fic-ext-mode)))))
 
 ;; major modes
 
 (el-get-add
  (:name markdown-mode
-  :after (lambda ()
+  :after (progn
            (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
            (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))))
 
@@ -159,7 +165,7 @@
 
 (el-get-add
  (:name sass-mode
-  :after (lambda ()
+  :after (progn
            (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode)))))
 
 ;;;;;;;;;
@@ -238,53 +244,43 @@
   '(progn
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
 
-(add-hook 'js-mode-hook
-          (lambda ()
-            (if (string-prefix-p "/Users/piranha/dev/work" (buffer-file-name))
-                (set (make-local-variable 'js-indent-level) 2))))
-
 ;; argh, this one wants 'npm install formidable'
 (el-get-add
  (:name jshint-mode
   :type git
   :url "https://github.com/daleharvey/jshint-mode.git"
   :features flymake-jshint
-  :after (lambda () (add-hook 'js-mode-hook '(lambda () (flymake-mode 1))))))
+  :after (progn (add-hook 'js-mode-hook '(lambda () (flymake-mode 1))))))
 
 ;; Coffee
 
 (el-get-add
  (:name coffee-mode
-  :after (lambda ()
+  :after (progn
            (add-hook 'coffee-mode-hook
                      (lambda ()
-                       (define-key coffee-mode-map (kbd "C-]") "@$.")
-                       (if (string-prefix-p "/Users/piranha/dev/work"
-                                            (buffer-file-name))
-                           (progn
-                             (set (make-local-variable 'tab-width) 2)
-                             (set (make-local-variable 'coffee-tab-width) 2))))))))
+                       (define-key coffee-mode-map (kbd "C-]") "@$."))))))
 
 ;; Snippets
 
 (el-get-add
  (:name yasnippet
-  :after (lambda () (require 'yasnippet nil t)
+  :after (progn (require 'yasnippet nil t)
            (eval-after-load "yasnippet"
              '(progn
                 (global-unset-key (kbd "C-/"))
                 (setq
                  yas/trigger-key "C-/"
                  yas/next-field-key "C-/")
-                (yas/initialize)
-                (yas/load-directory "~/.emacs.d/el-get/yasnippet/snippets/")
-                (yas/load-directory "~/.emacs.d/snippets/"))))))
+                (add-to-list 'yas/snippet-dirs
+                             "~/.emacs.d/snippets/")
+                (yas/initialize))))))
 
 
 ;; highlight parentheses
 (el-get-add
  (:name highlight-parentheses
-  :after (lambda () (autoload 'highlight-parentheses-mode "highlight-parentheses" nil t)
+  :after (progn (autoload 'highlight-parentheses-mode "highlight-parentheses" nil t)
            (dolist (hook '(python-mode-hook
                            emacs-lisp-mode-hook))
              (add-hook hook 'highlight-parentheses-mode)))))
@@ -299,7 +295,7 @@
   :type hg
   :url "http://hg.piranha.org.ua/project-root/"
   :features project-root
-  :after (lambda ()
+  :after (progn
            (global-set-key (kbd "C-c p f") 'project-root-find-file)
            (global-set-key (kbd "C-c p g") 'project-root-grep)
            (global-set-key (kbd "C-c p a") 'project-root-ack)
@@ -353,7 +349,7 @@
 (el-get-add
  (:name smex
   :features smex
-  :after (lambda ()
+  :after (progn
            (setq smex-save-file "~/.emacs.d/smex.save")
            (smex-initialize)
            (smex-auto-update)
@@ -376,17 +372,12 @@
                     nil))))))
 (add-hook 'emacs-lisp-mode-hook 'lambda-elisp-mode-hook)
 
-;; highlight
-(el-get-add
- (:name rainbow-mode
-  :after (lambda () (rainbow-mode))))
-
 ;; breadcrumbs
 (el-get-add
  (:name breadcrumb
   :features breadcrumb
-  :after (lambda ()
-           (global-set-key [?\S- ] 'bc-set) ;; Shift-SPACE
+  :after (progn
+           (global-set-key (kbd "C-'") 'bc-set)
            (global-set-key (kbd "M-j") 'bc-previous)
            (global-set-key (kbd "M-J") 'bc-next)
            (global-set-key (kbd "C-c j") 'bc-goto-current)
@@ -396,7 +387,7 @@
 (el-get-add
  (:name whole-line-or-region
   :features whole-line-or-region
-  :after (lambda ()
+  :after (progn
            (defun whole-line-kill-region-or-word-backward (prefix)
              "Kill (cut) region or just a single word backward"
              (interactive "*p")
@@ -431,17 +422,11 @@
 (setq smerge-command-prefix (kbd "C-c ]"))
 
 (el-get-add
- (:name rudel))
-
-(el-get-add
  (:name puppet-mode))
 
 (el-get-add
- (:name cfengine-mode))
-
-(el-get-add
  (:name smooth-scroll
-  :after (lambda ()
+  :after (progn
            (smooth-scroll-mode t))))
 
 (el-get-add
@@ -449,11 +434,11 @@
   :type http
   :url "http://www.tex.ac.uk/ctan/support/iso-tex/multi-mode.el"
   :features multi-mode
-  :after (lambda ()
+  :after (progn
            (defun enyo-mode () (interactive)
              (multi-mode 1
                          'coffee-mode
-                         '("yaml.parse('''" yaml-mode)
+                         '("YAML.parse('''" yaml-mode)
                          '("''')" coffee-mode)))
 
            (defun better-django-html-mode () (interactive)
@@ -478,15 +463,15 @@
 
 (el-get-add
  (:name highlight-symbol
-  :after (lambda ()
+  :after (progn
            (global-set-key (kbd "C-=") 'highlight-symbol-at-point)
            (global-set-key (kbd "C-c ]") 'highlight-symbol-next)
            (global-set-key (kbd "C-c [") 'highlight-symbol-prev))))
 
 (el-get-add
  (:name less-css-mode
-  :type http
-  :url "http://jdhuntington.com/emacs/less-css-mode.el"
+  :type git
+  :url "https://github.com/purcell/less-css-mode/"
   :load "less-css-mode.el"))
 
 (el-get-add
@@ -494,10 +479,32 @@
   :type http
   :url "http://jblevins.org/projects/deft/deft.el"
   :features deft
-  :after (lambda ()
+  :after (progn
            (setq deft-directory "~/Dropbox/PlainText/")
            (setq deft-text-mode 'markdown-mode))))
 
 
 (el-get-add
  (:name htmlize))
+
+(add-to-list 'auto-mode-alist '("\\.eco\\'" . html-mode))
+
+(el-get-add
+ (:name clojure-mode
+  :after (progn
+           (add-to-list 'auto-mode-alist '("\\.cljs\\'" . clojure-mode)))))
+
+(el-get-add
+ (:name zencoding-mode
+  :after (progn
+           (add-hook 'sgml-mode-hook 'zencoding-mode))))
+
+(add-hook 'html-mode-hook
+          (lambda ()
+            (if (string-prefix-p "/Users/piranha/dev/work"
+                                 (buffer-file-name))
+                (set (make-local-variable 'sgml-basic-offset) 4))
+            (require 'filladapt)
+            (set (make-local-variable 'filladapt-token-table)
+                 (append filladapt-token-table
+                         '(("<li>[ \t]" bullet))))))

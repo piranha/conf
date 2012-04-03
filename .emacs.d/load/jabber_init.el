@@ -34,7 +34,7 @@
      (remove-hook 'jabber-alert-presence-hooks 'jabber-presence-echo)
      (remove-hook 'jabber-alert-info-message-hooks 'jabber-info-echo)
 
-     (when nix
+     (when prh:nix
        (setq jabber-notify-display-time 3)
        (setq jabber-notify-max-length 30)
 

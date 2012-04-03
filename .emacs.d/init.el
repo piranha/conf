@@ -25,7 +25,9 @@ suitable for binding to keys."
   `(lambda () (interactive) (,func ,@args)))
 
 ;; initialize el-get
-(if (not (load "~/.emacs.d/el-get/el-get/el-get" t))
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get/")
+
+(unless (require 'el-get nil t)
     (throw 'not-configured "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
 (setq el-get-sources '())
 (defmacro el-get-add (item)

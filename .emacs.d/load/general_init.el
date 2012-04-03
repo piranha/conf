@@ -1,14 +1,14 @@
 ;; general customizations
 
-(defconst win
+(defconst prh:win
   (eq system-type 'windows-nt)
   "Are we running on Win32 system")
 
-(defconst nix
+(defconst prh:nix
   (not (eq system-type 'windows-nt))
   "Are we running on *nix system")
 
-(defconst graf
+(defconst prh:graf
   (not (eq window-system 'nil))
   "Are we running window system?")
 
@@ -57,7 +57,6 @@
 
 (setq-default
  major-mode 'text-mode          ;; default mode
- save-place t                   ;; save position in files
  case-fold-search t             ;; case INsensitive search
  indent-tabs-mode nil           ;; do not use tabs for indentation
  fill-column 80                 ;; number of chars in line
@@ -77,7 +76,7 @@
 (setq ring-bell-function (lambda () ())) ;; I hate beeps
 
 ;; this should help with console when ^H behaves like backspace
-(if (not graf)
+(unless prh:graf
     (normal-erase-is-backspace-mode))
 
 (if (eq system-type 'darwin)

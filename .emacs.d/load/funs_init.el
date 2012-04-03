@@ -138,20 +138,6 @@ Otherwise return value."
       (plist-get keywords key)
     nil))
 
-(defun wc (region-min region-max)
-  "Word count of whole buffer, if mark is active - of marked region"
-  (interactive "r")
-  (if (and transient-mark-mode mark-active)
-      (message "Word count: %s" (how-many "\\w+" region-min region-max))
-    (message "Word count: %s" (how-many "\\w+" (point-min) (point-max)))))
-
-(defun sc (region-min region-max)
-  "Symbol count of whole buffer, if mark is active - of marked region"
-  (interactive "r")
-  (if (and transient-mark-mode mark-active)
-      (message "Symbol count: %s" (how-many "." region-min region-max))
-    (message "Symbol count: %s" (how-many "." (point-min) (point-max)))))
-
 (defalias 'cal 'calendar)
 
 (defun beginning-of-line-dwim (arg)
@@ -161,57 +147,6 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
 \(move-beginning-of-line arg) instead."
   (interactive "p")
   (if (and (looking-at "^") (= arg 1)) (skip-chars-forward " \t") (move-beginning-of-line arg)))
-
-(defvar selected-symbol)
-
-(setq imenu-auto-rescan t)
-(defun ido-goto-symbol (&optional symbol-list)
-  "Refresh imenu and jump to a place in the buffer using Ido."
-  (interactive)
-  (unless (featurep 'imenu)
-    (require 'imenu nil t))
-  (cond
-   ((not symbol-list)
-    (let ((ido-mode ido-mode)
-          (ido-enable-flex-matching
-           (if (boundp 'ido-enable-flex-matching)
-               ido-enable-flex-matching t))
-          name-and-pos symbol-names position)
-      (unless ido-mode
-        (ido-mode 1)
-        (setq ido-enable-flex-matching t))
-      (while (progn
-               (imenu--cleanup)
-               (setq imenu--index-alist nil)
-               (ido-goto-symbol (imenu--make-index-alist))
-               (setq selected-symbol
-                     (ido-completing-read "Symbol? " symbol-names))
-               (string= (car imenu--rescan-item) selected-symbol)))
-      (unless (and (boundp 'mark-active) mark-active)
-        (push-mark nil t nil))
-      (setq position (cdr (assoc selected-symbol name-and-pos)))
-      (cond
-       ((overlayp position)
-        (goto-char (overlay-start position)))
-       (t
-        (goto-char position)))))
-   ((listp symbol-list)
-    (dolist (symbol symbol-list)
-      (let (name position)
-        (cond
-         ((and (listp symbol) (imenu--subalist-p symbol))
-          (ido-goto-symbol symbol))
-         ((listp symbol)
-          (setq name (car symbol))
-          (setq position (cdr symbol)))
-         ((stringp symbol)
-          (setq name symbol)
-          (setq position
-                (get-text-property 1 'org-imenu-marker symbol))))
-        (unless (or (null position) (null name)
-                    (string= (car imenu--rescan-item) name))
-          (add-to-list 'symbol-names name)
-          (add-to-list 'name-and-pos (cons name position))))))))
 
 (defun toggle-current-window-dedication ()
   (interactive)
@@ -302,3 +237,28 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
       (activate-input-method current))))
 
 (reverse-input-method 'cyrillic-jcuken)
+
+(defun html-end-of-line ()
+  "If there is an HTML tag at the end of the line, then go to start of tag.
+   Otherwise go to the real end of the line."
+  (interactive)
+  (if (or (looking-at ".*>$") ; if we're on a line that ends with a tag
+          (and (= (char-before) 62)
+               (= (point) (save-excursion
+                            (end-of-line)
+                            (point))))) ; or we're at the end of a line
+                                        ; with a tag
+      (let ((where-now (point)))
+        (narrow-to-region
+         (save-excursion
+           (beginning-of-line)
+           (point))
+         (save-excursion
+           (end-of-line)
+           (point)))
+        (end-of-line)
+        (re-search-backward "<" nil t)
+        (if (= (point) where-now)
+            (end-of-line))
+        (widen))
+    (end-of-line)))

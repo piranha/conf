@@ -21,7 +21,7 @@ limit -s
 
 umask 022
 
-export PATH=~/bin:~/.cabal/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=~/bin:/usr/local/go/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 export PAGER="less"
 if [ -x "`whence -c vim`" ]; then
@@ -108,9 +108,15 @@ select-word-style normal
 zstyle ':zle:*' word-chars '*?.[]~&;!#$%^(){}<>'
 
 ######## Completion #######
-#hostsmy=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
+autoload -U compinit
+
+if [ $UID -eq 0 ]; then
+    compinit -i -d ~/.zrootcompdump
+else
+    compinit -i
+fi
+
 hosts=(${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*})
-#???#zstyle ':completion:*:processes' command 'ps -au$USER'
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zcompcache
 zstyle ':completion:*' completer _expand _complete _correct _approximate
@@ -121,6 +127,9 @@ zstyle ':completion:*' max-errors 1 numeric
 # Completing process IDs with menu selection
 zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
+#zstyle ':completion:*:processes' command 'ps -au$USER'
+compdef pkill=kill
+compdef pkill=killall
 
 # cd will never select the parent directory (e.g.: cd ../<TAB>)
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
@@ -145,12 +154,8 @@ compctl -g '*.ltx' + -g '*(-/)' pdflatex
 compctl -g '*.wav' auCDtect
 compctl -g '*.fb2 *.fb2.zip' FBReader
 
-autoload -U compinit
-if [ $UID -eq 0 ]; then
-    compinit -i -d ~/.zrootcompdump
-else
-    compinit -i
-fi
+
+##### end of completion #####
 
 # xterm header
 case $TERM in
@@ -196,15 +201,6 @@ function ram()
             SUM=`expr $i + $SUM`
         done
         echo $SUM
-    fi
-}
-
-function split2flac {
-    if [ -z "$2" ]; then
-        echo "Usage: split2flac cue-file sound-file"
-    else
-        cuebreakpoints $1 | shnsplit -o flac $2
-        cuetag $1 split-track*.flac
     fi
 }
 
@@ -284,8 +280,7 @@ alias m8='alias g8="cd \"`pwd`\""'
 alias m9='alias g9="cd \"`pwd`\""'
 alias mdump='alias | awk "/^g[0-9]/ { print \"alias \" \$0 }" > ~/.bookmarks'
 alias ml='alias | grep "^g[0-9]"'
-touch ~/.bookmarks
-source ~/.bookmarks
+[ -f ~/.bookmarks ] && source ~/.bookmarks
 function jm {
     EPATH=""
     while [ -z $EPATH ]; do
@@ -324,7 +319,6 @@ alias -g E='2>&1'
 alias clive="noglob clive"
 function preview { man -t $1 | open -f -a Preview }
 alias depyc='noglob find . -name *.pyc -delete'
-alias ve='virtualenv --distribute --no-site-packages'
 alias wget='wget --no-check-certificate'
 alias ho="sudo vim /etc/hosts"
 alias pc="rsync -P"
@@ -335,6 +329,7 @@ function qser() { vim $(hg root)/.hg/patches/series }
 function hgrc() { vim $(hg root)/.hg/hgrc }
 function bdiff() { hg diff -r "ancestor('$1', master)" -r "$1" $2 $3 $4 }
 
+alias psg="ps aux | egrep -v 'egrep --color' | egrep --color=auto -i --color"
 alias psc="ps -C"
 alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
@@ -352,9 +347,9 @@ function rtun() {
         echo "Usage: rtun PORT [DESTPORT]"
         echo "Setup tunnel from remote host to local; show off local work"
     else
-        DPORT=${2-$1}
+        DPORT=${2:-$1}
         echo "sapientisat.org:$DPORT"
-        ssh -q -f -N -R 0.0.0.0:$DPORT:localhost:$1 sapientisat.org > /dev/null 2&>1
+        ssh -N -R 0.0.0.0:${DPORT}:localhost:${1} sapientisat.org
     fi
 }
 

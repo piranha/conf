@@ -12,7 +12,7 @@
  (:name idomenu
   :type emacswiki
   :features idomenu
-  :after (lambda () (global-set-key (kbd "M-A") 'idomenu))))
+  :after (progn (global-set-key (kbd "M-A") 'idomenu))))
 
 (global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
@@ -42,7 +42,7 @@
   :type http
   :url "http://nschum.de/src/emacs/kill-ring-search/kill-ring-search.el"
   :features kill-ring-search
-  :after (lambda () (global-set-key (kbd "C-M-y") 'kill-ring-search))))
+  :after (progn (global-set-key (kbd "C-M-y") 'kill-ring-search))))
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 (global-set-key (kbd "C-M--") 'flymake-goto-prev-error)
@@ -69,14 +69,14 @@
   :type http
   :url "http://paste.in.ua/piu.el"
   :features piu
-  :after (lambda () (global-set-key (kbd "C-x p") 'piu))))
+  :after (progn (global-set-key (kbd "C-x p") 'piu))))
 
 (el-get-add
  (:name nosemacs
   :type hg
   :url "http://bitbucket.org/durin42/nosemacs/"
   :features "nose"
-  :after (lambda () 
+  :after (progn
            (setq nose-use-verbose nil)
            (eval-after-load "python"
              '(progn
@@ -89,4 +89,4 @@
 
 (el-get-add
  (:name iedit
-  :after (lambda () (global-set-key (kbd "C-;") 'iedit-mode))))
+  :after (progn (global-set-key (kbd "C-;") 'iedit-mode))))

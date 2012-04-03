@@ -4,6 +4,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("0261c7e47f570afd984db039e083ec0f89eb4194" default)))
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
  '(org-agenda-files (quote ("~/org/life.org")))

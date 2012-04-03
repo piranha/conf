@@ -84,10 +84,11 @@ map <leader>k <C-W>k
 map <leader>h <C-W>h
 map <leader>l <C-W>l
 
-noremap <C-a>      <Home>
-noremap <C-e>      <End>
-inoremap <C-a> <esc>^i
-inoremap <C-e> <esc>$a
+noremap <C-a> ^
+noremap <C-e> $
+inoremap <C-a> <C-o>^
+inoremap <C-e> <C-o>$
+inoremap <C-d> <C-o>x
 
 " TODO: M-; to comment/uncomment
 
