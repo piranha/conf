@@ -353,5 +353,10 @@ function rtun() {
     fi
 }
 
+function workon() {
+    source /usr/local/bin/virtualenvwrapper.sh
+    workon $@
+}
+
 # for emacs' tramp
 [[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls || return 0
