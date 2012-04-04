@@ -7,11 +7,10 @@ import IPython
 
 c = get_config()
 
-# c.TerminalIPythonApp.display_banner = False
+c.PromptManager.in_template = '{color.Green}>>{color.LightGreen}> '
+c.PromptManager.in2_template = '{color.Green}..{color.LightGreen}. '
+c.PromptManager.out_template = ''
 c.TerminalIPythonApp.nosep = True
-c.TerminalInteractiveShell.prompt_in1 = '\\C_Green>>\\C_LightGreen> '
-c.TerminalInteractiveShell.prompt_in2 = '\\C_Green..\\C_LightGreen. '
-c.TerminalInteractiveShell.prompt_out = ''
 c.TerminalInteractiveShell.separate_in = ''
 c.TerminalInteractiveShell.separate_out1 = ''
 c.TerminalInteractiveShell.separate_out2 = ''
