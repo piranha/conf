@@ -12,11 +12,11 @@
     dfa = diff HEAD
     p = log -p
     pl = log -p HEAD@{1}..HEAD
-    sl = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
-    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit
-    ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit HEAD@{1}..HEAD
-    w = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit
-    wl = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n' --abbrev-commit HEAD@{1}..HEAD
+    sl = log --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
+    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
+    ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit HEAD@{1}..HEAD
+    w = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
+    wl = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit HEAD@{1}..HEAD
     serve = daemon --reuseaddr --verbose  --base-path=. --export-all
     b = branch
     # track localbranch remote/remotebranch
@@ -26,8 +26,8 @@
     map = submodule foreach
     mag = submodule foreach git
 
-    req = "!f() { git push origin $(git symbolic-ref HEAD) && hub pull-request -h socialabs:$(git symbolic-ref HEAD) \"${1:-$(git log --pretty=format:'%s' -1)}\"; }; f"
-    getm = !git fetch && git branch -f master origin/master
+    pushc = !git push origin $(git symbolic-ref HEAD)
+    mfetch = !git fetch && git branch -f master origin/master
     comerge = "!f() { target=$(git symbolic-ref HEAD); git co ${1:-master}; git merge $target; }; f"
 
 [color]
