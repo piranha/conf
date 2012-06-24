@@ -21,7 +21,7 @@ limit -s
 
 umask 022
 
-export PATH=~/bin:/usr/local/go/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=~/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 export PAGER="less"
 if [ -x "`whence -c vim`" ]; then
@@ -333,6 +333,8 @@ alias psg="ps aux | egrep -v 'egrep --color' | egrep --color=auto -i --color"
 alias psc="ps -C"
 alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
+alias -g B='$(git symbolic-ref HEAD)'
+alias gig="git submodule foreach git"
 
 function mv() {
     if [ $# -lt 2 ]; then
