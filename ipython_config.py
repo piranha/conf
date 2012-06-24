@@ -20,6 +20,9 @@ c.TerminalInteractiveShell.autocall = 1
 c.TerminalInteractiveShell.confirm_exit = False
 c.TerminalInteractiveShell.automagic = False
 
+c.InteractiveShellApp.extensions = ['autoreload']
+c.InteractiveShellApp.exec_lines = ['%autoreload 1']
+
 c.TerminalInteractiveShell.banner1 = "Py %s IPy %s\n" % (
     sys.version.split('\n', 1)[0], IPython.__version__)
 
