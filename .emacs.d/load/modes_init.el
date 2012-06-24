@@ -296,9 +296,18 @@
   :url "http://hg.piranha.org.ua/project-root/"
   :features project-root
   :after (progn
+           (defun goreplace ()
+             (interactive)
+             (let ((grep-command "gr"))
+               (call-interactively 'grep)))
+
+           (defun project-root-goreplace ()
+             (interactive)
+               (with-project-root (call-interactively 'goreplace)))
+
            (global-set-key (kbd "C-c p f") 'project-root-find-file)
            (global-set-key (kbd "C-c p g") 'project-root-grep)
-           (global-set-key (kbd "C-c p a") 'project-root-ack)
+           (global-set-key (kbd "C-c p a") 'project-root-goreplace)
            (global-set-key (kbd "C-c p d") 'project-root-goto-root)
            (global-set-key (kbd "C-c p l") 'project-root-browse-seen-projects)
            (global-set-key (kbd "C-c p b") 'project-root-switch-buffer)
@@ -508,3 +517,8 @@
             (set (make-local-variable 'filladapt-token-table)
                  (append filladapt-token-table
                          '(("<li>[ \t]" bullet))))))
+
+(el-get-add
+ (:name paredit
+  :after (progn
+           (add-hook 'clojure-mode-hook 'paredit-mode))))

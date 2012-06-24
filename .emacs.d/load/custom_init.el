@@ -8,7 +8,7 @@
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
  '(org-agenda-files (quote ("~/org/life.org")))
- '(safe-local-variable-values (quote ((js-indent-level . 2) (encoding . utf-8) (prompt-to-byte-compile))))
+ '(safe-local-variable-values (quote ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook" (add-hook (quote write-contents-functions) (lambda nil (delete-trailing-whitespace (point-min) (point-max)) nil)) (require (quote whitespace)) "Sometimes the mode needs to be toggled off and on." (whitespace-mode 0) (whitespace-mode 1)) (whitespace-line-column . 80) (whitespace-style face trailing lines-tail) (require-final-newline . t) (js-indent-level . 2) (encoding . utf-8) (prompt-to-byte-compile))))
  '(semantic-default-submodes (quote (global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
  '(vc-handled-backends nil))
 (custom-set-faces
