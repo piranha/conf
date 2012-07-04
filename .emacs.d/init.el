@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNU Emacs configuration
-;; (c) Alexander Solovyov 2004-2008
+;; (c) Alexander Solovyov 2004-2012
 ;; piranha AT piranha.org.ua
 ;;
 ;; Thanks to all, who has helped me in creation, especially to:
