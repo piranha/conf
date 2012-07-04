@@ -500,8 +500,8 @@
 
 (el-get-add
  (:name clojure-mode
-  :after (progn
-           (add-to-list 'auto-mode-alist '("\\.cljs\\'" . clojure-mode)))))
+  :post-init (progn
+               (add-to-list 'auto-mode-alist '("\\.cljs\\'" . clojure-mode)))))
 
 (el-get-add
  (:name zencoding-mode
@@ -520,5 +520,10 @@
 
 (el-get-add
  (:name paredit
-  :after (progn
-           (add-hook 'clojure-mode-hook 'paredit-mode))))
+  :after (dolist (hook '(clojure-mode-hook
+                         emacs-lisp-mode-hook))
+                       (add-hook hook 'paredit-mode))))
+
+(el-get-add
+ (:name magit
+  :post-init (global-set-key (kbd "C-x t") 'magit-status)))
