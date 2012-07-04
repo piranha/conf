@@ -335,6 +335,7 @@ alias psfg="ps -ylfC"
 function psk() { ps -C $1 -o pid= | xargs kill }
 alias -g B='$(git symbolic-ref HEAD)'
 alias gig="git submodule foreach git"
+alias master="git checkout master"
 
 function mv() {
     if [ $# -lt 2 ]; then

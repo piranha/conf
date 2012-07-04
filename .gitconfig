@@ -14,11 +14,14 @@
     pl = log -p HEAD@{1}..HEAD
     sl = log --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
-    ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit HEAD@{1}..HEAD
+    ll = !git l HEAD@{1}..HEAD
     w = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
-    wl = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit HEAD@{1}..HEAD
+    wl = !git w HEAD@{1}..HEAD
     serve = daemon --reuseaddr --verbose  --base-path=. --export-all
     b = branch
+    cb = checkout -b
+    cib = "!f() { git checkout -b $1; shift; git commit -a "$@"; }; f"
+    cmb = "!f() { git checkout -b $1; shift git commit -a -m "$@"; }; f"
     # track localbranch remote/remotebranch
     track = branch --set-upstream
     hard = reset --hard HEAD
@@ -37,3 +40,5 @@
 	quotepath = false
 [branch]
     autosetupmerge = true
+[diff]
+	renames = true
