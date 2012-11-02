@@ -55,7 +55,7 @@ pager=
 purge=
 record=
 rebase=
-#zeroconf=
+zeroconf=
 extdiff=
 inotify=!
 convert=
@@ -133,6 +133,7 @@ merged = bookmark() and ..master - master
 [schemes]
 p = ssh://piranha.org.ua/hg/
 p+http = http://hg.piranha.org.ua/
+b = ssh://hg@bitbucket.org/piranha/
 s = ssh://sapientisat.org/
 w = file:~/dev/web/
 h = file:~/dev/hg/

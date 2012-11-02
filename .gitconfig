@@ -11,6 +11,7 @@
     dfc = diff --cached
     dfa = diff HEAD
     p = log -p
+    xp = log -p master..HEAD
     pl = log -p HEAD@{1}..HEAD
     sl = log --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
@@ -28,8 +29,8 @@
     sub = submodule
     map = submodule foreach
     mag = submodule foreach git
+    todo = grep --heading --break -e ' FIXME *' -e ' TODO *'
 
-    pushc = !git push origin $(git symbolic-ref HEAD)
     mfetch = !git fetch && git branch -f master origin/master
     comerge = "!f() { target=$(git symbolic-ref HEAD); git co ${1:-master}; git merge $target; }; f"
 
@@ -42,3 +43,5 @@
     autosetupmerge = true
 [diff]
 	renames = true
+[push]
+	default = current

@@ -80,8 +80,6 @@ watch=(notme root)
 
 # Loading builtins
 autoload -U zmv
-# load on reference
-zmodload -a zsh/zpty zpty
 
 # ZLE
 bindkey -e
@@ -137,7 +135,7 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle :compinstall filename '.zshrc'
 
 compctl -o wget make man rpm iptables
-compctl -k $hosts ssh telnet ping mtr traceroute
+compctl -k $hosts ssh telnet ping mtr traceroute ssh-copy-id
 compctl -j -P "%" kill
 compctl -g '*.gz' + -g '*(-/)' gunzip gzcat
 compctl -g '*.rar' + -g '*(-/)' rar unrar
@@ -264,6 +262,7 @@ else
     alias ls="/bin/ls -G"
 fi
 alias ll="ls -lh"
+alias lt="ls -lt"
 alias la="ls -lA"
 alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
@@ -336,6 +335,7 @@ function psk() { ps -C $1 -o pid= | xargs kill }
 alias -g B='$(git symbolic-ref HEAD)'
 alias gig="git submodule foreach git"
 alias master="git checkout master"
+alias u="underscore"
 
 function mv() {
     if [ $# -lt 2 ]; then
@@ -359,6 +359,12 @@ function rtun() {
 function workon() {
     source /usr/local/bin/virtualenvwrapper.sh
     workon $@
+}
+
+function log() {
+    echo >> ~/Documents/kb/$*
+    date >> ~/Documents/kb/$*
+    cat >> ~/Documents/kb/$*
 }
 
 # for emacs' tramp
