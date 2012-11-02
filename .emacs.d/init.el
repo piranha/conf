@@ -1,9 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNU Emacs configuration
 ;; (c) Alexander Solovyov 2004-2012
-;; piranha AT piranha.org.ua
+;; alexander AT solovyov.net
 ;;
-;; Thanks to all, who has helped me in creation, especially to:
+;; Thanks to all who helped me in writing this, especially to:
 ;; Yuriy Sazonets
 ;; Alex Ott
 ;; Emacswiki.org
@@ -23,6 +23,11 @@
   "Returns a symbol of an anonymous interactive function,
 suitable for binding to keys."
   `(lambda () (interactive) (,func ,@args)))
+
+(let ((better-path "/Users/piranha/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/Users/piranha/var/gopath/bin:/Users/piranha/var/gopkg/bin:/usr/local/share/npm/bin"))
+  (if (string-equal "darwin" (symbol-name system-type))
+      (setenv "PATH" better-path))
+  (setq exec-path (split-string better-path ":")))
 
 ;; initialize el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get/")
@@ -59,7 +64,7 @@ suitable for binding to keys."
 
 (load-init
  '(general frame funs modes keys
-   bs eshell org custom))
+   bs eshell custom))
 
 ;; run el-get now
 (el-get)
