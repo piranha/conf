@@ -127,7 +127,8 @@
                            emacs-lisp-mode-hook
                            coffee-mode-hook
                            go-mode-hook
-                           js-mode-hook))
+                           js-mode-hook
+                           clojure-mode-hook))
              (add-hook hook 'fic-ext-mode)))))
 
 ;; major modes
@@ -344,11 +345,12 @@
                    ("Cyrax site"
                     :root-contains-files ("index.html" "settings.cfg")
                     :filename-regex ,(regexify-ext-list '(html js css cfg))
-                    :exlude-paths '("_build"))
-                   ("webfs"
-                    :root-contains-files ("Cakefile" "config.yaml")
-                    :filename-regex ,(regexify-ext-list '(coffee eco sass yaml json html))
-                    :exclude-paths '(".sass-cache"))
+                    :exclude-paths '("_build"))
+                   ("webcs"
+                    :root-contains-files ("Makefile" "config.js")
+                    :filename-regex ,(regexify-ext-list
+                                      '(coffee eco less json html js))
+                    :exclude-paths ("_build" "_www" "node_modules"))
                    ("Generic Mercurial project"
                     :root-contains-files (".hg"))
                    ("Generic git project"
@@ -527,3 +529,9 @@
 (el-get-add
  (:name magit
   :post-init (global-set-key (kbd "C-x t") 'magit-status)))
+
+(el-get-add
+ (:name go-template-mode
+  :type git
+  :url "git://gist.github.com/1654113.git"
+  :features go-template-mode))
