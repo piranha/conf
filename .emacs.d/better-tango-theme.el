@@ -1,3 +1,5 @@
+(deftheme better-tango
+  "Better tango")
 
 (custom-theme-set-variables
  'better-tango

@@ -318,7 +318,7 @@ alias -g E='2>&1'
 alias clive="noglob clive"
 function preview { man -t $1 | open -f -a Preview }
 alias depyc='noglob find . -name *.pyc -delete'
-alias wget='wget --no-check-certificate'
+alias wget='noglob wget --no-check-certificate -c'
 alias ho="sudo vim /etc/hosts"
 alias pc="rsync -P"
 alias sudo="sudo " # this carries aliases to sudo calls
