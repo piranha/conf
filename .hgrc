@@ -64,7 +64,7 @@ transplant=
 relink=
 schemes=
 
-remote-bookmarks = ~/dev/hg/remote-bookmarks/remote-bookmarks.py
+#remote-bookmarks = ~/dev/hg/remote-bookmarks/remote-bookmarks.py
 hgstash = ~/dev/hg/hgstash/hgstash.py
 
 shrink=~/dev/hg/hg/contrib/shrink-revlog.py

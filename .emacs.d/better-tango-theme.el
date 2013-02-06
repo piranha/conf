@@ -1,9 +1,5 @@
 (deftheme better-tango
-  "Better tango")
-
-(custom-theme-set-variables
- 'better-tango
- )
+  "Tango with white background and some colors close to gtk-ide color-theme.")
 
 (custom-theme-set-faces
  'better-tango
@@ -15,9 +11,9 @@
  '(isearch ((((class color) (min-colors 89)) (:foreground "#ffffff" :background "#ce5c00"))))
  '(lazy-highlight ((((class color) (min-colors 89)) (:background "#e9b96e"))))
  '(trailing-whitespace ((((class color) (min-colors 89)) (:background "#ef2929"))))
- '(mode-line ((((class color) (min-colors 89)) (:box (:line-width -1 :style released-button) :background "#d3d7cf" :foreground "#2e3436"))))
- '(mode-line-inactive ((((class color) (min-colors 89)) (:box (:line-width -1 :style released-button) :background "#888a85" :foreground "#2e3436"))))
- '(minibuffer-prompt ((((class color) (min-colors 89)) (:weight bold :foreground "#204a87"))))
+ ;; '(mode-line ((((class color) (min-colors 89)) (:box (:line-width -1 :style released-button) :background "#d3d7cf" :foreground "#2e3436"))))
+ ;; '(mode-line-inactive ((((class color) (min-colors 89)) (:box (:line-width -1 :style released-button) :background "#888a85" :foreground "#2e3436"))))
+ ;; '(minibuffer-prompt ((((class color) (min-colors 89)) (:weight bold :foreground "#204a87"))))
  '(escape-glyph ((((class color) (min-colors 89)) (:foreground "#a40000"))))
  '(error ((((class color) (min-colors 89)) (:foreground "#a40000"))))
  '(warning ((((class color) (min-colors 89)) (:foreground "#ce5c00"))))
@@ -26,18 +22,12 @@
  '(font-lock-comment-face ((((class color) (min-colors 89)) (:slant italic :foreground "#5f615c"))))
  '(font-lock-constant-face ((((class color) (min-colors 89)) (:weight bold :foreground "#204a87"))))
  '(font-lock-function-name-face ((((class color) (min-colors 89)) (:foreground "#5c3566"))))
+ '(font-lock-variable-name-face ((((class color) (min-colors 89)) (:foreground "#2e3436"))))
  '(font-lock-keyword-face ((((class color) (min-colors 89)) (:foreground "#346604"))))
  '(font-lock-string-face ((((class color) (min-colors 89)) (:foreground "#a40000"))))
  '(font-lock-type-face ((((class color) (min-colors 89)) (:foreground "#204a87"))))
  '(link ((((class color) (min-colors 89)) (:underline t :foreground "#204a87"))))
  '(link-visited ((((class color) (min-colors 89)) (:underline t :foreground "#3465a4"))))
- '(message-header-name ((((class color) (min-colors 89)) (:foreground "#204a87"))))
- '(message-header-cc ((((class color) (min-colors 89)) (:foreground "#c4a000"))))
- '(message-header-other ((((class color) (min-colors 89)) (:foreground "#c17d11"))))
- '(message-header-subject ((((class color) (min-colors 89)) (:foreground "#a40000"))))
- '(message-header-to ((((class color) (min-colors 89)) (:weight bold :foreground "#c4a000"))))
- '(message-cited-text ((((class color) (min-colors 89)) (:slant italic :foreground "#5f615c"))))
- '(message-separator ((((class color) (min-colors 89)) (:weight bold :foreground "#4e9a06"))))
  '(smerge-refined-change ((((class color) (min-colors 89)) (:background "#ad7fa8"))))
  '(ediff-current-diff-A ((((class color) (min-colors 89)) (:background "#729fcf"))))
  '(ediff-fine-diff-A ((((class color) (min-colors 89)) (:background "#ad7fa8"))))

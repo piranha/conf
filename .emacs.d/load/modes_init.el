@@ -535,3 +535,9 @@
   :type git
   :url "git://gist.github.com/1654113.git"
   :features go-template-mode))
+
+(el-get-add
+ (:name web-mode
+  :type git
+  :url "https://github.com/fxbois/web-mode"
+  :features web-mode))

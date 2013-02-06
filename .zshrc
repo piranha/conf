@@ -123,9 +123,10 @@ zstyle ':completion:*:match:*' original only
 zstyle ':completion:*' max-errors 1 numeric
 
 # Completing process IDs with menu selection
+zstyle ':completion:*:processes' command 'ps -ax'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;32'
 zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
-#zstyle ':completion:*:processes' command 'ps -au$USER'
 compdef pkill=kill
 compdef pkill=killall
 
@@ -135,7 +136,7 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle :compinstall filename '.zshrc'
 
 compctl -o wget make man rpm iptables
-compctl -k $hosts ssh telnet ping mtr traceroute ssh-copy-id
+compctl -k $hosts ssh telnet ping mtr traceroute ssh-copy-id mosh
 compctl -j -P "%" kill
 compctl -g '*.gz' + -g '*(-/)' gunzip gzcat
 compctl -g '*.rar' + -g '*(-/)' rar unrar
