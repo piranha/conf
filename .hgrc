@@ -13,7 +13,7 @@ usehttp2 = True
 generaldelta = true
 
 [web]
-cacerts = /etc/hg-dummy-cert.pem
+#cacerts = /etc/hg-dummy-cert.pem
 
 [hooks]
 #commit.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
@@ -65,15 +65,15 @@ relink=
 schemes=
 
 #remote-bookmarks = ~/dev/hg/remote-bookmarks/remote-bookmarks.py
-hgstash = ~/dev/hg/hgstash/hgstash.py
-
-shrink=~/dev/hg/hg/contrib/shrink-revlog.py
-perf=~/dev/hg/hg/contrib/perf.py
-crecord=~/dev/hg/crecord/crecord/
-qup=~/dev/hg/qup.py
-qimprovements=~/dev/hg/qimprovements/qimprovements.py
-hg-git = ~/dev/hg/hg-git/hggit/
-histedit = ~/dev/hg/histedit/hg_histedit.py
+#hgstash = ~/dev/hg/hgstash/hgstash.py
+#
+#shrink=~/dev/hg/hg/contrib/shrink-revlog.py
+#perf=~/dev/hg/hg/contrib/perf.py
+#crecord=~/dev/hg/crecord/crecord/
+#qup=~/dev/hg/qup.py
+#qimprovements=~/dev/hg/qimprovements/qimprovements.py
+#hg-git = ~/dev/hg/hg-git/hggit/
+#histedit = ~/dev/hg/histedit/hg_histedit.py
 
 [diff]
 git = True
