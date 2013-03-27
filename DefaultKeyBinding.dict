@@ -36,14 +36,6 @@
         "x"     = ("insertText:", "\U23CF");  /* x       eject */
     };
 
-    /* IncrementalSearchInputManager */
-    "^s" = "ISIM_incrementalSearch:";
-    "^r" = "ISIM_reverseIncrementalSearch:";
-    "^g" = "abort:";
-
-    "~\Uf700" = "ISIM_handleOptionUpArrow:";
-    "~\Uf701" = "ISIM_handleOptionDownArrow:";
-
     /* This command will let Ctrl-Shift-H turn the previous word
      * into an HTML/XML opening and closing tag pair. */
     "^H" = ( "setMark:",
