@@ -113,7 +113,6 @@ else
     compinit -i
 fi
 
-hosts=(${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*})
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zcompcache
 zstyle ':completion:*' completer _expand _complete _correct _approximate
@@ -134,8 +133,11 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
 zstyle :compinstall filename '.zshrc'
 
+if [ -r $HOME/.ssh/known_hosts ]; then
+    hosts=(${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*})
+    compctl -k $hosts ssh telnet ping mtr traceroute ssh-copy-id mosh
+fi
 compctl -o wget make man rpm iptables
-compctl -k $hosts ssh telnet ping mtr traceroute ssh-copy-id mosh
 compctl -j -P "%" kill
 compctl -g '*.gz' + -g '*(-/)' gunzip gzcat
 compctl -g '*.rar' + -g '*(-/)' rar unrar
