@@ -84,14 +84,12 @@ map <leader>k <C-W>k
 map <leader>h <C-W>h
 map <leader>l <C-W>l
 
-noremap <C-a> ^
-noremap <C-e> $
-inoremap <C-a> <C-o>^
-inoremap <C-e> <C-o>$
-inoremap <C-d> <C-o>x
-
 " TODO: M-; to comment/uncomment
 
 cmap w!! w !sudo tee % >/dev/null
 cmap x!! x !sudo tee % >/dev/null
 nmap ; :
+
+" earlier I had something like
+" https://github.com/tpope/vim-rsi/blob/master/plugin/rsi.vim
+" but it's not working and no idea why

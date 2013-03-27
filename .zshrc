@@ -29,7 +29,6 @@ if [ -x "`whence -c vim`" ]; then
 else
     export EDITOR="vi"
 fi
-export BROWSER="links"
 export LESS="FRQXi"
 export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 export PIP_RESPECT_VIRTUALENV=true
@@ -319,7 +318,6 @@ alias -g E='2>&1'
 alias clive="noglob clive"
 function preview { man -t $1 | open -f -a Preview }
 alias depyc='noglob find . -name *.pyc -delete'
-alias wget='noglob wget --no-check-certificate -c'
 alias ho="sudo vim /etc/hosts"
 alias pc="rsync -P"
 alias sudo="sudo " # this carries aliases to sudo calls
