@@ -67,4 +67,7 @@ suitable for binding to keys."
    bs eshell custom))
 
 ;; run el-get now
-(el-get)
+(el-get 'sync
+ (mapcar (lambda (item) (symbol-name (plist-get item :name))) el-get-sources))
+
+
