@@ -9,15 +9,17 @@ mapping=(
     .hgconcise .hgconcise
     .hgrc .hgrc
     .vimrc .vimrc
-    DefaultKeyBinding Library/KeyBindings/DefaultKeyBinding.dict
+    DefaultKeyBinding.dict Library/KeyBindings/DefaultKeyBinding.dict
     ipython_config.py .config/ipython/profile_default/ipython_config.py
     .inputrc .inputrc
+    lein-profiles.clj .lein/profiles.clj
     )
 
 for src in ${(k)mapping}; do
     dst=${mapping[$src]}
     if [ ! -L ~/$dst ]; then
         echo "~/$dst -> $src"
-        ln -s $PWD/$src ~/$dst
+        mkdir -p "~/$(dirname $dst)"
+        ln -s "$PWD/$src" "~/$dst"
     fi
 done
