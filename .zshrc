@@ -265,16 +265,16 @@ alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
 
 # ZSH Directory Bookmarks
-alias m1='alias g1="cd \"`pwd`\""'
-alias m2='alias g2="cd \"`pwd`\""'
-alias m3='alias g3="cd \"`pwd`\""'
-alias m4='alias g4="cd \"`pwd`\""'
-alias m5='alias g5="cd \"`pwd`\""'
-alias m6='alias g6="cd \"`pwd`\""'
-alias m7='alias g7="cd \"`pwd`\""'
-alias m8='alias g8="cd \"`pwd`\""'
-alias m9='alias g9="cd \"`pwd`\""'
 alias mdump='alias | awk "/^g[0-9]/ { print \"alias \" \$0 }" > ~/.bookmarks'
+alias m1='alias g1="cd \"`pwd`\"" && mdump'
+alias m2='alias g2="cd \"`pwd`\"" && mdump'
+alias m3='alias g3="cd \"`pwd`\"" && mdump'
+alias m4='alias g4="cd \"`pwd`\"" && mdump'
+alias m5='alias g5="cd \"`pwd`\"" && mdump'
+alias m6='alias g6="cd \"`pwd`\"" && mdump'
+alias m7='alias g7="cd \"`pwd`\"" && mdump'
+alias m8='alias g8="cd \"`pwd`\"" && mdump'
+alias m9='alias g9="cd \"`pwd`\"" && mdump'
 alias ml='alias | grep "^g[0-9]"'
 [ -f ~/.bookmarks ] && source ~/.bookmarks
 function jm {
