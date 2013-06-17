@@ -1,12 +1,7 @@
 # -*- mode: sh -*-
 # zsh configuration
-# (c) 2003-2011 Alexander Solovyov
-# piranha AT piranha.org.ua
-#
-# Thanks to:
-# tldp.org
-# Alexander Zayats
-# "XAKEP" journal
+# (c) 2003-2013 Alexander Solovyov
+# alexander AT solovyov.net
 
 export LANG=en_US.UTF-8
 export LC_TIME=C
@@ -50,7 +45,7 @@ wc=`Cr 4`
 PS1="$wc%n$n$at$wc%m $err$wc%~>$n "
 unset n b Cr uc hc wc tc tty at r y gr
 
-fpath=(~/.zsh.d $fpath)
+fpath=(~/.zsh.d /usr/local/share/zsh-completions $fpath)
 
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
@@ -337,6 +332,7 @@ alias -g B='$(git symbolic-ref HEAD)'
 alias gig="git submodule foreach git"
 alias master="git checkout master"
 alias u="underscore"
+alias gf="gr -f"
 
 function mv() {
     if [ $# -lt 2 ]; then

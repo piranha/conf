@@ -72,7 +72,7 @@ schemes=
 #crecord=~/dev/hg/crecord/crecord/
 #qup=~/dev/hg/qup.py
 #qimprovements=~/dev/hg/qimprovements/qimprovements.py
-#hg-git = ~/dev/hg/hg-git/hggit/
+#hg-git = ~/dev/misc/hg-git/hggit/
 #histedit = ~/dev/hg/histedit/hg_histedit.py
 
 [diff]

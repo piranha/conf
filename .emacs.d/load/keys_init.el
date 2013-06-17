@@ -4,7 +4,7 @@
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
 (global-set-key (kbd "C-z") 'undo)
-(global-set-key (kbd "M-g") 'goto-line)
+;(global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 

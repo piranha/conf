@@ -61,6 +61,15 @@
  ido-ignore-files '("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"
                     "\\.pyc$" "\\.6$" "\\.o$"))
 (defalias 'list-buffers 'ido-switch-buffer)
+(el-get-add
+ (:name flx
+  :type git
+  :url "https://github.com/lewang/flx"
+  :features flx-ido
+  :after (progn
+           (flx-ido-mode 1)
+           ;; disable ido faces to see flx highlights.
+           (setq ido-use-faces nil))))
 
 (winner-mode 1) ;; window configuration undo/redo
 
@@ -269,10 +278,6 @@
   :after (progn (require 'yasnippet nil t)
            (eval-after-load "yasnippet"
              '(progn
-                (global-unset-key (kbd "C-/"))
-                (setq
-                 yas/trigger-key "C-/"
-                 yas/next-field-key "C-/")
                 (add-to-list 'yas/snippet-dirs
                              "~/.emacs.d/snippets/")
                 (yas-global-mode 1))))))
@@ -498,12 +503,21 @@
 (el-get-add
  (:name htmlize))
 
-(add-to-list 'auto-mode-alist '("\\.eco\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.eco\\'" . django-html-mode))
 
 (el-get-add
  (:name clojure-mode
-  :post-init (progn
-               (add-to-list 'auto-mode-alist '("\\.cljs\\'" . clojure-mode)))))
+  :after (progn
+           (add-to-list 'auto-mode-alist '("\\.cljs\\'" . clojure-mode))
+           (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
+           (add-hook 'clojure-mode-hook (lambda () (define-clojure-indent
+                                                (expect 'defun)
+                                                (expect-let 'defun)
+                                                (given 'defun)
+                                                (context 1)
+                                                (freeze-time 1)
+                                                (redef-state 1)
+                                                (from-each 1)))))))
 
 (el-get-add
  (:name zencoding-mode
@@ -541,3 +555,12 @@
   :type git
   :url "https://github.com/fxbois/web-mode"
   :features web-mode))
+
+(el-get-add
+ (:name po-mode))
+
+(el-get-add
+ (:name skeleton-complete
+  :type git
+  :url "git://github.com/baohaojun/skeleton-complete.git"
+  :features skeleton-complete))

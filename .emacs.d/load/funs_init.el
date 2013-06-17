@@ -1,7 +1,3 @@
-(defalias 'qrr 'query-replace-regexp)
-(defalias 'dtw 'delete-trailing-whitespace)
-(defalias 'rof 'recentf-open-files)
-
 (defun no-scroll-margin ()
   "Set scroll-margin to 0 buffer-locally"
   (interactive)

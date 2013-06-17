@@ -1,12 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNU Emacs configuration
-;; (c) Alexander Solovyov 2004-2012
+;; (c) Alexander Solovyov 2004-2013
 ;; alexander AT solovyov.net
-;;
-;; Thanks to all who helped me in writing this, especially to:
-;; Yuriy Sazonets
-;; Alex Ott
-;; Emacswiki.org
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun add-to-path (dir)
