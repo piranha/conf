@@ -520,6 +520,26 @@
                                                 (from-each 1)))))))
 
 (el-get-add
+ (:name nrepl
+  :after (progn
+           (setq nrepl-hide-special-buffers t)
+           (setq nrepl-popup-stacktraces-in-repl t)
+           (setq nrepl-history-file "~/.emacs.d/nrepl-history")
+
+           ;; Some default eldoc facilities
+           (add-hook 'nrepl-connected-hook
+                     (defun pnh-clojure-mode-eldoc-hook ()
+                       (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+                       (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+                       (nrepl-enable-on-existing-clojure-buffers))))))
+
+(el-get-add
+ (:name nrepl-ritz))
+
+(el-get-add
+ (:name rainbow-delimiters))
+
+(el-get-add
  (:name zencoding-mode
   :after (progn
            (add-hook 'sgml-mode-hook 'zencoding-mode))))
