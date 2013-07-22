@@ -34,7 +34,7 @@ if [ -f ~/.zshlocal ]; then
     source ~/.zshlocal
 fi
 
-# Prompt setup (c) smax 2002, adapted for zsh (c) piranha 2004
+# Prompt setup (c) smax 2002, adapted for zsh (c) piranha 2004, 2013
 # 0-black, 1-red, 2-green, 3-yellow, 4-blue, 5-magenta 6-cyan, 7-white
 Cr() { echo '%{\033[3'$1'm%}'; }
 hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 2`
@@ -42,8 +42,13 @@ hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 
 #PS1="$wc%n$at$hc%m $err$wc%~$w>$n"
 # for white background
 wc=`Cr 4`
-PS1="$wc%n$n$at$wc%m $err$wc%~>$n "
-unset n b Cr uc hc wc tc tty at r y gr
+# nbsp allows to have space which will delete everything before itself when
+# pasted - so it's possible to copy and paste whole line with prompt and have
+# only command left
+nbsp=$'\u00A0'
+bindkey -s $nbsp '^u'
+PS1="$wc%n$n$at$wc%m $err$wc%~>$n$nbsp"
+unset n b Cr uc hc wc tc tty at r y gr nbsp
 
 fpath=(~/.zsh.d /usr/local/share/zsh-completions $fpath)
 
@@ -98,6 +103,18 @@ autoload -U select-word-style
 select-word-style normal
 # don't contains -_/= - and thus breaks words on them
 zstyle ':zle:*' word-chars '*?.[]~&;!#$%^(){}<>'
+
+# M-. selects last word from a line, and M-m allows to iterate words from this
+# line
+autoload -Uz copy-earlier-word
+zle -N copy-earlier-word
+bindkey "^[m" copy-earlier-word
+
+# Complete from history with M-/
+zstyle ':completion:history-words:*' list no
+zstyle ':completion:history-words:*' menu yes
+zstyle ':completion:history-words:*' remove-all-dups yes
+bindkey "\e/" _history-complete-older
 
 ######## Completion #######
 autoload -U compinit
