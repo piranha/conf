@@ -50,7 +50,7 @@ bindkey -s $nbsp '^u'
 PS1="$wc%n$n$at$wc%m $err$wc%~>$n$nbsp"
 unset n b Cr uc hc wc tc tty at r y gr nbsp
 
-fpath=(~/.zsh.d /usr/local/share/zsh-completions $fpath)
+fpath=(~/.zsh.d /usr/local/share/zsh/site-functions /usr/local/share/zsh-completions $fpath)
 
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
