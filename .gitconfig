@@ -36,6 +36,9 @@
     comerge = "!f() { target=$(git symbolic-ref HEAD); git co ${1:-master}; git merge $target; }; f"
     pr = !"f() { git fetch origin pull/${1}/head:pr${1}; }; f"
 
+    pushurl = config remote.origin.pushurl
+    addgh = !git remote add gh github.com:piranha/$(basename $(git rev-parse --show-toplevel)).git
+
 [color]
     ui = auto
 [core]
