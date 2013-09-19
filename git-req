@@ -1,0 +1,38 @@
+#!/bin/sh
+# git-req -- make a pull request
+#
+# Assumes branch is pushed to same repo as pull request is made to (origin)
+#
+# How to obtain GITREQ_TOKEN:
+#
+#   curl -u "$USER:$PASSWORD" -d '{"scopes": ["repo"], "note": "git-req"}' https://api.github.com/authorizations
+#
+# Usage:
+#
+#   git req # for defaults
+#   git req 'Another title'
+#   git req '' 'Another body'
+#
+# Defaults: pushes current branch to a repo and creates a pull request to same
+# repo (intent: code review), with subject of latest commit as title and body as
+# body.
+ 
+[ -z "$GITREQ_TOKEN" ] && echo "set GITREQ_TOKEN in your environment" && exit 1
+ 
+TITLE=${1:-$(git log --pretty=format:'%s' -1)}
+BODY=${2:-$(git log --pretty=format:'%b' -1)}
+BRANCH=$(git symbolic-ref --short HEAD)
+
+API=https://api.github.com
+DEST=$(git config --get remote.origin.url | \
+    awk -F : '{ gsub(/.git$/, "", $2); print $2 }')
+ 
+request() {
+    DATA="{'title': '$2', 'base': 'master', 'head': '$1', 'body': '$3'}"
+    DATA=$(echo $DATA | sed s/\'/\"/g)
+    AUTH="Authorization: bearer $GITREQ_TOKEN"
+    curl -s -H "$AUTH" -d "$DATA" $API/repos/$DEST/pulls | \
+        awk '/"html_url".*pull/ { gsub(/"/, "", $2); print $2 }'
+}
+ 
+git push origin $BRANCH && request "$BRANCH" "$TITLE" "$BODY"
