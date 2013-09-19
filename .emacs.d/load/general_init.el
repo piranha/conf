@@ -30,7 +30,6 @@
  scroll-margin 0
  comint-completion-addsuffix t       ;; Insert space/slash after completion
  kill-whole-line t                   ;; delete line in one stage
- delete-key-deletes-forward t        ;; meaning are the same as the name :)
  next-line-add-newlines nil          ;; don't add new lines when scrolling down
  require-final-newline t             ;; make sure file ends with NEWLINE
  mode-require-final-newline t        ;; same as above, set more generally

@@ -13,13 +13,14 @@ mapping=(
     ipython_config.py .config/ipython/profile_default/ipython_config.py
     .inputrc .inputrc
     lein-profiles.clj .lein/profiles.clj
+    git-req bin/git-req
     )
 
 for src in ${(k)mapping}; do
     dst=${mapping[$src]}
     if [ ! -L ~/$dst ]; then
-        echo "~/$dst -> $src"
-        mkdir -p "~/$(dirname $dst)"
-        ln -s "$PWD/$src" "~/$dst"
+        echo "$src <- ~/$dst"
+        mkdir -p ~/$(dirname $dst)
+        ln -s $PWD/$src ~/$dst
     fi
 done

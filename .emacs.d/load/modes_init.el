@@ -59,7 +59,7 @@
  ido-auto-merge-work-directories-length -1 ; disable auto-merging
  ido-confirm-unique-completion t
  ido-ignore-files '("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"
-                    "\\.pyc$" "\\.6$" "\\.o$"))
+                    "\\.pyc$" "\\.6$" "\\.o$" "__pycache__/$"))
 (defalias 'list-buffers 'ido-switch-buffer)
 (el-get-add
  (:name flx
@@ -267,6 +267,7 @@
 (el-get-add
  (:name coffee-mode
   :after (progn
+           (add-to-list 'auto-mode-alist '("\\.coffeex\\'" . coffee-mode))
            (add-hook 'coffee-mode-hook
                      (lambda ()
                        (define-key coffee-mode-map (kbd "C-]") "@$."))))))
@@ -278,6 +279,11 @@
   :after (progn (require 'yasnippet nil t)
            (eval-after-load "yasnippet"
              '(progn
+                (add-hook 'snippet-mode-hook
+                          '(lambda ()
+                             (set (make-local-variable 'require-final-newline) nil)))
+                (define-key yas-minor-mode-map [(tab)] nil)
+                (define-key yas-minor-mode-map (kbd "TAB") nil)
                 (add-to-list 'yas/snippet-dirs
                              "~/.emacs.d/snippets/")
                 (yas-global-mode 1))))))
@@ -537,7 +543,8 @@
  (:name nrepl-ritz))
 
 (el-get-add
- (:name rainbow-delimiters))
+ (:name rainbow-delimiters
+  :after (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)))
 
 (el-get-add
  (:name zencoding-mode
@@ -546,9 +553,9 @@
 
 (add-hook 'html-mode-hook
           (lambda ()
-            (if (string-prefix-p "/Users/piranha/dev/work"
-                                 (buffer-file-name))
-                (set (make-local-variable 'sgml-basic-offset) 4))
+            ;; (if (string-prefix-p "/Users/piranha/dev/work"
+            ;;                      (buffer-file-name))
+            ;;     (set (make-local-variable 'sgml-basic-offset) 4))
             (require 'filladapt)
             (set (make-local-variable 'filladapt-token-table)
                  (append filladapt-token-table
@@ -556,13 +563,16 @@
 
 (el-get-add
  (:name paredit
-  :after (dolist (hook '(clojure-mode-hook
-                         emacs-lisp-mode-hook))
-                       (add-hook hook 'paredit-mode))))
-
-(el-get-add
- (:name magit
-  :post-init (global-set-key (kbd "C-x t") 'magit-status)))
+  :after (progn (dolist (hook '(clojure-mode-hook
+                                emacs-lisp-mode-hook))
+                  (add-hook hook 'paredit-mode))
+                (add-hook 'paredit-mode-hook
+                          (lambda ()
+                            (dolist (kv '(("C-<right>" nil)
+                                          ("C-<left>" nil)
+                                          ("C-M-0" paredit-forward-slurp-sexp)
+                                          ("C-M-9" paredit-forward-barf-sexp)))
+                              (define-key paredit-mode-map (kbd (car kv)) (cadr kv))))))))
 
 (el-get-add
  (:name go-template-mode
@@ -580,7 +590,7 @@
  (:name po-mode))
 
 (el-get-add
- (:name skeleton-complete
-  :type git
-  :url "git://github.com/baohaojun/skeleton-complete.git"
-  :features skeleton-complete))
+ (:name sql-indent
+  :type emacswiki
+  :after (eval-after-load "sql"
+           (load-library "sql-indent"))))

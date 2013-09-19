@@ -4,7 +4,7 @@
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
 (global-set-key (kbd "C-z") 'undo)
-;(global-set-key (kbd "M-g") 'goto-line)
+(global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
@@ -90,3 +90,11 @@
 (el-get-add
  (:name iedit
   :after (progn (global-set-key (kbd "C-;") 'iedit-mode))))
+
+(global-set-key (kbd "M-/") 'dabbrev-expand)
+(global-set-key (kbd "C-/") 'yas-expand)
+
+(eval-after-load "sgml-mode"
+  '(progn
+     (define-key sgml-mode-map (kbd "C-c C-<left>") 'sgml-skip-tag-backward)
+     (define-key sgml-mode-map (kbd "C-c C-<right>") 'sgml-skip-tag-forward)))
