@@ -65,8 +65,7 @@ setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt hist_reduce_blanks
 setopt autocd
-setopt auto_pushd
-setopt pushd_ignore_dups
+setopt auto_pushd pushd_ignore_dups pushd_silent pushd_to_home
 
 # other important options
 unsetopt extended_glob # it's quite annoying
@@ -144,11 +143,9 @@ compdef pkill=killall
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
 zstyle :compinstall filename '.zshrc'
+zstyle -e ':completion::*:*:*:hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+compctl -k hosts ssh-copy-id
 
-if [ -r $HOME/.ssh/known_hosts ]; then
-    hosts=(${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*})
-    compctl -k $hosts ssh telnet ping mtr traceroute ssh-copy-id mosh
-fi
 compctl -o wget make man rpm iptables
 compctl -j -P "%" kill
 compctl -g '*.gz' + -g '*(-/)' gunzip gzcat
@@ -193,6 +190,14 @@ screen)
 ;;
 esac
 
+d() {
+    local dir
+    select dir in $dirstack; do
+        echo $dir
+        break
+    done
+    test "x$dir" != x && cd $dir
+}
 
 # Search file, containing string in name
 function ff() { ls -lhd **/*$** ; }
@@ -281,27 +286,6 @@ alias la="ls -lA"
 alias lsd="ls -ld *(-/DN)"
 alias lsa="ls -ld .*"
 
-# ZSH Directory Bookmarks
-alias mdump='alias | awk "/^g[0-9]/ { print \"alias \" \$0 }" > ~/.bookmarks'
-alias m1='alias g1="cd \"`pwd`\"" && mdump'
-alias m2='alias g2="cd \"`pwd`\"" && mdump'
-alias m3='alias g3="cd \"`pwd`\"" && mdump'
-alias m4='alias g4="cd \"`pwd`\"" && mdump'
-alias m5='alias g5="cd \"`pwd`\"" && mdump'
-alias m6='alias g6="cd \"`pwd`\"" && mdump'
-alias m7='alias g7="cd \"`pwd`\"" && mdump'
-alias m8='alias g8="cd \"`pwd`\"" && mdump'
-alias m9='alias g9="cd \"`pwd`\"" && mdump'
-alias ml='alias | grep "^g[0-9]"'
-[ -f ~/.bookmarks ] && source ~/.bookmarks
-function jm {
-    EPATH=""
-    while [ -z $EPATH ]; do
-        EPATH=$(emacsclient -e "(with-current-buffer (window-buffer (frame-selected-window)) default-directory)")
-    done
-    cd $(echo $EPATH | sed -E 's/(^\")|(\"$)//g')
-}
-
 function l() {
     if [ $# -gt 0 -a -d $1 ]; then
         ls $@
@@ -373,6 +357,11 @@ function rtun() {
 function workon() {
     source /usr/local/bin/virtualenvwrapper.sh
     workon $@
+}
+
+function mkvirtualenv() {
+    source /usr/local/bin/virtualenvwrapper.sh
+    mkvirtualenv $@
 }
 
 function log() {
