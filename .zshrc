@@ -160,11 +160,10 @@ compctl -g '(^(*.o|*.class|*.jar|*.gz|*.gif|*.a|*.Z|*.bz2))' + -g '.*' less vim
 compctl -g '(^(*.o|*.class|*.jar|*.gif|*.a))' + -g '.*' most
 compctl -g '*.fb2 *.fb2.zip' FBReader
 
-local voices
-function voices {
+function _say_voices {
     reply=(${(f)"$(say -v '?' | awk -F '  ' '{print $1}')"})
 }
-compctl -x 'c[-1,-v]' -K voices -- say
+compctl -x 'c[-1,-v]' -K _say_voices -- say
 
 ##### end of completion #####
 
