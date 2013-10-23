@@ -163,7 +163,7 @@ compctl -g '*.fb2 *.fb2.zip' FBReader
 function _say_voices {
     reply=(${(f)"$(say -v '?' | awk -F '  ' '{print $1}')"})
 }
-compctl -x 'c[-1,-v]' -K _say_voices -- say
+compctl -x 'c[-1,-v]' -M 'm:{a-zA-Z}={A-Za-z}' -K _say_voices -- say
 
 ##### end of completion #####
 
