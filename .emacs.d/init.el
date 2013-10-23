@@ -65,4 +65,3 @@ suitable for binding to keys."
 (el-get 'sync
  (mapcar (lambda (item) (symbol-name (plist-get item :name))) el-get-sources))
 
-

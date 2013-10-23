@@ -403,7 +403,7 @@
            (global-set-key (kbd "M-j") 'bc-previous)
            (global-set-key (kbd "M-J") 'bc-next)
            (global-set-key (kbd "C-c j") 'bc-goto-current)
-           (global-set-key (kbd "C-c M-j") 'bc-list))))
+           (global-set-key (kbd "C-c C-j") 'bc-list))))
 
 ;; whole-line-or-region
 (el-get-add

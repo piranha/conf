@@ -27,8 +27,7 @@ and beginning of next line, for deleting/copying"
   "Checks that line ends in newline. Adds it if not."
   (if (eql (aref line (1- (length line))) ?\n)
       line
-    (concat line "\n")
-  ))
+    (concat line "\n")))
 
 (defun prh:cut-line ()
   "Kills current line"
