@@ -14,6 +14,11 @@ limit stack 8192
 limit core 0
 limit -s
 
+if [ $(uname -s) = "Darwin" ]; then
+    # when it's unlimited, it's not. Go figure. :\
+    ulimit -S -n 4096
+fi
+
 umask 022
 
 export PATH=~/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -148,21 +153,18 @@ compctl -k hosts ssh-copy-id
 
 compctl -o wget make man rpm iptables
 compctl -j -P "%" kill
-compctl -g '*.gz' + -g '*(-/)' gunzip gzcat
 compctl -g '*.rar' + -g '*(-/)' rar unrar
-compctl -g '*.bz2' + -g '*(-/)' bunzip2 bzcat
 compctl -g '*(-*)' + -g '*(-/)' strip
-compctl -g '*.ps *.eps' + -g '*(-/)' gs ghostview psnup psduplex ps2ascii
-compctl -g '*.dvi *.pdf *.ps *.ps.gz' + -g '*(-/)' evince epdfview
-compctl -g '*.xpm *.xpm.gz' + -g '*(-/)' xpmroot sxpm pixmap xpmtoppm
-compctl -g '*.fig' + -g '*(-/)' xfig
 compctl -g '*(-/) .*(-/)' cd
 compctl -g '(^(*.o|*.class|*.jar|*.gz|*.gif|*.a|*.Z|*.bz2))' + -g '.*' less vim
 compctl -g '(^(*.o|*.class|*.jar|*.gif|*.a))' + -g '.*' most
-compctl -g '*.ltx' + -g '*(-/)' pdflatex
-compctl -g '*.wav' auCDtect
 compctl -g '*.fb2 *.fb2.zip' FBReader
 
+local voices
+function voices {
+    reply=(${(f)"$(say -v '?' | awk -F '  ' '{print $1}')"})
+}
+compctl -x 'c[-1,-v]' -K voices -- say
 
 ##### end of completion #####
 
