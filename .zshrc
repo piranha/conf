@@ -366,9 +366,9 @@ function mkvirtualenv() {
 }
 
 function log() {
-    echo >> ~/Documents/kb/$*
-    date >> ~/Documents/kb/$*
-    cat >> ~/Documents/kb/$*
+    echo >> ~/Documents/kb/${*:-log}
+    date >> ~/Documents/kb/${*:-log}
+    cat >> ~/Documents/kb/${*:-log}
 }
 
 # for emacs' tramp
