@@ -14,6 +14,8 @@ mapping=(
     .inputrc .inputrc
     lein-profiles.clj .lein/profiles.clj
     git-req bin/git-req
+    LT/user.keymap "Library/Application Support/LightTable/settings/user.keymap"
+    LT/user.behaviors "Library/Application Support/LightTable/settings/user.behaviors"
     )
 
 for src in ${(k)mapping}; do

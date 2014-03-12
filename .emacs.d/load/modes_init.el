@@ -1,5 +1,9 @@
 ;; various modes configuration
 
+;; usual major modes
+(add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
+(add-to-list 'auto-mode-alist '("\\.jsm\\'" . js-mode))
+
 (require 'imenu)
 (setq imenu-auto-rescan t)
 
@@ -61,6 +65,7 @@
  ido-ignore-files '("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"
                     "\\.pyc$" "\\.6$" "\\.o$" "__pycache__/$"))
 (defalias 'list-buffers 'ido-switch-buffer)
+
 (el-get-add
  (:name flx
   :type git
@@ -140,6 +145,12 @@
                            clojure-mode-hook))
              (add-hook hook 'fic-ext-mode)))))
 
+;; org mode
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (setq org-hide-leading-stars t)))
+
 ;; major modes
 
 (el-get-add
@@ -164,8 +175,6 @@
 ;; modified and stored in my repo
 (autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
 (add-to-list 'auto-mode-alist '("\\.html\\'" . django-html-mode))
-
-(add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
 
 (el-get-add
  (:name go-mode))
@@ -365,7 +374,10 @@
                    ("Generic Mercurial project"
                     :root-contains-files (".hg"))
                    ("Generic git project"
-                    :root-contains-files (".git")))))))
+                    :root-contains-files (".git"))
+                   ("Generic Clojure project"
+                    :root-contains-files ("project.clj")
+                    :exclude-paths ("out" ".repl" "target")))))))
 
 ;; smex
 (el-get-add
@@ -514,37 +526,44 @@
 (el-get-add
  (:name clojure-mode
   :after (progn
-           (add-to-list 'auto-mode-alist '("\\.cljs\\'" . clojure-mode))
+           (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
            (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
-           (add-hook 'clojure-mode-hook (lambda () (define-clojure-indent
-                                                (expect 'defun)
-                                                (expect-let 'defun)
-                                                (given 'defun)
-                                                (context 1)
-                                                (freeze-time 1)
-                                                (redef-state 1)
-                                                (from-each 1)))))))
+           (add-hook 'clojure-mode-hook
+                     (lambda () (define-clojure-indent
+                             (expect 'defun)
+                             (expect-let 'defun)
+                             (given 'defun)
+                             (context 1)
+                             (freeze-time 1)
+                             (redef-state 1)
+                             (from-each 1)))))))
 
 (el-get-add
- (:name nrepl
+ (:name clj-refactor
+  :after (add-hook 'clojure-mode-hook
+                   (lambda ()
+                     (clj-refactor-mode 1)
+                     (cljr-add-keybindings-with-prefix "C-c r")))))
+
+(el-get-add
+ (:name align-cljlet
+  :after (add-hook 'clojure-mode-hook
+                   (lambda ()
+                     (define-key clojure-mode-map (kbd "C-c r a l")
+                       'align-cljlet)))))
+
+(el-get-add
+ (:name cider
   :after (progn
-           (setq nrepl-hide-special-buffers t)
-           (setq nrepl-popup-stacktraces-in-repl t)
-           (setq nrepl-history-file "~/.emacs.d/nrepl-history")
-
-           ;; Some default eldoc facilities
-           (add-hook 'nrepl-connected-hook
-                     (defun pnh-clojure-mode-eldoc-hook ()
-                       (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-                       (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-                       (nrepl-enable-on-existing-clojure-buffers))))))
-
-(el-get-add
- (:name nrepl-ritz))
+           (setq cider-repl-history-file "~/.emacs.d/cider-history")
+           (add-hook 'cider-repl-mode-hook 'paredit-mode)
+           (add-hook 'clojure-mode-hook 'cider-mode))))
 
 (el-get-add
  (:name rainbow-delimiters
-  :after (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)))
+  :after (progn
+           (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+           (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))))
 
 (el-get-add
  (:name zencoding-mode
@@ -594,3 +613,16 @@
   :type emacswiki
   :after (eval-after-load "sql"
            (load-library "sql-indent"))))
+
+(el-get-add
+ (:name smartscan
+  :type git
+  :url "https://github.com/mickeynp/smart-scan"
+  :features smartscan
+  :after (global-smartscan-mode 1)))
+
+(el-get-add
+ (:name wakatime-mode
+        :type git
+        :features wakatime-mode
+        :url "https://github.com/wakatime/wakatime-mode"))

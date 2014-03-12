@@ -336,6 +336,10 @@ alias master="git checkout master"
 alias u="underscore"
 alias gf="gr -f"
 
+function makegif() {
+    convert -delay 1x25 *.png -ordered-dither o8x8,9 -coalesce -layers OptimizeTransparency +map -crop 480x270+0+45 +repage animation.gif
+}
+
 function mv() {
     if [ $# -lt 2 ]; then
         /bin/mv $1 .
@@ -350,8 +354,8 @@ function rtun() {
         echo "Setup tunnel from remote host to local; show off local work"
     else
         DPORT=${2:-$1}
-        echo "sapientisat.org:$DPORT"
-        ssh -N -R 0.0.0.0:${DPORT}:localhost:${1} sapientisat.org
+        echo "maia.solovyov.net:$DPORT"
+        ssh -N -R 0.0.0.0:${DPORT}:localhost:${1} maia.solovyov.net
     fi
 }
 

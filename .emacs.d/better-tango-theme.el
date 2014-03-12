@@ -23,7 +23,7 @@
  '(font-lock-constant-face ((((class color) (min-colors 89)) (:weight bold :foreground "#204a87"))))
  '(font-lock-function-name-face ((((class color) (min-colors 89)) (:foreground "#5c3566"))))
  '(font-lock-variable-name-face ((((class color) (min-colors 89)) (:foreground "#2e3436"))))
- '(font-lock-keyword-face ((((class color) (min-colors 89)) (:foreground "#346604"))))
+ '(Font-lock-keyword-face ((((class color) (min-colors 89)) (:foreground "#346604"))))
  '(font-lock-string-face ((((class color) (min-colors 89)) (:foreground "#a40000"))))
  '(font-lock-type-face ((((class color) (min-colors 89)) (:foreground "#204a87"))))
  '(link ((((class color) (min-colors 89)) (:underline t :foreground "#204a87"))))
