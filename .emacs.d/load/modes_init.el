@@ -147,6 +147,7 @@
 
 ;; org mode
 
+(defvar org-hide-leading-stars)
 (add-hook 'org-mode-hook
           (lambda ()
             (setq org-hide-leading-stars t)))
@@ -191,6 +192,7 @@
 ;; Python
 ;;;;;;;;;
 
+(defvar django-html-mode-map)
 (eval-after-load "django-html-mode"
   '(progn
      (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)
@@ -200,6 +202,7 @@
      (define-key django-html-mode-map (kbd "M-'") "<%=  %>\C-b\C-b\C-b")
      ))
 
+(defvar python-mode-map)
 (eval-after-load "python"
   '(progn
      (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)))
@@ -253,12 +256,14 @@
 
 ;; Ruby
 
-(eval-after-load "ruby-mode"
-  '(progn
-     (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)))
+(defvar ruby-mode-map)
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)))
 
 ;; Javascript
 
+(defvar js-mode-map)
 (eval-after-load "js"
   '(progn
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
@@ -334,14 +339,7 @@
            (global-set-key (kbd "C-c p b") 'project-root-switch-buffer)
 
            (setq project-roots
-                 `(("Paylogic project"
-                    :root-contains-files ("../paylogic/" "../fabfile.py")
-                    :filename-regex ,(regexify-ext-list '(py html css js sh)))
-                   ("Svarga project"
-                    :root-contains-files ("manage.py" "venv")
-                    :filename-regex ,(regexify-ext-list '(py html css js sh ccss))
-                    :exclude-paths '("venv" "docs/_build"))
-                   ("Django project"
+                 `(("Django project"
                     :root-contains-files ("manage.py")
                     :filename-regex ,(regexify-ext-list '(py html css js sh))
                     :exclude-paths '("contrib"))
@@ -358,7 +356,8 @@
                     :filename-regex ,(regexify-ext-list '(py)))
                    ("Generic Python project"
                     :root-contains-files ("setup.py")
-                    :filename-regex ,(regexify-ext-list '(py)))
+                    :filename-regex ,(regexify-ext-list '(py))
+                    :exclude-paths '(".venv"))
                    ("Ruby web project"
                     :root-contains-files ("config.ru")
                     :filename-regex ,(regexify-ext-list '(rb ru haml erb css js)))
@@ -366,11 +365,9 @@
                     :root-contains-files ("index.html" "settings.cfg")
                     :filename-regex ,(regexify-ext-list '(html js css cfg))
                     :exclude-paths '("_build"))
-                   ("webcs"
-                    :root-contains-files ("Makefile" "config.js")
-                    :filename-regex ,(regexify-ext-list
-                                      '(coffee eco less json html js))
-                    :exclude-paths ("_build" "_www" "node_modules"))
+                   ("Generic Javascript Project"
+                    :root-contains-files ("package.json")
+                    :exclude-paths '(".git" ".hg" "node_modules"))
                    ("Generic Mercurial project"
                     :root-contains-files (".hg"))
                    ("Generic git project"
@@ -528,15 +525,7 @@
   :after (progn
            (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
            (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
-           (add-hook 'clojure-mode-hook
-                     (lambda () (define-clojure-indent
-                             (expect 'defun)
-                             (expect-let 'defun)
-                             (given 'defun)
-                             (context 1)
-                             (freeze-time 1)
-                             (redef-state 1)
-                             (from-each 1)))))))
+           (setq clojure-defun-style-default-indent t))))
 
 (el-get-add
  (:name clj-refactor
@@ -570,6 +559,7 @@
   :after (progn
            (add-hook 'sgml-mode-hook 'zencoding-mode))))
 
+(defvar filladapt-token-table)
 (add-hook 'html-mode-hook
           (lambda ()
             ;; (if (string-prefix-p "/Users/piranha/dev/work"
@@ -621,8 +611,40 @@
   :features smartscan
   :after (global-smartscan-mode 1)))
 
+;; OCaml
+
 (el-get-add
- (:name wakatime-mode
-        :type git
-        :features wakatime-mode
-        :url "https://github.com/wakatime/wakatime-mode"))
+ (:name tuareg-imenu
+  :type http
+  :url "http://aspellfr.free.fr/tuareg-imenu/tuareg-imenu.el"
+  :before (autoload 'tuareg-imenu-set-imenu "tuareg-imenu" "Configuration of imenu for tuareg" t)))
+
+(el-get-add
+ (:name tuareg-mode
+  :before (progn
+            (autoload 'ocp-setup-indent
+              (concat
+               (replace-regexp-in-string
+                "\n$" ""
+                (shell-command-to-string "opam config var share"))
+               "/emacs/site-lisp/ocp-indent.el")
+              "" t)
+            (add-hook 'tuareg-mode-hook 'ocp-setup-indent)
+            (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu))))
+
+(defvar merlin-error-after-save)
+(el-get-add
+ (:name merlin
+  :type elpa
+  :before (progn
+            (add-hook 'tuareg-mode-hook 'merlin-mode)
+            ;(setq merlin-use-auto-complete-mode t)
+            (setq merlin-error-after-save nil))))
+
+(el-get-add
+ (:name utop
+  :type elpa
+  :before (progn
+            (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
+            (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer))))
+

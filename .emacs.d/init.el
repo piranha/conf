@@ -19,7 +19,7 @@
 suitable for binding to keys."
   `(lambda () (interactive) (,func ,@args)))
 
-(let ((better-path "/Users/piranha/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/Users/piranha/var/gopath/bin:/Users/piranha/var/gopkg/bin:/usr/local/share/npm/bin"))
+(let ((better-path "/Users/piranha/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/Users/piranha/dev/go/bin:/Users/piranha/dev/go/ext/bin:/usr/local/share/npm/bin:/Users/piranha/.opam/system/bin:/Users/piranha/Library/Haskell/bin"))
   (if (string-equal "darwin" (symbol-name system-type))
       (setenv "PATH" better-path))
   (setq exec-path (split-string better-path ":")))
