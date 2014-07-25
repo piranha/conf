@@ -51,3 +51,5 @@
 	renames = true
 [push]
 	default = current
+[daemon]
+    receivepack = true
