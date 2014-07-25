@@ -10,87 +10,108 @@
 ;; of all the commands you can execute, start typing a word related to the thing you
 ;; want to do in between the square brackets (e.g. type "editor").
 
-{:+ {:app {
-           "ctrl-c `" [:toggle-console]
-           "ctrl-c c" [:show-commandbar-transient]
-           "ctrl-c w" [:workspace.show]
-           "f1" [:dev-inspector]
-           "alt-x" [:show-commandbar-transient]
-           "ctrl-h k" [:keymapper.show]
-           "ctrl-tab" [:tabs.next]
-          }
-     :tabs {
-            "ctrl-`" [:lt.plugins.alt-tab/alt-tab]
-            }
-     :lt.plugins.alt-tab/dialog {
-                                 "ctrl-left" [:lt.plugins.alt-tab/close-current-tab-and-go-to-previously-used]
-                                 }
+{:+ {:app
+     {
+      "ctrl-c `" [:toggle-console]
+      "ctrl-c w" [:workspace.show]
+      "f1" [:dev-inspector]
+      "alt-x" [:show-commandbar-transient]
+      "ctrl-h k" [:keymapper.show]
+      "ctrl-tab" [:tabs.next]
+      }
 
-     :editor {
-              "ctrl-d" [:editor.delete-char-right]
-              "ctrl-x ctrl-s" [:save]
-              "alt-w" [:editor.watch.watch-selection]
-              "ctrl-alt-w" [:editor.watch.unwatch]
-              "esc" [:editor.selection.clear]
+     :tabs
+     {
+      "ctrl-`" [:lt.plugins.alt-tab/alt-tab]
+      }
 
-              "cmd-d" [:editor.word-left
-                       :paredit.select.parent]
+     :lt.plugins.alt-tab/dialog
+     {
+      "ctrl-left" [:lt.plugins.alt-tab/close-current-tab-and-go-to-previously-used]
+      }
 
-              ;;Select the parent expression, whether that's [], {}, or ()
-              "alt-s" [:paredit.select.parent]
-              ;; slurp and barf
-              "alt-ctrl-0" [:paredit.grow.right]
-              "alt-ctrl-9" [:paredit.shrink.right]
+     :editor
+     {
+      "pmeta-;" [:toggle-comment-selection]
 
-              ;;Format the parent ()
-              "ctrl-alt-s" [(:paredit.select.parent "(")
-                            :smart-indent-selection
-                            :paredit.select.clear]
+      "ctrl-shift-up"     [:editor.sublime.selectLinesUpward]
+      "ctrl-shift-down"   [:editor.sublime.selectLinesDownward]
+      "pmeta-d"           [:editor.sublime.selectNextOccurrence]
+      "ctrl-m"            [:editor.sublime.goToBracket]
+      "ctrl-shift-m"      [:editor.sublime.selectBetweenBrackets]
+      "shift-pmeta-space" [:editor.sublime.selectScope]
+      "ctrl-pmeta-up"     [:editor.sublime.swapLineUp]
+      "ctrl-pmeta-down"   [:editor.sublime.swapLineDown]
+      "shift-pmeta-l"     [:editor.sublime.splitSelectionByLine]
+      "pmeta-j"           [:editor.sublime.joinLines]
+      "shift-pmeta-d"     [:editor.sublime.duplicateLine]
 
-              ;; eval
-              "ctrl-x ctrl-e" [:eval-editor-form]
-              "alt-enter" [(:paredit.select.parent "(")
-                           :eval-editor-form
-                           :paredit.select.clear]
+      "ctrl-d" [:editor.delete-char-right]
+      "alt-w" [:editor.watch.watch-selection]
+      "ctrl-alt-w" [:editor.watch.unwatch]
+      "esc" [:editor.selection.clear]
 
-              "cmd-;" [:toggle-comment-selection]
+      ;;Select the parent expression, whether that's [], {}, or ()
+      "alt-s" [:paredit.select.parent]
+      ;; slurp and barf
+      "alt-ctrl-0" [:paredit.grow.right]
+      "alt-ctrl-9" [:paredit.shrink.right]
 
-              "ctrl-x ctrl-x" [:lt.plugins.marks/jump-to-large-move-mark]
-              "ctrl-x ctrl-a" [:lt.plugins.marks/jump-to-last-edit-mark]
-             }
+      ;;Format the parent ()
+      "ctrl-alt-s" [(:paredit.select.parent "(")
+                    :smart-indent-selection
+                    :paredit.select.clear]
 
-     :editor.clj {
-                  "ctrl-d" [:paredit-plus.forward-delete]
-                  "backspace" [:paredit-plus.backward-delete]
-                  "ctrl-k" [:paredit-plus.kill]
-                  "alt-up" [:paredit-plus.splice-sexp-killing-backward]
-                  }
+      ;; eval
+      "ctrl-x ctrl-e" [:eval-editor-form]
+      "alt-enter" [(:paredit.select.parent "(")
+                   :eval-editor-form
+                   :paredit.select.clear]
 
-     :editor.cljs {
-                   "ctrl-d" [:paredit-plus.forward-delete]
-                   "backspace" [:paredit-plus.backward-delete]
-                   "ctrl-k" [:paredit-plus.kill]
-                   "alt-up" [:paredit-plus.splice-sexp-killing-backward]
-                   "alt-s" [:paredit-plus.split-sexp]
-                   "alt-j" [:paredit-plus.join-sexps]
-                  }
+      "ctrl-x ctrl-x" [:lt.plugins.marks/jump-to-large-move-mark]
+      "ctrl-x ctrl-a" [:lt.plugins.marks/jump-to-last-edit-mark]
+      }
 
-     :editor.keys.emacs {
-                         "ctrl-g" [(:emacs.keymap-cmd "Ctrl-G")]
-                         }
+     :editor.clj
+     {
+      "ctrl-d" [:paredit-plus.forward-delete]
+      "backspace" [:paredit-plus.backward-delete]
+      "ctrl-k" [:paredit-plus.kill]
+      "alt-up" [:paredit-plus.splice-sexp-killing-backward]
+      }
 
-     :editor.keys.normal {
-                          "tab" [:smart-indent-selection]
-                          }
-     :editor.coffee {
-                     }
+     :editor.cljs
+     {
+      "ctrl-d" [:paredit-plus.forward-delete]
+      "backspace" [:paredit-plus.backward-delete]
+      "ctrl-k" [:paredit-plus.kill]
+      "alt-up" [:paredit-plus.splice-sexp-killing-backward]
+      "alt-s" [:paredit-plus.split-sexp]
+      "alt-j" [:paredit-plus.join-sexps]
+      }
+
+     :editor.keys.emacs
+     {
+      "ctrl-g" [(:emacs.keymap-cmd "Ctrl-G")]
+      }
+
+     :editor.keys.normal
+     {
+      "tab" [:smart-indent-selection]
+      }
+     :editor.coffee
+     {
+      }
      }
 
- :- {:tabs {
-            "ctrl-tab" [:lt.plugins.alt-tab/alt-tab]
-            }
-     :editor.keys.normal {
-                          "backspace" [:editor.backspace-pair]
-                          }
+ :- {:tabs
+     {
+      "ctrl-tab" [:lt.plugins.alt-tab/alt-tab]
+      }
+
+     :editor.keys.normal
+     {
+      "backspace" [:editor.backspace-pair]
+      }
     }
  }
