@@ -1,17 +1,12 @@
-{:user {:plugins [;[lein-shegon "0.1.1"]
-                  [lein-ancient "0.4.4"]
-                  [jonase/eastwood "0.0.2"]
-                  [lein-deps-tree "0.1.2"]
-                  [lein-try "0.3.0"]
-                  [lein-iclojure "1.2"]
+{:user {:plugins [[lein-ancient "0.5.5"]
+                  [jonase/eastwood "0.1.4"]
+                  [lein-try "0.4.1"]
                   [lein-pdo "0.1.1"]
-                  ;[lein-zeroconf "0.1.0"]
-                  ;[lein-ritz "0.7.0"]
-                  ]
-        :dependencies [;[spyscope "0.1.3"]
+                  [mvxcvi/whidbey "0.3.2"]]
+        :dependencies [[spyscope "0.1.4" ]
                        [debug-repl "0.3.2"]
                        [criterium "0.4.3"]]
-        :injections [;(require 'spyscope.core)
+        :injections [(require 'spyscope.core)
                      (require '[alex-and-georges.debug-repl :refer [debug-repl]])
                      (require '[clojure.string :as s])
                      (require '[criterium.core :refer [quick-bench]])
