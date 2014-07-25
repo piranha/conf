@@ -32,6 +32,7 @@ fi
 export LESS="FRQXi"
 export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 export PIP_RESPECT_VIRTUALENV=true
+export JAVA_TOOL_OPTIONS='-Djava.awt.headless=true'
 export WORKON_HOME=~/.virtualenvs
 
 # local settings can override some settings
@@ -326,10 +327,8 @@ function qser() { vim $(hg root)/.hg/patches/series }
 function hgrc() { vim $(hg root)/.hg/hgrc }
 function bdiff() { hg diff -r "ancestor('$1', master)" -r "$1" $2 $3 $4 }
 
-alias psg="ps aux | egrep -v 'egrep --color' | egrep --color=auto -i --color"
-alias psc="ps -C"
-alias psfg="ps -ylfC"
-function psk() { ps -C $1 -o pid= | xargs kill }
+alias pg="pgrep -lf"
+function pgk() { pgrep -f $1 | xargs kill }
 alias -g B='$(git symbolic-ref HEAD)'
 alias gig="git submodule foreach git"
 alias master="git checkout master"
