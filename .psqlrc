@@ -1,0 +1,7 @@
+\timing on
+\x auto
+
+\set HISTCONTROL ignoreboth
+\set HISTFILE ~/.psql_history- :DBNAME
+\set HISTSIZE 20000
+\pset null '[NULL]'
