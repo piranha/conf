@@ -20,8 +20,10 @@ suitable for binding to keys."
   `(lambda () (interactive) (,func ,@args)))
 
 (let ((better-path "/Users/piranha/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/Users/piranha/dev/go/bin:/Users/piranha/dev/go/ext/bin:/usr/local/share/npm/bin:/Users/piranha/.opam/system/bin:/Users/piranha/Library/Haskell/bin"))
-  (if (string-equal "darwin" (symbol-name system-type))
-      (setenv "PATH" better-path))
+  (when (string-equal "darwin" (symbol-name system-type))
+    (setenv "PATH" better-path)
+    (setenv "CAML_LD_LIBRARY_PATH" "/Users/piranha/.opam/system/lib/stublibs:/usr/local/lib/ocaml/stublibs")
+    (setenv "OCAML_TOPLEVEL_PATH" "/Users/piranha/.opam/system/lib/toplevel"))
   (setq exec-path (split-string better-path ":")))
 
 ;; initialize el-get
@@ -35,10 +37,15 @@ suitable for binding to keys."
 
 (setq custom-file "~/.emacs.d/load/custom_init.el")
 
-(add-to-path 'load)                     ; initialization
-(add-to-path 'packages)                 ; additional packages
-(let ((default-directory "~/.emacs.d/packages/"))
-  (normal-top-level-add-subdirs-to-load-path))
+(when (executable-find "opam")
+  (add-to-list 'load-path
+               (concat
+                (replace-regexp-in-string
+                 "\n$" ""
+                 (shell-command-to-string "opam config var share"))
+                "/emacs/site-lisp/")))
+(add-to-list 'load-path "~/.emacs.d/load/")
+(add-to-list 'load-path "~/.emacs.d/packages/")
 
 (load "~/.secrets.el" t)
 
@@ -64,4 +71,3 @@ suitable for binding to keys."
 ;; run el-get now
 (el-get 'sync
  (mapcar (lambda (item) (symbol-name (plist-get item :name))) el-get-sources))
-

@@ -24,8 +24,14 @@
 (autoload 'dired-jump "dired-x" "Jump to dir of current file" t)
 (autoload 'dired-omit-mode "dired-x" "Omit unnecessary files in dired view" t)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
+(add-hook 'dired-omit-mode-hook
+          (lambda ()
+            (define-key dired-mode-map (kbd "M-o") nil)
+            (define-key dired-mode-map (kbd "M-O") 'dired-omit-mode)))
+
 (eval-after-load "dired"
-  '(define-key dired-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "dired")))
+  '(define-key dired-mode-map (kbd "C-,")
+     (fun-for-bind bs--show-with-configuration "dired")))
 
 (column-number-mode 1)
 (show-paren-mode 1)
@@ -121,7 +127,8 @@
         lua-mode-hook
         coffee-mode-hook
         js-mode-hook
-        go-mode-hook))
+        go-mode-hook
+        clojure-mode-hook))
 (dolist (hook hooks-with-whitespaces) (add-hook hook 'whitespace-mode))
 
 (setq hooks-want-short-lines
@@ -142,7 +149,8 @@
                            coffee-mode-hook
                            go-mode-hook
                            js-mode-hook
-                           clojure-mode-hook))
+                           clojure-mode-hook
+                           web-mode-hook))
              (add-hook hook 'fic-ext-mode)))))
 
 ;; org mode
@@ -150,13 +158,22 @@
 (defvar org-hide-leading-stars)
 (add-hook 'org-mode-hook
           (lambda ()
-            (setq org-hide-leading-stars t)))
+            (setq org-hide-leading-stars t)
+            (setq org-time-clocksum-format
+                  '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t))
+            (define-key org-mode-map (kbd "C-,") nil)
+            (define-key org-mode-map (kbd "C-S-<up>") 'org-timestamp-up)
+            (define-key org-mode-map (kbd "C-S-<down>") 'org-timestamp-down)))
 
 ;; major modes
 
 (el-get-add
  (:name markdown-mode
   :after (progn
+           (eval-after-load "markdown-mode"
+             '(progn
+                (define-key markdown-mode-map (kbd "M-<right>") nil)
+                (define-key markdown-mode-map (kbd "M-<left>") nil)))
            (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
            (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))))
 
@@ -298,6 +315,7 @@
                              (set (make-local-variable 'require-final-newline) nil)))
                 (define-key yas-minor-mode-map [(tab)] nil)
                 (define-key yas-minor-mode-map (kbd "TAB") nil)
+                (define-key yas-minor-mode-map (kbd "C-/") 'yas-expand)
                 (add-to-list 'yas/snippet-dirs
                              "~/.emacs.d/snippets/")
                 (yas-global-mode 1))))))
@@ -314,67 +332,27 @@
 ;; version control/projects
 
 (el-get-add
- (:name ack))
+ (:name ag))
 
 (el-get-add
- (:name project-root
-  :type hg
-  :url "http://hg.piranha.org.ua/project-root/"
-  :features project-root
+ (:name helm))
+
+(el-get-add
+ (:name grizzl))
+
+(el-get-add
+ (:name projectile
   :after (progn
-           (defun goreplace ()
-             (interactive)
-             (let ((grep-command "gr"))
-               (call-interactively 'grep)))
+           (projectile-global-mode)
+           (setq projectile-completion-system 'ido)
+           (setq projectile-enable-caching t))))
 
-           (defun project-root-goreplace ()
-             (interactive)
-               (with-project-root (call-interactively 'goreplace)))
-
-           (global-set-key (kbd "C-c p f") 'project-root-find-file)
-           (global-set-key (kbd "C-c p g") 'project-root-grep)
-           (global-set-key (kbd "C-c p a") 'project-root-goreplace)
-           (global-set-key (kbd "C-c p d") 'project-root-goto-root)
-           (global-set-key (kbd "C-c p l") 'project-root-browse-seen-projects)
-           (global-set-key (kbd "C-c p b") 'project-root-switch-buffer)
-
-           (setq project-roots
-                 `(("Django project"
-                    :root-contains-files ("manage.py")
-                    :filename-regex ,(regexify-ext-list '(py html css js sh))
-                    :exclude-paths '("contrib"))
-                   ("Mercurial"
-                    :root-contains-files ("hg" "hgeditor")
-                    :filename-regex ,(regexify-ext-list '(py tmpl))
-                    :exclude-paths '("tests" "build"))
-                   ("Sphinx documentation"
-                    :root-contains-files ("Makefile" "conf.py")
-                    :filename-regex ,(regexify-ext-list '(py rst))
-                    :exclude-paths '("_build"))
-                   ("Python project with buildout"
-                    :root-contains-files ("../../buildout.cfg")
-                    :filename-regex ,(regexify-ext-list '(py)))
-                   ("Generic Python project"
-                    :root-contains-files ("setup.py")
-                    :filename-regex ,(regexify-ext-list '(py))
-                    :exclude-paths '(".venv"))
-                   ("Ruby web project"
-                    :root-contains-files ("config.ru")
-                    :filename-regex ,(regexify-ext-list '(rb ru haml erb css js)))
-                   ("Cyrax site"
-                    :root-contains-files ("index.html" "settings.cfg")
-                    :filename-regex ,(regexify-ext-list '(html js css cfg))
-                    :exclude-paths '("_build"))
-                   ("Generic Javascript Project"
-                    :root-contains-files ("package.json")
-                    :exclude-paths '(".git" ".hg" "node_modules"))
-                   ("Generic Mercurial project"
-                    :root-contains-files (".hg"))
-                   ("Generic git project"
-                    :root-contains-files (".git"))
-                   ("Generic Clojure project"
-                    :root-contains-files ("project.clj")
-                    :exclude-paths ("out" ".repl" "target")))))))
+;;            (global-set-key (kbd "C-c p f") 'project-root-find-file)
+;;            (global-set-key (kbd "C-c p g") 'project-root-grep)
+;;            (global-set-key (kbd "C-c p a") 'project-root-goreplace)
+;;            (global-set-key (kbd "C-c p d") 'project-root-goto-root)
+;;            (global-set-key (kbd "C-c p l") 'project-root-browse-seen-projects)
+;;            (global-set-key (kbd "C-c p b") 'project-root-switch-buffer)
 
 ;; smex
 (el-get-add
@@ -523,8 +501,10 @@
 (el-get-add
  (:name clojure-mode
   :after (progn
+           (add-to-list 'auto-mode-alist '("\\.boot\\'" . clojure-mode))
            (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
            (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
+           (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode))
            (setq clojure-defun-style-default-indent t))))
 
 (el-get-add
@@ -540,6 +520,11 @@
                    (lambda ()
                      (define-key clojure-mode-map (kbd "C-c r a l")
                        'align-cljlet)))))
+
+;; cider dep
+(el-get-add
+ (:name queue
+  :type elpa))
 
 (el-get-add
  (:name cider
@@ -572,16 +557,20 @@
 
 (el-get-add
  (:name paredit
-  :after (progn (dolist (hook '(clojure-mode-hook
-                                emacs-lisp-mode-hook))
-                  (add-hook hook 'paredit-mode))
-                (add-hook 'paredit-mode-hook
-                          (lambda ()
-                            (dolist (kv '(("C-<right>" nil)
-                                          ("C-<left>" nil)
-                                          ("C-M-0" paredit-forward-slurp-sexp)
-                                          ("C-M-9" paredit-forward-barf-sexp)))
-                              (define-key paredit-mode-map (kbd (car kv)) (cadr kv))))))))
+  :url "http://mumble.net/~campbell/emacs/paredit-beta.el"
+  :after (progn
+           (autoload 'enable-paredit-mode "paredit-beta")
+           (autoload 'disable-paredit-mode "paredit-beta")
+           (dolist (hook '(clojure-mode-hook
+                           emacs-lisp-mode-hook))
+             (add-hook hook 'paredit-mode))
+           (add-hook 'paredit-mode-hook
+                     (lambda ()
+                       (dolist (kv '(("C-<right>" nil)
+                                     ("C-<left>" nil)
+                                     ("C-M-0" paredit-forward-slurp-sexp)
+                                     ("C-M-9" paredit-forward-barf-sexp)))
+                         (define-key paredit-mode-map (kbd (car kv)) (cadr kv))))))))
 
 (el-get-add
  (:name go-template-mode
@@ -589,11 +578,11 @@
   :url "git://gist.github.com/1654113.git"
   :features go-template-mode))
 
-(el-get-add
- (:name web-mode
-  :type git
-  :url "https://github.com/fxbois/web-mode"
-  :features web-mode))
+;; (el-get-add
+;;  (:name web-mode
+;;   :type git
+;;   :url "https://github.com/fxbois/web-mode"
+;;   :features web-mode))
 
 (el-get-add
  (:name po-mode))
@@ -604,14 +593,7 @@
   :after (eval-after-load "sql"
            (load-library "sql-indent"))))
 
-(el-get-add
- (:name smartscan
-  :type git
-  :url "https://github.com/mickeynp/smart-scan"
-  :features smartscan
-  :after (global-smartscan-mode 1)))
-
-;; OCaml
+;; ;; OCaml
 
 (el-get-add
  (:name tuareg-imenu
@@ -622,13 +604,8 @@
 (el-get-add
  (:name tuareg-mode
   :before (progn
-            (autoload 'ocp-setup-indent
-              (concat
-               (replace-regexp-in-string
-                "\n$" ""
-                (shell-command-to-string "opam config var share"))
-               "/emacs/site-lisp/ocp-indent.el")
-              "" t)
+            (autoload 'ocp-setup-indent "ocp-indent.el" "" t)
+            ;(autoload 'ocp-index-mode "ocp-index.el" "" t)
             (add-hook 'tuareg-mode-hook 'ocp-setup-indent)
             (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu))))
 
@@ -638,8 +615,12 @@
   :type elpa
   :before (progn
             (add-hook 'tuareg-mode-hook 'merlin-mode)
-            ;(setq merlin-use-auto-complete-mode t)
-            (setq merlin-error-after-save nil))))
+            (setq merlin-use-auto-complete-mode nil)
+            (setq merlin-error-after-save nil)
+            (add-hook 'merlin-mode-hook
+                      (lambda ()
+                        (define-key merlin-mode-map (kbd "C-c <up>") 'merlin-type-enclosing-go-up)
+                        (define-key merlin-mode-map (kbd "C-c <down>") 'merlin-type-enclosing-go-down))))))
 
 (el-get-add
  (:name utop
@@ -648,3 +629,47 @@
             (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
             (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer))))
 
+
+(el-get-add
+ (:name haskell-mode))
+
+;; (el-get-add
+;;  (:name structured-haskell-mode
+;;   :before (progn
+;;             (remove-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;             (add-hook 'haskell-mode-hook 'structured-haskell-mode)
+;;             (define-key shm-map (kbd "RET") 'shm/newline-indent)
+;;             (set-face-background 'shm-current-face "#eee8d5")
+;;             (set-face-background 'shm-quarantine-face "lemonchiffon"))))
+
+(el-get-add
+ (:name dockerfile-mode))
+
+(el-get-add
+ (:name rust-mode))
+
+(el-get-add
+ (:name toml-mode
+  :type elpa))
+
+(el-get-add
+ (:name web-mode
+  :before (progn
+            (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+            (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+            (add-hook 'web-mode-hook
+                      (lambda ()
+                        (define-key web-mode-map (kbd "C-c /") 'web-mode-element-close)
+                        (setq web-mode-markup-indent-offset 4)
+                        (setq web-mode-code-indent-offset 4)))
+            (defadvice web-mode-highlight-part (around tweak-jsx activate)
+              (if (equal web-mode-content-type "jsx")
+                  (let ((web-mode-enable-part-face nil))
+                    ad-do-it)
+                ad-do-it)))
+  :after (progn
+           (setq web-mode-content-types-alist '(("jsx" . "\\.js\\'")
+                                                ("jsx" . "\\.react\\.js\\'"))))))
+
+(el-get-add
+ (:name magit))

@@ -13,103 +13,20 @@
   (interactive)
   (insert (format-time-string "%F %T")))
 
-(defun whole-line ()
-  "Returns list of two values - beginning of this line
-and beginning of next line, for deleting/copying"
-  (list (line-beginning-position) (line-beginning-position 2)))
-
 (defun prh:copy-line ()
   "Save current line into Kill-Ring without marking the line "
-  (buffer-substring (line-beginning-position) (line-end-position))
-  )
+  (buffer-substring (line-beginning-position) (line-end-position)))
 
-(defun prh:check-newline (line)
-  "Checks that line ends in newline. Adds it if not."
-  (if (eql (aref line (1- (length line))) ?\n)
-      line
-    (concat line "\n")))
+(defun prh:move-line-up ()
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2))
 
-(defun prh:cut-line ()
-  "Kills current line"
-  (let ((cutted-line (apply 'buffer-substring (whole-line))))
-    (apply 'delete-region (whole-line))
-    (prh:check-newline cutted-line)
-    ))
-
-(defun prh:count-lines (arg)
-  "Count lines depending on arg.
-If arg is positive, count from current position to end,
-if negative, count from start to current position.
-"
-  (if (> arg 0)
-      (count-lines (point) (point-max))
-   (count-lines (point-min) (point))))
-
-(defun prh:move-line (&optional arg)
-  "Move current line.
-Arg determines number of lines to skip, negative means move up."
-  (interactive "p")
-  (if (> (prh:count-lines arg) 0)
-      (let ((prh:column (current-column)))
-        (progn
-          (or arg (setq arg 1))
-          (forward-line 1)
-          (transpose-lines arg)
-          (forward-line -1)
-          (move-to-column prh:column)))
-    ))
-
-(defun prh:move-line-down (&optional arg)
-  "Move current line down. Optional ARG determines number of lines to skip"
-  (interactive "p")
-  (or arg (setq arg 1))
-  (prh:move-line arg)
-)
-
-(defun prh:move-line-up (&optional arg)
-  "Move current line up. Optional ARG determines number of lines to skip"
-  (interactive "p")
-  (or arg (setq arg 1))
-  (prh:move-line (- arg))
-)
-
-(defun prh:duplicate-line (&optional arg)
-  "Copy current line.
-Arg determines number of lines to be created and direction."
-  (interactive "p")
-  (let ((cur-column (current-column))
-        (cutted-line (prh:copy-line)))
-    (progn
-      (or arg (setq arg 1))
-      (let ((tomove (if (< arg 0) (1+ arg) arg)))
-        (end-of-line tomove))
-      (newline)
-      (insert cutted-line)
-      (forward-line (- arg))
-      (move-to-column cur-column)))
-  )
-
-(defun prh:duplicate-line-down (&optional arg)
-  "Duplicate current line down. Optional ARG determines number of lines to skip"
-  (interactive "p")
-  (or arg (setq arg 1))
-  (prh:duplicate-line arg)
-)
-
-(defun prh:duplicate-line-up (&optional arg)
-  "Duplicate current line up. Optional ARG determines number of lines to skip"
-  (interactive "p")
-  (or arg (setq arg 1))
-  (prh:duplicate-line (- arg))
-)
-
-(defun kill-region-or-word (&optional arg)
-  "If region is active, kill it, backward kill word in other case."
-  (interactive "p")
-  (if (and transient-mark-mode mark-active)
-      (kill-region (point) (mark))
-    (backward-kill-word arg)
-    ))
+(defun prh:move-line-down ()
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1))
 
 (defun toggle-file (desired-file)
   "Toggle buffer display of desired file."
@@ -257,3 +174,10 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
             (end-of-line))
         (widen))
     (end-of-line)))
+
+(defun align-repeat (start end regexp)
+    "Repeat alignment with respect to 
+     the given regular expression."
+    (interactive "r\nsAlign regexp: ")
+    (align-regexp start end 
+        (concat "\\(\\s-*\\)" regexp) 1 1 t))

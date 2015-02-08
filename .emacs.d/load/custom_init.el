@@ -9,7 +9,7 @@
     ("0261c7e47f570afd984db039e083ec0f89eb4194" default)))
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
- '(org-agenda-files (quote ("~/org/life.org")))
+ '(org-agenda-files (quote ("~/dev/work/timing.org")))
  '(safe-local-variable-values
    (quote
     ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
@@ -40,6 +40,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#ffffff" :foreground "#2e3436" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "nil" :family "Monaco"))))
  '(fixed-pitch ((t (:foreground "dark green"))))
  '(org-column ((t (:strike-through nil :underline nil :weight normal :height 120 :family "outline-unifont"))))
  '(org-hide ((t (:foreground "grey77")))))

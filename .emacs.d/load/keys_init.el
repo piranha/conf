@@ -27,8 +27,6 @@
                                 (zap-to-char (- arg) char)))
 (global-set-key (kbd "M-<up>") 'prh:move-line-up)
 (global-set-key (kbd "M-<down>") 'prh:move-line-down)
-(global-set-key (kbd "C-M-<up>") 'prh:duplicate-line-up)
-(global-set-key (kbd "C-M-<down>") 'prh:duplicate-line-down)
 (global-set-key (kbd "C-a") 'beginning-of-line-dwim)
 (global-set-key (kbd "<home>") 'beginning-of-line-dwim)
 
@@ -92,9 +90,16 @@
   :after (progn (global-set-key (kbd "C-;") 'iedit-mode))))
 
 (global-set-key (kbd "M-/") 'dabbrev-expand)
-(global-set-key (kbd "C-/") 'yas-expand)
+(global-unset-key (kbd "C-/")) ;; 'yas-expand
 
 (eval-after-load "sgml-mode"
   '(progn
      (define-key sgml-mode-map (kbd "C-c C-<left>") 'sgml-skip-tag-backward)
      (define-key sgml-mode-map (kbd "C-c C-<right>") 'sgml-skip-tag-forward)))
+
+(global-set-key (kbd "M-t")
+                (lambda ()
+                  (interactive)
+                  (start-process
+                   "switch-to-chrome" nil
+                   "osascript" "-e" "tell application \"Google Chrome\" to activate")))
