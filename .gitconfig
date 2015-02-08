@@ -10,9 +10,9 @@
     df = diff
     dfc = diff --cached
     dfa = diff HEAD
-    p = log -p
-    xp = log -p master..HEAD
-    pl = log -p HEAD@{1}..HEAD
+    p = log -p --ext-diff
+    xp = log -p --ext-diff master..HEAD
+    pl = log -p ext-diff HEAD@{1}..HEAD
     sl = log --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
     ll = !git sl HEAD@{1}..HEAD
     g = log --graph --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
@@ -49,7 +49,12 @@
     autosetupmerge = true
 [diff]
 	renames = true
+	external = ~/bin/git-external-patdiff.sh
 [push]
 	default = current
 [daemon]
     receivepack = true
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true

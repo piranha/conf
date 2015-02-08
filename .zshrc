@@ -22,6 +22,7 @@ fi
 umask 022
 
 export PATH=~/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+test -x "/bin/launchctl" && launchctl setenv PATH $PATH
 
 export PAGER="less"
 if [ -x "`whence -c vim`" ]; then
@@ -32,8 +33,10 @@ fi
 export LESS="FRQXi"
 export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 export PIP_RESPECT_VIRTUALENV=true
-export JAVA_TOOL_OPTIONS='-Djava.awt.headless=true'
+#export JAVA_TOOL_OPTIONS='-Djava.awt.headless=true'
+export BOOT_JVM_OPTIONS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Xmx2g'
 export WORKON_HOME=~/.virtualenvs
+export LEIN_FAST_TRAMPOLINE=y
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then
@@ -168,16 +171,18 @@ compctl -x 'c[-1,-v]' -M 'm:{a-zA-Z}={A-Za-z}' -K _say_voices -- say
 
 ##### end of completion #####
 
-# xterm header
+## xterm header
+## \e]0; will set window's and tab's header
+## \e]1; will set tab's header
 case $TERM in
 xterm*|rxvt*)
     precmd () {
-        print -Pn "\033]0;%n@%M - %/\a"
-        print -Pn "\033]1;%n@%m \a"
+        print -Pn "\e]0;@%M - %/\a"
+        print -Pn "\e]1;@%m \a"
     }
     preexec () {
-        print -Pn "\033]0;%n@%M - %/ - ($1)\a"
-        print -Pn "\033]1;%n@%m \a"
+        print -Pn "\e]0;@%M - %/: $1\a"
+        print -Pn "\e]1;@%m: $1 \a"
     }
 ;;
 screen)
@@ -321,6 +326,9 @@ alias depyc='noglob find . -name *.pyc -delete'
 alias ho="sudo vim /etc/hosts"
 alias pc="rsync -P"
 alias sudo="sudo " # this carries aliases to sudo calls
+alias youtube-dl='noglob youtube-dl'
+alias wget='noglob wget'
+alias curl='noglob curl'
 
 function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
 function qser() { vim $(hg root)/.hg/patches/series }
@@ -354,7 +362,7 @@ function rtun() {
     else
         DPORT=${2:-$1}
         echo "maia.solovyov.net:$DPORT"
-        ssh -N -R 0.0.0.0:${DPORT}:localhost:${1} maia.solovyov.net
+        ssh -N -R "*:${DPORT}:localhost:${1}" maia.solovyov.net
     fi
 }
 
@@ -373,6 +381,16 @@ function log() {
     date >> ~/Documents/kb/${*:-log}
     cat >> ~/Documents/kb/${*:-log}
 }
+
+function mkcd() {
+    if [ ! -z "$1" ]
+    then
+        mkdir -p "$1"
+        cd "$1"
+    fi
+}
+
+alias dummy_email='python -m smtpd -n -c DebuggingServer localhost:1026'
 
 # for emacs' tramp
 [[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls || return 0

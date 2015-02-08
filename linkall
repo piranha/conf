@@ -12,6 +12,7 @@ mapping=(
     DefaultKeyBinding.dict Library/KeyBindings/DefaultKeyBinding.dict
     ipython_config.py .config/ipython/profile_default/ipython_config.py
     .inputrc .inputrc
+    .psqlrc .psqlrc
     lein-profiles.clj .lein/profiles.clj
     git-req bin/git-req
     LT/user.keymap "Library/Application Support/LightTable/settings/user.keymap"
@@ -21,7 +22,7 @@ mapping=(
 for src in ${(k)mapping}; do
     dst=${mapping[$src]}
     if [ ! -L ~/$dst ]; then
-        echo "$src <- ~/$dst"
+        echo "$src -> ~/$dst"
         mkdir -p ~/$(dirname $dst)
         ln -s $PWD/$src ~/$dst
     fi

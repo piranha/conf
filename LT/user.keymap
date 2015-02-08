@@ -99,9 +99,7 @@
      {
       "tab" [:smart-indent-selection]
       }
-     :editor.coffee
-     {
-      }
+
      }
 
  :- {:tabs

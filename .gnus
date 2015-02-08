@@ -414,7 +414,7 @@
   (insert moder-pass "\n")
   (insert name)
   (insert "\n")
-	(kill-line))
+  (kill-line))
 
 ;; Now playing
 (setq now-playing-file "~/.song")
