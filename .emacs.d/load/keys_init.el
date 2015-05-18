@@ -43,8 +43,10 @@
   :after (progn (global-set-key (kbd "C-M-y") 'kill-ring-search))))
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
-(global-set-key (kbd "C-M--") 'flymake-goto-prev-error)
-(global-set-key (kbd "C-M-=") 'flymake-goto-next-error)
+;; (global-set-key (kbd "C-M--") 'flymake-goto-prev-error)
+;; (global-set-key (kbd "C-M-=") 'flymake-goto-next-error)
+(global-set-key (kbd "C-M--") 'flycheck-previous-error)
+(global-set-key (kbd "C-M-=") 'flycheck-next-error)
 
 ;; windows
 (global-set-key (kbd "M-`") 'other-frame)

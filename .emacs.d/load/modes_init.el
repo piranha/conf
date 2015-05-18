@@ -117,19 +117,7 @@
 (set-face-attribute 'whitespace-line nil
                     :foreground 'unspecified
                     :background "yellow")
-
-(setq hooks-with-whitespaces
-      '(wikipedia-mode-hook
-        markdown-mode-hook
-        erlang-mode-hook
-        haskell-mode-hook
-        python-mode-hook
-        lua-mode-hook
-        coffee-mode-hook
-        js-mode-hook
-        go-mode-hook
-        clojure-mode-hook))
-(dolist (hook hooks-with-whitespaces) (add-hook hook 'whitespace-mode))
+(add-hook 'prog-mode-hook 'whitespace-mode)
 
 (setq hooks-want-short-lines
       '(markdown-mode-hook
@@ -231,41 +219,57 @@
 ;; Flymake
 ;;;;;;;;;;
 
-(defun buffer-is-local ()
-  (if (fboundp 'tramp-list-remote-buffers)
-      (not (member (current-buffer) (tramp-list-remote-buffers)))
-    t))
+;; (defun buffer-is-local ()
+;;   (if (fboundp 'tramp-list-remote-buffers)
+;;       (not (member (current-buffer) (tramp-list-remote-buffers)))
+;;     t))
 
-(when (load "flymake" t)
-  (defun flymake-pyflakes-init ()
-    ;; Make sure it's not a remote buffer or flymake would not work
-    (when (buffer-is-local)
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list "pyflakes" (list local-file)))))
+;; (when (load "flymake" t)
+;;   (defun flymake-pyflakes-init ()
+;;     ;; Make sure it's not a remote buffer or flymake would not work
+;;     (when (buffer-is-local)
+;;       (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                          'flymake-create-temp-inplace))
+;;              (local-file (file-relative-name
+;;                           temp-file
+;;                           (file-name-directory buffer-file-name))))
+;;         (list "pyflakes" (list local-file)))))
 
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init)))
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;                '("\\.py\\'" flymake-pyflakes-init)))
 
-(add-hook 'python-mode-hook '(lambda () (flymake-mode 1)))
+;; (add-hook 'python-mode-hook '(lambda () (flymake-mode 1)))
 
-(push '("\\([^:]+\\):\\([0-9]+\\)\\(([0-9]+)\\)?: \\[.\\] \\(.*\\)"
-        1 2 3 4)
-      flymake-err-line-patterns)
+;; (push '("\\([^:]+\\):\\([0-9]+\\)\\(([0-9]+)\\)?: \\[.\\] \\(.*\\)"
+;;         1 2 3 4)
+;;       flymake-err-line-patterns)
 
-(set-face-attribute 'flymake-errline nil
-                    :background 'unspecified
-                    :underline "orange")
+;; (set-face-attribute 'flymake-errline nil
+;;                     :background 'unspecified
+;;                     :underline "orange")
+
+;; (el-get-add
+;;  (:name flymake-lua))
+
+;; (el-get-add
+;;  (:name flymake-point
+;;   :features flymake-point))
 
 (el-get-add
- (:name flymake-lua))
+ (:name s))
 
 (el-get-add
- (:name flymake-point
-  :features flymake-point))
+ (:name flycheck
+  :after (add-hook 'after-init-hook 'global-flycheck-mode)))
+
+(el-get-add
+ (:name popup))
+
+(el-get-add
+ (:name flycheck-pos-tip))
+
+(eval-after-load 'flycheck
+  '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 ;; Lua
 
@@ -333,12 +337,6 @@
 
 (el-get-add
  (:name ag))
-
-(el-get-add
- (:name helm))
-
-(el-get-add
- (:name grizzl))
 
 (el-get-add
  (:name projectile
@@ -459,10 +457,7 @@
                          '("</style>" django-html-mode)))
 
            (delete '("\\.html\\'" . django-html-mode) auto-mode-alist)
-           (add-to-list 'auto-mode-alist '("\\.html\\'" . better-django-html-mode))
-
-           (delete '("\\.html?\\'" flymake-xml-init)
-                   flymake-allowed-file-name-masks))))
+           (add-to-list 'auto-mode-alist '("\\.html\\'" . better-django-html-mode)))))
 
 ;; go
 (add-hook 'go-mode-hook
@@ -471,27 +466,10 @@
                  '(face trailing lines-tail))))
 
 (el-get-add
- (:name highlight-symbol
-  :after (progn
-           (global-set-key (kbd "C-=") 'highlight-symbol-at-point)
-           (global-set-key (kbd "C-c ]") 'highlight-symbol-next)
-           (global-set-key (kbd "C-c [") 'highlight-symbol-prev))))
-
-(el-get-add
- (:name less-css-mode
+ (:name less-css-mode1
   :type git
   :url "https://github.com/purcell/less-css-mode/"
   :load "less-css-mode.el"))
-
-(el-get-add
- (:name deft
-  :type http
-  :url "http://jblevins.org/projects/deft/deft.el"
-  :features deft
-  :after (progn
-           (setq deft-directory "~/Dropbox/PlainText/")
-           (setq deft-text-mode 'markdown-mode))))
-
 
 (el-get-add
  (:name htmlize))
@@ -507,6 +485,10 @@
            (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode))
            (setq clojure-defun-style-default-indent t))))
 
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            (define-key clojure-mode-map (kbd "C-=") 'phoenix-reload)))
+
 (el-get-add
  (:name clj-refactor
   :after (add-hook 'clojure-mode-hook
@@ -518,8 +500,7 @@
  (:name align-cljlet
   :after (add-hook 'clojure-mode-hook
                    (lambda ()
-                     (define-key clojure-mode-map (kbd "C-c r a l")
-                       'align-cljlet)))))
+                     (define-key clojure-mode-map (kbd "C-c r a l") 'align-cljlet)))))
 
 ;; cider dep
 (el-get-add
@@ -532,6 +513,10 @@
            (setq cider-repl-history-file "~/.emacs.d/cider-history")
            (add-hook 'cider-repl-mode-hook 'paredit-mode)
            (add-hook 'clojure-mode-hook 'cider-mode))))
+
+(add-hook 'clojure-repl-mode-hook
+          (lambda ()
+            (define-key cider-mode-map (kbd "C-=") 'phoenix-reload)))
 
 (el-get-add
  (:name rainbow-delimiters
@@ -673,3 +658,14 @@
 
 (el-get-add
  (:name magit))
+
+(el-get-add
+ (:name ace-jump-mode
+  :after (progn
+           (define-key global-map (kbd "C-c SPC") 'ace-jump-mode))))
+
+(el-get-add
+ (:name string-inflection
+  :type git
+  :url "https://github.com/akicho8/string-inflection"
+  :features string-inflection))

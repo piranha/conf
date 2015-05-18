@@ -181,3 +181,10 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (interactive "r\nsAlign regexp: ")
     (align-regexp start end 
         (concat "\\(\\s-*\\)" regexp) 1 1 t))
+
+(defun phoenix-reload ()
+  (interactive)
+  (save-some-buffers)
+  (with-current-buffer (cider-current-repl-buffer)
+    (cider-interactive-eval
+     "(phoenix/reload!)")))
