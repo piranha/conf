@@ -1,4 +1,4 @@
-;; various modes configuration
+;;; modes.el -- various modes configuration
 
 ;; usual major modes
 (add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
@@ -268,8 +268,18 @@
 (el-get-add
  (:name flycheck-pos-tip))
 
+(el-get-add
+ (:name flycheck-pyflakes
+  :type github
+  :pkgname "Wilfred/flycheck-pyflakes"
+  :features flycheck-pyflakes))
+
 (eval-after-load 'flycheck
-  '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+  '(progn
+     (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+     (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+     (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
+
 
 ;; Lua
 
