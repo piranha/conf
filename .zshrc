@@ -22,7 +22,7 @@ fi
 umask 022
 
 export PATH=~/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-test -x "/bin/launchctl" && launchctl setenv PATH $PATH
+test -x "/bin/launchctl" && sudo launchctl setenv PATH $PATH
 
 export PAGER="less"
 if [ -x "`whence -c vim`" ]; then
@@ -35,8 +35,10 @@ export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 export PIP_RESPECT_VIRTUALENV=true
 #export JAVA_TOOL_OPTIONS='-Djava.awt.headless=true'
 export BOOT_JVM_OPTIONS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Xmx2g'
+export BOOT_CLOJURE_VERSION='1.7.0-beta3'
 export WORKON_HOME=~/.virtualenvs
 export LEIN_FAST_TRAMPOLINE=y
+export FZF_DEFAULT_OPTS="--ansi"
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then
@@ -319,8 +321,9 @@ alias apt="noglob sudo apt-get"
 alias wa="wajig"
 alias s="mdfind -name"
 alias ri="ri -f ansi"
-alias -g E='2>&1'
-alias clive="noglob clive"
+alias -g N='2>&1'
+alias -g X='| xargs '
+
 function preview { man -t $1 | open -f -a Preview }
 alias depyc='noglob find . -name *.pyc -delete'
 alias ho="sudo vim /etc/hosts"
@@ -342,6 +345,41 @@ alias gig="git submodule foreach git"
 alias master="git checkout master"
 alias u="underscore"
 alias gf="gr -f"
+
+function fe() {
+    if [ -z "$1" ]; then
+        gr -cf . | fzf --select-1 | xargs emacsclient --no-wait
+    else
+        gr -f "$1" | fzf --select-1 | xargs emacsclient --no-wait
+    fi
+}
+
+function ge() {
+    gr -cn "$1" | fzf --select-1 | xargs emacsclient --no-wait
+}
+
+function fd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) && cd "$dir"
+}
+
+function cfd() {
+   local file
+   local dir
+   file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
+}
+
+function gitshow() {
+  local out sha q
+  while out=$(
+      git log --decorate=short --graph --oneline --color=always |
+      fzf --ansi --multi --no-sort --reverse --query="$q" --print-query); do
+    q=$(head -1 <<< "$out")
+    while read sha; do
+      [ -n "$sha" ] && git show --color=always $sha | less -R
+    done < <(sed '1d;s/^[^a-z0-9]*//;/^$/d' <<< "$out" | awk '{print $1}')
+  done
+}
 
 function makegif() {
     convert -delay 1x25 *.png -ordered-dither o8x8,9 -coalesce -layers OptimizeTransparency +map -crop 480x270+0+45 +repage animation.gif
