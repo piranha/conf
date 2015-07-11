@@ -39,8 +39,8 @@
 
 ;; store recent files list
 (recentf-mode 1)
-(setq recentf-max-menu-items 2000
-      recentf-max-saved-items 2000)
+(setq recentf-max-menu-items 200
+      recentf-max-saved-items 200)
 (global-set-key (kbd "C-c C-f")
                 '(lambda ()
                    (interactive)
@@ -272,12 +272,15 @@
  (:name flycheck-pyflakes
   :type github
   :pkgname "Wilfred/flycheck-pyflakes"
-  :features flycheck-pyflakes))
+  :after (add-hook 'after-init-hook (lambda () (require 'flycheck-pyflakes)))))
 
 (eval-after-load 'flycheck
   '(progn
      (add-to-list 'flycheck-disabled-checkers 'python-flake8)
      (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+     (add-to-list 'flycheck-disabled-checkers 'emacs-lisp)
+     (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)
+     (setq flycheck-highlighting-mode 'lines)
      (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
 
 
@@ -300,12 +303,12 @@
      (define-key js-mode-map (kbd "RET") 'newline-maybe-indent)))
 
 ;; argh, this one wants 'npm install formidable'
-(el-get-add
- (:name jshint-mode
-  :type git
-  :url "https://github.com/daleharvey/jshint-mode.git"
-  :features flymake-jshint
-  :after (progn (add-hook 'js-mode-hook '(lambda () (flymake-mode 1))))))
+;; (el-get-add
+;;  (:name jshint-mode
+;;   :type git
+;;   :url "https://github.com/daleharvey/jshint-mode.git"
+;;   :features flymake-jshint
+;;   :after (progn (add-hook 'js-mode-hook '(lambda () (flymake-mode 1))))))
 
 ;; Coffee
 
@@ -476,7 +479,7 @@
                  '(face trailing lines-tail))))
 
 (el-get-add
- (:name less-css-mode1
+ (:name less-css-mode
   :type git
   :url "https://github.com/purcell/less-css-mode/"
   :load "less-css-mode.el"))
@@ -500,6 +503,14 @@
             (define-key clojure-mode-map (kbd "C-=") 'phoenix-reload)))
 
 (el-get-add
+ (:name peg))
+
+(el-get-add
+ (:name edn
+  :type github
+  :pkgname "expez/edn.el"))
+
+(el-get-add
  (:name clj-refactor
   :after (add-hook 'clojure-mode-hook
                    (lambda ()
@@ -519,6 +530,9 @@
 
 (el-get-add
  (:name cider
+  :type github
+  :pkgname "clojure-emacs/cider"
+  :branch "v0.9.1"
   :after (progn
            (setq cider-repl-history-file "~/.emacs.d/cider-history")
            (add-hook 'cider-repl-mode-hook 'paredit-mode)
@@ -666,8 +680,18 @@
            (setq web-mode-content-types-alist '(("jsx" . "\\.js\\'")
                                                 ("jsx" . "\\.react\\.js\\'"))))))
 
-(el-get-add
- (:name magit))
+;; (el-get-add
+;;  (:name magit
+;;   :branch "2.1.0"
+;;   :after (progn
+;;            (define-key global-map (kbd "C-x g") 'magit-status)
+;;            (define-key global-map (kbd "C-x M-g") 'magit-dispatch-popup))))
+
+(el-get-bundle magit
+  :branch "2.1.0"
+  :after (progn
+           (define-key global-map (kbd "C-x g") 'magit-status)
+           (define-key global-map (kbd "C-x M-g") 'magit-dispatch-popup)))
 
 (el-get-add
  (:name ace-jump-mode

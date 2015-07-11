@@ -70,4 +70,6 @@ suitable for binding to keys."
 
 ;; run el-get now
 (el-get 'sync
- (mapcar (lambda (item) (symbol-name (plist-get item :name))) el-get-sources))
+        (mapcar (lambda (item) (symbol-name (plist-get item :name))) el-get-sources))
+
+;;; init.el ends here
