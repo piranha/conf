@@ -1,0 +1,32 @@
+;; -*- scheme -*-
+;; patdiff Configuration file
+
+((context 4)
+
+ (line_same
+  ((prefix ((text " ") (style ((bg default) (fg black)))))))
+
+ (line_old
+  ((prefix ((text "-") (style ((bg default) (fg red)))))
+   (style ((fg red)))
+   (word_same (dim))))
+
+ (line_new
+  ((prefix ((text "+") (style ((bg default) (fg green)))))
+   (style ((fg green)))))
+
+ (line_unified
+  ((prefix ((text "!") (style ((bg default) (fg yellow)))))))
+
+ (header_old
+  ((prefix ((text "--- ") (style ((fg red)))))
+   (style (bold))))
+
+ (header_new
+  ((prefix ((text "+++ ") (style ((fg green)))))
+   (style (bold))))
+
+ (hunk
+  ((prefix ((text "@@ ") (style ((fg cyan)))))
+   (suffix ((text " @@") (style ((fg cyan)))))
+   (style ((fg cyan))))))
