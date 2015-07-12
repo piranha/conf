@@ -8,11 +8,8 @@
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
-(el-get-add
- (:name idomenu
-  :type emacswiki
-  :features idomenu
-  :after (progn (global-set-key (kbd "M-A") 'idomenu))))
+(el-get-bundle emacswiki:idomenu
+  (global-set-key (kbd "M-A") 'idomenu))
 
 (global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
@@ -35,12 +32,10 @@
                               (interactive "*p")
                               (yank-pop (- arg))))
 
-(el-get-add
- (:name kill-ring-search
+(el-get-bundle kill-ring-search
   :type http
   :url "http://nschum.de/src/emacs/kill-ring-search/kill-ring-search.el"
-  :features kill-ring-search
-  :after (progn (global-set-key (kbd "C-M-y") 'kill-ring-search))))
+  (global-set-key (kbd "C-M-y") 'kill-ring-search))
 
 (global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
 ;; (global-set-key (kbd "C-M--") 'flymake-goto-prev-error)
@@ -64,40 +59,21 @@
 (if (fboundp 'ns-toggle-fullscreen)
     (global-set-key (kbd "M-RET") 'ns-toggle-fullscreen))
 
-(el-get-add
- (:name piu
+(el-get-bundle piu
   :type http
   :url "http://paste.in.ua/piu.el"
-  :features piu
-  :after (progn (global-set-key (kbd "C-x p") 'piu))))
+  (global-set-key (kbd "C-x p") 'piu))
 
-(el-get-add
- (:name nosemacs
-  :type hg
-  :url "http://bitbucket.org/durin42/nosemacs/"
-  :features "nose"
-  :after (progn
-           (setq nose-use-verbose nil)
-           (eval-after-load "python"
-             '(progn
-                (define-key python-mode-map (kbd "C-c t") 'nosetests-all)
-                (define-key python-mode-map (kbd "C-c m") 'nosetests-module)
-                (define-key python-mode-map (kbd "C-c .") 'nosetests-one)
-                (define-key python-mode-map (kbd "C-c p t") 'nosetests-pdb-all)
-                (define-key python-mode-map (kbd "C-c p m") 'nosetests-pdb-module)
-                (define-key python-mode-map (kbd "C-c p .") 'nosetests-pdb-one))))))
-
-(el-get-add
- (:name iedit
-  :after (progn (global-set-key (kbd "C-;") 'iedit-mode))))
+(el-get-bundle iedit
+  (global-set-key (kbd "C-;") 'iedit-mode))
 
 (global-set-key (kbd "M-/") 'dabbrev-expand)
 (global-unset-key (kbd "C-/")) ;; 'yas-expand
 
-(eval-after-load "sgml-mode"
-  '(progn
-     (define-key sgml-mode-map (kbd "C-c C-<left>") 'sgml-skip-tag-backward)
-     (define-key sgml-mode-map (kbd "C-c C-<right>") 'sgml-skip-tag-forward)))
+(defvar sgml-mode-map)
+(with-eval-after-load 'sgml-mode
+  (define-key sgml-mode-map (kbd "C-c C-<left>") 'sgml-skip-tag-backward)
+  (define-key sgml-mode-map (kbd "C-c C-<right>") 'sgml-skip-tag-forward))
 
 (global-set-key (kbd "M-t")
                 (lambda ()

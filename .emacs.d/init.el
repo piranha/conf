@@ -28,12 +28,9 @@ suitable for binding to keys."
 
 ;; initialize el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get/")
-
 (unless (require 'el-get nil t)
-    (throw 'not-configured "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
-(setq el-get-sources '())
-(defmacro el-get-add (item)
-  `(add-to-list 'el-get-sources ',item))
+  (throw 'not-configured
+         "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
 
 (setq custom-file "~/.emacs.d/load/custom_init.el")
 
@@ -49,11 +46,6 @@ suitable for binding to keys."
 
 (load "~/.secrets.el" t)
 
-;;; ELPA
-(setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize)
-
 (defun autocompile ()
   "Compile itself if this is config file"
   (interactive)
@@ -65,11 +57,6 @@ suitable for binding to keys."
 (add-hook 'after-save-hook 'autocompile)
 
 (load-init
- '(general frame funs modes keys
-   bs eshell custom))
-
-;; run el-get now
-(el-get 'sync
-        (mapcar (lambda (item) (symbol-name (plist-get item :name))) el-get-sources))
+ '(general frame funs modes keys bs eshell custom))
 
 ;;; init.el ends here
