@@ -355,12 +355,12 @@ function fe() {
 }
 
 function ge() {
-    gr -cn "$1" | fzf --select-1 | xargs emacsclient --no-wait
+    gr -cn "$1" 2>/dev/null | fzf --select-1 | xargs emacsclient --no-wait
 }
 
 function fd() {
   local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) && cd "$dir"
+  dir=$(find . -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m --select-1 -q "${1}") && cd "$dir"
 }
 
 function cfd() {
