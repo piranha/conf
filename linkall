@@ -17,6 +17,8 @@ mapping=(
     git-req bin/git-req
     LT/user.keymap "Library/Application Support/LightTable/settings/user.keymap"
     LT/user.behaviors "Library/Application Support/LightTable/settings/user.behaviors"
+    .tmux.conf .tmux.conf
+    .patdiff .patdiff
     )
 
 for src in ${(k)mapping}; do
