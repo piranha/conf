@@ -12,8 +12,9 @@
     dfa = diff HEAD
     p = log -p --ext-diff
     xp = log -p --ext-diff master..HEAD
-    pl = log -p ext-diff HEAD@{1}..HEAD
+    pl = log -p --ext-diff HEAD@{1}..HEAD
     sl = log --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
+    ss = log --pretty=tformat:'%Cred%h%Creset - %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
     ll = !git sl HEAD@{1}..HEAD
     g = log --graph --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
