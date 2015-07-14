@@ -32,9 +32,7 @@
  '(semantic-default-submodes
    (quote
     (global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
- '(vc-handled-backends nil)
- '(wakatime-api-key "70811b9b-9fd6-4863-9ec3-f1ac5d8746c5")
- '(wakatime-cli-path "/Users/piranha/dev/misc/wakatime/wakatime-cli.py"))
+ '(vc-handled-backends nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

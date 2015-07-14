@@ -468,6 +468,8 @@
   (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup))
 
 (with-eval-after-load 'magit
+  (magit-define-popup-switch 'magit-diff-popup ?e
+    "Turn off external diff" "--no-ext-diff")
   (add-to-list 'magit-diff-arguments "--no-ext-diff")
   (add-to-list 'magit-diff-section-arguments "--no-ext-diff"))
 
