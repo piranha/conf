@@ -271,7 +271,7 @@ if [ -x "`whence -c emacsclient`" ]; then
             emacsclient --no-wait $1
         fi
     }
-    alias et="emacsclient -t"
+    alias ec="emacsclient -t"
     export ALTERNATE_EDITOR="vim"
 else
     alias e=$EDITOR
@@ -324,8 +324,6 @@ alias ri="ri -f ansi"
 alias -g N='2>&1'
 alias -g X='| xargs '
 
-function preview { man -t $1 | open -f -a Preview }
-alias depyc='noglob find . -name *.pyc -delete'
 alias ho="sudo vim /etc/hosts"
 alias pc="rsync -P"
 alias sudo="sudo " # this carries aliases to sudo calls
@@ -333,15 +331,11 @@ alias youtube-dl='noglob youtube-dl'
 alias wget='noglob wget'
 alias curl='noglob curl'
 
-function mq() { hg --cwd $(hg root)/.hg/patches/ $@ }
-function qser() { vim $(hg root)/.hg/patches/series }
-function hgrc() { vim $(hg root)/.hg/hgrc }
 function bdiff() { hg diff -r "ancestor('$1', master)" -r "$1" $2 $3 $4 }
 
 alias pg="pgrep -lf"
 function pgk() { pgrep -f $1 | xargs kill }
 alias -g B='$(git symbolic-ref HEAD)'
-alias gig="git submodule foreach git"
 alias master="git checkout master"
 alias u="underscore"
 alias gf="gr -f"
