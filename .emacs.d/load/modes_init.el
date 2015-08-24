@@ -370,6 +370,9 @@
 (with-eval-after-load 'clojure-mode
   (define-key clojure-mode-map (kbd "C-c r a l") 'align-cljlet))
 
+;; CIDER now wants that
+(el-get-bundle spinner)
+
 (el-get-bundle cider
   (add-hook 'clojure-mode-hook 'cider-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode))
@@ -463,15 +466,9 @@
                                        ("jsx" . "\\.react\\.js\\'"))))
 
 (el-get-bundle magit
-  :branch "2.1.0"
+  :branch "master"
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup))
-
-(with-eval-after-load 'magit
-  (magit-define-popup-switch 'magit-diff-popup ?e
-    "Turn off external diff" "--no-ext-diff")
-  (add-to-list 'magit-diff-arguments "--no-ext-diff")
-  (add-to-list 'magit-diff-section-arguments "--no-ext-diff"))
 
 (el-get-bundle ace-jump-mode
   (define-key global-map (kbd "C-c SPC") 'ace-jump-mode))
