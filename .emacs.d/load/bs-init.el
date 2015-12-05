@@ -51,5 +51,5 @@ Read documentation of `bs-configurations' for more details."
   (bs--redisplay t)
   (bs--set-window-height))
 
-(eval-after-load "bs"
-  '(define-key bs-mode-map "z" 'bs-switch-to-files-and-refresh))
+(with-eval-after-load 'bs
+  (define-key bs-mode-map "z" 'bs-switch-to-files-and-refresh))

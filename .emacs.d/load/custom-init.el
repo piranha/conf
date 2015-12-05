@@ -4,6 +4,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil)
+ '(column-number-mode t)
  '(custom-safe-themes
    (quote
     ("0261c7e47f570afd984db039e083ec0f89eb4194" default)))
@@ -12,7 +14,8 @@
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
  '(safe-local-variable-values
    (quote
-    ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
+    ((whitespace-style face tabs trailing lines-tail)
+     (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
            (add-hook
             (quote write-contents-functions)
             (lambda nil
@@ -32,6 +35,9 @@
  '(semantic-default-submodes
    (quote
     (global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
+ '(send-mail-function (quote sendmail-send-it))
+ '(show-paren-mode t)
+ '(tool-bar-mode nil)
  '(vc-handled-backends nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

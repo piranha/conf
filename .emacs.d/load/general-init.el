@@ -1,17 +1,5 @@
 ;; general customizations
 
-(defconst prh:win
-  (eq system-type 'windows-nt)
-  "Are we running on Win32 system")
-
-(defconst prh:nix
-  (not (eq system-type 'windows-nt))
-  "Are we running on *nix system")
-
-(defconst prh:graf
-  (not (eq window-system 'nil))
-  "Are we running window system?")
-
 ;; don't ask, just do it!
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -51,8 +39,7 @@
  kill-ring-max 2000                  ;; oh yes! long killring!
  default-input-method "russian-computer"
  w3m-use-cookies t
- ediff-window-setup-function 'ediff-setup-windows-plain
- )
+ ediff-window-setup-function 'ediff-setup-windows-plain)
 
 (setq-default
  major-mode 'text-mode          ;; default mode
@@ -75,8 +62,8 @@
 (setq ring-bell-function (lambda () ())) ;; I hate beeps
 
 ;; this should help with console when ^H behaves like backspace
-(unless prh:graf
-    (normal-erase-is-backspace-mode))
+(when (eq window-system 'nil)
+  (normal-erase-is-backspace-mode 1))
 
 (if (eq system-type 'darwin)
     (setq ns-extended-platform-support-mode t

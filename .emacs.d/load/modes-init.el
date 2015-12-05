@@ -57,7 +57,7 @@
 (setq mark-even-if-inactive t)
 
 ;; hello IDO, you are very nice
-(ido-mode 1)
+(ido-mode nil)
 (setq
  ido-enable-flex-matching t
  ido-show-dot-for-dired t
@@ -128,9 +128,6 @@
 
 ;; org mode
 
-(defvar org-hide-leading-stars)
-(defvar org-time-clocksum-format)
-(defvar org-mode-map)
 (add-hook 'org-mode-hook
           (lambda ()
             (setq org-hide-leading-stars t)
@@ -140,15 +137,17 @@
             (define-key org-mode-map (kbd "C-S-<up>") 'org-timestamp-up)
             (define-key org-mode-map (kbd "C-S-<down>") 'org-timestamp-down)))
 
+(el-get-bundle org-bullets
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
 ;; major modes
 
 (el-get-bundle markdown-mode
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
-(defvar markdown-mode-map)
-(with-eval-after-load 'markdown-mode
-  (define-key markdown-mode-map (kbd "M-<right>") nil)
-  (define-key markdown-mode-map (kbd "M-<left>") nil))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  (with-eval-after-load 'markdown-mode
+    (define-key markdown-mode-map (kbd "M-<right>") nil)
+    (define-key markdown-mode-map (kbd "M-<left>") nil)))
 
 (el-get-bundle go-mode)
 (add-hook 'go-mode-hook
@@ -173,7 +172,6 @@
 (autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
 (add-to-list 'auto-mode-alist '("\\.html\\'" . django-html-mode))
 
-(defvar django-html-mode-map)
 (with-eval-after-load 'django-html-mode
   (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)
   (define-key django-html-mode-map (kbd "C-t") "{%  %}\C-b\C-b\C-b")
@@ -181,9 +179,8 @@
   (define-key django-html-mode-map (kbd "C-'") "<%  %>\C-b\C-b\C-b")
   (define-key django-html-mode-map (kbd "M-'") "<%=  %>\C-b\C-b\C-b"))
 
-(defvar python-mode-map)
-(eval-after-load "python"
-  '(define-key python-mode-map (kbd "RET") 'newline-maybe-indent))
+(with-eval-after-load 'python
+  (define-key python-mode-map (kbd "RET") 'newline-maybe-indent))
 
 (add-hook 'python-mode-hook (lambda () (setq imenu-create-index-function
                                         'python-imenu-create-index)))
@@ -198,17 +195,13 @@
 
 (el-get-bundle! flycheck-pyflakes in Wilfred/flycheck-pyflakes)
 
-(defvar flycheck-disabled-checkers)
-(defvar flycheck-highlighting-mode)
 (with-eval-after-load 'flycheck
-  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
-  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-  (add-to-list 'flycheck-disabled-checkers 'emacs-lisp)
-  (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)
+  (delete 'python-flake8 flycheck-checkers)
+  (delete 'python-pylint flycheck-checkers)
+  (delete 'emacs-lisp flycheck-checkers)
+  (delete 'emacs-lisp-checkdoc flycheck-checkers)
   (setq flycheck-highlighting-mode 'lines)
   (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
-
-
 
 ;; Lua
 
@@ -217,21 +210,17 @@
 
 ;; Ruby
 
-(defvar ruby-mode-map)
 (with-eval-after-load 'ruby-mode
   (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent))
 
 ;; Javascript
 
-(defvar js-mode-map)
 (with-eval-after-load 'js
   (define-key js-mode-map (kbd "RET") 'newline-maybe-indent))
 
 ;; Snippets
 
 (el-get-bundle! yasnippet)
-(defvar yas-minor-mode-map)
-(defvar yas/snippet-dirs)
 (with-eval-after-load 'yasnippet
   (add-hook 'snippet-mode-hook
             '(lambda ()
@@ -255,21 +244,11 @@
 (el-get-bundle ag)
 
 (el-get-bundle! projectile)
-(defvar projectile-completion-system)
-(defvar projectile-enable-caching)
 (with-eval-after-load 'projectile
   (projectile-global-mode)
-  (setq projectile-completion-system 'ido)
+  (setq projectile-completion-system 'helm)
+  (helm-projectile-on)
   (setq projectile-enable-caching t))
-
-;; smex
-(el-get-bundle! smex
-  (setq smex-save-file "~/.emacs.d/smex.save")
-  (smex-initialize)
-  (smex-auto-update)
-  (global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 ;; sudo
 (el-get-bundle! sudo-save in emacswiki:sudo-save)
@@ -327,9 +306,6 @@
 (add-hook 'find-file-hook 'sm-try-smerge t)
 (setq smerge-command-prefix (kbd "C-c ]"))
 
-;; (el-get-bundle smooth-scroll
-;;   :after (smooth-scroll-mode t))
-
 (el-get-bundle! smooth-scrolling)
 
 (el-get-bundle! multi-mode
@@ -352,8 +328,6 @@
   (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode)))
-(defvar clojure-mode-map)
-(defvar clojure-defun-style-default-indent)
 (with-eval-after-load 'clojure-mode
   (define-key clojure-mode-map (kbd "C-=") 'phoenix-reload)
   (setq clojure-defun-style-default-indent t))
@@ -361,32 +335,32 @@
 (el-get-bundle peg)
 (el-get-bundle edn)
 
-(el-get-bundle clj-refactor)
-(with-eval-after-load 'clojure-mode
-  (clj-refactor-mode 1)
-  (cljr-add-keybindings-with-prefix "C-c r"))
+(el-get-bundle clj-refactor
+  (add-hook 'clojure-mode-hook 'clj-refactor-mode)
+  (with-eval-after-load 'clj-refactor
+    (cljr-add-keybindings-with-prefix "C-c r")
+    (setq cljr-thread-all-but-last t)
+    (add-to-list 'cljr-magic-require-namespaces
+                 '("log" . "clojure.tools.logging"))))
 
 (el-get-bundle align-cljlet)
 (with-eval-after-load 'clojure-mode
   (define-key clojure-mode-map (kbd "C-c r a l") 'align-cljlet))
 
-;; CIDER now wants that
-(el-get-bundle spinner)
-
 (el-get-bundle cider
   (add-hook 'clojure-mode-hook 'cider-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode))
-(defvar cider-mode-map)
-(defvar cider-repl-history-file)
 (with-eval-after-load 'cider-mode
   (setq cider-repl-history-file "~/.emacs.d/cider-history")
-  (define-key cider-mode-map (kbd "C-=") 'phoenix-reload))
+  (setq cider-cljs-repl "(do (require '[figwheel-sidecar.repl-api :as ra]) (ra/cljs-repl))")
+  (define-key cider-mode-map (kbd "C-=") 'phoenix-reload)
+  (define-key cider-repl-mode-map (kbd "C-c M-r") 'cider-repl-previous-matching-input)
+  (define-key cider-repl-mode-map (kbd "C-c M-s") 'cider-repl-next-matching-input))
 
 (el-get-bundle rainbow-delimiters
   (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))
 
-(defvar filladapt-token-table)
 (add-hook 'html-mode-hook
           (lambda ()
             ;; (if (string-prefix-p "/Users/piranha/dev/work"
@@ -401,7 +375,6 @@
   (add-hook 'clojure-mode-hook 'paredit-mode)
   (add-hook 'emacs-lisp-mode-hook 'paredit-mode))
 
-(defvar paredit-mode-map)
 (with-eval-after-load 'paredit
   (dolist (kv '(("C-<right>" nil)
                 ("C-<left>" nil)
@@ -413,8 +386,7 @@
   (with-eval-after-load 'sql
     (require 'sql-indent)))
 
-;; ;; OCaml
-
+;; OCaml
 
 (el-get-bundle tuareg-mode
   (autoload 'ocp-setup-indent "ocp-indent.el" "" t)
@@ -428,9 +400,6 @@
 
 (el-get-bundle elpa:merlin
   (add-hook 'tuareg-mode-hook 'merlin-mode))
-(defvar merlin-mode-map)
-(defvar merlin-use-auto-complete-mode)
-(defvar merlin-error-after-save)
 (with-eval-after-load 'merlin
   (setq merlin-use-auto-complete-mode nil)
   (setq merlin-error-after-save nil)
@@ -449,10 +418,6 @@
   (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode)))
 
-(defvar web-mode-map)
-(defvar web-mode-markup-indent-offset)
-(defvar web-mode-code-indent-offset)
-(defvar web-mode-content-types-alist)
 (with-eval-after-load 'web-mode
   (define-key web-mode-map (kbd "C-c /") 'web-mode-element-close)
   (setq web-mode-markup-indent-offset 4)
@@ -470,11 +435,13 @@
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup))
 
-(el-get-bundle ace-jump-mode
-  (define-key global-map (kbd "C-c SPC") 'ace-jump-mode))
-
 (el-get-bundle! string-inflection in akicho8/string-inflection)
 
 (el-get-bundle piu
   :url "http://paste.in.ua/piu.el"
   (global-set-key (kbd "C-x p") 'piu))
+
+(el-get-bundle graphviz-dot-mode)
+
+(el-get-bundle git-messenger
+  (global-set-key (kbd "C-c C-i") 'git-messenger:popup-message))
