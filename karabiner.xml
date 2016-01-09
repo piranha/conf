@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<root>
+  <vkchangeinputsourcedef>
+    <name>KeyCode::VK_CHANGE_INPUTSOURCE_RUSSIAN</name>
+    <inputsourceid_equal>org.sil.ukelele.keyboardlayout.cyrillic- normal.russian- normal</inputsourceid_equal>
+  </vkchangeinputsourcedef>
+
+  <vkchangeinputsourcedef>
+    <name>KeyCode::VK_CHANGE_INPUTSOURCE_UKRAINIAN</name>
+    <inputsourceid_equal>org.sil.ukelele.keyboardlayout.cyrillic- normal.ukrainian- normal</inputsourceid_equal>
+  </vkchangeinputsourcedef>
+
+  <item>
+    <name>For Russian</name>
+    <item>
+      <name>Change Command_R Key</name>
+      <item>
+        <name>Command_R to Command_R</name>
+        <appendix>(+ When you type Command_R only, change Input Source to Russian - Normal)</appendix>
+        <identifier>remap.russian_commandR2commandR_russian_with_yo</identifier>
+        <autogen>--KeyOverlaidModifier-- KeyCode::COMMAND_R, KeyCode::COMMAND_R, KeyCode::VK_CHANGE_INPUTSOURCE_RUSSIAN</autogen>
+      </item>
+    </item>
+
+    <item>
+      <name>Change Option_R Key</name>
+      <item>
+        <name>Option_R to Option_R</name>
+        <appendix>(+ When you type Option_R only, change Input Source to Ukrainian - Normal)</appendix>
+        <identifier>remap.ukrainian_optionR2optionR</identifier>
+        <autogen>--KeyOverlaidModifier-- KeyCode::OPTION_R, KeyCode::OPTION_R, KeyCode::VK_CHANGE_INPUTSOURCE_UKRAINIAN</autogen>
+      </item>
+    </item>
+  </item>
+
+  <item>
+    <name>Notification Center</name>
+    <item>
+      <name>Change Launchpad to Notification Center</name>
+      <appendix>(+ When you press Launchpad (F4), toggle Notification Center)</appendix>
+      <identifier>remap.launchpad_to_notification</identifier>
+      <autogen>__KeyToKey__ KeyCode::LAUNCHPAD, KeyCode::F1</autogen>
+    </item>
+  </item>
+
+  <item><name>──────────────────────────────</name></item>
+
+</root>
