@@ -2,12 +2,12 @@
 <root>
   <vkchangeinputsourcedef>
     <name>KeyCode::VK_CHANGE_INPUTSOURCE_RUSSIAN</name>
-    <inputsourceid_equal>org.sil.ukelele.keyboardlayout.cyrillic- normal.russian- normal</inputsourceid_equal>
+    <inputsourceid_equal>org.sil.ukelele.keyboardlayout.cyrillic- normal.russian-normal</inputsourceid_equal>
   </vkchangeinputsourcedef>
 
   <vkchangeinputsourcedef>
     <name>KeyCode::VK_CHANGE_INPUTSOURCE_UKRAINIAN</name>
-    <inputsourceid_equal>org.sil.ukelele.keyboardlayout.cyrillic- normal.ukrainian- normal</inputsourceid_equal>
+    <inputsourceid_equal>org.sil.ukelele.keyboardlayout.cyrillic- normal.ukrainian-normal</inputsourceid_equal>
   </vkchangeinputsourcedef>
 
   <item>
