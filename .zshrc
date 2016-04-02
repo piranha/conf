@@ -35,8 +35,6 @@ export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 export PIP_RESPECT_VIRTUALENV=true
 #export JAVA_TOOL_OPTIONS='-Djava.awt.headless=true'
 export BOOT_JVM_OPTIONS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Xmx2g'
-export BOOT_CLOJURE_VERSION='1.7.0-beta3'
-export WORKON_HOME=~/.virtualenvs
 export LEIN_FAST_TRAMPOLINE=y
 export FZF_DEFAULT_OPTS="--ansi"
 
@@ -178,26 +176,99 @@ compctl -x 'c[-1,-v]' -M 'm:{a-zA-Z}={A-Za-z}' -K _say_voices -- say
 ## \e]1; will set tab's header
 case $TERM in
 xterm*|rxvt*)
-    precmd () {
+    title_precmd () {
         print -Pn "\e]0;@%M - %/\a"
         print -Pn "\e]1;@%m \a"
     }
-    preexec () {
+    title_preexec () {
         print -Pn "\e]0;@%M - %/: $1\a"
         print -Pn "\e]1;@%m: $1 \a"
     }
 ;;
 screen)
-    preexec () {
-    # set screen title
-        echo -ne "\ek${1[(w)1]}\e\\"
-    }
-    precmd () {
-    #set screen title
+    title_precmd () {
         echo -ne "\ekzsh\e\\"
+    }
+    title_preexec () {
+        echo -ne "\ek${1[(w)1]}\e\\"
     }
 ;;
 esac
+
+precmd_functions=(title_precmd)
+preexec_functions=(title_preexec)
+
+if [[ -o login ]]; then if [ x"$TERM" != "xscreen" ]; then
+    # Indicates start of command output. Runs just before command executes.
+    iterm2_before_cmd_executes() {
+        printf "\033]133;C;\r\007"
+    }
+
+    iterm2_set_user_var() {
+        printf "\033]1337;SetUserVar=%s=%s\007" "$1" $(printf "%s" "$2" | base64)
+    }
+
+    # Users can write their own version of this method. It should call
+    # iterm2_set_user_var but not produce any other output.
+    # e.g., iterm2_set_user_var currentDirectory $PWD
+    # Accessible in iTerm2 (in a badge now, elsewhere in the future) as
+    # \(user.currentDirectory).
+    iterm2_print_user_vars() {
+        iterm2_set_user_var gitBranch $((git branch 2> /dev/null) | grep \* | cut -c3-)
+    }
+
+    iterm2_print_state_data() {
+        printf "\033]1337;RemoteHost=%s@%s\007" "$USER" "$iterm2_hostname"
+        printf "\033]1337;CurrentDir=%s\007" "$PWD"
+        iterm2_print_user_vars
+    }
+
+    # Report return code of command; runs after command finishes but before prompt
+    iterm2_after_cmd_executes() {
+        printf "\033]133;D;$?\007"
+        iterm2_print_state_data
+    }
+
+    # Mark start of prompt
+    iterm2_prompt_start() {
+        printf "\033]133;A\007"
+    }
+
+    # Mark end of prompt
+    iterm2_prompt_end() {
+        printf "\033]133;B\007"
+    }
+
+    iterm2_precmd() {
+        iterm2_after_cmd_executes
+
+        # The user or another precmd may have changed PS1 (e.g., powerline-shell).
+        # Ensure that our escape sequences are added back in.
+        if [[ "$ITERM2_SAVED_PS1" != "$PS1" ]]; then
+            PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
+            ITERM2_SAVED_PS1="$PS1"
+        fi
+    }
+
+    iterm2_preexec() {
+        PS1="$ITERM2_SAVED_PS1"
+        iterm2_before_cmd_executes
+    }
+
+    # If hostname -f is slow on your system, set iterm2_hostname prior to sourcing this script.
+    [[ -z "$iterm2_hostname" ]] && iterm2_hostname=`hostname -f`
+
+    precmd() {
+        iterm2_precmd
+    }
+
+    preexec() {
+        iterm2_preexec
+    }
+
+    iterm2_print_state_data
+    printf "\033]1337;ShellIntegrationVersion=1\007"
+fi; fi
 
 d() {
     local dir
@@ -227,14 +298,6 @@ function ram()
             SUM=`expr $i + $SUM`
         done
         echo $SUM
-    fi
-}
-
-function myeditor {
-    if [ -z `ps -C emacs -o pid=` ]; then
-        vim ${@}
-    else
-        emacsclient -t -c ${@}
     fi
 }
 
@@ -317,8 +380,6 @@ alias df="df -h"
 alias bc="bc -l"
 alias myapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo"
 alias rezsh="source ~/.zshrc"
-alias apt="noglob sudo apt-get"
-alias wa="wajig"
 alias s="mdfind -name"
 alias ri="ri -f ansi"
 alias -g N='2>&1'
