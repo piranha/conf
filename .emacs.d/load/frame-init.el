@@ -25,3 +25,7 @@
       (toggle-input-method)
       (w32-toggle-lock-key 'capslock)))
   (global-set-key (kbd "<language-change>") 'safe-language-change))
+
+(when (eq window-system 'x)
+  (set-frame-font "Consolas-13" nil t)
+  (set-face-attribute 'default t :font "Consolas-13"))

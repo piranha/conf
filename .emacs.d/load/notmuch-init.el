@@ -16,9 +16,9 @@
       '((:name "flagged" :key "f" :query "tag:flagged and not tag:archive")
         (:name "inbox"   :key "i" :query "tag:inbox")
         (:name "info"    :key "n" :query "tag:info and not tag:archive")
-        (:name "unread"  :key "u" :query "tag:unread and not tag:errors")
+        (:name "unread"  :key "u" :query "tag:unread and not (tag:errors or tag:archive)")
         (:name "support" :key "s" :query "tag:support and not tag:archive")
-        (:name "git"     :key "g" :query "tag:git and tag:unread")
+        (:name "git"     :key "g" :query "tag:git and tag:unread and not tag:archive")
         (:name "errors"  :key "e" :query "tag:errors and not tag:archive")
         (:name "drafts"  :key "d" :query "tag:draft")
         (:name "since yesterday" :query "date:yesterday..")))
@@ -107,7 +107,7 @@
   :type git
   :build (("./autogen.sh")
           ("./configure")
-          ("sed" "-i" "" "s/DATA = bbdb.pdf/DATA = #bbdb.pdf/" "doc/Makefile")
+          ("sed" "-i" "s/DATA = bbdb.pdf/DATA = #bbdb.pdf/" "doc/Makefile")
           ("make"))
   :load-path ("./lisp")
   :url "git://git.savannah.nongnu.org/bbdb.git")
@@ -147,4 +147,6 @@
 (with-eval-after-load 'notmuch
   (bbdb-initialize 'message)
   (bbdb-mua-auto-update-init 'message)
-  (add-hook 'notmuch-show-hook 'prh/bbdb-mua-auto-update))
+  (add-hook 'notmuch-show-hook 'prh/bbdb-mua-auto-update)
+  (remove-hook 'message-send-hook 'bbdb-mua-auto-update)
+  (add-hook 'message-send-hook 'prh/bbdb-mua-auto-update))

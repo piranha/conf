@@ -53,6 +53,6 @@ suitable for binding to keys."
         modules))
 
 (load-init
- '(general frame funs helm modes keys bs eshell notmuch circe custom))
+ '(general frame funs modes ivy keys bs eshell notmuch circe custom))
 
 ;;; init.el ends here

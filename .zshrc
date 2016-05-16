@@ -1,6 +1,6 @@
 # -*- mode: sh -*-
 # zsh configuration
-# (c) 2003-2013 Alexander Solovyov
+# (c) 2003-2016 Alexander Solovyov
 # alexander AT solovyov.net
 
 export LANG=en_US.UTF-8

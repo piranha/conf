@@ -7,7 +7,6 @@
 (require 'imenu)
 (setq imenu-auto-rescan t)
 
-(el-get-bundle! filladapt)
 (el-get-bundle! grep+)
 
 (setq tags-file-name (expand-file-name "~/TAGS"))
@@ -201,7 +200,7 @@
   (delete 'emacs-lisp flycheck-checkers)
   (delete 'emacs-lisp-checkdoc flycheck-checkers)
   (setq flycheck-highlighting-mode 'lines)
-  (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+  (flycheck-pos-tip-mode))
 
 ;; Lua
 
@@ -246,8 +245,7 @@
 (el-get-bundle! projectile)
 (with-eval-after-load 'projectile
   (projectile-global-mode)
-  (setq projectile-completion-system 'helm)
-  (helm-projectile-on)
+  (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t))
 
 ;; sudo
@@ -360,16 +358,6 @@
 (el-get-bundle rainbow-delimiters
   (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))
-
-(add-hook 'html-mode-hook
-          (lambda ()
-            ;; (if (string-prefix-p "/Users/piranha/dev/work"
-            ;;                      (buffer-file-name))
-            ;;     (set (make-local-variable 'sgml-basic-offset) 4))
-            (require 'filladapt)
-            (set (make-local-variable 'filladapt-token-table)
-                 (append filladapt-token-table
-                         '(("<li>[ \t]" bullet))))))
 
 (el-get-bundle paredit
   (add-hook 'clojure-mode-hook 'paredit-mode)
