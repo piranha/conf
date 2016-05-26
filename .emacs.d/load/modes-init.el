@@ -73,6 +73,7 @@
   (flx-ido-mode 1))
 
 (winner-mode 1) ;; window configuration undo/redo
+(windmove-default-keybindings)
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
@@ -433,3 +434,12 @@
 
 (el-get-bundle git-messenger
   (global-set-key (kbd "C-c C-i") 'git-messenger:popup-message))
+
+(el-get-bundle dumb-jump
+  :type elpa
+  (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
+  (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
+  (add-to-list 'dumb-jump-find-rules
+               '(:type "function" :language "clojure"
+                       :regex "\\\(rum/defcs?\\s+JJJ\\j"))
+  (dumb-jump-mode))

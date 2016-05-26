@@ -37,6 +37,7 @@ export PIP_RESPECT_VIRTUALENV=true
 export BOOT_JVM_OPTIONS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Xmx2g'
 export LEIN_FAST_TRAMPOLINE=y
 export FZF_DEFAULT_OPTS="--ansi"
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then

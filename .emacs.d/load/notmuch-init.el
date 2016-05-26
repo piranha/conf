@@ -5,7 +5,7 @@
 (setq notmuch-archive-tags '("-inbox" "+archive")
       notmuch-multipart/alternative-discouraged '("text/plain" "text/html")
       notmuch-show-logo nil
-      mm-text-html-renderer 'shr
+      mm-text-html-renderer 'w3m-standalone
 
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-send-mail-with-sendmail
@@ -16,7 +16,7 @@
       '((:name "flagged" :key "f" :query "tag:flagged and not tag:archive")
         (:name "inbox"   :key "i" :query "tag:inbox")
         (:name "info"    :key "n" :query "tag:info and not tag:archive")
-        (:name "unread"  :key "u" :query "tag:unread and not (tag:errors or tag:archive)")
+        (:name "unread"  :key "u" :query "'tag:unread and not (tag:errors or tag:archive)'")
         (:name "support" :key "s" :query "tag:support and not tag:archive")
         (:name "git"     :key "g" :query "tag:git and tag:unread and not tag:archive")
         (:name "errors"  :key "e" :query "tag:errors and not tag:archive")
@@ -104,13 +104,16 @@
 ;; BBDB
 
 (el-get-bundle bbdb
-  :type git
-  :build (("./autogen.sh")
-          ("./configure")
-          ("sed" "-i" "s/DATA = bbdb.pdf/DATA = #bbdb.pdf/" "doc/Makefile")
+  :type http-tar
+  :options ("xf")
+  :build (("env"
+           "EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs"
+           "EMACSLOADPATH=/Applications/Emacs.app/Contents/Resources/lisp"
+           "./configure")
+          ("sed" "-i" "" "s/DATA = bbdb.pdf/DATA = #bbdb.pdf/" "doc/Makefile")
           ("make"))
   :load-path ("./lisp")
-  :url "git://git.savannah.nongnu.org/bbdb.git")
+  :url "http://download.savannah.gnu.org/releases/bbdb/bbdb-3.1.2.tar.gz")
 
 (setq bbdb-file "~/.emacs.d/bbdb"
       bbdb-user-mail-address-re "o.solovyov@modnakasta.ua|os@modnakasta.ua"

@@ -11,7 +11,6 @@
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
- '(package-selected-packages (quote (toml-mode utop merlin queue inflections)))
  '(safe-local-variable-values
    (quote
     ((whitespace-style face tabs trailing lines-tail)
@@ -37,6 +36,7 @@
     (global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
  '(send-mail-function (quote sendmail-send-it))
  '(show-paren-mode t)
+ '(shr-external-browser (quote browse-url-default-macosx-browser))
  '(tool-bar-mode nil)
  '(vc-handled-backends nil))
 (custom-set-faces

@@ -12,9 +12,11 @@ suitable for binding to keys."
 (let ((better-path "/Users/piranha/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/Users/piranha/dev/go/bin:/Users/piranha/dev/go/ext/bin:/usr/local/share/npm/bin:/Users/piranha/.opam/system/bin:/Users/piranha/Library/Haskell/bin"))
   (when (string-equal "darwin" (symbol-name system-type))
     (setenv "PATH" better-path)
+    (setenv "LANG" "en_US.UTF-8")
     (setenv "CAML_LD_LIBRARY_PATH" "/Users/piranha/.opam/system/lib/stublibs:/usr/local/lib/ocaml/stublibs")
     (setenv "OCAML_TOPLEVEL_PATH" "/Users/piranha/.opam/system/lib/toplevel"))
   (setq exec-path (split-string better-path ":")))
+
 
 ;; initialize el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get/")
@@ -34,7 +36,9 @@ suitable for binding to keys."
                 "/emacs/site-lisp/")))
 (add-to-list 'load-path "~/.emacs.d/load/")
 (add-to-list 'load-path "~/.emacs.d/packages/")
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
+
+(let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (defun autocompile ()
   "Compile itself if this is config file"
