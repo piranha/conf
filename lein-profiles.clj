@@ -5,7 +5,8 @@
                   [mvxcvi/whidbey "0.3.2"]]
         :dependencies [[spyscope "0.1.4" ]
                        [debug-repl "0.3.2"]
-                       [criterium "0.4.3"]]
+                       [criterium "0.4.3"]
+                       #_[inspector-jay "0.3"]]
         :injections [(require 'spyscope.core)
                      (require '[alex-and-georges.debug-repl :refer [debug-repl]])
                      (require '[clojure.string :as s])

@@ -173,6 +173,7 @@
 (add-to-list 'auto-mode-alist '("\\.html\\'" . django-html-mode))
 
 (with-eval-after-load 'django-html-mode
+  (defvar django-html-mode-map)
   (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)
   (define-key django-html-mode-map (kbd "C-t") "{%  %}\C-b\C-b\C-b")
   (define-key django-html-mode-map (kbd "M-t") "{{  }}\C-b\C-b\C-b")
@@ -205,17 +206,20 @@
 
 ;; Lua
 
-(el-get-bundle lua-mode)
-(defvaralias 'lua-indent-level 'tab-width)
+(el-get-bundle lua-mode
+  (setq lua-indent-level 2))
+;;(defvaralias 'lua-indent-level 'tab-width)
 
 ;; Ruby
 
 (with-eval-after-load 'ruby-mode
+  (defvar ruby-mode-map)
   (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent))
 
 ;; Javascript
 
 (with-eval-after-load 'js
+  (defvar js-mode-map)
   (define-key js-mode-map (kbd "RET") 'newline-maybe-indent))
 
 ;; Snippets
@@ -243,11 +247,18 @@
 
 (el-get-bundle ag)
 
-(el-get-bundle! projectile)
-(with-eval-after-load 'projectile
+(defun projectile-counsel-ag ()
+  (interactive)
+  (let ((dir (projectile-project-root)))
+    (if dir
+        (counsel-ag "" dir)
+      (message "error: Not in a project"))))
+
+(el-get-bundle! projectile
   (projectile-global-mode)
   (setq projectile-completion-system 'ivy)
-  (setq projectile-enable-caching t))
+  (setq projectile-enable-caching t)
+  (define-key projectile-command-map (kbd "s s") 'projectile-counsel-ag))
 
 ;; sudo
 (el-get-bundle! sudo-save in emacswiki:sudo-save)
@@ -329,7 +340,7 @@
   (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode)))
 (with-eval-after-load 'clojure-mode
   (define-key clojure-mode-map (kbd "C-=") 'phoenix-reload)
-  (setq clojure-defun-style-default-indent t))
+  (setq clojure-indent-style :always-indent))
 
 (el-get-bundle peg)
 (el-get-bundle edn)
@@ -427,14 +438,12 @@
 
 (el-get-bundle graphviz-dot-mode)
 
-(el-get-bundle git-messenger
-  (global-set-key (kbd "C-c C-i") 'git-messenger:popup-message))
-
 (el-get-bundle dumb-jump
   :type elpa
+  :depends (f s dash popup)
+  (dumb-jump-mode)
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
   (add-to-list 'dumb-jump-find-rules
                '(:type "function" :language "clojure"
-                       :regex "\\\(rum/defcs?\\s+JJJ\\j"))
-  (dumb-jump-mode))
+                       :regex "\\\(rum/defcs?\\s+JJJ\\j")))
