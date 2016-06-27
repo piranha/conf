@@ -4,4 +4,8 @@
 /.emacs.d/history
 /.emacs.d/places
 /.emacs.d/smex.save
+/.emacs.d/bbdb
+/.emacs.d/projectile*
+/.emacs.d/cider*
+/.emacs.d/recentf
 

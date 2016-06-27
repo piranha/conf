@@ -10,11 +10,12 @@
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-send-mail-with-sendmail
       sendmail-program "msmtp"
+      mail-host-address "alcor.solovyov.net"
       message-sendmail-f-is-evil t)
 
 (setq notmuch-saved-searches
       '((:name "flagged" :key "f" :query "tag:flagged and not tag:archive")
-        (:name "inbox"   :key "i" :query "tag:inbox")
+        (:name "inbox"   :key "i" :query "tag:inbox" :sort-order oldest-first)
         (:name "info"    :key "n" :query "tag:info and not tag:archive")
         (:name "unread"  :key "u" :query "'tag:unread and not (tag:errors or tag:archive)'")
         (:name "support" :key "s" :query "tag:support and not tag:archive")
