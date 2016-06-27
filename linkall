@@ -10,7 +10,7 @@ mapping=(
     .hgrc .hgrc
     .vimrc .vimrc
     DefaultKeyBinding.dict Library/KeyBindings/DefaultKeyBinding.dict
-    ipython_config.py .config/ipython/profile_default/ipython_config.py
+    ipython_config.py .ipython/profile_default/ipython_config.py
     .inputrc .inputrc
     .psqlrc .psqlrc
     lein-profiles.clj .lein/profiles.clj
