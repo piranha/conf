@@ -9,13 +9,28 @@
 suitable for binding to keys."
   `(lambda () (interactive) (,func ,@args)))
 
-(let ((better-path "/Users/piranha/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/Users/piranha/dev/go/bin:/Users/piranha/dev/go/ext/bin:/usr/local/share/npm/bin:/Users/piranha/.opam/system/bin:/Users/piranha/Library/Haskell/bin"))
+(setq opam (substring (shell-command-to-string "/usr/local/bin/opam config var prefix 2> /dev/null") 0 -1))
+
+(let ((better-path `("/Users/piranha/bin"
+                     "/usr/local/go/bin"
+                     "/usr/local/sbin"
+                     "/usr/local/bin"
+                     "/usr/sbin"
+                     "/usr/bin"
+                     "/sbin"
+                     "/bin"
+                     "/Users/piranha/dev/go/bin"
+                     "/Users/piranha/dev/go/ext/bin"
+                     "/usr/local/share/npm/bin"
+                     "/Users/piranha/.opam/system/bin"
+                     ,(concat opam "/bin")
+                     "/Users/piranha/Library/Haskell/bin")))
   (when (string-equal "darwin" (symbol-name system-type))
-    (setenv "PATH" better-path)
+    (setenv "PATH" (mapconcat 'identity better-path ":"))
     (setenv "LANG" "en_US.UTF-8")
     (setenv "CAML_LD_LIBRARY_PATH" "/Users/piranha/.opam/system/lib/stublibs:/usr/local/lib/ocaml/stublibs")
     (setenv "OCAML_TOPLEVEL_PATH" "/Users/piranha/.opam/system/lib/toplevel"))
-  (setq exec-path (split-string better-path ":")))
+  (setq exec-path better-path))
 
 
 ;; initialize el-get
@@ -27,15 +42,10 @@ suitable for binding to keys."
 
 (setq custom-file "~/.emacs.d/load/custom_init.el")
 
-(when (executable-find "opam")
-  (add-to-list 'load-path
-               (concat
-                (replace-regexp-in-string
-                 "\n$" ""
-                 (shell-command-to-string "opam config var share"))
-                "/emacs/site-lisp/")))
 (add-to-list 'load-path "~/.emacs.d/load/")
 (add-to-list 'load-path "~/.emacs.d/packages/")
+(when (not (string= opam ""))
+  (add-to-list 'load-path (concat opam "/share/emacs/site-lisp")))
 
 (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
   (normal-top-level-add-subdirs-to-load-path))

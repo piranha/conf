@@ -378,6 +378,7 @@
 ;; OCaml
 
 (el-get-bundle tuareg-mode
+  (setq tuareg-indent-align-with-first-arg nil)
   (autoload 'ocp-setup-indent "ocp-indent.el" "" t)
   ;;(autoload 'ocp-index-mode "ocp-index.el" "" t)
   (add-hook 'tuareg-mode-hook 'ocp-setup-indent)
@@ -387,37 +388,31 @@
  :type http
  :url "http://aspellfr.free.fr/tuareg-imenu/tuareg-imenu.el")
 
-(el-get-bundle elpa:merlin
-  (add-hook 'tuareg-mode-hook 'merlin-mode))
+;; (el-get-bundle elpa:merlin
+;;   (add-hook 'tuareg-mode-hook 'merlin-mode))
+(autoload 'merlin-mode "merlin" "" t)
+(setq merlin-use-auto-complete-mode nil)
+(setq merlin-error-after-save nil)
 (with-eval-after-load 'merlin
-  (setq merlin-use-auto-complete-mode nil)
-  (setq merlin-error-after-save nil)
-  (define-key merlin-mode-map (kbd "C-c <up>") 'merlin-type-enclosing-go-up)
-  (define-key merlin-mode-map (kbd "C-c <down>") 'merlin-type-enclosing-go-down))
+  ;;(define-key merlin-mode-map (kbd "C-c <up>") 'merlin-type-enclosing-go-up)
+  ;;(define-key merlin-mode-map (kbd "C-c <down>") 'merlin-type-enclosing-go-down)
+  )
 
 (el-get-bundle elpa:utop
   ;;(autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
   (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer))
 
+(eval-after-load 'reason-mode
+  (add-hook 'reason-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook 'refmt-before-save)
+              (merlin-mode))))
+
+;; Various
+
 (el-get-bundle dockerfile-mode)
 (el-get-bundle rust-mode)
 (el-get-bundle elpa:toml-mode)
-
-(el-get-bundle web-mode
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode)))
-
-(with-eval-after-load 'web-mode
-  (define-key web-mode-map (kbd "C-c /") 'web-mode-element-close)
-  (setq web-mode-markup-indent-offset 4)
-  (setq web-mode-code-indent-offset 4)
-  (defadvice web-mode-highlight-part (around tweak-jsx activate)
-    (if (equal web-mode-content-type "jsx")
-        (let ((web-mode-enable-part-face nil))
-          ad-do-it)
-      ad-do-it))
-  (setq web-mode-content-types-alist '(;;("jsx" . "\\.js\\'")
-                                       ("jsx" . "\\.react\\.js\\'"))))
 
 (el-get-bundle magit
   :branch "master"
