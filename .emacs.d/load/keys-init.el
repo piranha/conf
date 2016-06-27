@@ -62,6 +62,8 @@
                    "switch-to-chrome" nil
                    "osascript" "-e" "tell application \"Google Chrome\" to activate")))
 
+(global-set-key (kbd "M-A") 'imenu)
+
  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
 (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)

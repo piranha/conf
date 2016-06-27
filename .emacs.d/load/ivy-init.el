@@ -1,6 +1,9 @@
 (el-get-bundle swiper
   (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
+  (defvar ivy-use-virtual-buffers)
+  (defvar ivy-display-style)
+  (setq ivy-use-virtual-buffers t
+        ivy-display-style 'fancy)
   (global-set-key (kbd "C-s") 'swiper)
   (global-set-key (kbd "C-.") 'ivy-switch-buffer)
   (global-set-key (kbd "C-c C-r") 'ivy-resume)
@@ -10,5 +13,5 @@
   (global-set-key (kbd "C-h v") 'counsel-describe-variable)
   (global-set-key (kbd "C-c g") 'counsel-git)
   (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-c s") 'counsel-ag)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
