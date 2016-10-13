@@ -11,7 +11,9 @@
     ("0261c7e47f570afd984db039e083ec0f89eb4194" default)))
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
+ '(mac-option-modifier (quote (:ordinary meta :function meta :mouse alt)))
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
+ '(package-selected-packages (quote (utop toml-mode queue let-alist inflections)))
  '(safe-local-variable-values
    (quote
     ((whitespace-style face tabs trailing lines-tail)

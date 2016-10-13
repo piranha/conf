@@ -251,7 +251,7 @@
   (interactive)
   (let ((dir (projectile-project-root)))
     (if dir
-        (counsel-ag "" dir)
+        (counsel-ag (projectile-symbol-or-selection-at-point) dir)
       (message "error: Not in a project"))))
 
 (el-get-bundle! projectile
@@ -339,7 +339,6 @@
   (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode)))
 (with-eval-after-load 'clojure-mode
-  (define-key clojure-mode-map (kbd "C-=") 'phoenix-reload)
   (setq clojure-indent-style :always-indent))
 
 (el-get-bundle peg)
@@ -360,10 +359,10 @@
 (el-get-bundle cider
   (add-hook 'clojure-mode-hook 'cider-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode))
+
 (with-eval-after-load 'cider-mode
   (setq cider-repl-history-file "~/.emacs.d/cider-history")
   (setq cider-cljs-repl "(do (require '[figwheel-sidecar.repl-api :as ra]) (ra/cljs-repl))")
-  (define-key cider-mode-map (kbd "C-=") 'phoenix-reload)
   (define-key cider-repl-mode-map (kbd "C-c M-r") 'cider-repl-previous-matching-input)
   (define-key cider-repl-mode-map (kbd "C-c M-s") 'cider-repl-next-matching-input))
 
@@ -438,12 +437,13 @@
 
 (el-get-bundle graphviz-dot-mode)
 
-(el-get-bundle dumb-jump
-  :type elpa
-  :depends (f s dash popup)
-  (dumb-jump-mode)
-  (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
-  (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
-  (add-to-list 'dumb-jump-find-rules
-               '(:type "function" :language "clojure"
-                       :regex "\\\(rum/defcs?\\s+JJJ\\j")))
+;; (el-get-bundle dumb-jump
+;;   :type elpa
+;;   :url "https://elpa.gnu.org/packages/dumb-jump.html"
+;;   :depends (f s dash popup)
+;;   (dumb-jump-mode)
+;;   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
+;;   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
+;;   (add-to-list 'dumb-jump-find-rules
+;;                '(:type "function" :language "clojure"
+;;                        :regex "\\\(rum/defcs?\\s+JJJ\\j")))

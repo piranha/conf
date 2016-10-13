@@ -69,3 +69,5 @@
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
 (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
 (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
+
+(define-key comint-mode-map (kbd "C-M-l") nil)

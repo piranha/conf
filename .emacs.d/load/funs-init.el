@@ -182,9 +182,9 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (align-regexp start end 
         (concat "\\(\\s-*\\)" regexp) 1 1 t))
 
-(defun phoenix-reload ()
+(defun sql-replica ()
   (interactive)
-  (save-some-buffers)
-  (with-current-buffer (cider-current-repl-buffer)
-    (cider-interactive-eval
-     "(phoenix/reload!)")))
+  (let ((sql-database "modnakasta")
+        (sql-server "10.38.0.122")
+        (sql-postgres-options '("-P" "pager=off" "-p" "5433" "-Umodnakastauser")))
+    (sql-postgres)))

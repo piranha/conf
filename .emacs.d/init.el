@@ -4,6 +4,8 @@
 ;; alexander AT solovyov.net
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(package-initialize)
+
 (defmacro fun-for-bind (func &rest args)
   "Returns a symbol of an anonymous interactive function,
 suitable for binding to keys."
@@ -40,7 +42,7 @@ suitable for binding to keys."
          "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
 (setq el-get-git-shallow-clone t)
 
-(setq custom-file "~/.emacs.d/load/custom_init.el")
+(setq custom-file "~/.emacs.d/load/custom-init.el")
 
 (add-to-list 'load-path "~/.emacs.d/load/")
 (add-to-list 'load-path "~/.emacs.d/packages/")

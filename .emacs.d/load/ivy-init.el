@@ -14,4 +14,5 @@
   (global-set-key (kbd "C-c g") 'counsel-git)
   (global-set-key (kbd "C-c j") 'counsel-git-grep)
   (global-set-key (kbd "C-c s") 'counsel-ag)
+  (global-set-key (kbd "C-c y") 'counsel-yank-pop)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
