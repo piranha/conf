@@ -66,6 +66,7 @@ noremap ; :
 nmap <leader>w :w!<cr>
 nmap <leader>x :x<cr>
 nmap <leader>q :q<cr>
+nmap <leader>Q :q!<cr>
 
 map <leader>s :setlocal spell!<cr>
 map <leader>p :setlocal paste!<cr>

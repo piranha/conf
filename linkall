@@ -21,6 +21,7 @@ mapping=(
     .patdiff .patdiff
     net.solovyov.runonwifi.plist "Library/LaunchAgents/net.solovyov.runonwifi.plist"
     karabiner.xml "Library/Application Support/Karabiner/private.xml"
+    hammerspoon.lua .hammerspoon/init.lua
     )
 
 for src in ${(k)mapping}; do

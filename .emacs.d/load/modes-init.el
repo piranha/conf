@@ -339,7 +339,12 @@
   (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode)))
 (with-eval-after-load 'clojure-mode
-  (setq clojure-indent-style :always-indent))
+  (setq clojure-indent-style :always-indent)
+  (define-clojure-indent
+    (->  0)
+    (->> 0)
+    (and 0)
+    (or  0)))
 
 (el-get-bundle peg)
 (el-get-bundle edn)
