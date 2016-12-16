@@ -18,45 +18,39 @@
   <item>
     <name>For Russian</name>
     <item>
-      <name>Change Command_L Key</name>
-      <item>
-        <name>Command_L to Command_L</name>
-        <appendix>(+ When you type Command_L only, change Input Source to US)</appendix>
-        <identifier>remap.english_commandK</identifier>
-        <autogen>--KeyOverlaidModifier-- KeyCode::COMMAND_L, KeyCode::COMMAND_L, KeyCode::VK_CHANGE_INPUTSOURCE_ENGLISH</autogen>
-      </item>
+      <name>Command_L to Command_L</name>
+      <appendix>(+ When you type Command_L only, change Input Source to US)</appendix>
+      <identifier>remap.english_commandK</identifier>
+      <autogen>--KeyOverlaidModifier-- KeyCode::COMMAND_L, KeyCode::COMMAND_L, KeyCode::VK_CHANGE_INPUTSOURCE_ENGLISH</autogen>
     </item>
 
     <item>
-      <name>Change Command_R Key</name>
-      <item>
-        <name>Command_R to Command_R</name>
-        <appendix>(+ When you type Command_R only, change Input Source to Russian - Normal)</appendix>
-        <identifier>remap.russian_commandR</identifier>
-        <autogen>--KeyOverlaidModifier-- KeyCode::COMMAND_R, KeyCode::COMMAND_R, KeyCode::VK_CHANGE_INPUTSOURCE_RUSSIAN</autogen>
-      </item>
+      <name>Command_R to Command_R</name>
+      <appendix>(+ When you type Command_R only, change Input Source to Russian - Normal)</appendix>
+      <identifier>remap.russian_commandR</identifier>
+      <autogen>--KeyOverlaidModifier-- KeyCode::COMMAND_R, KeyCode::COMMAND_R, KeyCode::VK_CHANGE_INPUTSOURCE_RUSSIAN</autogen>
     </item>
 
     <item>
-      <name>Change Option_R Key</name>
-      <item>
-        <name>Option_R to Option_R</name>
-        <appendix>(+ When you type Option_R only, change Input Source to Ukrainian - Normal)</appendix>
-        <identifier>remap.ukrainian_optionR</identifier>
-        <autogen>--KeyOverlaidModifier-- KeyCode::OPTION_R, KeyCode::OPTION_R, KeyCode::VK_CHANGE_INPUTSOURCE_UKRAINIAN</autogen>
-      </item>
+      <name>Option_R to Option_R</name>
+      <appendix>(+ When you type Option_R only, change Input Source to Ukrainian - Normal)</appendix>
+      <identifier>remap.ukrainian_optionR</identifier>
+      <autogen>--KeyOverlaidModifier-- KeyCode::OPTION_R, KeyCode::OPTION_R, KeyCode::VK_CHANGE_INPUTSOURCE_UKRAINIAN</autogen>
     </item>
   </item>
 
   <item>
-    <name>Notification Center</name>
-    <item>
-      <name>Change Launchpad to Notification Center</name>
-      <appendix>(+ When you press Launchpad (F4), toggle Notification Center)</appendix>
-      <identifier>remap.launchpad_to_notification</identifier>
-      <autogen>__KeyToKey__ KeyCode::LAUNCHPAD, KeyCode::F1</autogen>
-    </item>
+    <name>Change Launchpad to Notification Center</name>
+    <appendix>(+ When you press Launchpad (F4), toggle Notification Center)</appendix>
+    <identifier>remap.launchpad_to_notification</identifier>
+    <autogen>__KeyToKey__ KeyCode::LAUNCHPAD, KeyCode::F4</autogen>
   </item>
+
+  <item>
+    <name>Put display to sleep on Ctrl-Shift-Esc</name>
+    <identifier>control_shift_esc_to_display_sleep</identifier>
+    <autogen>__KeyToKey__ KeyCode::ESCAPE, VK_CONTROL | VK_SHIFT | ModifierFlag::NONE, KeyCode::VK_CONSUMERKEY_EJECT, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L</autogen>
+  </item>  
 
   <item><name>──────────────────────────────</name></item>
 
