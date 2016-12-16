@@ -37,6 +37,7 @@ export PIP_RESPECT_VIRTUALENV=true
 export BOOT_JVM_OPTIONS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Xmx2g'
 export LEIN_FAST_TRAMPOLINE=y
 export FZF_DEFAULT_OPTS="--ansi"
+#export FZF_DEFAULT_COMMAND="ag -g ''"
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 # local settings can override some settings
@@ -399,19 +400,23 @@ alias pg="pgrep -lf"
 function pgk() { pgrep -f $1 | xargs kill }
 alias -g B='$(git symbolic-ref HEAD)'
 alias master="git checkout master"
-alias u="underscore"
 alias gf="gr -f"
+alias sk="sk --bind 'ctrl-k:kill-line'"
 
 function fe() {
     if [ -z "$1" ]; then
-        gr -cf . | fzf --select-1 | xargs emacsclient --no-wait
+        ag -g "" | fzf --select-1 | xargs emacsclient --no-wait
     else
-        gr -f "$1" | fzf --select-1 | xargs emacsclient --no-wait
+        ag -g "$1" | fzf --select-1 | xargs emacsclient --no-wait
     fi
 }
 
 function ge() {
-    gr -cn "$1" 2>/dev/null | fzf --select-1 | xargs emacsclient --no-wait
+    rg -l "$1" 2>/dev/null | fzf --select-1 | xargs emacsclient --no-wait
+}
+
+function gg() {
+    sk --ansi -i -c 'rg --color=always -l "{}"' -q "$1 " | xargs emacsclient --no-wait
 }
 
 function fd() {
@@ -425,7 +430,8 @@ function cfd() {
    file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
 }
 
-function gitshow() {
+# search for a git commit in git messages with fzf
+function gits() {
   local out sha q
   while out=$(
       git log --decorate=short --graph --oneline --color=always |
