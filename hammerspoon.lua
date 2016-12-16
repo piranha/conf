@@ -55,6 +55,16 @@ hs.hotkey.bind(mash, "down", resize(function(f, max)
         f.h = max.h / 2
 end))
 
+--- Window movement
+
+hs.hotkey.bind(cmdc, "down",
+    function() hs.window.focusedWindow():moveOneScreenSouth() end)
+
+hs.hotkey.bind(cmdc, "up",
+    function() hs.window.focusedWindow():moveOneScreenNorth() end)
+
+hs.hotkey.bind("alt", "`",
+    function() focusScreen(hs.window.focusedWindow():screen():next()) end)
 
 --- App Switch
 
@@ -67,17 +77,29 @@ hs.hotkey.bind(cmdc, ";",
 hs.hotkey.bind(cmdc, "'",
     function() hs.application.launchOrFocus("Telegram") end)
 
-hs.hotkey.bind(cmdc, "down",
-    function() hs.window.focusedWindow():moveOneScreenSouth() end)
 
-hs.hotkey.bind(cmdc, "up",
-    function() hs.window.focusedWindow():moveOneScreenNorth() end)
+--- Terminal
 
-hs.hotkey.bind(cmds, "down",
-    function() focusScreen(hs.window.focusedWindow():screen():next()) end)
-
-hs.hotkey.bind(cmds, "up",
-    function() focusScreen(hs.window.focusedWindow():screen():previous()) end)
+function TermHotkeyHandler()
+  local term = hs.application.get('Terminal')
+  if (term) then
+    local window = term:mainWindow()
+    if not window then
+      if term:selectMenuItem('New Window') then
+        window = term:mainWindow()
+      end
+      return
+    end
+    if term:isFrontmost() then
+      term:hide()
+    else
+      local s = hs.window.focusedWindow():screen()
+      window:moveToScreen(s, false, true)
+      window:focus()
+    end
+  end
+end
+hs.hotkey.bind('ctrl', "`", TermHotkeyHandler)
 
 
 --- Various stuff
@@ -121,7 +143,7 @@ end
 
 function reloadConfig(files)
     doReload = false
-    for _,file in pairs(files) do
+    for _, file in pairs(files) do
         if file:sub(-4) == ".lua" then
             doReload = true
         end
@@ -130,22 +152,6 @@ function reloadConfig(files)
         hs.reload()
     end
 end
-hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+
+local configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 hs.alert.show("Hammerspoon config loaded", 1)
-
-
---- Outlook
-
-archiveScript = io.popen('osadecompile ~/conf/scripts/outlook-archive.scpt'):read('*all')
-archiveMessage = hs.hotkey.new({'alt'}, 'a', function()
-    hs.osascript.applescript(archiveScript)
-end)
-
-
-hs.window.filter.new('Microsoft Outlook')
-  :subscribe(hs.window.filter.windowFocused, function()
-               archiveMessage:enable()
-            end)
-  :subscribe(hs.window.filter.windowUnfocused, function()
-               archiveMessage:disable()
-            end)
