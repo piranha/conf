@@ -247,15 +247,19 @@
 
 (el-get-bundle ag)
 
+(defun projectile-selection-at-point ()
+  (when (use-region-p)
+    (buffer-substring-no-properties (region-beginning) (region-end))))
+
 (defun projectile-counsel-ag ()
   (interactive)
   (let ((dir (projectile-project-root)))
     (if dir
-        (counsel-ag (projectile-symbol-or-selection-at-point) dir)
+        (counsel-ag (projectile-selection-at-point) dir)
       (message "error: Not in a project"))))
 
 (el-get-bundle! projectile
-  (projectile-global-mode)
+  (projectile-global-mode t)
   (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t)
   (define-key projectile-command-map (kbd "s s") 'projectile-counsel-ag))
@@ -452,3 +456,6 @@
 ;;   (add-to-list 'dumb-jump-find-rules
 ;;                '(:type "function" :language "clojure"
 ;;                        :regex "\\\(rum/defcs?\\s+JJJ\\j")))
+
+(el-get-bundle bling/fzf.el
+  (global-set-key (kbd "C-c o") 'fzf))
