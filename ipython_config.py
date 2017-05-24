@@ -4,16 +4,13 @@ from os import environ
 from os.path import join
 
 import IPython
+from IPython.terminal.prompts import ClassicPrompts
+
 
 c = get_config()
 
-c.PromptManager.in_template = '{color.Green}>>>{color.Normal} '
-c.PromptManager.in2_template = '{color.Green}...{color.Normal} '
-c.PromptManager.out_template = ''
-c.TerminalInteractiveShell.separate_in = ''
-c.TerminalInteractiveShell.separate_out = ''
-c.TerminalInteractiveShell.separate_out2 = ''
 
+c.TerminalInteractiveShell.prompts_class = ClassicPrompts
 c.TerminalInteractiveShell.deep_reload = True
 c.TerminalInteractiveShell.autocall = 1
 c.TerminalInteractiveShell.confirm_exit = False
