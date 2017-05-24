@@ -16,8 +16,10 @@
 
 (global-set-key (kbd "C-x C-d") 'dired-jump)
 
-(global-set-key (kbd "C-c k") (fun-for-bind kill-buffer nil))
-(global-set-key (kbd "C-M-l") (fun-for-bind switch-to-buffer (other-buffer)))
+(global-set-key (kbd "C-c k") (lambda () (interactive)
+                                (kill-buffer nil)))
+(global-set-key (kbd "C-M-l") (lambda () (interactive)
+                                (switch-to-buffer (other-buffer))))
 (global-set-key (kbd "C-M-z") (lambda (&optional arg char)
                                 (interactive "p\ncZap backward to char: ")
                                 (zap-to-char (- arg) char)))
@@ -34,7 +36,6 @@
 ;; windows
 (global-set-key (kbd "M-`") 'other-frame)
 (global-set-key (kbd "M-o") 'other-window)
-(define-key dired-mode-map (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-1") 'delete-other-windows)
 (global-set-key (kbd "M-2") 'split-window-vertically)
 (global-set-key (kbd "M-3") 'split-window-horizontally)
@@ -42,10 +43,13 @@
 
 (if (fboundp 'w32-send-sys-command)
     (global-set-key (kbd "M-M") ; maximize
-                    (fun-for-bind w32-send-sys-command #xf030 nil)))
+                    (lambda () (interactive)
+                      (w32-send-sys-command #xf030 nil))))
 
-(el-get-bundle iedit
-  (global-set-key (kbd "C-;") 'iedit-mode))
+(use-package iedit
+  :ensure t
+  :commands iedit-mode
+  :bind ("C-;" . iedit-mode))
 
 (global-set-key (kbd "M-/") 'dabbrev-expand)
 (global-unset-key (kbd "C-/")) ;; 'yas-expand

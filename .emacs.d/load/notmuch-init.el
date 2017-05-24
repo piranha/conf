@@ -102,19 +102,11 @@
       (when (not (zerop (notmuch-hello-new-count)))
         (tracking-add-buffer (get-buffer "*notmuch-hello*"))))))
 
-;; BBDB
+;;; BBDB
 
-(el-get-bundle bbdb
-  :type http-tar
-  :options ("xf")
-  :build (("env"
-           "EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs"
-           "EMACSLOADPATH=/Applications/Emacs.app/Contents/Resources/lisp"
-           "./configure")
-          ("sed" "-i" "" "s/DATA = bbdb.pdf/DATA = #bbdb.pdf/" "doc/Makefile")
-          ("make"))
-  :load-path ("./lisp")
-  :url "http://download.savannah.gnu.org/releases/bbdb/bbdb-3.1.2.tar.gz")
+;; counsel-bbdb?
+(use-package bbdb
+  :ensure t)
 
 (setq bbdb-file "~/.emacs.d/bbdb"
       bbdb-user-mail-address-re "o.solovyov@modnakasta.ua|os@modnakasta.ua"

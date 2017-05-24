@@ -2,12 +2,9 @@
 
 ;; usual major modes
 (add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
-(add-to-list 'auto-mode-alist '("\\.jsm\\'" . js-mode))
 
-(require 'imenu)
+(require 'imenu) ;; NOTE: check out flimenu
 (setq imenu-auto-rescan t)
-
-(el-get-bundle! grep+)
 
 (setq tags-file-name (expand-file-name "~/TAGS"))
 
@@ -21,11 +18,9 @@
 (add-hook 'dired-omit-mode-hook
           (lambda ()
             (define-key dired-mode-map (kbd "M-o") nil)
-            (define-key dired-mode-map (kbd "M-O") 'dired-omit-mode)))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-,")
-    (fun-for-bind bs--show-with-configuration "dired")))
+            (define-key dired-mode-map (kbd "M-O") 'dired-omit-mode)
+            (define-key dired-mode-map (kbd "C-,")
+              (lambda () (bs--show-with-configuration "dired")))))
 
 (column-number-mode 1)
 (show-paren-mode 1)
@@ -65,12 +60,6 @@
  ido-ignore-files '("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"
                     "\\.pyc$" "\\.6$" "\\.o$" "__pycache__/$"))
 (defalias 'list-buffers 'ido-switch-buffer)
-
-(el-get-bundle! flx)
-(with-eval-after-load 'flx
-  ;; disable ido faces to see flx highlights.
-  (setq ido-use-faces nil)
-  (flx-ido-mode 1))
 
 (winner-mode 1) ;; window configuration undo/redo
 (windmove-default-keybindings)
@@ -113,131 +102,128 @@
 (dolist (hook hooks-want-short-lines)
   (add-hook hook 'auto-fill-mode))
 
-;; highlighting of FIXME/TODO
-(el-get-bundle! fic-ext-mode)
-(with-eval-after-load 'fic-ext-mode
-  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "NOTE"))
-  (dolist (hook '(python-mode-hook
-                  emacs-lisp-mode-hook
-                  coffee-mode-hook
-                  go-mode-hook
-                  js-mode-hook
-                  clojure-mode-hook
-                  web-mode-hook))
-    (add-hook hook 'fic-ext-mode)))
-
 ;; org mode
 
 (add-hook 'org-mode-hook
           (lambda ()
             (setq org-hide-leading-stars t)
-            (setq org-time-clocksum-format
-                  '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t))
             (define-key org-mode-map (kbd "C-,") nil)
             (define-key org-mode-map (kbd "C-S-<up>") 'org-timestamp-up)
             (define-key org-mode-map (kbd "C-S-<down>") 'org-timestamp-down)))
 
-(el-get-bundle org-bullets
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
 ;; major modes
 
-(el-get-bundle markdown-mode
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  (with-eval-after-load 'markdown-mode
-    (define-key markdown-mode-map (kbd "M-<right>") nil)
-    (define-key markdown-mode-map (kbd "M-<left>") nil)))
+(use-package markdown-mode
+  :ensure t
+  :mode ("\\.markdown\\'" . markdown-mode)
+        ("\\.md\\'" . markdown-mode)
+  :bind (:map markdown-mode-map
+         ("M-<right>" . nil)
+         ("M-<left>" . nil)))
 
-(el-get-bundle go-mode)
-(add-hook 'go-mode-hook
-          (lambda ()
-            (set (make-local-variable 'whitespace-style)
-                 '(face trailing lines-tail))))
 
-(el-get-bundle wikipedia-mode)
-(el-get-bundle yaml-mode)
-(el-get-bundle sass-mode)
-(el-get-bundle less-css-mode)
-(el-get-bundle coffee-mode)
-(el-get-bundle htmlize)
-(el-get-bundle po-mode)
-(el-get-bundle gist:1654113:go-template-mode)
+(use-package go-mode
+  :ensure t
+  :mode ("\\.go\\'" . go-mode)
+  :init
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (set (make-local-variable 'whitespace-style)
+                   '(face trailing lines-tail)))))
+
+(use-package yaml-mode
+  :ensure t
+  :mode ("\\.yaml\\'" . yaml-mode))
+
+(use-package sass-mode
+  :ensure t
+  :mode ("\\.scss" . scss-mode))
+
+(use-package less-css-mode
+  :ensure t
+  :mode ("\\.less" . less-css-mode))
+
+(use-package po-mode
+  :ensure t
+  :mode ("\\.po\\'" . po-mode))
 
 ;;;;;;;;;
 ;; Python
 ;;;;;;;;;
 
-;; modified and stored in my repo
-(autoload 'django-html-mode "django-html-mode" "Django HTML templates" t)
-(add-to-list 'auto-mode-alist '("\\.html\\'" . django-html-mode))
+;; (use-package django-mode
+;;   :ensure t
+;;   :mode ("\\.html\\'" . django-html-mode)
+;;   :bind (:map django-html-mode-map
+;;          ("C-c ]" . django-html-close-tag)
+;;          ("C-t" . "{%  %}\C-b\C-b\C-b")
+;;          ("M-t" . "{{  }}\C-b\C-b\C-b")
+;;          ("C-'" . "<%  %>\C-b\C-b\C-b")
+;;          ("M-'" . "<%=  %>\C-b\C-b\C-b")))
 
-(with-eval-after-load 'django-html-mode
-  (defvar django-html-mode-map)
-  (define-key django-html-mode-map "\C-c]" 'django-html-close-tag)
-  (define-key django-html-mode-map (kbd "C-t") "{%  %}\C-b\C-b\C-b")
-  (define-key django-html-mode-map (kbd "M-t") "{{  }}\C-b\C-b\C-b")
-  (define-key django-html-mode-map (kbd "C-'") "<%  %>\C-b\C-b\C-b")
-  (define-key django-html-mode-map (kbd "M-'") "<%=  %>\C-b\C-b\C-b"))
+(defvar python-mode-map)
+(add-hook 'python-mode-hook
+          (lambda ()
+            (setq imenu-create-index-function 'python-imenu-create-index)
+            (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)))
 
-(with-eval-after-load 'python
-  (define-key python-mode-map (kbd "RET") 'newline-maybe-indent))
 
-(add-hook 'python-mode-hook (lambda () (setq imenu-create-index-function
-                                        'python-imenu-create-index)))
-
-(el-get-bundle s)
-(el-get-bundle popup)
-
-(el-get-bundle flycheck
-  (add-hook 'after-init-hook 'global-flycheck-mode))
-
-(el-get-bundle flycheck-pos-tip)
-
-(el-get-bundle! flycheck-pyflakes in Wilfred/flycheck-pyflakes)
-
-(with-eval-after-load 'flycheck
+(use-package flycheck
+  :ensure t
+  :init
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  :config
   (delete 'python-flake8 flycheck-checkers)
   (delete 'python-pylint flycheck-checkers)
   (delete 'emacs-lisp flycheck-checkers)
-  (delete 'emacs-lisp-checkdoc flycheck-checkers)
-  (setq flycheck-highlighting-mode 'lines)
-  (flycheck-pos-tip-mode))
+  (delete 'emacs-lisp-checkdoc flycheck-checkers))
 
-;; Lua
 
-(el-get-bundle lua-mode
-  (setq lua-indent-level 2))
-;;(defvaralias 'lua-indent-level 'tab-width)
+(use-package flycheck-pos-tip
+  :ensure t
+  :init
+  (setq-default flycheck-display-errors-function 'flycheck-pos-tip-error-messages))
+
+
+(use-package flycheck-pyflakes
+  :ensure t
+  :init
+  (add-hook 'python-mode-hook (lambda () (require 'flycheck-pyflakes))))
+
 
 ;; Ruby
 
+(defvar ruby-mode-map)
 (with-eval-after-load 'ruby-mode
-  (defvar ruby-mode-map)
   (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent))
 
 ;; Javascript
 
+(defvar js-mode-map)
 (with-eval-after-load 'js
-  (defvar js-mode-map)
   (define-key js-mode-map (kbd "RET") 'newline-maybe-indent))
+
 
 ;; Snippets
 
-(el-get-bundle! yasnippet)
-(with-eval-after-load 'yasnippet
+(use-package yasnippet
+  :ensure t
+  :bind (:map yas-minor-mode-map
+         ("C-/" . yas-expand)
+         ([tab] . nil))
+  :init
   (add-hook 'snippet-mode-hook
             '(lambda ()
                (set (make-local-variable 'require-final-newline) nil)))
-  (define-key yas-minor-mode-map [(tab)] nil)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map (kbd "C-/") 'yas-expand)
-  (add-to-list 'yas/snippet-dirs "~/.emacs.d/snippets/")
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+  :config
+  (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/"))
 
 
 ;; highlight parentheses
-(el-get-bundle highlight-parentheses
+(use-package highlight-parentheses
+  :ensure t
+  :init
   (dolist (hook '(python-mode-hook
                   emacs-lisp-mode-hook
                   clojure-mode-hook))
@@ -245,27 +231,29 @@
 
 ;; version control/projects
 
-(el-get-bundle ag)
+(use-package ag
+  :ensure t)
 
 (defun projectile-selection-at-point ()
   (when (use-region-p)
     (buffer-substring-no-properties (region-beginning) (region-end))))
 
-(defun projectile-counsel-ag ()
+(defun projectile-counsel-rg ()
   (interactive)
   (let ((dir (projectile-project-root)))
     (if dir
-        (counsel-ag (projectile-selection-at-point) dir)
+        (counsel-rg (projectile-selection-at-point) dir)
       (message "error: Not in a project"))))
 
-(el-get-bundle! projectile
-  (projectile-global-mode t)
+(use-package projectile
+  :ensure t
+  :bind (:map projectile-command-map
+         ("s s" . projectile-counsel-rg))
+  :init
   (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t)
-  (define-key projectile-command-map (kbd "s s") 'projectile-counsel-ag))
+  (projectile-mode 1))
 
-;; sudo
-(el-get-bundle! sudo-save in emacswiki:sudo-save)
 
 ;; elisp
 (defun lambda-elisp-mode-hook ()
@@ -276,18 +264,21 @@
                     nil))))))
 (add-hook 'emacs-lisp-mode-hook 'lambda-elisp-mode-hook)
 
-;; breadcrumbs
-(el-get-bundle! breadcrumb)
-(with-eval-after-load 'breadcrumb
-  (global-set-key (kbd "C-'") 'bc-set)
-  (global-set-key (kbd "M-j") 'bc-previous)
-  (global-set-key (kbd "M-J") 'bc-next)
-  (global-set-key (kbd "C-c j") 'bc-goto-current)
-  (global-set-key (kbd "C-c C-j") 'bc-list))
+
+;; ;; breadcrumbs
+;; (el-get-bundle! breadcrumb)
+;; (with-eval-after-load 'breadcrumb
+;;   (global-set-key (kbd "C-'") 'bc-set)
+;;   (global-set-key (kbd "M-j") 'bc-previous)
+;;   (global-set-key (kbd "M-J") 'bc-next)
+;;   (global-set-key (kbd "C-c j") 'bc-goto-current)
+;;   (global-set-key (kbd "C-c C-j") 'bc-list))
+
 
 ;; whole-line-or-region
-(el-get-bundle! whole-line-or-region)
-(with-eval-after-load 'whole-line-or-region
+(use-package whole-line-or-region
+  :ensure t
+  :init
   (defun whole-line-kill-region-or-word-backward (prefix)
     "Kill (cut) region or just a single word backward"
     (interactive "*p")
@@ -302,13 +293,12 @@
           (kill-ring-save whole-line-or-region-kill-ring-save nil)
           (yank whole-line-or-region-yank nil)))
 
-            (whole-line-or-region-mode))
+  (whole-line-or-region-mode))
 
-(el-get-bundle browse-kill-ring)
 
-;; VC mode
-;; do not ever annoy me with slow file loading time
+;; VC mode, do not ever annoy me with slow file loading time
 (remove-hook 'find-file-hook 'vc-find-file-hook)
+
 
 ;; smerge
 (defun sm-try-smerge ()
@@ -320,142 +310,132 @@
 (add-hook 'find-file-hook 'sm-try-smerge t)
 (setq smerge-command-prefix (kbd "C-c ]"))
 
-(el-get-bundle! smooth-scrolling)
 
-(el-get-bundle! multi-mode
-  :type http
-  :url "http://www.gerd-neugebauer.de/software/emacs/multi-mode/multi-mode.el")
-(with-eval-after-load 'multi-mode
-  (defun better-django-html-mode () (interactive)
-         (multi-mode 1
-                     'django-html-mode
-                     '("<script type=\"text/javascript\">" js-mode)
-                     '("</script>" django-html-mode)
-                     '("<style type=\"text/css\">" css-mode)
-                     '("</style>" django-html-mode)))
+;; (el-get-bundle! multi-mode
+;;   :type http
+;;   :url "http://www.gerd-neugebauer.de/software/emacs/multi-mode/multi-mode.el")
+;; (with-eval-after-load 'multi-mode
+;;   (defun better-django-html-mode () (interactive)
+;;          (multi-mode 1
+;;                      'django-html-mode
+;;                      '("<script type=\"text/javascript\">" js-mode)
+;;                      '("</script>" django-html-mode)
+;;                      '("<style type=\"text/css\">" css-mode)
+;;                      '("</style>" django-html-mode)))
 
-  (delete '("\\.html\\'" . django-html-mode) auto-mode-alist)
-  (add-to-list 'auto-mode-alist '("\\.html\\'" . better-django-html-mode)))
+;;   (delete '("\\.html\\'" . django-html-mode) auto-mode-alist)
+;;   (add-to-list 'auto-mode-alist '("\\.html\\'" . better-django-html-mode)))
 
-(el-get-bundle clojure-mode
-  (add-to-list 'auto-mode-alist '("\\.boot\\'" . clojure-mode))
-  (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
-  (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
-  (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode)))
-(with-eval-after-load 'clojure-mode
+
+(use-package clojure-mode
+  :ensure t
+  :mode ("\\.boot\\'" . clojure-mode)
+        ("\\.edn\\'" . clojure-mode)
+  :config
+  (add-hook 'clojure-mode-hook 'clj-refactor-mode)
   (setq clojure-indent-style :always-indent)
+  (setq clojure-thread-all-but-last t)
   (define-clojure-indent
     (->  0)
     (->> 0)
     (and 0)
     (or  0)))
 
-(el-get-bundle peg)
-(el-get-bundle edn)
 
-(el-get-bundle clj-refactor
-  (add-hook 'clojure-mode-hook 'clj-refactor-mode)
-  (with-eval-after-load 'clj-refactor
-    (cljr-add-keybindings-with-prefix "C-c r")
-    (setq cljr-thread-all-but-last t)
-    (add-to-list 'cljr-magic-require-namespaces
-                 '("log" . "clojure.tools.logging"))))
-
-(el-get-bundle align-cljlet)
-(with-eval-after-load 'clojure-mode
-  (define-key clojure-mode-map (kbd "C-c r a l") 'align-cljlet))
-
-(el-get-bundle cider
+(use-package cider
+  :ensure t
+  :commands cider-mode
+  :bind (:map cider-repl-mode-map
+         ("C-c M-r" . cider-repl-previous-matching-input)
+         ("C-c M-s" . cider-repl-next-matching-input))
+  :init
+  (setq cider-repl-history-file "~/.emacs.d/cider-history")
+  (setq cider-cljs-repl "(do (require '[figwheel-sidecar.repl-api :as ra]) (ra/cljs-repl))")
   (add-hook 'clojure-mode-hook 'cider-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode))
 
-(with-eval-after-load 'cider-mode
-  (setq cider-repl-history-file "~/.emacs.d/cider-history")
-  (setq cider-cljs-repl "(do (require '[figwheel-sidecar.repl-api :as ra]) (ra/cljs-repl))")
-  (define-key cider-repl-mode-map (kbd "C-c M-r") 'cider-repl-previous-matching-input)
-  (define-key cider-repl-mode-map (kbd "C-c M-s") 'cider-repl-next-matching-input))
 
-(el-get-bundle rainbow-delimiters
+(use-package rainbow-delimiters
+  :ensure t
+  :commands rainbow-delimiters-mode
+  :init
   (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))
 
-(el-get-bundle paredit
+
+(use-package paredit
+  :ensure t
+  :bind (:map paredit-mode-map
+         ("C-<right>" . nil)
+         ("C-<left>" . nil)
+         ("C-M-0" . paredit-forward-slurp-sexp)
+         ("C-M-9" . paredit-forward-barf-sexp))
+  :init
   (add-hook 'clojure-mode-hook 'paredit-mode)
   (add-hook 'emacs-lisp-mode-hook 'paredit-mode))
 
-(with-eval-after-load 'paredit
-  (dolist (kv '(("C-<right>" nil)
-                ("C-<left>" nil)
-                ("C-M-0" paredit-forward-slurp-sexp)
-                ("C-M-9" paredit-forward-barf-sexp)))
-    (define-key paredit-mode-map (kbd (car kv)) (cadr kv))))
 
-(el-get-bundle emacswiki:sql-indent
+(use-package sql-indent
+  :ensure t
+  :init
   (with-eval-after-load 'sql
     (require 'sql-indent)))
 
-;; OCaml
-
-(el-get-bundle tuareg-mode
-  (setq tuareg-indent-align-with-first-arg nil)
-  (autoload 'ocp-setup-indent "ocp-indent.el" "" t)
-  ;;(autoload 'ocp-index-mode "ocp-index.el" "" t)
-  (add-hook 'tuareg-mode-hook 'ocp-setup-indent)
-  (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu))
-
-(el-get-bundle tuareg-imenu
- :type http
- :url "http://aspellfr.free.fr/tuareg-imenu/tuareg-imenu.el")
-
-;; (el-get-bundle elpa:merlin
-;;   (add-hook 'tuareg-mode-hook 'merlin-mode))
-(autoload 'merlin-mode "merlin" "" t)
-(setq merlin-use-auto-complete-mode nil)
-(setq merlin-error-after-save nil)
-(with-eval-after-load 'merlin
-  ;;(define-key merlin-mode-map (kbd "C-c <up>") 'merlin-type-enclosing-go-up)
-  ;;(define-key merlin-mode-map (kbd "C-c <down>") 'merlin-type-enclosing-go-down)
-  )
-
-(el-get-bundle elpa:utop
-  ;;(autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
-  (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer))
-
-(eval-after-load 'reason-mode
-  (add-hook 'reason-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'refmt-before-save)
-              (merlin-mode))))
 
 ;; Various
 
-(el-get-bundle dockerfile-mode)
-(el-get-bundle rust-mode)
-(el-get-bundle elpa:toml-mode)
+(use-package dockerfile-mode
+  :ensure t
+  :init (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
 
-(el-get-bundle magit
-  :branch "master"
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup))
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)
+         ("C-x M-g" . magit-dispatch-popup)))
 
-(el-get-bundle! string-inflection in akicho8/string-inflection)
+(use-package string-inflection
+  :ensure t)
 
-(el-get-bundle piu
-  :url "http://paste.in.ua/piu.el"
-  (global-set-key (kbd "C-x p") 'piu))
+(autoload 'piu "piu" "paste to paste.in.ua" t)
+(global-set-key (kbd "C-x p") 'piu)
 
-(el-get-bundle graphviz-dot-mode)
+(use-package graphviz-dot-mode
+  :ensure t)
 
-;; (el-get-bundle dumb-jump
-;;   :type elpa
-;;   :url "https://elpa.gnu.org/packages/dumb-jump.html"
-;;   :depends (f s dash popup)
-;;   (dumb-jump-mode)
-;;   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
-;;   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
-;;   (add-to-list 'dumb-jump-find-rules
-;;                '(:type "function" :language "clojure"
-;;                        :regex "\\\(rum/defcs?\\s+JJJ\\j")))
+(use-package dumb-jump
+  :ensure t
+  :bind (("C-c g o" . dumb-jump-go-other-window)
+         ("C-c g b" . dumb-jump-back)
+         ("C-c g j" . dumb-jump-go)
+         ("C-c g q" . dumb-jump-quick-look))
+  :config
+  (progn
+    (setq dumb-jump-selector 'ivy)
+    (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
+    (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
+    (add-to-list 'dumb-jump-find-rules
+                 '(:type "function" :language "clojure"
+                         :regex "\\\(rum/defcs?\\s+JJJ\\j"))))
 
-(el-get-bundle bling/fzf.el
-  (global-set-key (kbd "C-c o") 'fzf))
+
+(use-package fzf
+  :ensure t
+  :bind ("C-c o" . fzf))
+
+(use-package restclient
+  :ensure t
+  :mode ("\\.rest\\'" . restclient-mode))
+
+(use-package multiple-cursors
+  :ensure t
+  :bind (("M-." . mc/mark-next-like-this)
+         ("M-," . mc/unmark-next-like-this)
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+
+(use-package expand-region
+  :ensure t
+  :bind (("C-=" . er/expand-region)))
+
+(use-package lua-mode
+  :ensure t
+  :mode ("\\.lua\\'" . lua-mode))

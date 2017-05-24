@@ -1,18 +1,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNU Emacs configuration
-;; (c) Alexander Solovyov 2004-2013
+;; (c) Alexander Solovyov 2004-2017
 ;; alexander AT solovyov.net
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(setq package-enable-at-startup nil)
 (package-initialize)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-(defmacro fun-for-bind (func &rest args)
-  "Returns a symbol of an anonymous interactive function,
-suitable for binding to keys."
-  `(lambda () (interactive) (,func ,@args)))
+;;; Use-package
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)
+(require 'bind-key)
+
+;;; Ocaml forced me to play with paths
 
 (setq opam (substring (shell-command-to-string "/usr/local/bin/opam config var prefix 2> /dev/null") 0 -1))
-
 (let ((better-path `("/Users/piranha/bin"
                      "/usr/local/go/bin"
                      "/usr/local/sbin"
@@ -37,10 +47,10 @@ suitable for binding to keys."
 
 ;; initialize el-get
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get/")
-(unless (require 'el-get nil t)
-  (throw 'not-configured
-         "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
-(setq el-get-git-shallow-clone t)
+;; (unless (require 'el-get nil t)
+;;   (throw 'not-configured
+;;          "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
+;; (setq el-get-git-shallow-clone t)
 
 (setq custom-file "~/.emacs.d/load/custom-init.el")
 
@@ -69,6 +79,6 @@ suitable for binding to keys."
         modules))
 
 (load-init
- '(general frame funs modes ivy keys bs eshell notmuch circe custom))
+ '(general frame funs modes ivy keys bs notmuch circe custom))
 
 ;;; init.el ends here

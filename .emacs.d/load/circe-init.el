@@ -1,4 +1,5 @@
-(el-get-bundle circe)
+(use-package circe
+  :ensure t)
 
 (defun prh/nickserv-password (_)
   (with-temp-buffer
@@ -36,7 +37,8 @@
   (defun my-circe-set-margin ()
     (setq right-margin-width 5))
 
-  (define-key lui-mode-map (kbd "C-,") (fun-for-bind bs--show-with-configuration "circe"))
+  (define-key lui-mode-map (kbd "C-,")
+    (lambda () (interactive) (bs--show-with-configuration "circe")))
   (add-hook 'lui-mode-hook 'no-scroll-margin)
 
   (circe-lagmon-mode))
