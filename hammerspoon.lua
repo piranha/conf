@@ -4,6 +4,20 @@ local cmds = {"shift", "cmd"}
 local ca = {"ctrl", "alt"}
 
 
+--- Switch keyboard layout
+
+hs.hotkey.bind({}, "F16", function()
+    hs.keycodes.currentSourceID("com.apple.keylayout.US")
+end)
+
+hs.hotkey.bind({}, "F17", function()
+    hs.keycodes.currentSourceID("org.sil.ukelele.keyboardlayout.cyrillic- normal.russian-normal")
+end)
+
+hs.hotkey.bind({}, "F18", function()
+    hs.keycodes.currentSourceID("org.sil.ukelele.keyboardlayout.cyrillic- normal.ukrainian-normal")
+end)
+
 --- Window management
 
 hs.window.animationDuration = 0

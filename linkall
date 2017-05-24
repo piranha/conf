@@ -20,8 +20,8 @@ mapping=(
     .tmux.conf .tmux.conf
     .patdiff .patdiff
     net.solovyov.runonwifi.plist "Library/LaunchAgents/net.solovyov.runonwifi.plist"
-    karabiner.xml "Library/Application Support/Karabiner/private.xml"
     hammerspoon.lua .hammerspoon/init.lua
+    karabiner.json .config/karabiner/karabiner.json
     )
 
 for src in ${(k)mapping}; do
