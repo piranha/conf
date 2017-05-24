@@ -21,16 +21,13 @@
     w = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
     wl = !git w HEAD@{1}..HEAD
     serve = daemon --reuseaddr --verbose  --base-path=. --export-all
-    b = branch
+    b = !"git sl --no-walk --date-order $(git rev-list --branches --no-walk)"
+    ba = !"git sl --no-walk --date-order $(git rev-list --branches --no-walk --remotes)"
     cb = checkout -b
     cib = "!f() { git checkout -b $1; shift; git commit -a "$@"; }; f"
     cmb = "!f() { git checkout -b $1; shift git commit -a -m "$@"; }; f"
     # track localbranch remote/remotebranch
-    track = branch --set-upstream
-    hard = reset --hard HEAD
-    sub = submodule
-    map = submodule foreach
-    mag = submodule foreach git
+    track = branch --set-upstream-to
     todo = grep --heading --break -e ' FIXME *' -e ' TODO *'
 
     tagpush = !git push origin $(git symbolic-ref HEAD) --tags
@@ -40,6 +37,9 @@
 
     pushurl = config remote.origin.pushurl
     addgh = !git remote add gh github.com:piranha/$(basename $(git rev-parse --show-toplevel)).git
+	please = push --force-with-lease
+    hard = reset --hard HEAD
+    uncommit = reset --soft HEAD^
 
 [color]
     ui = auto
@@ -53,6 +53,8 @@
 	external = ~/bin/git-external-patdiff.sh
 [push]
 	default = current
+[pull]
+    ff = true
 [daemon]
     receivepack = true
 [filter "media"]
