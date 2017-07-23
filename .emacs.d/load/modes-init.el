@@ -210,7 +210,7 @@
   :ensure t
   :bind (:map yas-minor-mode-map
          ("C-/" . yas-expand)
-         ([tab] . nil))
+         ("TAB" . nil))
   :init
   (add-hook 'snippet-mode-hook
             '(lambda ()
@@ -438,4 +438,6 @@
 
 (use-package lua-mode
   :ensure t
-  :mode ("\\.lua\\'" . lua-mode))
+  :mode ("\\.lua\\'" . lua-mode)
+  :config
+  (setq lua-indent-level 2))
