@@ -22,6 +22,12 @@
             (define-key dired-mode-map (kbd "C-,")
               (lambda () (bs--show-with-configuration "dired")))))
 
+(setq eshell-scroll-to-bottom-on-input 'all
+      eshell-error-if-no-glob t
+      eshell-hist-ignoredups t
+      eshell-save-history-on-exit t
+      eshell-prefer-lisp-functions nil)
+
 (column-number-mode 1)
 (show-paren-mode 1)
 (global-subword-mode 1)
@@ -189,6 +195,10 @@
   :ensure t
   :init
   (add-hook 'python-mode-hook (lambda () (require 'flycheck-pyflakes))))
+
+
+(use-package flycheck-joker
+  :ensure t)
 
 
 ;; Ruby
@@ -392,6 +402,10 @@
   :ensure t
   :bind (("C-x g" . magit-status)
          ("C-x M-g" . magit-dispatch-popup)))
+
+(use-package git-timemachine
+  :ensure t
+  :bind (("C-x C-g" . git-timemachine)))
 
 (use-package string-inflection
   :ensure t)

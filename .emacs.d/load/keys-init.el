@@ -1,6 +1,7 @@
 (global-unset-key "\C-x\C-c") ;; too easy to hit accidentally
 (global-set-key "\C-x\C-c\C-v" 'save-buffers-kill-terminal)
 
+(global-set-key (kbd "M-'") 'mode-line-other-buffer)
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-,") 'bs-show)
 (define-key global-map (kbd "RET") 'newline-and-indent)

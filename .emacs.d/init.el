@@ -22,8 +22,12 @@
 
 ;;; Ocaml forced me to play with paths
 
-(setq opam (substring (shell-command-to-string "/usr/local/bin/opam config var prefix 2> /dev/null") 0 -1))
-(let ((better-path `("/Users/piranha/bin"
+(setq opam
+  (if (file-executable-p "/usr/local/bin/opam")
+      (substring (shell-command-to-string "/usr/local/bin/opam config var prefix 2> /dev/null") 0 -1)
+    ""))
+
+(let ((better-path `("~/bin"
                      "/usr/local/go/bin"
                      "/usr/local/sbin"
                      "/usr/local/bin"
@@ -31,12 +35,10 @@
                      "/usr/bin"
                      "/sbin"
                      "/bin"
-                     "/Users/piranha/dev/go/bin"
-                     "/Users/piranha/dev/go/ext/bin"
+                     "~/dev/go/bin"
+                     "~/dev/go/ext/bin"
                      "/usr/local/share/npm/bin"
-                     "/Users/piranha/.opam/system/bin"
-                     ,(concat opam "/bin")
-                     "/Users/piranha/Library/Haskell/bin")))
+                     ,(concat opam "/bin"))))
   (when (string-equal "darwin" (symbol-name system-type))
     (setenv "PATH" (mapconcat 'identity better-path ":"))
     (setenv "LANG" "en_US.UTF-8")

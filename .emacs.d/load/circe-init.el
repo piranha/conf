@@ -2,14 +2,12 @@
   :ensure t)
 
 (defun prh/nickserv-password (_)
-  (with-temp-buffer
-    (insert-file-contents-literally "~/.secrets.el")
-    (plist-get (read (buffer-string)) :freenode-password)))
+  (prh/secret :freenode-password))
 
 (setq circe-network-options
       `(("Freenode"
          :nick "piranha"
-         :channels ("#clojure" "#clojurescript" "#hoplon")
+         :channels ("#clojure" "#clojurescript")
          :nickserv-password prh/nickserv-password)))
 
 (setq circe-use-cycle-completion t
@@ -40,6 +38,13 @@
   (define-key lui-mode-map (kbd "C-,")
     (lambda () (interactive) (bs--show-with-configuration "circe")))
   (add-hook 'lui-mode-hook 'no-scroll-margin)
+
+  (add-hook 'circe-chat-mode-hook 'prh/circe-prompt)
+  (defun prh/circe-prompt ()
+    (lui-set-prompt
+     (concat (propertize (concat (buffer-name) ">")
+                         'face 'circe-prompt-face)
+             " ")))
 
   (circe-lagmon-mode))
 

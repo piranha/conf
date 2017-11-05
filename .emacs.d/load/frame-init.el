@@ -27,5 +27,5 @@
   (global-set-key (kbd "<language-change>") 'safe-language-change))
 
 (when (eq window-system 'x)
-  (set-frame-font "Consolas-13" nil t)
-  (set-face-attribute 'default t :font "Consolas-13"))
+  (set-frame-font "Monaco-12" nil t)
+  (set-face-attribute 'default t :font "Monaco-12"))

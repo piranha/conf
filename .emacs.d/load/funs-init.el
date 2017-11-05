@@ -176,11 +176,19 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (end-of-line)))
 
 (defun align-repeat (start end regexp)
-    "Repeat alignment with respect to 
+    "Repeat alignment with respect to
      the given regular expression."
     (interactive "r\nsAlign regexp: ")
-    (align-regexp start end 
+    (align-regexp start end
         (concat "\\(\\s-*\\)" regexp) 1 1 t))
+
+(defun prh/secret (attr)
+  "Example: `(prh:secret :freenode-password)`"
+  (with-temp-buffer
+    (insert-file-contents-literally "~/.secrets.el")
+    (plist-get (read (buffer-string)) attr)))
+
+(setq sql-connection-alist (prh/secret :sql-connection-alist))
 
 (defun sql-replica ()
   (interactive)
