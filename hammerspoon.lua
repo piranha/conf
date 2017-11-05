@@ -7,15 +7,15 @@ local ca = {"ctrl", "alt"}
 --- Switch keyboard layout
 
 hs.hotkey.bind({}, "F16", function()
-    hs.keycodes.currentSourceID("com.apple.keylayout.US")
+    hs.keycodes.setLayout("U.S.")
 end)
 
 hs.hotkey.bind({}, "F17", function()
-    hs.keycodes.currentSourceID("org.sil.ukelele.keyboardlayout.cyrillic- normal.russian-normal")
+    hs.keycodes.setLayout("Russian - Normal")
 end)
 
 hs.hotkey.bind({}, "F18", function()
-    hs.keycodes.currentSourceID("org.sil.ukelele.keyboardlayout.cyrillic- normal.ukrainian-normal")
+    hs.keycodes.setLayout("Ukrainian - Normal")
 end)
 
 --- Window management
