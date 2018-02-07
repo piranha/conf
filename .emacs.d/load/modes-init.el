@@ -258,7 +258,7 @@
 (use-package projectile
   :ensure t
   :bind (:map projectile-command-map
-         ("s s" . projectile-counsel-rg))
+              ("s s" . projectile-counsel-rg))
   :init
   (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t)
@@ -346,6 +346,7 @@
   (setq clojure-indent-style :always-indent)
   (setq clojure-thread-all-but-last t)
   (define-clojure-indent
+    (= 0)
     (->  0)
     (->> 0)
     (and 0)
@@ -405,7 +406,7 @@
 
 (use-package git-timemachine
   :ensure t
-  :bind (("C-x C-g" . git-timemachine)))
+  :bind (("C-x G" . git-timemachine)))
 
 (use-package string-inflection
   :ensure t)
@@ -423,18 +424,19 @@
          ("C-c g j" . dumb-jump-go)
          ("C-c g q" . dumb-jump-quick-look))
   :config
-  (progn
-    (setq dumb-jump-selector 'ivy)
-    (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
-    (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
-    (add-to-list 'dumb-jump-find-rules
-                 '(:type "function" :language "clojure"
-                         :regex "\\\(rum/defcs?\\s+JJJ\\j"))))
+  (setq dumb-jump-selector 'ivy)
+  (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
+  (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
+  (add-to-list 'dumb-jump-find-rules
+               '(:type "function" :language "clojure"
+                       :regex "\\\(rum/defcs?\\s+JJJ\\j")))
 
 
 (use-package fzf
   :ensure t
-  :bind ("C-c o" . fzf))
+  :bind ("C-c o" . fzf)
+  :init
+  (setenv "FZF_DEFAULT_COMMAND" "fd -t f"))
 
 (use-package restclient
   :ensure t
@@ -442,9 +444,11 @@
 
 (use-package multiple-cursors
   :ensure t
-  :bind (("M-." . mc/mark-next-like-this)
-         ("M-," . mc/unmark-next-like-this)
-         ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+  :bind (("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/unmark-next-like-this)
+         ("C-c C->" . mc/mark-all-like-this)
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)
+         ("C-S-c C-S-c" . mc/edit-lines)))
 
 (use-package expand-region
   :ensure t
@@ -455,3 +459,15 @@
   :mode ("\\.lua\\'" . lua-mode)
   :config
   (setq lua-indent-level 2))
+
+(use-package ialign
+  :ensure t)
+
+(use-package vcl-mode
+  :ensure t
+  :config
+  (setq vcl-indent-level 2))
+
+
+(use-package slime
+  :ensure t)

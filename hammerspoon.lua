@@ -4,6 +4,13 @@ local cmds = {"shift", "cmd"}
 local ca = {"ctrl", "alt"}
 
 
+--- Alfred replacement
+-- hs.loadSpoon('Seal')
+-- spoon.Seal:loadPlugins({"apps", "calc"})
+-- spoon.Seal:bindHotkeys({show = {{"cmd"}, "space"}})
+-- spoon.Seal:start()
+
+
 --- Switch keyboard layout
 
 hs.hotkey.bind({}, "F16", function()
@@ -82,39 +89,47 @@ hs.hotkey.bind("alt", "`",
 
 --- App Switch
 
-hs.hotkey.bind(cmdc, "i",
-    function() hs.application.launchOrFocus("iTunes") end)
+saved = {win=nil}
 
-hs.hotkey.bind(cmdc, ";",
-    function() hs.application.launchOrFocus("Slack") end)
+function runOrHide(appName)
+  local app = hs.application.get(appName)
+  if not app then
+    saved.win = hs.window.focusedWindow()
+    hs.application.launchOrFocus(appName)
+    return
+  end
 
-hs.hotkey.bind(cmdc, "'",
-    function() hs.application.launchOrFocus("Telegram") end)
+  if app:isFrontmost() then
+    window = saved.win
+  else
+    saved.win = hs.window.focusedWindow()
+    window = app:mainWindow()
+  end
 
-
---- Terminal
-
-function TermHotkeyHandler()
-  local term = hs.application.get('Terminal')
-  if (term) then
-    local window = term:mainWindow()
-    if not window then
-      if term:selectMenuItem('New Window') then
-        window = term:mainWindow()
-      end
-      return
-    end
-    if term:isFrontmost() then
-      term:hide()
-    else
-      local s = hs.window.focusedWindow():screen()
-      window:moveToScreen(s, false, true)
-      window:focus()
-    end
+  if window then
+    window:focus()
   end
 end
-hs.hotkey.bind('ctrl', "`", TermHotkeyHandler)
 
+function runApp(appName)
+  hs.application.launchOrFocus(appName)
+end
+
+function bindApp(mod, key, app)
+  hs.hotkey.bind(mod, key, function() runApp(app) end)
+end
+
+bindApp(cmdc, ".", "Emacs")
+bindApp(cmdc, "i", "iTunes")
+bindApp(cmdc, ";", "Slack")
+bindApp(cmdc, "'", "Telegram")
+bindApp(cmdc, "q", "Quip")
+bindApp(cmdc, "/", "Bear")
+bindApp('ctrl', "`", 'Terminal')
+bindApp('ctrl', "'", 'Terminal')
+
+hs.hotkey.bind({}, "f12",
+    function() hs.execute("/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend") end)
 
 --- Various stuff
 

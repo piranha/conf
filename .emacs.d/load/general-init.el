@@ -1,5 +1,11 @@
 ;; general customizations
 
+;;   ;; never collect.
+;; (setq gc-cons-threshold 10000000000)
+;; (defun garbage-collect (&rest args)
+;;   (message "trying to garbage collect. probably you want to quit emacs."))
+;; (setq garbage-collection-messages t)
+
 ;; don't ask, just do it!
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)

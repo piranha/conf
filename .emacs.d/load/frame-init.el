@@ -29,3 +29,6 @@
 (when (eq window-system 'x)
   (set-frame-font "Monaco-12" nil t)
   (set-face-attribute 'default t :font "Monaco-12"))
+
+(when (eq window-system 'mac)
+  (setq ns-use-native-fullscreen nil))
