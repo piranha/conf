@@ -45,7 +45,8 @@
  kill-ring-max 2000                  ;; oh yes! long killring!
  default-input-method "russian-computer"
  w3m-use-cookies t
- ediff-window-setup-function 'ediff-setup-windows-plain)
+ ediff-window-setup-function 'ediff-setup-windows-plain
+ auto-window-vscroll nil)
 
 (setq-default
  major-mode 'text-mode          ;; default mode

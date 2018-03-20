@@ -347,10 +347,14 @@
   (setq clojure-thread-all-but-last t)
   (define-clojure-indent
     (= 0)
+    (+ 0)
+    (- 0)
+    (* 0)
     (->  0)
     (->> 0)
     (and 0)
-    (or  0)))
+    (or  0)
+    (recur 0)))
 
 
 (use-package cider

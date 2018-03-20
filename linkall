@@ -22,6 +22,7 @@ mapping=(
     net.solovyov.runonwifi.plist "Library/LaunchAgents/net.solovyov.runonwifi.plist"
     hammerspoon.lua .hammerspoon/init.lua
     karabiner.json .config/karabiner/karabiner.json
+    joker .joker
     )
 
 for src in ${(k)mapping}; do

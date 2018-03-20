@@ -120,13 +120,14 @@ function bindApp(mod, key, app)
 end
 
 bindApp(cmdc, ".", "Emacs")
+bindApp(cmdc, ",", "iTerm")
 bindApp(cmdc, "i", "iTunes")
 bindApp(cmdc, ";", "Slack")
 bindApp(cmdc, "'", "Telegram")
 bindApp(cmdc, "q", "Quip")
 bindApp(cmdc, "/", "Bear")
-bindApp('ctrl', "`", 'Terminal')
-bindApp('ctrl', "'", 'Terminal')
+bindApp('ctrl', "`", 'iTerm')
+bindApp('ctrl', "'", 'iTerm')
 
 hs.hotkey.bind({}, "f12",
     function() hs.execute("/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend") end)

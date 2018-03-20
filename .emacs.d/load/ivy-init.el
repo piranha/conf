@@ -1,7 +1,9 @@
 (use-package counsel
   :ensure t
   :bind (("C-." . ivy-switch-buffer)
-         ("C-c C-r" . ivy-resume)
+         ("C-c v" . ivy-push-view)
+         ("C-c V" . ivy-pop-view)
+         ("C-c r" . ivy-resume)
          ("M-x" . counsel-M-x)
          ("M-A" . counsel-imenu)
          ("C-x C-f" . counsel-find-file)
@@ -11,7 +13,7 @@
          ("C-c s" . counsel-rg)
          ("C-c C-y" . counsel-yank-pop)
          :map read-expression-map
-         ("C-r" . counsel-expression-history))
+         ("C-r" . counsel-minibuffer-history))
   :init
   (setq ivy-use-virtual-buffers t
         ivy-display-style 'fancy)

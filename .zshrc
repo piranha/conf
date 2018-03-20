@@ -35,9 +35,10 @@ export PS_FORMAT="user,group,pid,rss,sz,stime,time,cmd"
 export PIP_RESPECT_VIRTUALENV=true
 #export JAVA_TOOL_OPTIONS='-Djava.awt.headless=true'
 export BOOT_JVM_OPTIONS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Xmx2g'
-export FZF_DEFAULT_OPTS="--ansi --color light"
+export FZF_DEFAULT_OPTS="--ansi --color light --preview 'head -100 {}' --select-1"
 export FZF_DEFAULT_COMMAND="fd -t f"
-#export FZF_DEFAULT_COMMAND="ag -g ''"
+export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 # local settings can override some settings
@@ -303,7 +304,7 @@ function l() {
 # Other
 alias m="mutt"
 alias rm="rm -f"
-alias mc="mc -acx"
+#alias mc="mc -acx"
 #alias l=$PAGER
 alias g="egrep -i --color"
 alias h="head"
@@ -337,14 +338,14 @@ alias sk="sk --bind 'ctrl-k:kill-line'"
 
 function fe() {
     if [ -z "$1" ]; then
-        fd -t f | fzf --preview 'head -100 {}' --select-1 | xargs emacsclient --no-wait
+        fd -t f | fzf | xargs emacsclient --no-wait
     else
-        fd -t f "$1" | fzf --preview 'head -100 {}' --select-1 | xargs emacsclient --no-wait
+        fd -t f "$1" | fzf | xargs emacsclient --no-wait
     fi
 }
 
 function ge() {
-    rg -l "$1" 2>/dev/null | fzf --select-1 | xargs emacsclient --no-wait
+    rg -l "$1" 2>/dev/null | fzf | xargs emacsclient --no-wait
 }
 
 function gg() {
@@ -354,18 +355,19 @@ function gg() {
 function cfd() {
    local file
    local dir
-   file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
+   file=$(fzf -q "$1") && dir=$(dirname "$file") && cd "$dir"
 }
 
 # search for a git commit in git messages with fzf
 function gits() {
+  LESS="RQXi"
   local out sha q
   while out=$(
       git log --decorate=short --graph --oneline --color=always |
       fzf --ansi --multi --no-sort --reverse --query="$q" --print-query); do
     q=$(head -1 <<< "$out")
     while read sha; do
-      [ -n "$sha" ] && git show --color=always $sha | less -R
+      [ -n "$sha" ] && git show --color=always $sha | less
     done < <(sed '1d;s/^[^a-z0-9]*//;/^$/d' <<< "$out" | awk '{print $1}')
   done
 }
@@ -422,4 +424,7 @@ alias nowrap="tput rmam"
 alias wrap="tput smam"
 
 # for emacs' tramp
-[[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls || return 0
+[[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
