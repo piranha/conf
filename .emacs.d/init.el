@@ -17,8 +17,9 @@
 
 (eval-when-compile
   (require 'use-package))
-(require 'diminish)
-(require 'bind-key)
+
+(use-package bind-key
+  :ensure t)
 
 ;;; Ocaml forced me to play with paths
 

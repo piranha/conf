@@ -472,6 +472,14 @@
   :config
   (setq vcl-indent-level 2))
 
+(use-package minions
+  :ensure t
+  :config (minions-mode 1))
 
-(use-package slime
-  :ensure t)
+(use-package moody
+  :ensure t
+  :config
+  (setq x-underline-at-descent-line t)
+  (setq moody-mode-line-height 18)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
