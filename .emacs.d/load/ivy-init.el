@@ -1,6 +1,6 @@
 (use-package counsel
   :ensure t
-  :bind (("C-." . ivy-switch-buffer)
+  :bind (("C-." . counsel-ibuffer)
          ("C-c v" . ivy-push-view)
          ("C-c V" . ivy-pop-view)
          ("C-c r" . ivy-resume)
@@ -12,11 +12,14 @@
          ("C-c j" . counsel-git-grep)
          ("C-c s" . counsel-rg)
          ("C-c C-y" . counsel-yank-pop)
+         ;("C-c o" . counsel-fzf)
          :map read-expression-map
          ("C-r" . counsel-minibuffer-history))
   :init
   (setq ivy-use-virtual-buffers t
+        ivy-use-selectable-prompt t
         ivy-display-style 'fancy)
+  (setenv "FZF_DEFAULT_COMMAND" "fd -t f")
   (ivy-mode 1))
 
 (use-package swiper
@@ -27,3 +30,10 @@
   :ensure t
   :commands ivy-imenu-anywhere
   :bind ("C-c C-a" . ivy-imenu-anywhere))
+
+(use-package ivy-prescient
+  :ensure t
+  :init
+  (ivy-prescient-mode)
+  (prescient-persist-mode)
+  (setq ivy-initial-inputs-alist '()))

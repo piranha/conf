@@ -6,8 +6,9 @@
 
 (setq package-enable-at-startup nil)
 (package-initialize)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 
 ;;; Use-package
 
@@ -47,13 +48,6 @@
     (setenv "OCAML_TOPLEVEL_PATH" "/Users/piranha/.opam/system/lib/toplevel"))
   (setq exec-path better-path))
 
-
-;; initialize el-get
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get/")
-;; (unless (require 'el-get nil t)
-;;   (throw 'not-configured
-;;          "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
-;; (setq el-get-git-shallow-clone t)
 
 (setq custom-file "~/.emacs.d/load/custom-init.el")
 

@@ -157,16 +157,6 @@
 ;; Python
 ;;;;;;;;;
 
-;; (use-package django-mode
-;;   :ensure t
-;;   :mode ("\\.html\\'" . django-html-mode)
-;;   :bind (:map django-html-mode-map
-;;          ("C-c ]" . django-html-close-tag)
-;;          ("C-t" . "{%  %}\C-b\C-b\C-b")
-;;          ("M-t" . "{{  }}\C-b\C-b\C-b")
-;;          ("C-'" . "<%  %>\C-b\C-b\C-b")
-;;          ("M-'" . "<%=  %>\C-b\C-b\C-b")))
-
 (defvar python-mode-map)
 (add-hook 'python-mode-hook
           (lambda ()
@@ -303,7 +293,7 @@
           (kill-ring-save whole-line-or-region-kill-ring-save nil)
           (yank whole-line-or-region-yank nil)))
 
-  (whole-line-or-region-mode))
+  (whole-line-or-region-global-mode))
 
 
 ;; VC mode, do not ever annoy me with slow file loading time
@@ -359,6 +349,7 @@
 
 (use-package cider
   :ensure t
+  :pin melpa-stable
   :commands cider-mode
   :bind (:map cider-repl-mode-map
          ("C-c M-r" . cider-repl-previous-matching-input)
@@ -369,6 +360,9 @@
   (add-hook 'clojure-mode-hook 'cider-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode))
 
+(use-package clj-refactor
+  :ensure t
+  :pin melpa-stable)
 
 (use-package rainbow-delimiters
   :ensure t
@@ -415,8 +409,8 @@
 (use-package string-inflection
   :ensure t)
 
-(autoload 'piu "piu" "paste to paste.in.ua" t)
-(global-set-key (kbd "C-x p") 'piu)
+(use-package piu
+  :bind (("C-x p" . piu)))
 
 (use-package graphviz-dot-mode
   :ensure t)
@@ -434,7 +428,6 @@
   (add-to-list 'dumb-jump-find-rules
                '(:type "function" :language "clojure"
                        :regex "\\\(rum/defcs?\\s+JJJ\\j")))
-
 
 (use-package fzf
   :ensure t
@@ -483,3 +476,15 @@
   (setq moody-mode-line-height 18)
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
+
+;; (use-package av-psql
+;;   :init
+;;   (av-wireup-pg-stuff)
+;;   :bind
+;;   :map )
+
+
+(use-package hl-todo
+  :ensure t
+  :init
+  (global-hl-todo-mode))

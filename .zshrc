@@ -40,6 +40,7 @@ export FZF_DEFAULT_COMMAND="fd -t f"
 export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+export EXA_COLORS="*.md=black:Makefile=black"
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then
@@ -99,7 +100,7 @@ setopt notify # report the status of backgrounds jobs immediately
 setopt completeinword
 setopt hash_list_all
 setopt printexitvalue
-REPORTTIME=5
+REPORTTIME=10
 watch=(notme root)
 
 # Loading builtins
@@ -115,6 +116,7 @@ bindkey "[A" up-line-or-history
 bindkey "[B" down-line-or-history
 bindkey '^[[5D' emacs-backward-word
 bindkey '^[[5C' emacs-forward-word
+bindkey '\ew' kill-region
 # for rxvt
 bindkey "\e[8~" end-of-line
 bindkey "\e[7~" beginning-of-line
@@ -419,6 +421,10 @@ function mkcd() {
     fi
 }
 
+function Q() {
+    psql service=$1
+}
+
 alias dummy_email='python -m smtpd -n -c DebuggingServer localhost:1026'
 alias nowrap="tput rmam"
 alias wrap="tput smam"
@@ -427,4 +433,3 @@ alias wrap="tput smam"
 [[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
