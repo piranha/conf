@@ -41,6 +41,8 @@ export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 export EXA_COLORS="*.md=black:Makefile=black"
+export CDPATH=~/dev/work:~/dev/web:~/dev/misc
+export HOMEBREW_AUTO_UPDATE_SECS=2592000
 
 # local settings can override some settings
 if [ -f ~/.zshlocal ]; then
@@ -238,6 +240,8 @@ zstyle ':chpwd:*' recent-dirs-default yes
 #alias mv="nocorrect mv"
 #alias cp="nocorrect cp"
 alias mkdir="nocorrect mkdir"
+
+alias make="env -u CDPATH make"
 
 ## LFTP
 if [ -x "`whence -c lftp`" ]; then
