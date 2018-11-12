@@ -247,8 +247,9 @@
 
 (use-package projectile
   :ensure t
-  :bind (:map projectile-command-map
-              ("s s" . projectile-counsel-rg))
+  :bind (("C-c p" . projectile-command-map)
+         :map projectile-command-map
+         ("s s" . projectile-counsel-rg))
   :init
   (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t)
@@ -344,6 +345,8 @@
     (->> 0)
     (and 0)
     (or  0)
+    (and* 0)
+    (or* 0)
     (recur 0)))
 
 
@@ -375,10 +378,10 @@
 (use-package paredit
   :ensure t
   :bind (:map paredit-mode-map
-         ("C-<right>" . nil)
          ("C-<left>" . nil)
-         ("C-M-0" . paredit-forward-slurp-sexp)
-         ("C-M-9" . paredit-forward-barf-sexp))
+         ("C-<right>" . nil)
+         ("C-M-," . paredit-forward-barf-sexp)
+         ("C-M-." . paredit-forward-slurp-sexp))
   :init
   (add-hook 'clojure-mode-hook 'paredit-mode)
   (add-hook 'emacs-lisp-mode-hook 'paredit-mode))
@@ -400,7 +403,9 @@
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)
-         ("C-x M-g" . magit-dispatch-popup)))
+         ("C-x M-g" . magit-dispatch-popup))
+  :config
+  (setq magit-save-repository-buffers nil))
 
 (use-package git-timemachine
   :ensure t
@@ -471,9 +476,10 @@
 
 (use-package moody
   :ensure t
-  :config
+  :init
   (setq x-underline-at-descent-line t)
   (setq moody-mode-line-height 18)
+  :config
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
 
@@ -488,3 +494,20 @@
   :ensure t
   :init
   (global-hl-todo-mode))
+
+
+(use-package string-edit
+  :ensure t)
+
+
+(use-package deft
+  :ensure t
+  :bind ("C-c C-q" . deft)
+  :commands (deft)
+  :init
+  (setq deft-directory "~/Documents/kb"
+        deft-default-extension "md"
+        deft-use-filename-as-title t
+        deft-file-naming-rules '((noslash . "-")
+                                 (nospace . "-")
+                                 (case-fn . downcase))))

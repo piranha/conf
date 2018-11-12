@@ -50,7 +50,7 @@
     autosetupmerge = true
 [diff]
 	renames = true
-	external = ~/bin/git-external-patdiff.sh
+	#external = ~/bin/git-external-patdiff.sh
 [push]
 	default = current
 [pull]

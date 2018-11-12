@@ -1,3 +1,7 @@
+(defun counsel-ibuffer-kill-buffer (x)
+  (kill-buffer (cdr x))
+  (ivy-resume))
+
 (use-package counsel
   :ensure t
   :bind (("C-." . counsel-ibuffer)
@@ -20,6 +24,9 @@
         ivy-use-selectable-prompt t
         ivy-display-style 'fancy)
   (setenv "FZF_DEFAULT_COMMAND" "fd -t f")
+  ;; (ivy-add-actions
+  ;;  'counsel-ibuffer
+  ;;  '(("k" counsel-ibuffer-kill-buffer "kill buffer")))
   (ivy-mode 1))
 
 (use-package swiper

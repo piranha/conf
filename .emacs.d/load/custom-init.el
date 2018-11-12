@@ -16,7 +16,7 @@
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
  '(package-selected-packages
    (quote
-    (hl-todo clj-refactor clj-refactor-mode cider projectile ivy-prescient fzf ivy-posframe moody minions vcl-mode ialign org-bullets flycheck-joker git-timemachine lua-mode expand-region rainbow-delimiters circe bbdb counsel iedit imenu-anywhere swiper restclient graphviz-dot-mode string-inflection sql-indent whole-line-or-region ag highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck po-mode less-css-mode sass-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package utop toml-mode let-alist inflections)))
+    (deft string-edit hl-todo clj-refactor clj-refactor-mode cider projectile ivy-prescient fzf ivy-posframe moody minions vcl-mode ialign org-bullets flycheck-joker git-timemachine lua-mode expand-region rainbow-delimiters circe bbdb counsel iedit imenu-anywhere swiper restclient graphviz-dot-mode string-inflection sql-indent whole-line-or-region ag highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck po-mode less-css-mode sass-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package utop toml-mode let-alist inflections)))
  '(safe-local-variable-values
    (quote
     ((whitespace-style face tabs trailing lines-tail)

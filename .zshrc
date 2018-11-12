@@ -316,6 +316,7 @@ alias g="egrep -i --color"
 alias h="head"
 alias t="tail -f"
 alias p="ping"
+alias pp="prettyping --nolegend"
 alias df="df -h"
 alias myapg="apg -a 1 -n 8 -x 9 -M NCL -E l1iI0Oo"
 alias rezsh="source ~/.zshrc"
@@ -396,8 +397,8 @@ function rtun() {
         echo "Setup tunnel from remote host to local; show off local work"
     else
         DPORT=${2:-$1}
-        echo "maia.solovyov.net:$DPORT"
-        ssh -N -R "*:${DPORT}:localhost:${1}" maia.solovyov.net
+        echo "sirius.solovyov.net:$DPORT"
+        ssh -N -R "*:${DPORT}:localhost:${1}" sirius.solovyov.net
     fi
 }
 
@@ -426,14 +427,17 @@ function mkcd() {
 }
 
 function Q() {
-    psql service=$1
+    psql service="$1" "${@:2}"
 }
+
+umedit() { [ -z "$1" ] && exit 1; mkdir -p ~/Documents/kb; vim ~/Documents/kb/"$1.md" }
+um() { pandoc -s -t man ~/Documents/kb/"$1.md" | tbl | groff -Wall -mtty-char -man -Tascii -c | less -R }
 
 alias dummy_email='python -m smtpd -n -c DebuggingServer localhost:1026'
 alias nowrap="tput rmam"
 alias wrap="tput smam"
 
+alias magit="emacsclient -n -e '(progn (magit-status) (delete-other-windows))'"
+
 # for emacs' tramp
 [[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

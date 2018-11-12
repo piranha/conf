@@ -24,8 +24,8 @@
 (global-set-key (kbd "C-M-z") (lambda (&optional arg char)
                                 (interactive "p\ncZap backward to char: ")
                                 (zap-to-char (- arg) char)))
-(global-set-key (kbd "M-<up>") 'prh:move-line-up)
-(global-set-key (kbd "M-<down>") 'prh:move-line-down)
+(global-set-key (kbd "C-M-<up>") 'prh:move-line-up)
+(global-set-key (kbd "C-M-<down>") 'prh:move-line-down)
 (global-set-key (kbd "C-a") 'beginning-of-line-dwim)
 (global-set-key (kbd "<home>") 'beginning-of-line-dwim)
 
