@@ -343,6 +343,7 @@ alias master="git checkout master"
 alias gf="gr -f"
 alias sk="sk --bind 'ctrl-k:kill-line'"
 
+# find file by name and open it in emacs
 function fe() {
     if [ -z "$1" ]; then
         fd -t f | fzf | xargs emacsclient --no-wait
@@ -351,14 +352,17 @@ function fe() {
     fi
 }
 
+# find file by content, then filter it by name and open it in emacs
 function ge() {
     rg -l "$1" 2>/dev/null | fzf | xargs emacsclient --no-wait
 }
 
+# find file by content (and refine by content) and open in emacs
 function gg() {
     sk --ansi -i -c 'rg --color=always -l "{}"' -q "$1 " | xargs emacsclient --no-wait
 }
 
+# find file by name and switch to directory containing that file
 function cfd() {
    local file
    local dir
