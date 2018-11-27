@@ -8,4 +8,4 @@
 /.emacs.d/projectile*
 /.emacs.d/cider*
 /.emacs.d/recentf
-
+/.emacs.d/var
