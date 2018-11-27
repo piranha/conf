@@ -131,7 +131,7 @@
 (use-package go-mode
   :ensure t
   :mode ("\\.go\\'" . go-mode)
-  :init
+  :config
   (add-hook 'go-mode-hook
             (lambda ()
               (set (make-local-variable 'whitespace-style)
@@ -247,7 +247,8 @@
 
 (use-package projectile
   :ensure t
-  :bind (("C-c p" . projectile-command-map)
+  :bind (("M-t" . projectile-find-file)
+         ("C-c p" . projectile-command-map)
          :map projectile-command-map
          ("s s" . projectile-counsel-rg))
   :init
@@ -332,10 +333,11 @@
   :ensure t
   :mode ("\\.boot\\'" . clojure-mode)
         ("\\.edn\\'" . clojure-mode)
-  :config
+  :init
   (add-hook 'clojure-mode-hook 'clj-refactor-mode)
   (setq clojure-indent-style :always-indent)
   (setq clojure-thread-all-but-last t)
+  :config
   (define-clojure-indent
     (= 0)
     (+ 0)

@@ -60,13 +60,6 @@
   (define-key sgml-mode-map (kbd "C-c C-<left>") 'sgml-skip-tag-backward)
   (define-key sgml-mode-map (kbd "C-c C-<right>") 'sgml-skip-tag-forward))
 
-(global-set-key (kbd "M-t")
-                (lambda ()
-                  (interactive)
-                  (start-process
-                   "switch-to-chrome" nil
-                   "osascript" "-e" "tell application \"Google Chrome\" to activate")))
-
 (global-set-key (kbd "M-A") 'imenu)
 
  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
@@ -76,3 +69,6 @@
 (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
 
 (define-key comint-mode-map (kbd "C-M-l") nil)
+
+(global-set-key (kbd "C-M-[") 'backward-paragraph)
+(global-set-key (kbd "C-M-]") 'forward-paragraph)
