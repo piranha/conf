@@ -11,12 +11,12 @@
     ("0261c7e47f570afd984db039e083ec0f89eb4194" default)))
  '(js2-basic-offset 4)
  '(js2-mode-indent-ignore-first-tab t)
- '(mac-option-modifier (quote (:ordinary meta :function meta :mouse alt)))
  '(magit-diff-arguments (quote ("--ignore-space-change" "--no-ext-diff" "--stat")))
+ '(ns-alternate-modifier (quote (:ordinary meta :function meta :mouse alt)))
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
  '(package-selected-packages
    (quote
-    (deft string-edit hl-todo clj-refactor clj-refactor-mode cider projectile ivy-prescient fzf ivy-posframe moody minions vcl-mode ialign org-bullets flycheck-joker git-timemachine lua-mode expand-region rainbow-delimiters circe bbdb counsel iedit imenu-anywhere swiper restclient graphviz-dot-mode string-inflection sql-indent whole-line-or-region ag highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck po-mode less-css-mode sass-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package utop toml-mode let-alist inflections)))
+    (writeroom-mode elvish-mode iflipb counsel-projectile ivy-projectile ranger anzu dimmer forge yasnippet-snippets rust-mode deft string-edit hl-todo clj-refactor clj-refactor-mode cider projectile ivy-prescient fzf ivy-posframe moody minions vcl-mode ialign org-bullets flycheck-joker git-timemachine lua-mode expand-region rainbow-delimiters circe bbdb counsel iedit imenu-anywhere swiper restclient graphviz-dot-mode string-inflection sql-indent whole-line-or-region ag highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck po-mode less-css-mode sass-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package utop toml-mode let-alist inflections)))
  '(safe-local-variable-values
    (quote
     ((whitespace-style face tabs trailing lines-tail)

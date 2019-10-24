@@ -1,12 +1,13 @@
 [user]
-    email = alexander@solovyov.net
-    name = Alexander Solovyov
+	email = alexander@solovyov.net
+	name = Alexander Solovyov
 [alias]
     co = checkout
     st = status -sb
     ci = commit -a
     cm = commit -a -m
     com = commit -m
+    amend = commit -a --amend --no-edit
     df = diff
     dfc = diff --cached
     dfa = diff HEAD
@@ -40,6 +41,7 @@
 	please = push --force-with-lease
     hard = reset --hard HEAD
     uncommit = reset --soft HEAD^
+    resetremote = !git reset --hard $(git rev-parse --abbrev-ref --symbolic-full-name @{u})
 
 [color]
     ui = auto
@@ -60,4 +62,11 @@
 [filter "media"]
 	clean = git media clean %f
 	smudge = git media smudge %f
+	required = true
+[gitlab "git.modnakasta.ua/api/v4"]
+	user = asolovyov
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
 	required = true

@@ -1,5 +1,5 @@
-(global-unset-key "\C-x\C-c") ;; too easy to hit accidentally
-(global-set-key "\C-x\C-c\C-v" 'save-buffers-kill-terminal)
+(global-unset-key (kbd "C-x C-c")) ;; too easy to hit accidentally
+(global-set-key (kbd "C-x C-c C-v") 'save-buffers-kill-terminal)
 
 (global-set-key (kbd "M-'") 'mode-line-other-buffer)
 (global-set-key (kbd "C-x C-b") 'bs-show)
@@ -15,7 +15,7 @@
 (global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
 (global-set-key (kbd "C-S-k") (lambda () (interactive) (kill-line 0)))
 
-(global-set-key (kbd "C-x C-d") 'dired-jump)
+;(global-set-key (kbd "C-x C-d") 'dired-jump)
 
 (global-set-key (kbd "C-c k") (lambda () (interactive)
                                 (kill-buffer nil)))

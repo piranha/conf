@@ -66,7 +66,7 @@
 ;; I like having unix lineendings even on windows
 (prefer-coding-system 'utf-8-unix)
 
-(setq ring-bell-function (lambda () ())) ;; I hate beeps
+(setq ring-bell-function 'ignore) ;; I hate beeps
 
 ;; this should help with console when ^H behaves like backspace
 (when (eq window-system 'nil)

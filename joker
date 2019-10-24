@@ -12,4 +12,11 @@
 
   mount.core/defstate
 
-  hub.db/with-tx]}
+  hub.db/with-tx
+
+  qlkit-renderer.core/defcomponent
+  qlkit-renderer.core/defcomponent*
+
+  com.rpl.specter/declarepath]
+
+ :known-tags [t]}

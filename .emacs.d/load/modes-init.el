@@ -1,5 +1,7 @@
 ;;; modes.el -- various modes configuration
 
+(require 'warnings)
+
 ;; usual major modes
 (add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
 
@@ -11,7 +13,8 @@
 ;; dired
 (setq
  dired-bind-jump nil
- dired-omit-extensions '(".pyc" ".elc"))
+ dired-omit-extensions '(".pyc" ".elc")
+ dired-omit-files "^\\.?#\\|^\\.")
 (autoload 'dired-jump "dired-x" "Jump to dir of current file" t)
 (autoload 'dired-omit-mode "dired-x" "Omit unnecessary files in dired view" t)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
@@ -31,17 +34,12 @@
 (column-number-mode 1)
 (show-paren-mode 1)
 (global-subword-mode 1)
+(global-visual-line-mode 1)
 
 ;; store recent files list
 (recentf-mode 1)
 (setq recentf-max-menu-items 200
       recentf-max-saved-items 200)
-(global-set-key (kbd "C-c C-f")
-                '(lambda ()
-                   (interactive)
-                   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-                       (message "Opening file...")
-                     (message "Aborting"))))
 
 ;; I hate blinking
 (if (fboundp 'blink-cursor-mode)
@@ -100,13 +98,6 @@
                     :foreground 'unspecified
                     :background "yellow")
 (add-hook 'prog-mode-hook 'whitespace-mode)
-
-(setq hooks-want-short-lines
-      '(markdown-mode-hook
-        wikipedia-mode-hook
-        rst-mode-hook))
-(dolist (hook hooks-want-short-lines)
-  (add-hook hook 'auto-fill-mode))
 
 ;; org mode
 
@@ -208,6 +199,7 @@
 
 (use-package yasnippet
   :ensure t
+  :commands yas-global-mode
   :bind (:map yas-minor-mode-map
          ("C-/" . yas-expand)
          ("TAB" . nil))
@@ -218,6 +210,10 @@
   (yas-global-mode 1)
   :config
   (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/"))
+
+
+(use-package yasnippet-snippets
+  :ensure t)
 
 
 ;; highlight parentheses
@@ -247,6 +243,7 @@
 
 (use-package projectile
   :ensure t
+  :commands projectile-mode
   :bind (("M-t" . projectile-find-file)
          ("C-c p" . projectile-command-map)
          :map projectile-command-map
@@ -280,6 +277,9 @@
 ;; whole-line-or-region
 (use-package whole-line-or-region
   :ensure t
+  :commands
+  whole-line-or-region-global-mode
+  whole-line-or-region-call-with-region
   :init
   (defun whole-line-kill-region-or-word-backward (prefix)
     "Kill (cut) region or just a single word backward"
@@ -289,14 +289,12 @@
       (whole-line-or-region-call-with-region 'kill-region prefix t)))
 
   (setq whole-line-or-region-extensions-alist
-        '((comment-dwim whole-line-or-region-comment-dwim)
-          (copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
+        '((copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
           (kill-region whole-line-kill-region-or-word-backward nil)
           (kill-ring-save whole-line-or-region-kill-ring-save nil)
           (yank whole-line-or-region-yank nil)))
 
   (whole-line-or-region-global-mode))
-
 
 ;; VC mode, do not ever annoy me with slow file loading time
 (remove-hook 'find-file-hook 'vc-find-file-hook)
@@ -331,6 +329,7 @@
 
 (use-package clojure-mode
   :ensure t
+  :commands put-clojure-indent
   :mode ("\\.boot\\'" . clojure-mode)
         ("\\.edn\\'" . clojure-mode)
   :init
@@ -340,9 +339,11 @@
   :config
   (define-clojure-indent
     (= 0)
+    (not= 0)
     (+ 0)
     (- 0)
     (* 0)
+    (/ 0)
     (->  0)
     (->> 0)
     (and 0)
@@ -354,16 +355,22 @@
 
 (use-package cider
   :ensure t
+  :no-require t
   :pin melpa-stable
   :commands cider-mode
-  :bind (:map cider-repl-mode-map
-         ("C-c M-r" . cider-repl-previous-matching-input)
-         ("C-c M-s" . cider-repl-next-matching-input))
+  :bind (:map cider-mode-map
+              ("C-c C-f" . nil)
+         :map cider-repl-mode-map
+              ("C-c M-r" . cider-repl-previous-matching-input)
+              ("C-c M-s" . cider-repl-next-matching-input))
   :init
-  (setq cider-repl-history-file "~/.emacs.d/cider-history")
-  (setq cider-cljs-repl "(do (require '[figwheel-sidecar.repl-api :as ra]) (ra/cljs-repl))")
   (add-hook 'clojure-mode-hook 'cider-mode)
-  (add-hook 'cider-repl-mode-hook 'paredit-mode))
+  (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  :config
+  (setq cider-repl-history-file "~/.emacs.d/cider-history"
+        cider-cljs-repl "(do (require '[figwheel-sidecar.repl-api :as ra]) (ra/cljs-repl))"
+        cider-repl-display-help-banner nil)
+  (add-to-list 'warning-suppress-types '(undo discard-info)))
 
 (use-package clj-refactor
   :ensure t
@@ -379,6 +386,8 @@
 
 (use-package paredit
   :ensure t
+  :no-require t
+  :commands paredit-mode
   :bind (:map paredit-mode-map
          ("C-<left>" . nil)
          ("C-<right>" . nil)
@@ -400,14 +409,31 @@
 
 (use-package dockerfile-mode
   :ensure t
+  :no-require t
+  :commands dockerfile-mode
   :init (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
 
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status)
-         ("C-x M-g" . magit-dispatch-popup))
+         ("C-x M-g" . magit-dispatch))
   :config
-  (setq magit-save-repository-buffers nil))
+  (setq magit-save-repository-buffers nil)
+  (defun magit-rebase-origin-master (args)
+    (interactive (list (magit-rebase-arguments)))
+    (message "Rebasing...")
+    (magit-git-rebase "origin/master" args)
+    (message "Rebasing...done"))
+  (transient-append-suffix 'magit-rebase "e" '("o" "origin/master" magit-rebase-origin-master)))
+
+(use-package forge
+  :ensure t
+  :config
+  (add-to-list 'forge-alist
+               '("git.modnakasta.ua"
+                 "git.modnakasta.ua/api/v4"
+                 "git.modnakasta.ua"
+                 forge-gitlab-repository)))
 
 (use-package git-timemachine
   :ensure t
@@ -418,6 +444,9 @@
 
 (use-package piu
   :bind (("C-x p" . piu)))
+
+(use-package scratch
+  :bind (("C-x S" . scratch)))
 
 (use-package graphviz-dot-mode
   :ensure t)
@@ -474,10 +503,14 @@
 
 (use-package minions
   :ensure t
-  :config (minions-mode 1))
+  :commands minions-mode
+  :init (minions-mode 1))
 
 (use-package moody
   :ensure t
+  :commands
+  moody-replace-mode-line-buffer-identification
+  moody-replace-vc-mode
   :init
   (setq x-underline-at-descent-line t)
   (setq moody-mode-line-height 18)
@@ -494,6 +527,8 @@
 
 (use-package hl-todo
   :ensure t
+  :commands
+  global-hl-todo-mode
   :init
   (global-hl-todo-mode))
 
@@ -504,7 +539,7 @@
 
 (use-package deft
   :ensure t
-  :bind ("C-c C-q" . deft)
+  :bind ("C-c ]" . deft)
   :commands (deft)
   :init
   (setq deft-directory "~/Documents/kb"
@@ -512,4 +547,57 @@
         deft-use-filename-as-title t
         deft-file-naming-rules '((noslash . "-")
                                  (nospace . "-")
-                                 (case-fn . downcase))))
+                                 (case-fn . downcase)))
+  :config
+  (defun deft-current-window-width ()
+    (let ((window (get-buffer-window deft-buffer)))
+      (when window
+        (- (window-text-width window) 1)))))
+
+
+(use-package anzu
+  :ensure t
+  :commands
+  global-anzu-mode
+  anzu-query-replace
+  anzu-query-replace-at-cursor
+  anzu-isearch-query-replace
+  anzu-isearch-query-replace-regexp
+  :bind (([remap query-replace] . #'anzu-query-replace)
+         ("C-:" . #'anzu-query-replace-at-cursor)
+         :map isearch-mode-map
+         ([remap isearch-query-replace] . #'anzu-isearch-query-replace)
+         ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
+  :init (global-anzu-mode 1))
+
+
+(use-package ranger
+  :ensure t
+  :commands ranger-override-dired-mode
+  :bind ("C-x C-d" . deer)
+  :init
+  (ranger-override-dired-mode 1))
+
+
+(use-package iflipb
+  :ensure t
+  :bind (("M-]" . iflipb-next-buffer)
+         ("M-[" . iflipb-previous-buffer)))
+
+
+(use-package elvish-mode
+  :ensure t)
+
+(use-package writeroom-mode
+  :ensure t
+  :bind (:map writeroom-mode-map
+              ("C-M-<" . writeroom-decrease-width)
+              ("C-M->" . writeroom-increase-width)
+              ("C-M-=" . writeroom-adjust-width))
+  :init
+  (setq writeroom-width 60)
+  (add-hook 'writeroom-mode-hook
+            '(lambda ()
+               (set-face-attribute 'markdown-pre-face (selected-frame) :family "Monaco" :height 140)
+               (face-remap-add-relative 'default '(:family "Inter" :height 120))
+               (face-remap-add-relative 'cursor '(:background 'red)))))

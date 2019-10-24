@@ -41,7 +41,7 @@ export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 export EXA_COLORS="*.md=black:Makefile=black"
-export CDPATH=~/dev/work:~/dev/web:~/dev/misc
+export CDPATH=~/dev/work:~/dev/web:~/dev/misc:~/dev
 export HOMEBREW_AUTO_UPDATE_SECS=2592000
 
 # local settings can override some settings
@@ -107,6 +107,7 @@ watch=(notme root)
 
 # Loading builtins
 autoload -U zmv
+zmodload -i zsh/deltochar
 
 # ZLE
 bindkey -e
@@ -119,6 +120,7 @@ bindkey "[B" down-line-or-history
 bindkey '^[[5D' emacs-backward-word
 bindkey '^[[5C' emacs-forward-word
 bindkey '\ew' kill-region
+bindkey '\ez' delete-to-char
 # for rxvt
 bindkey "\e[8~" end-of-line
 bindkey "\e[7~" beginning-of-line
@@ -346,20 +348,15 @@ alias sk="sk --bind 'ctrl-k:kill-line'"
 # find file by name and open it in emacs
 function fe() {
     if [ -z "$1" ]; then
-        fd -t f | fzf | xargs emacsclient --no-wait
+        fd -t f | fzf --print0 | xargs -0 emacsclient --no-wait
     else
-        fd -t f "$1" | fzf | xargs emacsclient --no-wait
+        fd -t f "$1" | fzf --print0 | xargs -0 emacsclient --no-wait
     fi
 }
 
 # find file by content, then filter it by name and open it in emacs
 function ge() {
-    rg -l "$1" 2>/dev/null | fzf | xargs emacsclient --no-wait
-}
-
-# find file by content (and refine by content) and open in emacs
-function gg() {
-    sk --ansi -i -c 'rg --color=always -l "{}"' -q "$1 " | xargs emacsclient --no-wait
+    rg -l "$1" 2>/dev/null | fzf --print0 | xargs -0 emacsclient --no-wait
 }
 
 # find file by name and switch to directory containing that file
@@ -382,6 +379,24 @@ function gits() {
     done < <(sed '1d;s/^[^a-z0-9]*//;/^$/d' <<< "$out" | awk '{print $1}')
   done
 }
+
+
+### repo dir jumper
+
+function gro() {
+    cd $(git rev-parse --show-toplevel)
+}
+
+function gd() {
+    cd $(fd --type f --hidden --follow --exclude .git |
+             fzf --preview "ls -Ap {}" --print0 |
+             xargs -0 dirname)
+}
+
+alias gg="gro && gd"
+
+### /repo dir jumper
+
 
 function makegif() {
     convert -delay 1x25 *.png -ordered-dither o8x8,9 -coalesce -layers OptimizeTransparency +map -crop 480x270+0+45 +repage animation.gif
@@ -445,3 +460,12 @@ alias magit="emacsclient -n -e '(progn (magit-status) (delete-other-windows))'"
 
 # for emacs' tramp
 [[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls
+
+function _POST { curl -n -H 'Content-Type: application/json' -XPOST "$@" }
+alias POST='noglob _POST'
+function _PUT { curl -n -H 'Content-Type: application/json' -XPUT "$@" }
+alias PUT='noglob _PUT'
+function _GET { curl -n -H 'Content-Type: application/json' -XGET "$@" }
+alias GET='noglob _GET'
+function _DELETE { curl -n -H 'Content-Type: application/json' -XDELETE "$@" }
+alias DELETE='noglob _DELETE'

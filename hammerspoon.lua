@@ -122,19 +122,17 @@ end
 bindApp(cmdc, "i", "iTunes")
 bindApp(cmdc, ";", "Slack")
 bindApp(cmdc, "'", "Telegram")
---bindApp(cmdc, "q", "Quip")
-bindApp(cmdc, "/", "Bear")
+bindApp('ctrl', "\\", "Quip")
+bindApp(cmdc, "/", "Notes")
 bindApp('ctrl', "`", 'Terminal')
 bindApp('ctrl', "'", 'Terminal')
+bindApp('ctrl', "[", 'Firefox')
+bindApp('ctrl', "]", 'Google Chrome')
 
-hs.hotkey.bind({}, "f12",
-    function() hs.execute("/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend") end)
-
-hs.hotkey.bind(cmds, "c",
-               function() hs.execute("~/bin/copy-last-output") end)
 
 --- Various stuff
 
+-- show song name and copy it to clipboard
 hs.hotkey.bind(mash, "i", function()
     local artist = hs.itunes.getCurrentArtist()
     local track = hs.itunes.getCurrentTrack()
@@ -184,5 +182,6 @@ function reloadConfig(files)
     end
 end
 
-local configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+local configPath = (os.getenv("HOME") .. "/.hammerspoon/init.lua")
+local configWatcher = hs.pathwatcher.new(configPath, reloadConfig):start()
 hs.alert.show("Hammerspoon config loaded", 1)

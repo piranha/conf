@@ -20,7 +20,9 @@
     (set-face-attribute 'mode-line-inactive nil :underline  line)
     (set-face-attribute 'mode-line          nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#dfdfdf")))
+    (set-face-attribute 'mode-line-inactive nil :background "#dfdfdf")
+    (set-face-attribute 'font-lock-string-face nil :foreground "#3b6ea5")
+    (set-face-attribute 'font-lock-comment-face nil :foreground "#a40000")))
 
 ;; switch emacs lang by windows' system key (capslock in my case)
 (when (eq system-type 'windows-nt)
@@ -37,5 +39,9 @@
   (set-frame-font "Monaco-12" nil t)
   (set-face-attribute 'default t :font "Monaco-12"))
 
-(when (eq window-system 'mac)
-  (setq ns-use-native-fullscreen nil))
+(when (or (eq window-system 'ns)
+          (eq window-system 'mac))
+  (setq ns-use-native-fullscreen nil)
+  (setq ns-use-fullscreen-animation nil)
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'meta))
