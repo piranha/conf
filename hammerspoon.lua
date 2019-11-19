@@ -30,62 +30,62 @@ end)
 hs.window.animationDuration = 0
 
 local resize = function(sizechange)
-    return function()
-        local win = hs.window.focusedWindow()
-        local f = win:frame()
-        local screen = win:screen()
-        local max = screen:frame()
+  return function()
+    local win = hs.window.focusedWindow()
+    local f = win:frame()
+    local screen = win:screen()
+    local max = screen:frame()
 
-        sizechange(f, max)
-        win:setFrame(f)
-    end
+    sizechange(f, max)
+    win:setFrame(f)
+  end
 end
 
 hs.hotkey.bind(cmds, "m", resize(function(f, max)
-        f.x = max.x
-        f.y = max.y
-        f.w = max.w
-        f.h = max.h
+                   f.x = max.x
+                   f.y = max.y
+                   f.w = max.w
+                   f.h = max.h
 end))
 
 hs.hotkey.bind(mash, "left", resize(function(f, max)
-        f.x = max.x
-        f.y = max.y
-        f.w = max.w / 2
-        f.h = max.h
+                   f.x = max.x
+                   f.y = max.y
+                   f.w = max.w / 2
+                   f.h = max.h
 end))
 
 hs.hotkey.bind(mash, "right", resize(function(f, max)
-        f.x = max.x + (max.w / 2)
-        f.y = max.y
-        f.w = max.w / 2
-        f.h = max.h
+                   f.x = max.x + (max.w / 2)
+                   f.y = max.y
+                   f.w = max.w / 2
+                   f.h = max.h
 end))
 
 hs.hotkey.bind(mash, "up", resize(function(f, max)
-        f.x = max.x
-        f.y = max.y
-        f.w = max.w
-        f.h = max.h / 2
+                   f.x = max.x
+                   f.y = max.y
+                   f.w = max.w
+                   f.h = max.h / 2
 end))
 
 hs.hotkey.bind(mash, "down", resize(function(f, max)
-        f.x = max.x
-        f.y = max.y + (max.h / 2)
-        f.w = max.w
-        f.h = max.h / 2
+                   f.x = max.x
+                   f.y = max.y + (max.h / 2)
+                   f.w = max.w
+                   f.h = max.h / 2
 end))
 
 --- Window movement
 
 hs.hotkey.bind(cmdc, "down",
-    function() hs.window.focusedWindow():moveOneScreenSouth() end)
+               function() hs.window.focusedWindow():moveOneScreenSouth() end)
 
 hs.hotkey.bind(cmdc, "up",
-    function() hs.window.focusedWindow():moveOneScreenNorth() end)
+               function() hs.window.focusedWindow():moveOneScreenNorth() end)
 
 hs.hotkey.bind("alt", "`",
-    function() focusScreen(hs.window.focusedWindow():screen():next()) end)
+               function() focusScreen(hs.window.focusedWindow():screen():next()) end)
 
 --- App Switch
 
@@ -122,27 +122,28 @@ end
 bindApp(cmdc, "i", "iTunes")
 bindApp(cmdc, ";", "Slack")
 bindApp(cmdc, "'", "Telegram")
-bindApp('ctrl', "\\", "Quip")
+bindApp(cmdc, "\\", "Quip")
 bindApp(cmdc, "/", "Notes")
 bindApp('ctrl', "`", 'Terminal')
 bindApp('ctrl', "'", 'Terminal')
 bindApp('ctrl', "[", 'Firefox')
 bindApp('ctrl', "]", 'Google Chrome')
+bindApp('ctrl', "\\", 'Emacs')
 
 
 --- Various stuff
 
 -- show song name and copy it to clipboard
 hs.hotkey.bind(mash, "i", function()
-    local artist = hs.itunes.getCurrentArtist()
-    local track = hs.itunes.getCurrentTrack()
-    if artist then
-      local song = artist .. " - " .. track
-      hs.pasteboard.writeObjects(song)
-      hs.alert.show(song .. " copied", 1)
-    else
-      hs.alert.show("Nothing is playing", 1)
-    end
+                 local artist = hs.itunes.getCurrentArtist()
+                 local track = hs.itunes.getCurrentTrack()
+                 if artist then
+                   local song = artist .. " - " .. track
+                   hs.pasteboard.writeObjects(song)
+                   hs.alert.show(song .. " copied", 1)
+                 else
+                   hs.alert.show("Nothing is playing", 1)
+                 end
 end)
 
 
@@ -157,8 +158,8 @@ function focusScreen(screen)
   -- If no windows exist, bring focus to desktop. Otherwise, set focus on
   -- front-most application window.
   local windows = hs.fnutils.filter(
-      hs.window.orderedWindows(),
-      hs.fnutils.partial(isInScreen, screen))
+    hs.window.orderedWindows(),
+    hs.fnutils.partial(isInScreen, screen))
   local windowToFocus = #windows > 0 and windows[1] or hs.window.desktop()
   windowToFocus:focus()
 
@@ -171,15 +172,15 @@ end
 --- Config reload
 
 function reloadConfig(files)
-    doReload = false
-    for _, file in pairs(files) do
-        if file:sub(-4) == ".lua" then
-            doReload = true
-        end
+  doReload = false
+  for _, file in pairs(files) do
+    if file:sub(-4) == ".lua" then
+      doReload = true
     end
-    if doReload then
-        hs.reload()
-    end
+  end
+  if doReload then
+    hs.reload()
+  end
 end
 
 local configPath = (os.getenv("HOME") .. "/.hammerspoon/init.lua")

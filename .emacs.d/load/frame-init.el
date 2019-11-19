@@ -21,19 +21,8 @@
     (set-face-attribute 'mode-line          nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :background "#dfdfdf")
-    (set-face-attribute 'font-lock-string-face nil :foreground "#3b6ea5")
+    (set-face-attribute 'font-lock-string-face nil :foreground "#3a7821")
     (set-face-attribute 'font-lock-comment-face nil :foreground "#a40000")))
-
-;; switch emacs lang by windows' system key (capslock in my case)
-(when (eq system-type 'windows-nt)
-  (defvar safe-language-change-flag nil)
-  (defun safe-language-change ()
-    (interactive)
-    (setq safe-language-change-flag (not safe-language-change-flag))
-    (when safe-language-change-flag
-      (toggle-input-method)
-      (w32-toggle-lock-key 'capslock)))
-  (global-set-key (kbd "<language-change>") 'safe-language-change))
 
 (when (eq window-system 'x)
   (set-frame-font "Monaco-12" nil t)

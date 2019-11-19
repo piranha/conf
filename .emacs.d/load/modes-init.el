@@ -333,7 +333,6 @@
   :mode ("\\.boot\\'" . clojure-mode)
         ("\\.edn\\'" . clojure-mode)
   :init
-  (add-hook 'clojure-mode-hook 'clj-refactor-mode)
   (setq clojure-indent-style :always-indent)
   (setq clojure-thread-all-but-last t)
   :config
@@ -374,7 +373,12 @@
 
 (use-package clj-refactor
   :ensure t
-  :pin melpa-stable)
+  :pin melpa-stable
+  :init
+  (add-hook 'clojure-mode-hook
+            '(lambda ()
+               (clj-refactor-mode 1)
+               (cljr-add-keybindings-with-prefix "C-c C-m"))))
 
 (use-package rainbow-delimiters
   :ensure t
@@ -400,9 +404,9 @@
 
 (use-package sql-indent
   :ensure t
+  :commands sqlind-minor-mode
   :init
-  (with-eval-after-load 'sql
-    (require 'sql-indent)))
+  (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 
 
 ;; Various

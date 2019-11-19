@@ -17,6 +17,8 @@
   qlkit-renderer.core/defcomponent
   qlkit-renderer.core/defcomponent*
 
-  com.rpl.specter/declarepath]
+  com.rpl.specter/declarepath
+
+  skyscraper/defprocessor]
 
  :known-tags [t]}

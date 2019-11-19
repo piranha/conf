@@ -25,6 +25,15 @@ use github.com/zzamboni/elvish-completions/git
 use github.com/zzamboni/elvish-completions/ssh
 
 
+### Title
+
+use github.com/zzamboni/elvish-modules/terminal-title
+
+title-during-prompt = {
+  put (tilde-abbr $pwd)
+}
+
+
 ### Apps config
 
 E:PAGER = less
@@ -76,4 +85,29 @@ fn fe [@args]{
   }
 }
 
+
+fn Q [dbname @a]{
+  psql service=$dbname $@a
+}
+
+
+### ES
+
+fn POST   [@a]{ curl -n -H 'Content-Type: application/json' -XPOST   "$@" }
+fn PUT    [@a]{ curl -n -H 'Content-Type: application/json' -XPUT    "$@" }
+fn GET    [@a]{ curl -n -H 'Content-Type: application/json' -XGET    "$@" }
+fn DELETE [@a]{ curl -n -H 'Content-Type: application/json' -XDELETE "$@" }
+
+
 # cdpath not working: https://github.com/elves/elvish/issues/341
+
+cdpaths = [~/dev/work ~/dev/web]
+fn j [dir]{
+  for p $cdpaths {
+    if ?(test -d $p/$dir) {
+      cd $p/$dir
+      return
+    }
+  }
+  cd $dir
+}
