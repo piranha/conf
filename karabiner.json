@@ -12,6 +12,27 @@
                 },
                 "rules": [
                     {
+                        "description": "Fn -> Esc if pressed alone",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "fn"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "fn"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "esc"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "Left Command -> F16 if pressed alone",
                         "manipulators": [
                             {
