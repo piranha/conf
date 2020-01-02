@@ -34,7 +34,6 @@
 (column-number-mode 1)
 (show-paren-mode 1)
 (global-subword-mode 1)
-(global-visual-line-mode 1)
 
 ;; store recent files list
 (recentf-mode 1)
@@ -126,7 +125,11 @@
   (add-hook 'go-mode-hook
             (lambda ()
               (set (make-local-variable 'whitespace-style)
-                   '(face trailing lines-tail)))))
+                   '(face trailing lines-tail))
+              (whitespace-mode -1)
+              (whitespace-mode 1)))
+  :custom
+  (godoc-at-point-function #'godoc-gogetdoc))
 
 (use-package yaml-mode
   :ensure t
@@ -599,9 +602,12 @@
               ("C-M->" . writeroom-increase-width)
               ("C-M-=" . writeroom-adjust-width))
   :init
-  (setq writeroom-width 60)
+  (setq writeroom-width 80)
   (add-hook 'writeroom-mode-hook
             '(lambda ()
                (set-face-attribute 'markdown-pre-face (selected-frame) :family "Monaco" :height 140)
                (face-remap-add-relative 'default '(:family "Inter" :height 120))
                (face-remap-add-relative 'cursor '(:background 'red)))))
+
+(use-package terraform-mode
+  :ensure t)

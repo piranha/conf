@@ -22,13 +22,6 @@
 (use-package bind-key
   :ensure t)
 
-;;; Ocaml forced me to play with paths
-
-(setq opam
-  (if (file-executable-p "/usr/local/bin/opam")
-      (substring (shell-command-to-string "/usr/local/bin/opam config var prefix 2> /dev/null") 0 -1)
-    ""))
-
 (let ((better-path `("~/bin"
                      "/usr/local/go/bin"
                      "/usr/local/sbin"
@@ -39,13 +32,10 @@
                      "/bin"
                      "~/dev/go/bin"
                      "~/dev/go/ext/bin"
-                     "/usr/local/share/npm/bin"
-                     ,(concat opam "/bin"))))
+                     "/usr/local/share/npm/bin")))
   (when (string-equal "darwin" (symbol-name system-type))
     (setenv "PATH" (mapconcat 'identity better-path ":"))
-    (setenv "LANG" "en_US.UTF-8")
-    (setenv "CAML_LD_LIBRARY_PATH" "/Users/piranha/.opam/system/lib/stublibs:/usr/local/lib/ocaml/stublibs")
-    (setenv "OCAML_TOPLEVEL_PATH" "/Users/piranha/.opam/system/lib/toplevel"))
+    (setenv "LANG" "en_US.UTF-8"))
   (setq exec-path better-path))
 
 
@@ -53,8 +43,6 @@
 
 (add-to-list 'load-path "~/.emacs.d/load/")
 (add-to-list 'load-path "~/.emacs.d/packages/")
-(when (not (string= opam ""))
-  (add-to-list 'load-path (concat opam "/share/emacs/site-lisp")))
 
 (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
   (normal-top-level-add-subdirs-to-load-path))

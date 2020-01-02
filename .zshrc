@@ -270,6 +270,7 @@ if [ -x "`whence -c emacsclient`" ]; then
     }
     alias ec="emacsclient -t"
     export ALTERNATE_EDITOR="vim"
+    export EDITOR=emacsclient
 else
     alias e=$EDITOR
 fi

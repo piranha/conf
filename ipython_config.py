@@ -11,7 +11,6 @@ c = get_config()
 
 
 c.TerminalInteractiveShell.prompts_class = ClassicPrompts
-c.TerminalInteractiveShell.deep_reload = True
 c.TerminalInteractiveShell.autocall = 1
 c.TerminalInteractiveShell.confirm_exit = False
 c.TerminalInteractiveShell.automagic = False

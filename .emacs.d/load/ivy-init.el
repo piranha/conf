@@ -12,7 +12,7 @@
          ("M-x" . counsel-M-x)
          ("M-A" . counsel-imenu)
          ("C-x C-f" . counsel-find-file)
-         ("C-c C-f" . counsel-recentf)
+         ("C-c C-x C-f" . counsel-recentf)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
          ("C-c j" . counsel-git-grep)
