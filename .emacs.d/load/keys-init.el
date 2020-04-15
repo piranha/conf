@@ -4,7 +4,8 @@
 (global-set-key (kbd "M-'") 'mode-line-other-buffer)
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-,") 'bs-show)
-(define-key global-map (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-.") 'switch-to-buffer)
+;(define-key global-map (kbd "RET") 'newline-and-indent)
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-g") 'goto-line)

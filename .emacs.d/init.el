@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNU Emacs configuration
-;; (c) Alexander Solovyov 2004-2019
+;; (c) Alexander Solovyov 2004-2020
 ;; alexander AT solovyov.net
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -10,17 +10,29 @@
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 ;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 
-;;; Use-package
+;;; Package management setup
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(let ((dir (expand-file-name "git/git-package" user-emacs-directory)))
+  (unless (file-exists-p dir)
+    (make-directory dir t)
+    (shell-command
+     (format "git clone https://github.com/mnewt/git-package '%s'" dir)))
+  (add-to-list 'load-path dir)
+  (require 'git-package-use-package
+           (expand-file-name "git-package-use-package.el" dir))
+  (git-package-setup-use-package))
 
 (eval-when-compile
+  (unless (fboundp 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
   (require 'use-package))
 
 (use-package bind-key
   :ensure t)
+
+;;; End of package management setup
+
 
 (let ((better-path `("~/bin"
                      "/usr/local/go/bin"
@@ -41,14 +53,14 @@
 
 (setq custom-file "~/.emacs.d/load/custom-init.el")
 
-(add-to-list 'load-path "~/.emacs.d/load/")
-(add-to-list 'load-path "~/.emacs.d/packages/")
+(add-to-list 'load-path "~/.emacs.d/load/") ;; configuration
+(add-to-list 'load-path "~/.emacs.d/packages/") ;; custom packages
 
 (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
   (normal-top-level-add-subdirs-to-load-path))
 
 (defun autocompile ()
-  "Compile itself if this is config file"
+  "Compile itself if this is config file."
   (interactive)
   (if (or
        (string-match ".emacs.d/load/[a-z]+-init.el$" (buffer-file-name))
@@ -58,12 +70,23 @@
 (add-hook 'after-save-hook 'autocompile)
 
 (defun load-init (modules)
-  "Load initialization files"
+  "Load initialization files.
+
+  MODULES - configuration packages to load"
   (mapc (lambda (name)
           (load (format "%s-init" name)))
         modules))
 
 (load-init
- '(general frame funs modes ivy keys bs notmuch circe custom))
+ '(general
+   frame
+   funs
+   modes
+   select
+   keys
+   bs
+   ;;notmuch
+   ;;circe
+   custom))
 
 ;;; init.el ends here

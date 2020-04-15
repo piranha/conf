@@ -1,19 +1,4 @@
 {:user {:plugins [[lein-ancient "0.6.15"]
-                  [com.jakemccrary/lein-test-refresh "0.24.1"]]}
- :user1 {:dependencies [[criterium "0.4.3"]
-                       [vvvvalvalval/scope-capture "0.3.1"]
-                       [pjstadig/humane-test-output "0.8.3"]]
-        :injections [(require 'sc.api)
-                     (require 'pjstadig.humane-test-output)
-                     (pjstadig.humane-test-output/activate!)
-
-                     (defmacro dbg [x]
-                       `(let [x# ~x]
-                          (printf "dbg %s:%s> %s is %s\n"
-                                  ~*ns*
-                                  ~(:line (meta &form))
-                                  ~(pr-str x)
-                                  (with-out-str
-                                    (clojure.pprint/pprint x#)))
-                          (flush)
-                          x#))]}}
+                  [com.jakemccrary/lein-test-refresh "0.24.1"]]
+        :dependencies [[hashp "0.1.1"]]
+        :injections [(require 'hashp.core)]}}

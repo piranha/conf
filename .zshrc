@@ -470,3 +470,5 @@ function _GET { curl -n -H 'Content-Type: application/json' -XGET "$@" }
 alias GET='noglob _GET'
 function _DELETE { curl -n -H 'Content-Type: application/json' -XDELETE "$@" }
 alias DELETE='noglob _DELETE'
+
+alias -g UA="-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0'"

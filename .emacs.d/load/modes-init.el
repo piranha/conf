@@ -5,8 +5,12 @@
 ;; usual major modes
 (add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
 
-(require 'imenu) ;; NOTE: check out flimenu
+(require 'imenu)
 (setq imenu-auto-rescan t)
+(use-package flimenu
+  :ensure t
+  :config
+  (flimenu-global-mode))
 
 (setq tags-file-name (expand-file-name "~/TAGS"))
 
@@ -35,10 +39,6 @@
 (show-paren-mode 1)
 (global-subword-mode 1)
 
-;; store recent files list
-(recentf-mode 1)
-(setq recentf-max-menu-items 200
-      recentf-max-saved-items 200)
 
 ;; I hate blinking
 (if (fboundp 'blink-cursor-mode)
@@ -52,17 +52,6 @@
 (transient-mark-mode 1)
 ;; but work even without it
 (setq mark-even-if-inactive t)
-
-;; hello IDO, you are very nice
-(ido-mode nil)
-(setq
- ido-enable-flex-matching t
- ido-show-dot-for-dired t
- ido-auto-merge-work-directories-length -1 ; disable auto-merging
- ido-confirm-unique-completion t
- ido-ignore-files '("\\`CVS/" "\\`#" "\\`.#" "\\`\\.\\./" "\\`\\./"
-                    "\\.pyc$" "\\.6$" "\\.o$" "__pycache__/$"))
-(defalias 'list-buffers 'ido-switch-buffer)
 
 (winner-mode 1) ;; window configuration undo/redo
 (windmove-default-keybindings)
@@ -100,12 +89,14 @@
 
 ;; org mode
 
-(add-hook 'org-mode-hook
-          (lambda ()
-            (setq org-hide-leading-stars t)
-            (define-key org-mode-map (kbd "C-,") nil)
-            (define-key org-mode-map (kbd "C-S-<up>") 'org-timestamp-up)
-            (define-key org-mode-map (kbd "C-S-<down>") 'org-timestamp-down)))
+(use-package org
+  :bind (:map org-mode-map
+              ("C-," . nil)
+              ("C-S-<up>" . org-timestamp-up)
+              ("C-S-<down>" . org-timestamp-down))
+  :config
+  (setq org-hide-leading-stars t))
+
 
 ;; major modes
 
@@ -163,10 +154,12 @@
   :init
   (add-hook 'after-init-hook 'global-flycheck-mode)
   :config
-  (delete 'python-flake8 flycheck-checkers)
-  (delete 'python-pylint flycheck-checkers)
-  (delete 'emacs-lisp flycheck-checkers)
-  (delete 'emacs-lisp-checkdoc flycheck-checkers))
+  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+  (add-to-list 'flycheck-disabled-checkers 'emacs-lisp)
+  (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)
+  (add-to-list 'flycheck-disabled-checkers 'scss-lint)
+  (add-to-list 'flycheck-disabled-checkers 'sass/scss-sass-list))
 
 
 (use-package flycheck-pos-tip
@@ -195,6 +188,7 @@
 
 (defvar js-mode-map)
 (with-eval-after-load 'js
+  (setq js-indent-level 2)
   (define-key js-mode-map (kbd "RET") 'newline-maybe-indent))
 
 
@@ -227,35 +221,6 @@
                   emacs-lisp-mode-hook
                   clojure-mode-hook))
     (add-hook hook 'highlight-parentheses-mode)))
-
-;; version control/projects
-
-(use-package ag
-  :ensure t)
-
-(defun projectile-selection-at-point ()
-  (when (use-region-p)
-    (buffer-substring-no-properties (region-beginning) (region-end))))
-
-(defun projectile-counsel-rg ()
-  (interactive)
-  (let ((dir (projectile-project-root)))
-    (if dir
-        (counsel-rg (projectile-selection-at-point) dir)
-      (message "error: Not in a project"))))
-
-(use-package projectile
-  :ensure t
-  :commands projectile-mode
-  :bind (("M-t" . projectile-find-file)
-         ("C-c p" . projectile-command-map)
-         :map projectile-command-map
-         ("s s" . projectile-counsel-rg))
-  :init
-  (setq projectile-completion-system 'ivy)
-  (setq projectile-enable-caching t)
-  (projectile-mode 1))
-
 
 ;; elisp
 (defun lambda-elisp-mode-hook ()
@@ -314,22 +279,6 @@
 (setq smerge-command-prefix (kbd "C-c ]"))
 
 
-;; (el-get-bundle! multi-mode
-;;   :type http
-;;   :url "http://www.gerd-neugebauer.de/software/emacs/multi-mode/multi-mode.el")
-;; (with-eval-after-load 'multi-mode
-;;   (defun better-django-html-mode () (interactive)
-;;          (multi-mode 1
-;;                      'django-html-mode
-;;                      '("<script type=\"text/javascript\">" js-mode)
-;;                      '("</script>" django-html-mode)
-;;                      '("<style type=\"text/css\">" css-mode)
-;;                      '("</style>" django-html-mode)))
-
-;;   (delete '("\\.html\\'" . django-html-mode) auto-mode-alist)
-;;   (add-to-list 'auto-mode-alist '("\\.html\\'" . better-django-html-mode)))
-
-
 (use-package clojure-mode
   :ensure t
   :commands put-clojure-indent
@@ -338,6 +287,8 @@
   :init
   (setq clojure-indent-style :always-indent)
   (setq clojure-thread-all-but-last t)
+  (setq clojure-align-forms-automatically t)
+  (setq clojure-toplevel-inside-comment-form t)
   :config
   (define-clojure-indent
     (= 0)
@@ -352,7 +303,9 @@
     (or  0)
     (and* 0)
     (or* 0)
-    (recur 0)))
+    (recur 0))
+  (add-to-list 'clojure-align-cond-forms "better-cond.core/when-let")
+  (add-to-list 'clojure-align-cond-forms "better-cond.core/if-let"))
 
 
 (use-package cider
@@ -452,9 +405,6 @@
 (use-package piu
   :bind (("C-x p" . piu)))
 
-(use-package scratch
-  :bind (("C-x S" . scratch)))
-
 (use-package graphviz-dot-mode
   :ensure t)
 
@@ -552,30 +502,39 @@
   (setq deft-directory "~/Documents/kb"
         deft-default-extension "md"
         deft-use-filename-as-title t
+        deft-recursive t
         deft-file-naming-rules '((noslash . "-")
                                  (nospace . "-")
                                  (case-fn . downcase)))
+  (defconst blog-buffer "*Blog*" "Blog buffer name.")
   :config
   (defun deft-current-window-width ()
     (let ((window (get-buffer-window deft-buffer)))
       (when window
-        (- (window-text-width window) 1)))))
+        (- (window-text-width window) 1))))
+  ;;; (defun new-post ())
+  (defun blog ()
+    (interactive)
+    (let ((deft-directory (expand-file-name "~/dev/web/solovyov.net/src/blog")))
+      (if (get-buffer deft-buffer)
+          (and (switch-to-buffer deft-buffer) (deft-refresh))
+        (deft)))))
 
 
-(use-package anzu
-  :ensure t
-  :commands
-  global-anzu-mode
-  anzu-query-replace
-  anzu-query-replace-at-cursor
-  anzu-isearch-query-replace
-  anzu-isearch-query-replace-regexp
-  :bind (([remap query-replace] . #'anzu-query-replace)
-         ("C-:" . #'anzu-query-replace-at-cursor)
-         :map isearch-mode-map
-         ([remap isearch-query-replace] . #'anzu-isearch-query-replace)
-         ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
-  :init (global-anzu-mode 1))
+;; (use-package anzu
+;;   :ensure t
+;;   :commands
+;;   global-anzu-mode
+;;   anzu-query-replace
+;;   anzu-query-replace-at-cursor
+;;   anzu-isearch-query-replace
+;;   anzu-isearch-query-replace-regexp
+;;   :bind (([remap query-replace] . #'anzu-query-replace)
+;;          ("C-:" . #'anzu-query-replace-at-cursor)
+;;          :map isearch-mode-map
+;;          ([remap isearch-query-replace] . #'anzu-isearch-query-replace)
+;;          ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
+;;   :init (global-anzu-mode 1))
 
 
 (use-package ranger
@@ -591,9 +550,6 @@
   :bind (("M-]" . iflipb-next-buffer)
          ("M-[" . iflipb-previous-buffer)))
 
-
-(use-package elvish-mode
-  :ensure t)
 
 (use-package writeroom-mode
   :ensure t
@@ -611,3 +567,15 @@
 
 (use-package terraform-mode
   :ensure t)
+
+(use-package web-mode
+  :ensure t
+  :mode "\\.html\\'"
+  :bind (:map web-mode-map
+              ("C-c /" . web-mode-element-close))
+  :init
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-style-padding 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-script-padding 2))

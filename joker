@@ -1,5 +1,6 @@
 {:known-macros
  [clojure.java.jdbc/with-db-transaction
+  next.jdbc/with-transaction
 
   better-cond.core/cond
   better-cond.core/if-let
