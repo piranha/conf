@@ -1,5 +1,5 @@
 (use-package ctrlf
-  :git "https://github.com/raxod502/ctrlf"
+  :ensure t
   :bind (:map ctrlf--keymap
          ([remap isearch-forward ] . ctrlf-forward-fuzzy)
          ([remap isearch-backward] . ctrlf-backward-fuzzy))
@@ -7,13 +7,12 @@
   (ctrlf-mode 1))
 
 (use-package selectrum
-  :git "https://github.com/raxod502/selectrum"
+  :ensure t
   :config
   (selectrum-mode 1))
 
 (use-package selectrum-prescient
-  :git (prescient :url "https://github.com/raxod502/prescient.el"
-                  :files ("selectrum-prescient.el"))
+  :ensure t
   :config
   (selectrum-prescient-mode)
   (prescient-persist-mode))
@@ -47,44 +46,6 @@
   (projectile-mode 1))
 
 
-;;; selection-at-point
-
-(defun citre-completion-in-region (start end collection &optional predicate)
-  "A function that replace default `completion-in-region-function'.
-This completes the text between START and END using COLLECTION.
-PREDICATE says when to exit.
-
-When there are multiple candidates, this uses standard
-`completing-read' interface, while the default one in Emacs pops
-a *Completions* buffer to show them.  When combined with some
-minibuffer completion framework, it's more user-friendly then the
-default one.
-
-Notice when `completing-read-function' is
-`completing-read-default' (i.e., not enhanced by a minibuffer
-completion framework), this falls back to
-`completion--in-region'."
-  (if (eq completing-read-function #'completing-read-default)
-      (completion--in-region start end collection predicate)
-    (let* ((str (buffer-substring-no-properties start end))
-           (completion-ignore-case (string= str (downcase str)))
-           (candidates
-            (nconc
-             (completion-all-completions str collection predicate (- end start))
-             nil))
-           (completion nil))
-      (pcase (length candidates)
-        (0 (message "No completions"))
-        (1 (setq completion (car candidates)))
-        (_ (setq completion (completing-read (format "(%s): " str)
-                                             candidates predicate t))))
-      (when completion
-        (delete-region start end)
-        (insert (substring-no-properties completion))))))
-
-(setq completion-in-region-function #'citre-completion-in-region)
-
-
 ;;; recentf
 
 (defun as/recentf-open-files ()
@@ -98,6 +59,22 @@ completion framework), this falls back to
         recentf-max-saved-items 200)
   :init
   (recentf-mode 1))
+
+
+;;; kill ring
+
+(defun konix/kill-ring-insert ()
+  (interactive)
+  (let* ((selectrum-should-sort-p nil)
+         ;;(selectrum-refine-candidates-function #'selectrum-default-candidate-refine-function)
+         (toinsert (completing-read "Yank : "
+                                    (delete-dups kill-ring))))
+    (when (and toinsert (region-active-p))
+      ;; the currently highlighted section is to be replaced by the yank
+      (delete-region (region-beginning) (region-end)))
+    (insert toinsert)))
+
+(global-set-key (kbd "C-c C-y") #'konix/kill-ring-insert)
 
 
 ;; (use-package counsel

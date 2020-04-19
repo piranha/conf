@@ -12,16 +12,6 @@
 
 ;;; Package management setup
 
-(let ((dir (expand-file-name "git/git-package" user-emacs-directory)))
-  (unless (file-exists-p dir)
-    (make-directory dir t)
-    (shell-command
-     (format "git clone https://github.com/mnewt/git-package '%s'" dir)))
-  (add-to-list 'load-path dir)
-  (require 'git-package-use-package
-           (expand-file-name "git-package-use-package.el" dir))
-  (git-package-setup-use-package))
-
 (eval-when-compile
   (unless (fboundp 'use-package)
     (package-refresh-contents)

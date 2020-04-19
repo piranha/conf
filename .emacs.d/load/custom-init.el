@@ -16,7 +16,7 @@
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
  '(package-selected-packages
    (quote
-    (web-mode ivy-prescient counsel clj-refactor cider deadgrep vuiet lastfm flimenu terraform-mode zen-mode lsp-ui lsp-mode gnu-elpa-keyring-update writeroom-mode iflipb ranger forge yasnippet-snippets deft string-edit hl-todo clj-refactor-mode projectile fzf moody minions ialign org-bullets flycheck-joker git-timemachine lua-mode expand-region rainbow-delimiters circe iedit imenu-anywhere swiper restclient graphviz-dot-mode string-inflection sql-indent whole-line-or-region highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck po-mode less-css-mode sass-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package utop toml-mode let-alist inflections)))
+    (selectrum-prescient selectrum ctrlf web-mode ivy-prescient counsel clj-refactor cider deadgrep vuiet lastfm flimenu terraform-mode zen-mode lsp-ui lsp-mode gnu-elpa-keyring-update writeroom-mode iflipb ranger forge yasnippet-snippets deft string-edit hl-todo clj-refactor-mode projectile fzf moody minions ialign org-bullets flycheck-joker git-timemachine lua-mode expand-region rainbow-delimiters circe iedit imenu-anywhere swiper restclient graphviz-dot-mode string-inflection sql-indent whole-line-or-region highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck po-mode less-css-mode sass-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package utop toml-mode let-alist inflections)))
  '(safe-local-variable-values
    (quote
     ((whitespace-style face tabs trailing lines-tail)
