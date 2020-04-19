@@ -191,6 +191,15 @@
   (setq js-indent-level 2)
   (define-key js-mode-map (kbd "RET") 'newline-maybe-indent))
 
+(defun imenu-dumb-js-make-index ()
+  (save-excursion
+    (imenu--generic-function '((nil "function\\s-+\\([^ ]+\\)(" 1)
+                               (nil "\\.\\([^\\. ]+\\)\\s-*=\\s-*function\\s-*(" 1)))))
+
+(add-hook 'js-mode-hook
+          '(lambda ()
+             (setq imenu-create-index-function 'imenu-dumb-js-make-index)))
+
 
 ;; Snippets
 
