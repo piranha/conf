@@ -208,7 +208,7 @@
   :commands yas-global-mode
   :bind (:map yas-minor-mode-map
          ("C-/" . yas-expand)
-         ("TAB" . nil))
+         ("<tab>" . nil))
   :init
   (add-hook 'snippet-mode-hook
             '(lambda ()
@@ -345,14 +345,6 @@
                (clj-refactor-mode 1)
                (cljr-add-keybindings-with-prefix "C-c C-m"))))
 
-(use-package rainbow-delimiters
-  :ensure t
-  :commands rainbow-delimiters-mode
-  :init
-  (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))
-
-
 (use-package paredit
   :ensure t
   :no-require t
@@ -403,10 +395,6 @@
                  "git.modnakasta.ua/api/v4"
                  "git.modnakasta.ua"
                  forge-gitlab-repository)))
-
-(use-package git-timemachine
-  :ensure t
-  :bind (("C-x G" . git-timemachine)))
 
 (use-package string-inflection
   :ensure t)
@@ -507,6 +495,7 @@
   :ensure t
   :bind ("C-c ]" . deft)
   :commands (deft)
+  :functions (deft-refresh)
   :init
   (setq deft-directory "~/Documents/kb"
         deft-default-extension "md"
@@ -588,3 +577,28 @@
   (setq web-mode-style-padding 2)
   (setq web-mode-code-indent-offset 2)
   (setq web-mode-script-padding 2))
+
+
+(use-package mini-frame
+  :ensure t
+  :config
+  (setq mini-frame-show-parameters
+        '((left . 0.5)
+          (top . 0.3)
+          (width . 0.7)
+          (height . 10)))
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-literal)
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-fuzzy)
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-regexp)
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-fuzzy-regexp)
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-literal)
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-fuzzy)
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-regexp)
+  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-fuzzy-regexp)
+  (mini-frame-mode 1))
+
+
+(use-package sane-term
+  :ensure t
+  :bind (("C-x t" . sane-term)
+         ("C-x T" . sane-term-create)))

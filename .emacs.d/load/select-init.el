@@ -1,9 +1,8 @@
 (use-package ctrlf
   :ensure t
-  :bind (:map ctrlf--keymap
-         ([remap isearch-forward ] . ctrlf-forward-fuzzy)
-         ([remap isearch-backward] . ctrlf-backward-fuzzy))
   :config
+  (setcdr (assoc [remap isearch-forward ] ctrlf-mode-bindings) 'ctrlf-forward-fuzzy)
+  (setcdr (assoc [remap isearch-backward] ctrlf-mode-bindings) 'ctrlf-backward-fuzzy)
   (ctrlf-mode 1))
 
 (use-package selectrum
@@ -58,6 +57,7 @@
   (setq recentf-max-menu-items 200
         recentf-max-saved-items 200)
   :init
+  (run-at-time "5 min" 300 'recentf-save-list)
   (recentf-mode 1))
 
 

@@ -38,7 +38,7 @@
       (find-file desired-file))))
 
 (defun toggle-buffer (buffer-name)
-  "Toggle display of desired buffer"
+  "Toggle display of desired buffer."
   (if (string= (buffer-name) buffer-name)
       (bury-buffer)
     (switch-to-buffer buffer-name t)))
@@ -58,7 +58,9 @@ Otherwise return value."
 This takes a numeric prefix argument; when not 1, it behaves exactly like
 \(move-beginning-of-line arg) instead."
   (interactive "p")
-  (if (and (looking-at "^") (= arg 1)) (skip-chars-forward " \t") (move-beginning-of-line arg)))
+  (if (and (looking-at "^") (= arg 1))
+      (skip-chars-forward " \t")
+    (move-beginning-of-line arg)))
 
 (defun toggle-current-window-dedication ()
   (interactive)
@@ -76,16 +78,6 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
       (newline)
     (newline-and-indent)))
 
-(defun djcb-snip (b e summ)
-  "remove selected lines, and replace it with [snip:summary (n lines)]"
-  (interactive "r\nsSummary:")
-  (let ((n (count-lines b e)))
-    (delete-region b e)
-    (insert (format "[snip%s (%d line%s)]"
-                    (if (= 0 (length summ)) "" (concat ": " summ))
-                    n
-                    (if (= 1 n) "" "s")))))
-
 (defun time-to-number (time)
   "Convert time from format 9:30 to number"
   (let ((time (if (string-match ":" time)
@@ -100,30 +92,6 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
   (let ((path (file-truename (or (buffer-file-name) default-directory))))
     (kill-new path)
     (message "%s" path)))
-
-(defun prh:isearch-word-at-point ()
-  (interactive)
-  (call-interactively 'isearch-forward-regexp))
-
-(defun prh:isearch-yank-word-hook ()
-  (when (equal this-command 'prh:isearch-word-at-point)
-    (let ((string (concat "\\_<"
-                          (buffer-substring-no-properties
-                           (progn (skip-syntax-backward "w_") (point))
-                           (progn (skip-syntax-forward "w_") (point)))
-                          "\\_>")))
-      (if (and isearch-case-fold-search
-               (eq 'not-yanks search-upper-case))
-          (setq string (downcase string)))
-      (setq isearch-string string
-            isearch-message
-            (concat isearch-message
-                    (mapconcat 'isearch-text-char-description
-                               string ""))
-            isearch-yank-flag t)
-      (isearch-search-and-update))))
-
-(add-hook 'isearch-mode-hook 'prh:isearch-yank-word-hook)
 
 (defun reverse-input-method (input-method)
   "Build the reverse mapping of single letters from INPUT-METHOD."
@@ -176,8 +144,33 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (end-of-line)))
 
 (defun align-repeat (start end regexp)
-    "Repeat alignment with respect to
-     the given regular expression."
-    (interactive "r\nsAlign regexp: ")
-    (align-regexp start end
-        (concat "\\(\\s-*\\)" regexp) 1 1 t))
+  "Repeat alignment with respect to the given regular expression."
+  (interactive "r\nsAlign regexp: ")
+  (align-regexp start end
+                (concat "\\(\\s-*\\)" regexp) 1 1 t))
+
+
+;;; timing
+
+(defvar time-each-command-start nil)
+
+(defun time-each-command-pre ()
+  (setq time-each-command-start (current-time)))
+
+(defun time-each-command-post ()
+  (message
+   "Time to run %S was %sms"
+   this-command
+   (* 1000 (float-time (time-subtract
+                        (current-time)
+                        time-each-command-start)))))
+
+(define-minor-mode time-each-command-mode
+  "Print in minibuffer how long each command takes to execute."
+  :global t
+  (if time-each-command-mode
+      (progn
+        (add-hook 'pre-command-hook #'time-each-command-pre)
+        (add-hook 'post-command-hook #'time-each-command-post))
+    (remove-hook 'pre-command-hook #'time-each-command-pre)
+    (remove-hook 'post-command-hook #'time-each-command-post)))
