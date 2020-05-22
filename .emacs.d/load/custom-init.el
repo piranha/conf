@@ -12,11 +12,17 @@
  '(js2-basic-offset 2)
  '(js2-mode-indent-ignore-first-tab t)
  '(magit-diff-arguments (quote ("--ignore-space-change" "--no-ext-diff" "--stat")))
+ '(mini-frame-show-parameters
+   (quote
+    ((top . 20)
+     (width . 0.7)
+     (left . 0.4)
+     (height . 10))))
  '(ns-alternate-modifier (quote (:ordinary meta :function meta :mouse alt)))
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
  '(package-selected-packages
    (quote
-    (sane-term sass-mode deft ialign po-mode restclient vcl-mode mini-frame selectrum-prescient selectrum ctrlf web-mode clj-refactor cider deadgrep lastfm flimenu terraform-mode zen-mode lsp-ui lsp-mode gnu-elpa-keyring-update writeroom-mode iflipb ranger forge yasnippet-snippets string-edit hl-todo clj-refactor-mode projectile fzf moody minions org-bullets flycheck-joker lua-mode expand-region circe iedit graphviz-dot-mode string-inflection sql-indent whole-line-or-region highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck less-css-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package toml-mode inflections)))
+    (imenu-anywhere clj-refactor cider multiple-cursors paredit sane-term sass-mode deft ialign po-mode restclient vcl-mode mini-frame selectrum-prescient selectrum ctrlf web-mode deadgrep lastfm flimenu terraform-mode zen-mode gnu-elpa-keyring-update writeroom-mode iflipb ranger yasnippet-snippets string-edit hl-todo clj-refactor-mode projectile fzf moody minions org-bullets flycheck-joker lua-mode expand-region circe iedit graphviz-dot-mode string-inflection sql-indent whole-line-or-region highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck less-css-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package toml-mode inflections)))
  '(safe-local-variable-values
    (quote
     ((whitespace-style face tabs trailing lines-tail)

@@ -101,7 +101,7 @@ unsetopt extended_glob # it's quite annoying
 setopt notify # report the status of backgrounds jobs immediately
 setopt completeinword
 setopt hash_list_all
-setopt printexitvalue
+#setopt printexitvalue
 REPORTTIME=10
 watch=(notme root)
 

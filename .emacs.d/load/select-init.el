@@ -54,10 +54,10 @@
 (use-package recentf-mode
   :bind ("C-c C-x C-f" . as/recentf-open-files)
   :config
-  (setq recentf-max-menu-items 200
-        recentf-max-saved-items 200)
+  (setq recentf-max-menu-items 500
+        recentf-max-saved-items 500)
   :init
-  (run-at-time "5 min" 300 'recentf-save-list)
+  (setq as/recentf-timer (run-at-time "5 min" (* 5 60) 'recentf-save-list))
   (recentf-mode 1))
 
 

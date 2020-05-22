@@ -112,6 +112,7 @@
 (use-package go-mode
   :ensure t
   :mode ("\\.go\\'" . go-mode)
+  :commands godoc-gogetdoc
   :config
   (add-hook 'go-mode-hook
             (lambda ()
@@ -318,9 +319,9 @@
 
 
 (use-package cider
+  :pin melpa-stable
   :ensure t
   :no-require t
-  :pin melpa-stable
   :commands cider-mode
   :bind (:map cider-mode-map
               ("C-c C-f" . nil)
@@ -337,8 +338,8 @@
   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
 (use-package clj-refactor
-  :ensure t
   :pin melpa-stable
+  :ensure t
   :init
   (add-hook 'clojure-mode-hook
             '(lambda ()
@@ -386,15 +387,6 @@
     (magit-git-rebase "origin/master" args)
     (message "Rebasing...done"))
   (transient-append-suffix 'magit-rebase "e" '("o" "origin/master" magit-rebase-origin-master)))
-
-(use-package forge
-  :ensure t
-  :config
-  (add-to-list 'forge-alist
-               '("git.modnakasta.ua"
-                 "git.modnakasta.ua/api/v4"
-                 "git.modnakasta.ua"
-                 forge-gitlab-repository)))
 
 (use-package string-inflection
   :ensure t)
