@@ -245,12 +245,6 @@ alias mkdir="nocorrect mkdir"
 
 alias make="env -u CDPATH make"
 
-## LFTP
-if [ -x "`whence -c lftp`" ]; then
-    alias ftp="lftp"
-    function sftp() { lftp sftp://`whoami`@$1 }
-fi
-
 ## GNU Find
 if [ `uname` != "Linux" -a -x "`whence -c gfind`" ]; then
     alias find="noglob gfind"

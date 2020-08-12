@@ -56,8 +56,11 @@
 (winner-mode 1) ;; window configuration undo/redo
 (windmove-default-keybindings)
 
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'reverse)
+(setq tramp-default-method "ssh"
+      tramp-use-ssh-controlmaster-options nil)
+;; (eval-after-load 'tramp-mode
+;;   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+
 
 ;; saving place in file
 (require 'saveplace)
@@ -176,6 +179,10 @@
 
 
 (use-package flycheck-joker
+  :ensure t)
+
+
+(use-package flycheck-clj-kondo
   :ensure t)
 
 
@@ -307,6 +314,10 @@
     (- 0)
     (* 0)
     (/ 0)
+    (> 0)
+    (< 0)
+    (>= 0)
+    (<= 0)
     (->  0)
     (->> 0)
     (and 0)
@@ -381,12 +392,27 @@
          ("C-x M-g" . magit-dispatch))
   :config
   (setq magit-save-repository-buffers nil)
+
   (defun magit-rebase-origin-master (args)
     (interactive (list (magit-rebase-arguments)))
     (message "Rebasing...")
     (magit-git-rebase "origin/master" args)
     (message "Rebasing...done"))
-  (transient-append-suffix 'magit-rebase "e" '("o" "origin/master" magit-rebase-origin-master)))
+
+  (transient-define-suffix magit-push-current-with-lease (args)
+    "Push the current branch to its push-remote with lease."
+    :if 'magit-get-current-branch
+    :description 'magit-push--pushbranch-description
+    (interactive (list (magit-push-arguments)))
+    (pcase-let ((`(,branch ,remote)
+                 (magit--select-push-remote "push there")))
+      (run-hooks 'magit-credential-hook)
+      (magit-run-git-async "push" "-v" "--force-with-lease" args remote
+                           (format "refs/heads/%s:refs/heads/%s"
+                                   branch branch))))
+
+  (transient-append-suffix 'magit-rebase "e" '("o" "origin/master" magit-rebase-origin-master))
+  (transient-append-suffix 'magit-push "e" '("P" "pushRemote with lease" magit-push-current-with-lease)))
 
 (use-package string-inflection
   :ensure t)
@@ -399,12 +425,8 @@
 
 (use-package dumb-jump
   :ensure t
-  :bind (("C-c g o" . dumb-jump-go-other-window)
-         ("C-c g b" . dumb-jump-back)
-         ("C-c g j" . dumb-jump-go)
-         ("C-c g q" . dumb-jump-quick-look))
   :config
-  (setq dumb-jump-selector 'ivy)
+  (add-to-list 'xref-backend-functions #'dumb-jump-xref-activate)
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
   (add-to-list 'dumb-jump-find-rules

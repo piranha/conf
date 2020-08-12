@@ -150,7 +150,7 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
                 (concat "\\(\\s-*\\)" regexp) 1 1 t))
 
 
-;;; timing
+;;; perfomance timing
 
 (defvar time-each-command-start nil)
 
@@ -174,3 +174,40 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
         (add-hook 'post-command-hook #'time-each-command-post))
     (remove-hook 'pre-command-hook #'time-each-command-pre)
     (remove-hook 'post-command-hook #'time-each-command-post)))
+
+
+;;; diff
+
+(defun diff-last-two-kills (&optional ediff?)
+  "Diff last couple of things in the kill-ring. With prefix open ediff."
+  (interactive "P")
+  (let* ((old "/tmp/old-kill")
+         (new "/tmp/new-kill")
+         (prev-ediff-quit-hook (if (fboundp 'ediff-quit-hook)
+                                   (symbol-value 'ediff-quit-hook))))
+    (cl-flet ((kill-temps ()
+                          (dolist (f (list old new))
+                            (kill-buffer (find-buffer-visiting f)))
+                          (if prev-ediff-quit-hook
+                              (setq ediff-quit-hook prev-ediff-quit-hook))))
+      (with-temp-file new
+        (insert (current-kill 0 t)))
+      (with-temp-file old
+        (insert (current-kill 1 t)))
+      (if ediff?
+          (progn
+            (add-hook 'ediff-quit-hook #'kill-temps)
+            (ediff old new))
+        (diff old new "-u" t)))))
+
+
+;;; kasta changelog
+
+(defun newlog ()
+  (interactive)
+  (let ((path (concat (projectile-project-root)
+                      "changelog.d/"
+                      (format-time-string "%s"))))
+    (write-region "" nil path)
+    (shell-command (concat "git add " path))
+    (find-file path)))

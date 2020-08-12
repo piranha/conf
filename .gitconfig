@@ -56,7 +56,7 @@
 [push]
 	default = current
 [pull]
-    ff = true
+	ff = only
 [daemon]
     receivepack = true
 [filter "media"]

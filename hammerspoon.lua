@@ -4,11 +4,8 @@ local cmds = {"shift", "cmd"}
 local ca = {"ctrl", "alt"}
 
 
---- Alfred replacement
--- hs.loadSpoon('Seal')
--- spoon.Seal:loadPlugins({"apps", "calc"})
--- spoon.Seal:bindHotkeys({show = {{"cmd"}, "space"}})
--- spoon.Seal:start()
+hs.loadSpoon('MicMute')
+spoon.MicMute:bindHotkeys({toggle = {{}, "f12"}})
 
 
 --- Switch keyboard layout
@@ -168,6 +165,14 @@ function focusScreen(screen)
   hs.mouse.setAbsolutePosition(pt)
 end
 
+
+--- Selected text actions
+
+-- hs.hotkey.bind({"cmd"}, "n", function()
+--                  local el = hs.uielement.focusedElement()
+--                  local text = el:selectedText()
+--                  hs.alert.show("Selected text: " .. (text or ""))
+-- end)
 
 --- Config reload
 

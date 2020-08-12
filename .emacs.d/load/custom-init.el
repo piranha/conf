@@ -22,7 +22,7 @@
  '(org-agenda-files (quote ("~/dev/work/timing.org")))
  '(package-selected-packages
    (quote
-    (imenu-anywhere clj-refactor cider multiple-cursors paredit sane-term sass-mode deft ialign po-mode restclient vcl-mode mini-frame selectrum-prescient selectrum ctrlf web-mode deadgrep lastfm flimenu terraform-mode zen-mode gnu-elpa-keyring-update writeroom-mode iflipb ranger yasnippet-snippets string-edit hl-todo clj-refactor-mode projectile fzf moody minions org-bullets flycheck-joker lua-mode expand-region circe iedit graphviz-dot-mode string-inflection sql-indent whole-line-or-region highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck less-css-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package toml-mode inflections)))
+    (flycheck-clj-kondo relative-buffers imenu-anywhere clj-refactor cider multiple-cursors paredit sane-term sass-mode deft ialign po-mode restclient vcl-mode mini-frame selectrum-prescient selectrum ctrlf web-mode deadgrep flimenu terraform-mode zen-mode gnu-elpa-keyring-update writeroom-mode iflipb ranger yasnippet-snippets string-edit hl-todo clj-refactor-mode projectile fzf moody minions org-bullets flycheck-joker lua-mode expand-region circe iedit graphviz-dot-mode string-inflection sql-indent whole-line-or-region highlight-parentheses flycheck-pyflakes flycheck-pos-tip flycheck less-css-mode yaml-mode go-mode markdown-mode dockerfile-mode magit dumb-jump use-package toml-mode inflections)))
  '(safe-local-variable-values
    (quote
     ((whitespace-style face tabs trailing lines-tail)

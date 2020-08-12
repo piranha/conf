@@ -12,7 +12,6 @@
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
-(global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
 (global-set-key (kbd "C-S-k") (lambda () (interactive) (kill-line 0)))
 

@@ -1,9 +1,15 @@
+;; (require 'uniquify)
+;; (setq uniquify-buffer-name-style 'reverse)
+
+(use-package relative-buffers
+  :ensure t
+  :config
+  (global-relative-buffers-mode))
+
 (use-package ctrlf
   :ensure t
   :config
-  (setcdr (assoc [remap isearch-forward ] ctrlf-mode-bindings) 'ctrlf-forward-fuzzy)
-  (setcdr (assoc [remap isearch-backward] ctrlf-mode-bindings) 'ctrlf-backward-fuzzy)
-  (ctrlf-mode 1))
+  ctrlf-mode 1)
 
 (use-package selectrum
   :ensure t
@@ -66,7 +72,6 @@
 (defun konix/kill-ring-insert ()
   (interactive)
   (let* ((selectrum-should-sort-p nil)
-         ;;(selectrum-refine-candidates-function #'selectrum-default-candidate-refine-function)
          (toinsert (completing-read "Yank : "
                                     (delete-dups kill-ring))))
     (when (and toinsert (region-active-p))

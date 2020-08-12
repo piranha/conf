@@ -22,7 +22,8 @@
     (set-face-attribute 'mode-line-inactive nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :background "#dfdfdf")
     (set-face-attribute 'font-lock-string-face nil :foreground "#3a7821")
-    (set-face-attribute 'font-lock-comment-face nil :foreground "#a40000")))
+    (set-face-attribute 'font-lock-comment-face nil :foreground "#a40000")
+    (set-face-attribute 'font-lock-doc-face nil :foreground "#007DA6")))
 
 (when (eq window-system 'x)
   (set-frame-font "Monaco-12" nil t)
