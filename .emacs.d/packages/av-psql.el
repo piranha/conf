@@ -27,7 +27,7 @@
 - Don't wrap lines
 - enable full font-locking"
    (setq sql-prompt-regexp "^[_[:alpha:]]*[=][#>] "
-        sql-prompt-cont-regexp "^[_[:alpha:]]*[-][#>] ")
+         sql-prompt-cont-regexp "^[_[:alpha:]]*[-][#>] ")
 
    (setq sql-alternate-buffer-name sql-database)
    (sql-rename-buffer)

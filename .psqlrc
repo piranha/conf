@@ -5,6 +5,9 @@
 \set HISTSIZE 20000
 \pset null '∅'
 
+\set csv '\\pset format csv'
+\set norm '\\pset format aligned'
+
 \x auto
 --\setenv PAGER 'pspg --no-mouse -bX --no-commandbar --no-topbar'
 --\pset linestyle unicode

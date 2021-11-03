@@ -25,7 +25,8 @@
 
 
 (let ((better-path `("~/bin"
-                     "/usr/local/go/bin"
+                     "/opt/homebrew/sbin"
+                     "/opt/homebrew/bin"
                      "/usr/local/sbin"
                      "/usr/local/bin"
                      "/usr/sbin"
@@ -42,11 +43,15 @@
 
 
 (setq custom-file "~/.emacs.d/load/custom-init.el")
+(let ((secrets-el "~/.secrets.el"))
+  (when (file-exists-p secrets-el)
+    (load-file secrets-el)))
+
 
 (add-to-list 'load-path "~/.emacs.d/load/") ;; configuration
 (add-to-list 'load-path "~/.emacs.d/packages/") ;; custom packages
 
-(let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+(let ((default-directory "/opt/homebrew/share/emacs/site-lisp/"))
   (normal-top-level-add-subdirs-to-load-path))
 
 (defun autocompile ()

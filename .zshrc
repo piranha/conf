@@ -21,7 +21,7 @@ fi
 
 umask 022
 
-export PATH=~/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=~/bin:/usr/local/go/bin:/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 test -x "/bin/launchctl" && sudo launchctl setenv PATH $PATH
 
 export PAGER="less"
@@ -59,23 +59,19 @@ zstyle ':vcs_info:git*' actionformats "[%b: %a] "
 
 ### Prompt
 
-# Prompt setup (c) smax 2002, adapted for zsh (c) piranha 2004, 2013
-# 0-black, 1-red, 2-green, 3-yellow, 4-blue, 5-magenta 6-cyan, 7-white
-Cr() { echo '%{\033[3'$1'm%}'; }
-hc=`Cr 6`; wc=`Cr 3`; tc=`Cr 7`; w=`Cr 7`; n=`Cr 9`; r=`Cr 1`; y=`Cr 6`; gr=`Cr 2`
-[ $UID = 0 ] && at="$r%B#%b" || at='@'
-
-#PS1="$wc%n$at$hc%m $err$wc%~$w>$n"
-# for white background
-wc=`Cr 4`
-
 # nbsp allows to have space which will delete everything before itself when
 # pasted - so it's possible to copy and paste whole line with prompt and have
 # only command left
 nbsp=$'\u00A0'
 bindkey -s $nbsp '^u'
-PS1="$wc%n$n$at$wc%m $err$wc%~>$n$nbsp"
-unset n b Cr uc hc wc tc tty at r y gr nbsp
+
+p_at='%(!.%F{red}%B#%b%f.@)'
+p_host='%F{blue}%m%f'
+p_path='%F{blue}%~%f'
+p_pr='%(?.%F{blue}>%f.%F{red}×%f)'
+
+PS1="$p_at$p_host $p_path$p_pr$nbsp"
+unset p_at p_host p_path p_pr nbsp
 
 setopt promptsubst
 
@@ -337,7 +333,6 @@ alias pg="pgrep -lf"
 function pgk() { pgrep -f $1 | xargs kill }
 alias -g B='$(git symbolic-ref HEAD)'
 alias master="git checkout master"
-alias gf="gr -f"
 alias sk="sk --bind 'ctrl-k:kill-line'"
 
 # find file by name and open it in emacs
@@ -464,5 +459,10 @@ function _GET { curl -n -H 'Content-Type: application/json' -XGET "$@" }
 alias GET='noglob _GET'
 function _DELETE { curl -n -H 'Content-Type: application/json' -XDELETE "$@" }
 alias DELETE='noglob _DELETE'
+
+function _CH { echo "$1" | curl -n -XPOST 'http://ch01.mk.prod:8123/?send_progress_in_http_headers=1&default_format=TabSeparatedWithNames' --data-binary @- "${@:2:100}" }
+alias CH='noglob _CH'
+
+alias curlie='noglob curlie -n'
 
 alias -g UA="-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0'"

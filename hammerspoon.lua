@@ -1,26 +1,12 @@
+local hyper = {"cmd", "alt", "ctrl", "shift"}
 local mash = {"cmd", "alt", "ctrl"}
 local cmdc = {"ctrl", "cmd"}
 local cmds = {"shift", "cmd"}
 local ca = {"ctrl", "alt"}
+local sa = {"shift", "alt"}
+local alt = "alt"
+local cmd = "cmd"
 
-
-hs.loadSpoon('MicMute')
-spoon.MicMute:bindHotkeys({toggle = {{}, "f12"}})
-
-
---- Switch keyboard layout
-
-hs.hotkey.bind({}, "F16", function()
-    hs.keycodes.setLayout("U.S.")
-end)
-
-hs.hotkey.bind({}, "F17", function()
-    hs.keycodes.setLayout("Russian - Normal")
-end)
-
-hs.hotkey.bind({}, "F18", function()
-    hs.keycodes.setLayout("Ukrainian - Normal")
-end)
 
 --- Window management
 
@@ -109,23 +95,31 @@ function runOrHide(appName)
 end
 
 function runApp(appName)
-  hs.application.launchOrFocus(appName)
+  return hs.application.launchOrFocus(appName)
 end
 
 function bindApp(mod, key, app)
-  hs.hotkey.bind(mod, key, function() runApp(app) end)
+  return hs.hotkey.bind(mod, key, function() runApp(app) end)
 end
 
-bindApp(cmdc, "i", "iTunes")
-bindApp(cmdc, ";", "Slack")
-bindApp(cmdc, "'", "Telegram")
+bindApp(hyper, "i", "Music")
+bindApp(hyper, ";", "Slack")
+bindApp(hyper, "'", "Telegram")
 bindApp(cmdc, "\\", "Quip")
-bindApp(cmdc, "/", "Notes")
-bindApp('ctrl', "`", 'Terminal')
-bindApp('ctrl', "'", 'Terminal')
-bindApp('ctrl', "[", 'Firefox')
-bindApp('ctrl', "]", 'Google Chrome')
-bindApp('ctrl', "\\", 'Emacs')
+bindApp(cmdc, "/", "Bear")
+bindApp(cmds, "/", "UlyssesMac")
+bindApp(hyper, "t", 'Terminal')
+bindApp(hyper, "b", 'Google Chrome')
+bindApp(hyper, "z", 'zoom.us')
+bindApp(hyper, "e", 'Emacs')
+
+
+--- window focus
+
+hs.window.filter.ignoreAlways['TotalSpacesCrashWatcher'] = true
+local switcher_space = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true))
+hs.hotkey.bind(alt, 'tab', function() switcher_space:next() end)
+hs.hotkey.bind(sa, 'tab', function() switcher_space:previous() end)
 
 
 --- Various stuff
@@ -166,14 +160,6 @@ function focusScreen(screen)
 end
 
 
---- Selected text actions
-
--- hs.hotkey.bind({"cmd"}, "n", function()
---                  local el = hs.uielement.focusedElement()
---                  local text = el:selectedText()
---                  hs.alert.show("Selected text: " .. (text or ""))
--- end)
-
 --- Config reload
 
 function reloadConfig(files)
@@ -188,6 +174,6 @@ function reloadConfig(files)
   end
 end
 
-local configPath = (os.getenv("HOME") .. "/.hammerspoon/init.lua")
+local configPath = hs.fs.pathToAbsolute(os.getenv("HOME") .. "/.hammerspoon/init.lua")
 local configWatcher = hs.pathwatcher.new(configPath, reloadConfig):start()
-hs.alert.show("Hammerspoon config loaded", 1)
+hs.alert.show("Hammerspoon config loaded", 2)

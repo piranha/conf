@@ -14,11 +14,11 @@
 
 (setq tags-file-name (expand-file-name "~/TAGS"))
 
+
+
 ;; dired
-(setq
- dired-bind-jump nil
- dired-omit-extensions '(".pyc" ".elc")
- dired-omit-files "^\\.?#\\|^\\.")
+(setq dired-omit-extensions '(".pyc" ".elc")
+      dired-omit-files "^\\.?#\\|^\\.")
 (autoload 'dired-jump "dired-x" "Jump to dir of current file" t)
 (autoload 'dired-omit-mode "dired-x" "Omit unnecessary files in dired view" t)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
@@ -54,6 +54,7 @@
 (setq mark-even-if-inactive t)
 
 (winner-mode 1) ;; window configuration undo/redo
+(remove-hook 'minibuffer-setup-hook 'winner-save-unconditionally)
 (windmove-default-keybindings)
 
 (setq tramp-default-method "ssh"
@@ -205,8 +206,8 @@
                                (nil "\\.\\([^\\. ]+\\)\\s-*=\\s-*function\\s-*(" 1)))))
 
 (add-hook 'js-mode-hook
-          '(lambda ()
-             (setq imenu-create-index-function 'imenu-dumb-js-make-index)))
+          #'(lambda ()
+              (setq imenu-create-index-function 'imenu-dumb-js-make-index)))
 
 
 ;; Snippets
@@ -219,9 +220,10 @@
          ("<tab>" . nil))
   :init
   (add-hook 'snippet-mode-hook
-            '(lambda ()
-               (set (make-local-variable 'require-final-newline) nil)))
+            #'(lambda ()
+                (set (make-local-variable 'require-final-newline) nil)))
   (yas-global-mode 1)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
   :config
   (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets/"))
 
@@ -301,6 +303,7 @@
   :commands put-clojure-indent
   :mode ("\\.boot\\'" . clojure-mode)
         ("\\.edn\\'" . clojure-mode)
+        ("\\.bb\\'" . clojure-mode)
   :init
   (setq clojure-indent-style :always-indent)
   (setq clojure-thread-all-but-last t)
@@ -353,14 +356,15 @@
   :ensure t
   :init
   (add-hook 'clojure-mode-hook
-            '(lambda ()
-               (clj-refactor-mode 1)
-               (cljr-add-keybindings-with-prefix "C-c C-m"))))
+            #'(lambda ()
+                (clj-refactor-mode 1)
+                (cljr-add-keybindings-with-prefix "C-c C-m"))))
 
 (use-package paredit
   :ensure t
   :no-require t
   :commands paredit-mode
+  :defines paredit-mode-map
   :bind (:map paredit-mode-map
          ("C-<left>" . nil)
          ("C-<right>" . nil)
@@ -378,6 +382,13 @@
   (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 
 
+(use-package av-psql
+  :commands
+  av-wireup-pg-stuff
+  :init
+  (av-wireup-pg-stuff))
+
+
 ;; Various
 
 (use-package dockerfile-mode
@@ -392,6 +403,14 @@
          ("C-x M-g" . magit-dispatch))
   :config
   (setq magit-save-repository-buffers nil)
+
+  ;;; https://jakemccrary.com/blog/2020/11/14/speeding-up-magit/
+  (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-status-headers)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
+  ;; (add-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
 
   (defun magit-rebase-origin-master (args)
     (interactive (list (magit-rebase-arguments)))
@@ -474,31 +493,19 @@
   :commands minions-mode
   :init (minions-mode 1))
 
-(use-package moody
-  :ensure t
-  :commands
-  moody-replace-mode-line-buffer-identification
-  moody-replace-vc-mode
-  :init
-  (setq x-underline-at-descent-line t)
-  (setq moody-mode-line-height 18)
-  :config
-  (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode))
-
-;; (use-package av-psql
-;;   :init
-;;   (av-wireup-pg-stuff)
-;;   :bind
-;;   :map )
-
 
 (use-package hl-todo
   :ensure t
   :commands
   global-hl-todo-mode
   :init
-  (global-hl-todo-mode))
+  (global-hl-todo-mode)
+  :config
+  ;;(set-face-foreground 'hl-todo "#ff0000")
+  (add-to-list 'hl-todo-keyword-faces '("TODO" . "#863F3F"))
+  (add-to-list 'hl-todo-keyword-faces '("FIXME" . "#e18a07"))
+  (add-to-list 'hl-todo-keyword-faces '("NOTE" . "#08632C"))
+  (add-to-list 'hl-todo-keyword-faces '("DONE" . "#08632C")))
 
 
 (use-package string-edit
@@ -508,8 +515,7 @@
 (use-package deft
   :ensure t
   :bind ("C-c ]" . deft)
-  :commands (deft)
-  :functions (deft-refresh)
+  :commands (deft deft-refresh)
   :init
   (setq deft-directory "~/Documents/kb"
         deft-default-extension "md"
@@ -529,7 +535,8 @@
     (interactive)
     (let ((deft-directory (expand-file-name "~/dev/web/solovyov.net/src/blog")))
       (if (get-buffer deft-buffer)
-          (and (switch-to-buffer deft-buffer) (deft-refresh))
+          (and (switch-to-buffer deft-buffer)
+               (deft-refresh))
         (deft)))))
 
 
@@ -572,10 +579,10 @@
   :init
   (setq writeroom-width 80)
   (add-hook 'writeroom-mode-hook
-            '(lambda ()
-               (set-face-attribute 'markdown-pre-face (selected-frame) :family "Monaco" :height 140)
-               (face-remap-add-relative 'default '(:family "Inter" :height 120))
-               (face-remap-add-relative 'cursor '(:background 'red)))))
+            #'(lambda ()
+                (set-face-attribute 'markdown-pre-face (selected-frame) :family "Monaco" :height 140)
+                (face-remap-add-relative 'default '(:family "Inter" :height 120))
+                (face-remap-add-relative 'cursor '(:background 'red)))))
 
 (use-package terraform-mode
   :ensure t)
@@ -593,6 +600,9 @@
   (setq web-mode-script-padding 2))
 
 
+;; mini-frame shows no lines on start when mini-frame-resize is enabled
+(setq resize-mini-frames nil)
+(setq mini-frame-resize nil)
 (use-package mini-frame
   :ensure t
   :config
@@ -616,3 +626,15 @@
   :ensure t
   :bind (("C-x t" . sane-term)
          ("C-x T" . sane-term-create)))
+
+
+(use-package zig-mode
+  :ensure t)
+
+(use-package point-stack
+  :ensure t
+  :bind (("C-M-;" . point-stack-pop)
+         ("C-M-'" . point-stack-forward-stack-pop))
+  :commands point-stack-setup-advices
+  :init
+  (point-stack-setup-advices))

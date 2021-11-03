@@ -52,6 +52,7 @@
     autosetupmerge = true
 [diff]
 	renames = true
+	noprefix = true
 	#external = ~/bin/git-external-patdiff.sh
 [push]
 	default = current
@@ -70,3 +71,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[init]
+	defaultBranch = master

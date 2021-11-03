@@ -60,7 +60,7 @@
   (define-key sgml-mode-map (kbd "C-c C-<left>") 'sgml-skip-tag-backward)
   (define-key sgml-mode-map (kbd "C-c C-<right>") 'sgml-skip-tag-forward))
 
-(global-set-key (kbd "M-A") 'imenu)
+(global-set-key (kbd "C-x C-'") 'imenu)
 
  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
 (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
