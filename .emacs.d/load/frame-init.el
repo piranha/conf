@@ -35,6 +35,7 @@
 
 (when (or (eq window-system 'ns)
           (eq window-system 'mac))
+  (set-fontset-font t 'symbol "Apple Color Emoji")
   (setq ns-use-native-fullscreen nil
         ns-use-fullscreen-animation nil
         mac-command-modifier 'meta
