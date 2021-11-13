@@ -196,27 +196,26 @@ compctl -x 'c[-1,-v]' -M 'm:{a-zA-Z}={A-Za-z}' -K _say_voices -- say
 case $TERM in
 xterm*|rxvt*)
     title_precmd () {
-        print -Pn "\e]0;@%M - %/\a"
-        print -Pn "\e]1;@%m \a"
+        print -Pn "\e]0;@%m %~\a"
+        print -Pn "\e]1;%1d\a"
     }
     title_preexec () {
-        print -Pn "\e]0;@%M - %/: $1\a"
-        print -Pn "\e]1;@%m: $1 \a"
+        print -Pn "\e]1;%1d - $1\a"
     }
 ;;
 screen)
     title_precmd () {
-        echo -ne "\ekzsh\e\\"
+        print -Pn "\ek@%m %~\a"
     }
     title_preexec () {
-        echo -ne "\ek${1[(w)1]}\e\\"
+        print -Pn "\ek%1d - $1\a"
     }
 ;;
 esac
 
 #### precmd
 
-precmd_functions=(title_precmd vcs_info)
+precmd_functions=(title_precmd)
 preexec_functions=(title_preexec)
 
 ### cdr
