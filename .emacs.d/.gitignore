@@ -1,0 +1,15 @@
+*.elc
+eshell
+elpa
+history
+places
+smex.save
+bbdb
+projectile*
+cider*
+recentf
+var
+tramp
+transient
+url
+.mc-lists.el

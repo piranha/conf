@@ -211,3 +211,13 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (write-region "" nil path)
     (shell-command (concat "git add " path))
     (find-file path)))
+
+
+;;; utils
+
+(defun dom-tag-value (search-attr search-value)
+  (require 'dom)
+  (thread-first (libxml-parse-html-region (point-min) (point-max))
+    (dom-search #'(lambda (node) (string= (dom-attr node search-attr) search-value)))
+    car
+    (dom-attr 'value)))

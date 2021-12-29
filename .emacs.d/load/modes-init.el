@@ -28,6 +28,7 @@
             (define-key dired-mode-map (kbd "M-O") 'dired-omit-mode)
             (define-key dired-mode-map (kbd "C-,")
               (lambda () (bs--show-with-configuration "dired")))))
+(global-set-key (kbd "C-x C-d") 'dired-jump)
 
 (setq eshell-scroll-to-bottom-on-input 'all
       eshell-error-if-no-glob t
@@ -554,14 +555,6 @@
 ;;          ([remap isearch-query-replace] . #'anzu-isearch-query-replace)
 ;;          ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
 ;;   :init (global-anzu-mode 1))
-
-
-(use-package ranger
-  :ensure t
-  :commands ranger-override-dired-mode
-  :bind ("C-x C-d" . deer)
-  :init
-  (ranger-override-dired-mode 1))
 
 
 (use-package iflipb
