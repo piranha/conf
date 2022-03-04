@@ -467,7 +467,7 @@
   :ensure t
   :bind (("C->" . mc/mark-next-like-this)
          ("C-<" . mc/unmark-next-like-this)
-         ("C-c C->" . mc/mark-all-like-this)
+         ("C-c C-." . mc/mark-all-dwim)
          ("C-S-<mouse-1>" . mc/add-cursor-on-click)
          ("C-S-c C-S-c" . mc/edit-lines)))
 

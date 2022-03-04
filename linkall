@@ -19,7 +19,7 @@ mapping=(
     # LT/user.behaviors "Library/Application Support/LightTable/settings/user.behaviors"
     .tmux.conf .tmux.conf
     .patdiff .patdiff
-    net.solovyov.runonwifi.plist "Library/LaunchAgents/net.solovyov.runonwifi.plist"
+    net.solovyov.vpn.plist "Library/LaunchAgents/net.solovyov.vpn.plist"
     hammerspoon.lua .hammerspoon/init.lua
     karabiner.json .config/karabiner/karabiner.json
     joker .joker

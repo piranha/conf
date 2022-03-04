@@ -315,6 +315,7 @@ alias rezsh="source ~/.zshrc"
 alias s="mdfind -name"
 alias -g N='2>&1'
 alias -g X='| xargs '
+alias $=''
 
 alias ho="sudo vim /etc/hosts"
 alias pc="rsync -P"
@@ -332,7 +333,6 @@ alias pg="pgrep -lf"
 function pgk() { pgrep -f $1 | xargs kill }
 alias -g B='$(git symbolic-ref HEAD)'
 alias master="git checkout master"
-alias sk="sk --bind 'ctrl-k:kill-line'"
 
 # find file by name and open it in emacs
 function fe() {

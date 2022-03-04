@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>net.solovyov.vpn</string>
+
+    <key>LowPriorityIO</key>
+    <true/>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/opt/cisco/anyconnect/bin/vpn</string>
+      <string>connect</string>
+      <string>vpn.modnakasta.ua</string>
+      <string>-s</string>
+    </array>
+
+    <key>StandardInPath</key>
+    <string>/Users/piranha/.vpn-creds</string>
+
+    <key>WatchPaths</key>
+    <array>
+      <string>/etc/resolv.conf</string>
+      <string>/Library/Preferences/SystemConfiguration/NetworkInterfaces.plist</string>
+      <string>/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+  </dict>
+</plist>

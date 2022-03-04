@@ -209,9 +209,10 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
                       "changelog.d/"
                       (format-time-string "%s"))))
     (write-region "" nil path)
-    (shell-command (concat "git add " path))
-    (find-file path)))
-
+    (find-file path)
+    (add-hook 'after-save-hook
+              (lambda () (shell-command (concat "git add " (buffer-file-name))))
+              nil t)))
 
 ;;; utils
 
