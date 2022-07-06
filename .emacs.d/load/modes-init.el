@@ -273,9 +273,11 @@
   (defun whole-line-kill-region-or-word-backward (prefix)
     "Kill (cut) region or just a single word backward"
     (interactive "*p")
-    (if (not (and mark-active (/= (point) (mark))))
-        (subword-backward-kill prefix)
-      (whole-line-or-region-call-with-region 'kill-region prefix t)))
+    (if (whole-line-or-region-use-region-p)
+        (kill-region (region-beginning) (region-end) 'region)
+      (if (bound-and-true-p paredit-mode)
+          (paredit-backward-kill-word)
+        (subword-backward-kill prefix))))
 
   (setq whole-line-or-region-extensions-alist
         '((copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
