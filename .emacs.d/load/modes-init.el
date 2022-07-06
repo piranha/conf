@@ -268,6 +268,7 @@
   :commands
   whole-line-or-region-global-mode
   whole-line-or-region-call-with-region
+  :bind (("C-w" . whole-line-kill-region-or-word-backward))
   :init
   (defun whole-line-kill-region-or-word-backward (prefix)
     "Kill (cut) region or just a single word backward"
