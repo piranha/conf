@@ -129,7 +129,7 @@ connect. It will also add the `av-sql-interactive-mode-hook' to
 (defun av-pg-server-connect (service-name)
   "Interactive function presenting a list of of services from `av-pg-services' and connects to one selected.
 Argument SERVICE-NAME adsfads."
-  (interactive (list (ido-completing-read+ "Select server: " av-pg-services)))
+  (interactive (list (completing-read "Select server: " av-pg-services)))
   (funcall (av-pg-service-name->func-sym service-name)))
 
 

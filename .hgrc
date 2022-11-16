@@ -4,45 +4,10 @@
 
 [ui]
 username = Alexander Solovyov <alexander@solovyov.net>
-ignore=~/.hgignore
+#ignore=~/.hgignore
 ssh = ssh -C
 merge = internal:merge
 usehttp2 = True
-
-[format]
-generaldelta = true
-
-[web]
-#cacerts = /etc/hg-dummy-cert.pem
-
-[hooks]
-#commit.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
-#changegroup.diffstat = python:~/dev/hg/hg/contrib/python-hook-examples.py:diffstat
-#pretxncommit.whitespace = hg export tip | (! egrep -q '^\+.*[[:space:]]$')
-
-[merge-tools]
-p4.priority = 60
-p4.premerge = True
-p4.executable = /Applications/p4merge.app/Contents/MacOS/p4merge
-p4.gui = True
-p4.args = $base $local $other $output
-p4.binary = False
-
-sourcetreemerge.gui=True
-sourcetreemerge.premerge=False
-sourcetreemerge.executable=/Applications/SourceTree.app/Contents/Resources/opendiff-w.sh
-sourcetreemerge.args="$local" "$other" -ancestor "$base" -merge "$output"
-sourcetreemerge.checkconflicts=True
-sourcetreemerge.binary=False
-
-[extdiff]
-cmd.opendiff = opendiff-w
-cmd.ksdiff = ksdiff-wrapper
-opts.ksdiff = hg
-cmd.codediff = codediff.py
-
-opts.sourcetreediff=
-cmd.sourcetreediff=opendiff
 
 [extensions]
 progress=

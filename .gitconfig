@@ -53,6 +53,7 @@
 [diff]
 	renames = true
 	noprefix = true
+	#external = difft
 	#external = ~/bin/git-external-patdiff.sh
 [push]
 	default = current

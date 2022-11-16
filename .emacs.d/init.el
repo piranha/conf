@@ -18,6 +18,12 @@
     (package-install 'use-package))
   (require 'use-package))
 
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 (use-package bind-key
   :ensure t)
 
@@ -62,7 +68,8 @@
        (string-match ".emacs.d/init.el$" (buffer-file-name)))
       (byte-compile-file (buffer-file-name))))
 
-(add-hook 'after-save-hook 'autocompile)
+;;(add-hook 'after-save-hook 'autocompile)
+
 
 (defun load-init (modules)
   "Load initialization files.

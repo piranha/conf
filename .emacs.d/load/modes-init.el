@@ -95,6 +95,7 @@
 ;; org mode
 
 (use-package org
+  :mode ("\\.org\\'" . org-mode)
   :bind (:map org-mode-map
               ("C-," . nil)
               ("C-S-<up>" . org-timestamp-up)
@@ -116,7 +117,7 @@
 
 (use-package go-mode
   :ensure t
-  :mode ("\\.go\\'" . go-mode)
+  :mode "\\.go\\'"
   :commands godoc-gogetdoc
   :config
   (add-hook 'go-mode-hook
@@ -130,19 +131,21 @@
 
 (use-package yaml-mode
   :ensure t
-  :mode ("\\.yaml\\'" . yaml-mode))
+  :mode "\\.yaml\\'")
 
 (use-package sass-mode
   :ensure t
-  :mode ("\\.scss" . scss-mode))
+  :mode "\\.scss")
 
 (use-package less-css-mode
   :ensure t
-  :mode ("\\.less" . less-css-mode))
+  :mode "\\.less")
+
+(setq css-indent-offset 2)
 
 (use-package po-mode
   :ensure t
-  :mode ("\\.po\\'" . po-mode))
+  :mode "\\.po\\'")
 
 ;;;;;;;;;
 ;; Python
@@ -151,16 +154,23 @@
 (defvar python-mode-map)
 (add-hook 'python-mode-hook
           (lambda ()
-            (setq imenu-create-index-function 'python-imenu-create-index)
+            (setq imenu-create-index-function 'python-imenu-create-flat-index)
             (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)))
+
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :commands flycheck-pos-tip-error-messages)
 
 
 (use-package flycheck
   :ensure t
+  :commands global-flycheck-mode
   :init
   (add-hook 'after-init-hook 'global-flycheck-mode)
   :config
-  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  (setq-default flycheck-display-errors-function 'flycheck-pos-tip-error-messages)
+  ;(add-to-list 'flycheck-disabled-checkers 'python-flake8)
   (add-to-list 'flycheck-disabled-checkers 'python-pylint)
   (add-to-list 'flycheck-disabled-checkers 'emacs-lisp)
   (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc)
@@ -168,24 +178,16 @@
   (add-to-list 'flycheck-disabled-checkers 'sass/scss-sass-list))
 
 
-(use-package flycheck-pos-tip
-  :ensure t
-  :init
-  (setq-default flycheck-display-errors-function 'flycheck-pos-tip-error-messages))
-
-
 (use-package flycheck-pyflakes
   :ensure t
+  ;; :hook python-mode-hook
   :init
   (add-hook 'python-mode-hook (lambda () (require 'flycheck-pyflakes))))
 
 
-(use-package flycheck-joker
-  :ensure t)
-
-
 (use-package flycheck-clj-kondo
-  :ensure t)
+  :ensure t
+  :defer t)
 
 
 ;; Ruby
@@ -242,15 +244,6 @@
                   clojure-mode-hook))
     (add-hook hook 'highlight-parentheses-mode)))
 
-;; elisp
-(defun lambda-elisp-mode-hook ()
-  (font-lock-add-keywords
-   nil `(("\\<lambda\\>"
-          (0 (progn (compose-region (match-beginning 0) (match-end 0)
-                                    ,(make-char 'greek-iso8859-7 107))
-                    nil))))))
-(add-hook 'emacs-lisp-mode-hook 'lambda-elisp-mode-hook)
-
 
 ;; ;; breadcrumbs
 ;; (el-get-bundle! breadcrumb)
@@ -304,46 +297,47 @@
 
 (use-package clojure-mode
   :ensure t
-  :commands put-clojure-indent
+  :defer t
+  :commands clojure-mode put-clojure-indent
   :mode ("\\.boot\\'" . clojure-mode)
         ("\\.edn\\'" . clojure-mode)
         ("\\.bb\\'" . clojure-mode)
-  :init
+  :config
+  (require 'flycheck-clj-kondo)
   (setq clojure-indent-style :always-indent)
   (setq clojure-thread-all-but-last t)
   (setq clojure-align-forms-automatically t)
   (setq clojure-toplevel-inside-comment-form t)
-  :config
-  (define-clojure-indent
-    (= 0)
-    (not= 0)
-    (+ 0)
-    (- 0)
-    (* 0)
-    (/ 0)
-    (> 0)
-    (< 0)
-    (>= 0)
-    (<= 0)
-    (->  0)
-    (->> 0)
-    (and 0)
-    (or  0)
-    (and* 0)
-    (or* 0)
-    (recur 0))
+  (put-clojure-indent '= 0)
+  (put-clojure-indent 'not= 0)
+  (put-clojure-indent '+ 0)
+  (put-clojure-indent '- 0)
+  (put-clojure-indent '* 0)
+  (put-clojure-indent '/ 0)
+  (put-clojure-indent '> 0)
+  (put-clojure-indent '< 0)
+  (put-clojure-indent '>= 0)
+  (put-clojure-indent '<= 0)
+  (put-clojure-indent '->  0)
+  (put-clojure-indent '->> 0)
+  (put-clojure-indent 'and 0)
+  (put-clojure-indent 'or  0)
+  (put-clojure-indent 'and* 0)
+  (put-clojure-indent 'or* 0)
+  (put-clojure-indent 'recur 0)
   (add-to-list 'clojure-align-cond-forms "better-cond.core/when-let")
-  (add-to-list 'clojure-align-cond-forms "better-cond.core/if-let"))
+  (add-to-list 'clojure-align-cond-forms "better-cond.core/if-let")
+  (add-to-list 'clojure-align-binding-forms "blet"))
 
 
 (use-package cider
   :pin melpa-stable
   :ensure t
-  :no-require t
+  :defer t
   :commands cider-mode
   :bind (:map cider-mode-map
               ("C-c C-f" . nil)
-         :map cider-repl-mode-map
+        :map cider-repl-mode-map
               ("C-c M-r" . cider-repl-previous-matching-input)
               ("C-c M-s" . cider-repl-next-matching-input))
   :init
@@ -358,6 +352,8 @@
 (use-package clj-refactor
   :pin melpa-stable
   :ensure t
+  :defer t
+  :commands (clj-refactor-mode cljr-add-keybindings-with-prefix)
   :init
   (add-hook 'clojure-mode-hook
             #'(lambda ()
@@ -387,9 +383,8 @@
 
 
 (use-package av-psql
-  :commands
-  av-wireup-pg-stuff
-  :init
+  :commands av-pg-server-connect
+  :config
   (av-wireup-pg-stuff))
 
 
@@ -397,9 +392,9 @@
 
 (use-package dockerfile-mode
   :ensure t
-  :no-require t
+  :defer t
   :commands dockerfile-mode
-  :init (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+  :mode "Dockerfile\\'")
 
 (use-package magit
   :ensure t
@@ -444,12 +439,15 @@
   :bind (("C-x p" . piu)))
 
 (use-package graphviz-dot-mode
-  :ensure t)
+  :ensure t
+  :mode "\\.dot\\'")
 
 (use-package dumb-jump
   :ensure t
-  :config
+  :commands dumb-jump-xref-activate
+  :init
   (add-to-list 'xref-backend-functions #'dumb-jump-xref-activate)
+  :config
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
   (add-to-list 'dumb-jump-find-rules
@@ -459,7 +457,7 @@
 (use-package fzf
   :ensure t
   :bind ("C-c o" . fzf)
-  :init
+  :config
   (setenv "FZF_DEFAULT_COMMAND" "fd -t f"))
 
 (use-package restclient
@@ -489,21 +487,17 @@
 
 (use-package vcl-mode
   :ensure t
+  :mode "\\.vcl\\'"
   :config
   (setq vcl-indent-level 2))
 
 (use-package minions
   :ensure t
-  :commands minions-mode
   :init (minions-mode 1))
-
 
 (use-package hl-todo
   :ensure t
-  :commands
-  global-hl-todo-mode
-  :init
-  (global-hl-todo-mode)
+  :init (global-hl-todo-mode)
   :config
   ;;(set-face-foreground 'hl-todo "#ff0000")
   (add-to-list 'hl-todo-keyword-faces '("TODO" . "#863F3F"))
@@ -593,7 +587,12 @@
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-style-padding 2)
   (setq web-mode-code-indent-offset 2)
-  (setq web-mode-script-padding 2))
+  (setq web-mode-script-padding 2)
+  (add-hook 'web-mode-hook
+            #'(lambda ()
+                (when (and (projectile-project-p)
+                           (file-exists-p (concat (projectile-project-root) "manage.py")))
+                  (web-mode-set-engine "django")))))
 
 
 ;; mini-frame shows no lines on start when mini-frame-resize is enabled
@@ -620,12 +619,14 @@
 
 (use-package sane-term
   :ensure t
+  :commands sane-term sane-term-create
   :bind (("C-x t" . sane-term)
          ("C-x T" . sane-term-create)))
 
 
 (use-package zig-mode
-  :ensure t)
+  :ensure t
+  :mode "\\.zig\\'")
 
 (use-package point-stack
   :ensure t
@@ -634,3 +635,31 @@
   :commands point-stack-setup-advices
   :init
   (point-stack-setup-advices))
+
+
+(use-package embark
+  :ensure t
+  :bind
+  (("C-'"   . embark-act)
+   ("C-\""  . embark-dwim)
+   ("C-h B" . embark-bindings)))
+
+
+(use-package pyvenv
+  :ensure t
+  :commands (pyvenv-activate pyvenv-workon))
+
+(use-package jinja2-mode
+  :ensure t
+  :defer t)
+
+(use-package swift-mode
+  :ensure t
+  :mode "\\.swift\\'")
+
+
+;; (use-package tree-sitter
+;;   :ensure t)
+
+;; (use-package tree-sitter-langs
+;;   :ensure t)

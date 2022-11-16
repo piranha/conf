@@ -14,7 +14,7 @@
   (setq fast-but-imprecise-scrolling t)
   (setq jit-lock-defer-time 0)
 
-  (tool-bar-mode 0)
+  (tool-bar-mode -1)
   (menu-bar-mode 1)
   (scroll-bar-mode -1)
   (load-theme 'better-tango t)
@@ -31,7 +31,7 @@
 
 (when (eq window-system 'x)
   (set-frame-font "Monaco-12" nil t)
-  (set-face-attribute 'default t :font "Monaco-12"))
+  (set-face-attribute 'default t :family "Monaco" :height 120))
 
 (when (or (eq window-system 'ns)
           (eq window-system 'mac))

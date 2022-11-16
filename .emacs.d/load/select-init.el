@@ -8,17 +8,17 @@
 
 (use-package ctrlf
   :ensure t
-  :config
+  :init
   (ctrlf-mode 1))
 
 (use-package selectrum
   :ensure t
-  :config
+  :init
   (selectrum-mode 1))
 
 (use-package selectrum-prescient
   :ensure t
-  :config
+  :init
   (selectrum-prescient-mode)
   (prescient-persist-mode))
 
@@ -50,7 +50,7 @@
          ("C-c p" . projectile-command-map)
          :map projectile-command-map
          ("s s" . projectile-deadgrep))
-  :init
+  :config
   (setq projectile-enable-caching t)
   (setq projectile-completion-system 'default)
   (projectile-mode 1))
@@ -67,7 +67,10 @@
   :init
   (setq as/recentf-timer (run-at-time "5 min" (* 5 60) 'recentf-save-list)
         recentf-max-menu-items 500
-        recentf-max-saved-items 500)
+        recentf-max-saved-items 500
+        ;; this stops loading tramp
+        ;; https://stackoverflow.com/questions/880625
+        recentf-auto-cleanup 'never)
   (recentf-mode 1))
 
 
@@ -89,4 +92,4 @@
 (use-package imenu-anywhere
   :ensure t
   :commands imenu-anywhere
-  :bind ("C-c M-A" . imenu-anywhere))
+  :bind ("C-c C-a" . imenu-anywhere))

@@ -68,7 +68,9 @@
 (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
 (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
 
-(define-key comint-mode-map (kbd "C-M-l") nil)
+(add-hook 'comint-mode
+          (lambda ()
+            (define-key comint-mode-map (kbd "C-M-l") nil)))
 
 (global-set-key (kbd "C-M-[") 'backward-paragraph)
 (global-set-key (kbd "C-M-]") 'forward-paragraph)
