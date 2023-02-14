@@ -65,9 +65,7 @@
 
 
 ;; saving place in file
-(require 'saveplace)
-(setq-default save-place t)
-(setq save-place-file "~/.emacs.d/places")
+(save-place-mode 1)
 
 ;; saving history
 (savehist-mode 1)
@@ -333,7 +331,7 @@
 (use-package cider
   :pin melpa-stable
   :ensure t
-  :defer t
+  ;; :defer t
   :commands cider-mode
   :bind (:map cider-mode-map
               ("C-c C-f" . nil)
@@ -349,30 +347,31 @@
         cider-repl-display-help-banner nil)
   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
+(use-package paredit
+  ;;  :ensure t ;; it's in packages/paredit.el
+  :no-require t
+  :commands paredit-mode
+  :defines paredit-mode-map
+  :bind (:map paredit-mode-map
+              ("C-<left>" . nil)
+              ("C-<right>" . nil)
+              ("C-M-," . paredit-forward-barf-sexp)
+              ("C-M-." . paredit-forward-slurp-sexp))
+  :init
+  (add-hook 'clojure-mode-hook 'paredit-mode)
+  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+  (add-to-list 'package--builtin-versions `(paredit 26)))
+
 (use-package clj-refactor
   :pin melpa-stable
   :ensure t
-  :defer t
+  :load-path "elpa/clj-refactor-20230202.637/"
   :commands (clj-refactor-mode cljr-add-keybindings-with-prefix)
   :init
   (add-hook 'clojure-mode-hook
             #'(lambda ()
                 (clj-refactor-mode 1)
                 (cljr-add-keybindings-with-prefix "C-c C-m"))))
-
-(use-package paredit
-  :ensure t
-  :no-require t
-  :commands paredit-mode
-  :defines paredit-mode-map
-  :bind (:map paredit-mode-map
-         ("C-<left>" . nil)
-         ("C-<right>" . nil)
-         ("C-M-," . paredit-forward-barf-sexp)
-         ("C-M-." . paredit-forward-slurp-sexp))
-  :init
-  (add-hook 'clojure-mode-hook 'paredit-mode)
-  (add-hook 'emacs-lisp-mode-hook 'paredit-mode))
 
 
 (use-package sql-indent
@@ -446,7 +445,8 @@
   :ensure t
   :commands dumb-jump-xref-activate
   :init
-  (add-to-list 'xref-backend-functions #'dumb-jump-xref-activate)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  (setq xref-show-definitions-function #'xref-show-definitions-completing-read)
   :config
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljc"))
   (add-to-list 'dumb-jump-language-file-exts '(:language "clojure" :ext "cljs"))
@@ -579,7 +579,7 @@
 
 (use-package web-mode
   :ensure t
-  :mode "\\.html\\'"
+  :mode "\\.html\\'" "\\.tsx\\'"
   :bind (:map web-mode-map
               ("C-c /" . web-mode-element-close))
   :init
@@ -617,13 +617,6 @@
   (mini-frame-mode 1))
 
 
-(use-package sane-term
-  :ensure t
-  :commands sane-term sane-term-create
-  :bind (("C-x t" . sane-term)
-         ("C-x T" . sane-term-create)))
-
-
 (use-package zig-mode
   :ensure t
   :mode "\\.zig\\'")
@@ -657,9 +650,14 @@
   :ensure t
   :mode "\\.swift\\'")
 
+(use-package typescript-mode
+  :ensure t
+  :defer t
+  :config
+  (setq typescript-indent-level 2))
 
-;; (use-package tree-sitter
-;;   :ensure t)
-
-;; (use-package tree-sitter-langs
-;;   :ensure t)
+(use-package vterm
+  :ensure t
+  :bind (:map vterm-mode-map
+              ("C-M-l" . nil))
+  :commands vterm)

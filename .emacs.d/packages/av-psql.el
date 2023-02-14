@@ -124,6 +124,7 @@ connect. It will also add the `av-sql-interactive-mode-hook' to
 
   (add-hook 'sql-interactive-mode-hook 'av-sql-interactive-mode-hook)
   (setq sql-postgres-login-params `((database :default ,(user-login-name))))
+  (setq av-pg-services (av-pg-service-list av-pg-conf-file-path))
   (mapc #'av-pg-setup-service av-pg-services))
 
 (defun av-pg-server-connect (service-name)

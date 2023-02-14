@@ -13,3 +13,6 @@ tramp
 transient
 url
 .mc-lists.el
+.cache
+.lsp*
+eln-cache

@@ -15,11 +15,10 @@ mapping=(
     .psqlrc .psqlrc
     lein-profiles.clj .lein/profiles.clj
     git-req bin/git-req
-    # LT/user.keymap "Library/Application Support/LightTable/settings/user.keymap"
-    # LT/user.behaviors "Library/Application Support/LightTable/settings/user.behaviors"
     .tmux.conf .tmux.conf
     .patdiff .patdiff
     net.solovyov.vpn.plist "Library/LaunchAgents/net.solovyov.vpn.plist"
+    #net.solovyov.sshtun.plist "Library/LaunchAgents/net.solovyov.sshtun.plist"
     hammerspoon.lua .hammerspoon/init.lua
     karabiner.json .config/karabiner/karabiner.json
     joker .joker

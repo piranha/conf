@@ -46,7 +46,9 @@
  default-input-method "russian-computer"
  w3m-use-cookies t
  ediff-window-setup-function 'ediff-setup-windows-plain
- auto-window-vscroll nil)
+ auto-window-vscroll nil
+ native-comp-async-report-warnings-errors nil
+ package-native-compile t)
 
 (setq-default
  major-mode 'text-mode          ;; default mode
@@ -61,7 +63,7 @@
  scroll-down-aggressively 0.01)
 
 ;; Ask questions with short answers
-(fset 'yes-or-no-p 'y-or-n-p)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; I like having unix lineendings even on windows
 (prefer-coding-system 'utf-8-unix)
@@ -72,11 +74,6 @@
 (when (eq window-system 'nil)
   (normal-erase-is-backspace-mode 1))
 
-(if (eq system-type 'darwin)
-    (setq ns-extended-platform-support-mode t
-          ns-command-modifier 'meta))
-
-(add-hook 'after-save-hook
-  'executable-make-buffer-file-executable-if-script-p)
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 (global-auto-revert-mode t)

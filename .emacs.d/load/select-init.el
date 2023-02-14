@@ -6,22 +6,47 @@
 ;;   :config
 ;;   (global-relative-buffers-mode))
 
-(use-package ctrlf
+;; (use-package ctrlf
+;;   :ensure t
+;;   :commands ctrlf-mode
+;;   :init
+;;   (ctrlf-mode 1))
+
+(use-package vertico
+  :ensure t
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook
+  (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  :init
+  (vertico-mode 1))
+
+(use-package vertico-prescient
+  :ensure t
+  :commands (vertico-prescient-mode prescient-persist-mode)
+  :init
+  (vertico-prescient-mode 1)
+  (prescient-persist-mode 1)
+  :config
+  (setq prescient-filter-method '(literal regexp literal-prefix prefix initialism)
+        prescient-sort-full-matches-first t
+        prescient-sort-length-enable t
+        prescient-history-length 1000))
+
+
+(use-package corfu
   :ensure t
   :init
-  (ctrlf-mode 1))
+  (global-corfu-mode))
 
-(use-package selectrum
+
+(use-package corfu-prescient
   :ensure t
+  :commands corfu-prescient-mode
   :init
-  (selectrum-mode 1))
-
-(use-package selectrum-prescient
-  :ensure t
-  :init
-  (selectrum-prescient-mode)
-  (prescient-persist-mode))
-
+  (corfu-prescient-mode 1))
 
 ;;; Grep
 
@@ -30,10 +55,6 @@
   :commands (deadgrep--read-search-term)
   :bind (("C-c s" . deadgrep)))
 
-
-(defun projectile-selection-at-point ()
-  (when (use-region-p)
-    (buffer-substring-no-properties (region-beginning) (region-end))))
 
 (defun projectile-deadgrep (search-term)
   (interactive (list (deadgrep--read-search-term)))
@@ -47,13 +68,15 @@
   :ensure t
   :commands projectile-mode
   :bind (("M-t" . projectile-find-file)
+         :map projectile-mode-map
          ("C-c p" . projectile-command-map)
          :map projectile-command-map
          ("s s" . projectile-deadgrep))
+  :init
+  (projectile-mode 1)
   :config
   (setq projectile-enable-caching t)
-  (setq projectile-completion-system 'default)
-  (projectile-mode 1))
+  (setq projectile-completion-system 'default))
 
 
 ;;; recentf
@@ -76,20 +99,43 @@
 
 ;;; kill ring
 
-(defun konix/kill-ring-insert ()
-  (interactive)
-  (let* ((selectrum-should-sort nil)
-         (toinsert (completing-read "Yank : "
-                                    (delete-dups kill-ring))))
-    (when (and toinsert (region-active-p))
-      ;; the currently highlighted section is to be replaced by the yank
-      (delete-region (region-beginning) (region-end)))
-    (insert toinsert)))
+;; (defun konix/kill-ring-insert ()
+;;   (interactive)
+;;   (let* ((selectrum-should-sort nil)
+;;          (toinsert (completing-read "Yank : "
+;;                                     (delete-dups kill-ring))))
+;;     (when (and toinsert (region-active-p))
+;;       ;; the currently highlighted section is to be replaced by the yank
+;;       (delete-region (region-beginning) (region-end)))
+;;     (insert toinsert)))
 
-(global-set-key (kbd "C-c C-y") #'konix/kill-ring-insert)
+;; (global-set-key (kbd "C-c C-y") #'konix/kill-ring-insert)
 
 
-(use-package imenu-anywhere
+(use-package consult
   :ensure t
-  :commands imenu-anywhere
-  :bind ("C-c C-a" . imenu-anywhere))
+  :bind (("C-." . consult-buffer)
+         ("C-s" . consult-line)
+         ("C-c C-k" . consult-kmacro)
+         ("M-y" . consult-yank-pop)
+         ("C-x r b" . consult-bookmark) ;; bookmark-jump
+         ("M-g M-g" . consult-goto-line)
+         ("M-g m" . consult-mark)
+         ("M-g M-m" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g M-i" . consult-imenu-multi)
+         ("M-g o" . consult-outline))
+  :config
+  (setq consult-project-function (lambda (_) (projectile-project-root)))
+
+  ;; only manual preview for buffer-switching
+  (consult-customize consult-buffer :preview-key (kbd "M-."))
+  (unless 't ;; just a comment
+    (consult-customize consult-line :preview-key (list (kbd "M-.")
+                                                       :debounce 0 (kbd "<up>") (kbd "<down>")))))
+
+
+;; (use-package imenu-anywhere
+;;   :ensure t
+;;   :commands imenu-anywhere
+;;   :bind ("C-c C-a" . imenu-anywhere))

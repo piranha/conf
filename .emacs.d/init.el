@@ -5,18 +5,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq package-enable-at-startup nil)
-(package-initialize)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
 ;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+(package-initialize)
 
 ;;; Package management setup
 
-(eval-when-compile
-  (unless (fboundp 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (require 'use-package))
+;;; built-in in emacs 29
+;; (eval-when-compile
+;;   (unless (fboundp 'use-package)
+;;     (package-refresh-contents)
+;;     (package-install 'use-package))
+;;   (require 'use-package))
 
 (use-package benchmark-init
   :ensure t

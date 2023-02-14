@@ -59,19 +59,13 @@ zstyle ':vcs_info:git*' actionformats "[%b: %a] "
 
 ### Prompt
 
-# nbsp allows to have space which will delete everything before itself when
-# pasted - so it's possible to copy and paste whole line with prompt and have
-# only command left
-nbsp=$'\u00A0'
-bindkey -s $nbsp '^u'
-
 p_at='%(!.%F{red}%B#%b%f.@)'
 p_host='%F{blue}%m%f'
 p_path='%F{blue}%~%f'
 p_pr='%(?.%F{blue}>%f.%F{red}×%f)'
 
-PS1="$p_at$p_host $p_path$p_pr$nbsp"
-unset p_at p_host p_path p_pr nbsp
+PS1="$p_at$p_host $p_path$p_pr "
+unset p_at p_host p_path p_pr
 
 setopt promptsubst
 
@@ -465,3 +459,4 @@ alias CH='noglob _CH'
 alias curlie='noglob curlie -n'
 
 alias -g UA="-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0'"
+checkdomain() { whois "$1" | grep -iE 'no match|creation date' }
