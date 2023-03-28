@@ -135,10 +135,6 @@
   :ensure t
   :mode "\\.scss")
 
-(use-package less-css-mode
-  :ensure t
-  :mode "\\.less")
-
 (setq css-indent-offset 2)
 
 (use-package po-mode
@@ -195,6 +191,8 @@
   (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent))
 
 ;; Javascript
+
+;; maybe try out https://github.com/skeeto/skewer-mode
 
 (defvar js-mode-map)
 (with-eval-after-load 'js
@@ -579,10 +577,12 @@
 
 (use-package web-mode
   :ensure t
-  :mode "\\.html\\'" "\\.tsx\\'"
+  :mode "\\.html\\'" "\\.tsx\\'" "\\.tmpl\\'"
   :bind (:map web-mode-map
               ("C-c /" . web-mode-element-close))
   :init
+  (setq web-mode-enable-engine-detection t)
+  (setq web-mode-enable-auto-indentation nil)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-style-padding 2)
@@ -661,3 +661,22 @@
   :bind (:map vterm-mode-map
               ("C-M-l" . nil))
   :commands vterm)
+
+
+(setq treesit-extra-load-path '("/Users/piranha/var/tree-sitter-module/dist"))
+
+(use-package chatgpt-shell
+  :config
+  (setq chatgpt-shell-openai-key (read-export-value "~/.zshlocal" "OPENAI_ACCESS_TOKEN")))
+
+(use-package gptel
+  :ensure t
+  :config
+  (setq gptel-api-key (read-export-value "~/.zshlocal" "OPENAI_ACCESS_TOKEN")))
+
+
+(use-package chatgpt
+  :ensure t
+  :config
+  (setq openai-key (read-export-value "~/.zshlocal" "OPENAI_ACCESS_TOKEN"))
+  (setq chatgpt-model "gpt-4"))

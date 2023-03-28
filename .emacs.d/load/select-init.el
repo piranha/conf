@@ -124,12 +124,25 @@
          ("M-g M-m" . consult-global-mark)
          ("M-g i" . consult-imenu)
          ("M-g M-i" . consult-imenu-multi)
-         ("M-g o" . consult-outline))
+         ("M-g o" . consult-outline)
+         (:map projectile-mode-map
+               ("C-c p b" . consult-project-buffer)))
   :config
   (setq consult-project-function (lambda (_) (projectile-project-root)))
+  (setq consult-narrow-key "<")
+
+  (setq consult-buffer-sources
+        '(consult--source-hidden-buffer
+          consult--source-modified-buffer
+          consult--source-buffer
+          consult--source-project-buffer
+          consult--source-project-recent-file
+          consult--source-recent-file
+          consult--source-file-register
+          consult--source-bookmark))
 
   ;; only manual preview for buffer-switching
-  (consult-customize consult-buffer :preview-key (kbd "M-."))
+  (consult-customize consult-buffer :preview-key "M-.")
   (unless 't ;; just a comment
     (consult-customize consult-line :preview-key (list (kbd "M-.")
                                                        :debounce 0 (kbd "<up>") (kbd "<down>")))))

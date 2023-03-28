@@ -17,17 +17,9 @@
   (tool-bar-mode -1)
   (menu-bar-mode 1)
   (scroll-bar-mode -1)
-  (load-theme 'better-tango t)
-  (set-face-attribute 'mode-line nil
-                      :box '(:line-width 2 :color "grey75"))
-  (set-face-attribute 'mode-line-inactive nil
-                      :box '(:line-width 2 :color "grey90"))
-  (set-face-attribute 'font-lock-string-face nil :foreground "#3A7821")
-  (set-face-attribute 'font-lock-comment-face nil :foreground "#A40000")
-  (set-face-attribute 'font-lock-doc-face nil :foreground "#007DA6")
-  (set-face-attribute 'fringe nil
-                      :foreground (face-foreground 'default)
-                      :background (face-background 'default)))
+  ;;(load-theme 'better-tango t)
+  (load-theme 'alabaster t)
+  (set-face-attribute 'font-lock-string-face nil :background "#FFF"))
 
 (when (eq window-system 'x)
   (set-frame-font "Monaco-12" nil t)

@@ -48,7 +48,9 @@
  ediff-window-setup-function 'ediff-setup-windows-plain
  auto-window-vscroll nil
  native-comp-async-report-warnings-errors nil
- package-native-compile t)
+ package-native-compile t
+ ;; Supress "ad-handle-definition: x got redefined" warnings
+ ad-redefinition-action 'accept)
 
 (setq-default
  major-mode 'text-mode          ;; default mode
@@ -63,7 +65,7 @@
  scroll-down-aggressively 0.01)
 
 ;; Ask questions with short answers
-(defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'yes-or-no-p #'y-or-n-p)
 
 ;; I like having unix lineendings even on windows
 (prefer-coding-system 'utf-8-unix)

@@ -7,7 +7,8 @@
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
-;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+;;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/"))
 (package-initialize)
 
 ;;; Package management setup

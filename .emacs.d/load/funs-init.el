@@ -222,3 +222,13 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (dom-search #'(lambda (node) (string= (dom-attr node search-attr) search-value)))
     car
     (dom-attr 'value)))
+
+
+(defun read-export-value (filename var)
+  "Read the value of a variable from an export file."
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (goto-char (point-min))
+    (let ((case-fold-search t))
+      (when (re-search-forward (concat "^export " var "=\\([^[:space:]]+\\)") nil t)
+        (match-string 1)))))
