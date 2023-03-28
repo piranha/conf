@@ -190,11 +190,11 @@ compctl -x 'c[-1,-v]' -M 'm:{a-zA-Z}={A-Za-z}' -K _say_voices -- say
 case $TERM in
 xterm*|rxvt*)
     title_precmd () {
-        print -Pn "\e]0;@%m %~\a"
-        print -Pn "\e]1;%1d\a"
+        print -Pn "\e]0;@%m:%~\a"
+        print -Pn "\e]1;@%m:%~\a"
     }
     title_preexec () {
-        print -Pn "\e]1;%1d - $1\a"
+        print -Pn "\e]1;@%m:%~ - $1\a"
     }
 ;;
 screen)
@@ -202,7 +202,7 @@ screen)
         print -Pn "\ek@%m %~\a"
     }
     title_preexec () {
-        print -Pn "\ek%1d - $1\a"
+        print -Pn "\ek@%m:%~ - $1\a"
     }
 ;;
 esac
@@ -458,5 +458,8 @@ alias CH='noglob _CH'
 
 alias curlie='noglob curlie -n'
 
+ttfb() { curl -s -o /dev/null -w "Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} Size: %{size_download}\n" "$@" }
 alias -g UA="-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0'"
 checkdomain() { whois "$1" | grep -iE 'no match|creation date' }
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
