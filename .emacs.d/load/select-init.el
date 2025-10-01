@@ -1,16 +1,14 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
 
-;; (use-package relative-buffers
+;; (use-package buffer-name-relative
 ;;   :ensure t
-;;   :config
-;;   (global-relative-buffers-mode))
-
-;; (use-package ctrlf
-;;   :ensure t
-;;   :commands ctrlf-mode
 ;;   :init
-;;   (ctrlf-mode 1))
+;;   (buffer-name-relative-mode)
+;;   :config
+;;   (setq buffer-name-relative-prefix ""
+;;         buffer-name-relative-root-functions
+;;         (list 'buffer-name-relative-root-path-from-projectile)))
 
 (use-package vertico
   :ensure t
@@ -35,7 +33,6 @@
         prescient-sort-length-enable t
         prescient-history-length 1000))
 
-
 (use-package corfu
   :ensure t
   :init
@@ -50,13 +47,19 @@
 
 ;;; Grep
 
+(defun deadgrep-here (search-term)
+  "Start deadgrep from the current working directory with SEARCH-TERM."
+  (interactive (list (deadgrep--read-search-term)))
+  (deadgrep search-term default-directory))
+
 (use-package deadgrep
   :ensure t
   :commands (deadgrep--read-search-term)
-  :bind (("C-c s" . deadgrep)))
+  :bind (("C-c s" . deadgrep-here)))
 
 
 (defun projectile-deadgrep (search-term)
+  "Deadgrep the whole project for SEARCH-TERM."
   (interactive (list (deadgrep--read-search-term)))
   (let ((deadgrep-project-root-function #'projectile-project-root))
     (deadgrep search-term)))
@@ -71,12 +74,13 @@
          :map projectile-mode-map
          ("C-c p" . projectile-command-map)
          :map projectile-command-map
-         ("s s" . projectile-deadgrep))
+         ("s" . projectile-deadgrep))
   :init
   (projectile-mode 1)
   :config
-  (setq projectile-enable-caching t)
-  (setq projectile-completion-system 'default))
+  (setq projectile-enable-caching t
+        projectile-completion-system 'default
+        projectile-create-missing-test-files t))
 
 
 ;;; recentf
@@ -96,34 +100,21 @@
         recentf-auto-cleanup 'never)
   (recentf-mode 1))
 
-
-;;; kill ring
-
-;; (defun konix/kill-ring-insert ()
-;;   (interactive)
-;;   (let* ((selectrum-should-sort nil)
-;;          (toinsert (completing-read "Yank : "
-;;                                     (delete-dups kill-ring))))
-;;     (when (and toinsert (region-active-p))
-;;       ;; the currently highlighted section is to be replaced by the yank
-;;       (delete-region (region-beginning) (region-end)))
-;;     (insert toinsert)))
-
-;; (global-set-key (kbd "C-c C-y") #'konix/kill-ring-insert)
-
+;;; main navigation
 
 (use-package consult
   :ensure t
   :bind (("C-." . consult-buffer)
          ("C-s" . consult-line)
-         ("C-c C-k" . consult-kmacro)
+         ("C-c M-k" . consult-kmacro)
          ("M-y" . consult-yank-pop)
          ("C-x r b" . consult-bookmark) ;; bookmark-jump
          ("M-g M-g" . consult-goto-line)
-         ("M-g m" . consult-mark)
-         ("M-g M-m" . consult-global-mark)
-         ("M-g i" . consult-imenu)
-         ("M-g M-i" . consult-imenu-multi)
+         ("M-g M-m" . consult-mark)
+         ("M-g m" . consult-global-mark)
+         ("C-," . consult-global-mark)
+         ("M-i" . consult-imenu)
+         ("M-g i" . consult-imenu-multi)
          ("M-g o" . consult-outline)
          (:map projectile-mode-map
                ("C-c p b" . consult-project-buffer)))
@@ -147,8 +138,35 @@
     (consult-customize consult-line :preview-key (list (kbd "M-.")
                                                        :debounce 0 (kbd "<up>") (kbd "<down>")))))
 
+;;; search
+
+;; (use-package isl
+;;   :ensure t
+;;   :vc (isearch-light :url "https://github.com/thierryvolpiatto/isearch-light")
+;;   :bind (("C-s" . isl-search)
+;;          ("C-M-S" . isl-resume))
+;;   :custom-face
+;;   :custom-face
+;;   (isl-match ((t (:inherit isearch))))
+;;   (isl-match-items ((t (:inherit query-replace))))  ; Another search-related face
+;;   (isl-on ((t (:inherit region))))                  ; Current selection
+;;   (isl-number ((t (:inherit font-lock-constant-face)))) ; Often colored appropriately
+;;   (isl-string ((t (:inherit minibuffer-prompt))))   ; Usually bold and colored
+;;   (isl-case-fold ((t (:inherit isl-string)))))
+
+;;; mark navigation
+
+(use-package nav-flash ;; back-button uses this to highlight line after navigation
+  :ensure t)
+
+(use-package back-button ;; C-x left/right, C-x C-left/C-right
+  :ensure t
+  :init
+  (back-button-mode 1))
 
 ;; (use-package imenu-anywhere
 ;;   :ensure t
 ;;   :commands imenu-anywhere
 ;;   :bind ("C-c C-a" . imenu-anywhere))
+
+;;; select-init.el ends here

@@ -22,6 +22,7 @@
  scroll-conservatively 10000         ;; text scrolling
  scroll-preserve-screen-position 1
  scroll-margin 0
+ global-mark-ring-max 200
  comint-completion-addsuffix t       ;; Insert space/slash after completion
  kill-whole-line t                   ;; delete line in one stage
  next-line-add-newlines nil          ;; don't add new lines when scrolling down
@@ -29,7 +30,6 @@
  mode-require-final-newline t        ;; same as above, set more generally
  delete-old-versions t               ;; delete excess backup versions
  mouse-yank-at-point t               ;; paste at cursor, NOT at mouse pointer position
- apropos-do-all t                    ;; apropos works better but slower
  display-time-24hr-format t
  display-time-day-and-date t
  calendar-date-style 'european
@@ -43,7 +43,7 @@
  dabbrev-case-fold-search nil        ;; Case is significant for dabbrev
  split-width-threshold 200           ;; I don't like horizontal splitting
  kill-ring-max 2000                  ;; oh yes! long killring!
- default-input-method "russian-computer"
+ default-input-method nil
  w3m-use-cookies t
  ediff-window-setup-function 'ediff-setup-windows-plain
  auto-window-vscroll nil

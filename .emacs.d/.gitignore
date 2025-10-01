@@ -16,3 +16,4 @@ url
 .cache
 .lsp*
 eln-cache
+request

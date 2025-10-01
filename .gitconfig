@@ -1,6 +1,8 @@
 [user]
-	email = alexander@solovyov.net
-	name = Alexander Solovyov
+	email = o@solovyov.net
+	name = Oleksandr Solovyov
+[advice]
+	detachedHead = false
 [alias]
     co = checkout
     st = status -sb
@@ -12,15 +14,18 @@
     dfc = diff --cached
     dfa = diff HEAD
     p = log -p --ext-diff
+    pd = !"f() { GIT_EXTERNAL_DIFF=difft git p "$@" }; f"
+    pr = !"f() { git fetch origin pull/${1}/head:pr${1}; }; f"
     xp = log -p --ext-diff master..HEAD
     pl = log -p --ext-diff HEAD@{1}..HEAD
-    sl = log --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
-    ss = log --pretty=tformat:'%Cred%h%Creset - %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
-    s = log --pretty=tformat:'%Cred%h%Creset - '
+    sl = log --format='%C(auto)%h%Creset - %Cgreen(%ci) %C(bold blue)<%an>%Creset %s %C(auto)%d'
+#    sl = log --format='%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s'
+    ss = log --format='%Cred%h%Creset - %Cgreen(%ci) %C(bold blue)<%an>%Creset %s'
+    s = log --format='%Cred%h%Creset'
     ll = !git sl HEAD@{1}..HEAD
-    g = log --graph --pretty=tformat:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s' --abbrev-commit
-    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
-    w = whatchanged --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N' --abbrev-commit
+    g = log --graph --format='%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset %s'
+    l = log --graph --format='%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N'
+    w = whatchanged --graph --format='%Cred%h%Creset -%C(yellow)%d%Creset %Cgreen(%ci) %C(bold blue)<%an>%Creset\n  %s\n  %N'
     wl = !git w HEAD@{1}..HEAD
     serve = daemon --reuseaddr --verbose  --base-path=. --export-all
     b = !"git sl --no-walk --date-order $(git rev-list --branches --no-walk)"
@@ -33,8 +38,8 @@
     todo = grep --heading --break -e ' FIXME *' -e ' TODO *'
 
     tagpush = !git push origin $(git symbolic-ref HEAD) --tags
-    mpull = !git pull origin master:master
-    comerge = "!f() { target=$(git symbolic-ref HEAD); git co ${1:-master}; git merge $target; }; f"
+    mas = fetch origin master:master
+    comerge = !"f() { target=$(git symbolic-ref HEAD); git co ${1:-master}; git merge $target; }; f"
     pr = !"f() { git fetch origin pull/${1}/head:pr${1}; }; f"
 
     pushurl = config remote.origin.pushurl
@@ -54,24 +59,25 @@
 [diff]
 	renames = true
 	noprefix = true
-	#external = difft
-	#external = ~/bin/git-external-patdiff.sh
+    conflictstyle = zdiff3
+    tool = difftastic
+[pager]
+    difftool = true
 [push]
 	default = current
+	autoSetupRemote = true
 [pull]
 	ff = only
 [daemon]
     receivepack = true
-[filter "media"]
-	clean = git media clean %f
-	smudge = git media smudge %f
-	required = true
-[gitlab "git.modnakasta.ua/api/v4"]
-	user = asolovyov
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
 [init]
 	defaultBranch = main
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[difftool]
+    prompt = false
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"

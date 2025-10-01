@@ -1,22 +1,26 @@
 ;;; modes.el -- various modes configuration
 
-(require 'warnings)
-
-;; usual major modes
-(add-to-list 'auto-mode-alist '("\\.egg\\'" . archive-mode))
+(when (memq window-system '(mac ns x))
+  (use-package exec-path-from-shell
+    :ensure t
+    :config
+    (dolist (var '("LANG"))
+      (add-to-list 'exec-path-from-shell-variables var))
+    (exec-path-from-shell-initialize)))
 
 (require 'imenu)
 (setq imenu-auto-rescan t)
-(use-package flimenu
+(use-package flimenu ; flatten imenu
   :ensure t
   :config
   (flimenu-global-mode))
 
-(setq tags-file-name (expand-file-name "~/TAGS"))
+(column-number-mode 1)
+(show-paren-mode 1)
+(setq show-paren-context-when-offscreen 'child-frame)
+(global-subword-mode 1)
 
-
-
-;; dired
+;;; dired
 (setq dired-omit-extensions '(".pyc" ".elc")
       dired-omit-files "^\\.?#\\|^\\.")
 (autoload 'dired-jump "dired-x" "Jump to dir of current file" t)
@@ -25,21 +29,7 @@
 (add-hook 'dired-omit-mode-hook
           (lambda ()
             (define-key dired-mode-map (kbd "M-o") nil)
-            (define-key dired-mode-map (kbd "M-O") 'dired-omit-mode)
-            (define-key dired-mode-map (kbd "C-,")
-              (lambda () (bs--show-with-configuration "dired")))))
-(global-set-key (kbd "C-x C-d") 'dired-jump)
-
-(setq eshell-scroll-to-bottom-on-input 'all
-      eshell-error-if-no-glob t
-      eshell-hist-ignoredups t
-      eshell-save-history-on-exit t
-      eshell-prefer-lisp-functions nil)
-
-(column-number-mode 1)
-(show-paren-mode 1)
-(global-subword-mode 1)
-
+            (define-key dired-mode-map (kbd "M-O") 'dired-omit-mode)))
 
 ;; I hate blinking
 (if (fboundp 'blink-cursor-mode)
@@ -56,7 +46,14 @@
 
 (winner-mode 1) ;; window configuration undo/redo
 (remove-hook 'minibuffer-setup-hook 'winner-save-unconditionally)
-(windmove-default-keybindings)
+
+(use-package windmove
+  :config
+  (windmove-default-keybindings))
+
+(use-package framemove
+  :config
+  (setq framemove-hook-into-windmove t))
 
 (setq tramp-default-method "ssh"
       tramp-use-ssh-controlmaster-options nil)
@@ -68,15 +65,33 @@
 (save-place-mode 1)
 
 ;; saving history
-(savehist-mode 1)
-(setq savehist-additional-variables
-      '(search-ring
-        regexp-search-ring
-        kill-ring
-        file-name-history
-        command-history
-        shell-command-history))
+;; (savehist-mode 1)
+;; (setq savehist-additional-variables
+;;       '(search-ring
+;;         regexp-search-ring
+;;         kill-ring
+;;         mark-ring
+;;         global-mark-ring
+;;         file-name-history
+;;         command-history
+;;         shell-command-history))
 (setq save-abbrevs nil)
+
+(use-package desktop
+  :config
+  (setq desktop-restore-frames nil
+        desktop-files-not-to-save ".*"
+        desktop-buffers-not-to-save ".*")
+  (add-to-list 'desktop-globals-to-save 'command-history)
+  (add-to-list 'desktop-globals-to-save 'shell-command-history)
+  (add-to-list 'desktop-globals-to-save 'kill-ring)
+  (add-to-list 'desktop-globals-to-save 'global-mark-ring)
+  (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+  (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+  (add-to-list 'desktop-modes-not-to-save 'info-lookuqp-mode)
+  (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+  :init
+  (desktop-save-mode 1))
 
 (which-function-mode)
 
@@ -99,7 +114,10 @@
               ("C-S-<up>" . org-timestamp-up)
               ("C-S-<down>" . org-timestamp-down))
   :config
-  (setq org-hide-leading-stars t))
+  (setq org-hide-leading-stars nil)
+  (add-hook 'org-mode-hook 'visual-line-mode)
+  (add-hook 'org-mode-hook 'visual-fill-column-mode)
+  (setq visual-fill-column-width 100))
 
 
 ;; major modes
@@ -129,11 +147,9 @@
 
 (use-package yaml-mode
   :ensure t
-  :mode "\\.yaml\\'")
-
-(use-package sass-mode
-  :ensure t
-  :mode "\\.scss")
+  :mode "\\.yaml\\'"
+  :init
+  (add-hook 'yaml-mode-hook #'(lambda () (setq-local flycheck-check-syntax-automatically '(save mode-enabled)))))
 
 (setq css-indent-offset 2)
 
@@ -151,11 +167,13 @@
             (setq imenu-create-index-function 'python-imenu-create-flat-index)
             (define-key python-mode-map (kbd "RET") 'newline-maybe-indent)))
 
-
-(use-package flycheck-pos-tip
+(use-package python-pytest
   :ensure t
-  :commands flycheck-pos-tip-error-messages)
+  :bind (:map python-mode-map
+              ("C-c C-t" . python-pytest-dispatch)))
 
+
+;;; Flycheck
 
 (use-package flycheck
   :ensure t
@@ -163,7 +181,8 @@
   :init
   (add-hook 'after-init-hook 'global-flycheck-mode)
   :config
-  (setq-default flycheck-display-errors-function 'flycheck-pos-tip-error-messages)
+  (setq flycheck-display-errors-delay 0)
+  (setq flycheck-idle-change-delay 1)
   ;(add-to-list 'flycheck-disabled-checkers 'python-flake8)
   (add-to-list 'flycheck-disabled-checkers 'python-pylint)
   (add-to-list 'flycheck-disabled-checkers 'emacs-lisp)
@@ -171,18 +190,23 @@
   (add-to-list 'flycheck-disabled-checkers 'scss-lint)
   (add-to-list 'flycheck-disabled-checkers 'sass/scss-sass-list))
 
-
-(use-package flycheck-pyflakes
-  :ensure t
-  ;; :hook python-mode-hook
-  :init
-  (add-hook 'python-mode-hook (lambda () (require 'flycheck-pyflakes))))
-
-
 (use-package flycheck-clj-kondo
   :ensure t
   :defer t)
 
+(use-package flycheck-biomejs
+  :ensure t
+  :vc (flycheck-biomejs :url "https://github.com/craneduck/flycheck-biomejs"))
+
+(use-package sideline
+  :ensure t
+  :config
+  (setq sideline-backends-right '(sideline-flycheck)
+        sideline-backends-right-skip-current-line nil))
+
+(use-package sideline-flycheck
+  :ensure t
+  :hook (flycheck-mode . sideline-mode))
 
 ;; Ruby
 
@@ -192,7 +216,8 @@
 
 ;; Javascript
 
-;; maybe try out https://github.com/skeeto/skewer-mode
+(add-to-list 'auto-mode-alist '("\\.jsonc\\'" . js-json-mode))
+(add-to-list 'auto-mode-alist '("\\.jtd\\'" . js-json-mode))
 
 (defvar js-mode-map)
 (with-eval-after-load 'js
@@ -206,8 +231,16 @@
 
 (add-hook 'js-mode-hook
           #'(lambda ()
-              (setq imenu-create-index-function 'imenu-dumb-js-make-index)))
+              (setq imenu-create-index-function 'imenu-dumb-js-make-index)
+              (setq-local outline-regexp "///")))
 
+(add-hook 'typescript-mode-hook
+          #'(lambda ()
+              (setq imenu-create-index-function 'imenu-dumb-js-make-index)
+              (setq-local outline-regexp "///")))
+
+(use-package json-mode
+  :ensure t)
 
 ;; Snippets
 
@@ -276,9 +309,8 @@
 
   (whole-line-or-region-global-mode))
 
-;; VC mode, do not ever annoy me with slow file loading time
+;;; VC mode, do not ever annoy me with slow file loading time
 (remove-hook 'find-file-hook 'vc-find-file-hook)
-
 
 ;; smerge
 (defun sm-try-smerge ()
@@ -304,6 +336,8 @@
   (setq clojure-thread-all-but-last t)
   (setq clojure-align-forms-automatically t)
   (setq clojure-toplevel-inside-comment-form t)
+  (put-clojure-indent 'and 0)
+  (put-clojure-indent 'or 0)
   (put-clojure-indent '= 0)
   (put-clojure-indent 'not= 0)
   (put-clojure-indent '+ 0)
@@ -316,15 +350,57 @@
   (put-clojure-indent '<= 0)
   (put-clojure-indent '->  0)
   (put-clojure-indent '->> 0)
-  (put-clojure-indent 'and 0)
-  (put-clojure-indent 'or  0)
-  (put-clojure-indent 'and* 0)
-  (put-clojure-indent 'or* 0)
-  (put-clojure-indent 'recur 0)
+  (put-clojure-indent '<< 0)
   (add-to-list 'clojure-align-cond-forms "better-cond.core/when-let")
   (add-to-list 'clojure-align-cond-forms "better-cond.core/if-let")
-  (add-to-list 'clojure-align-binding-forms "blet"))
+  (add-to-list 'clojure-align-cond-forms "core/cond+")
+  (add-to-list 'clojure-align-cond-forms "core/cx")
+  (add-to-list 'clojure-align-binding-forms "blet")
+  (add-to-list 'clojure-align-binding-forms "mt/with-dynamic-redefs")
+  (add-to-list 'clojure-align-binding-forms "with-yielding")
 
+  (defun clojure-match-next-def ()
+  "Scans the buffer backwards for the next \"top-level\" definition.
+Called by `imenu--generic-function'."
+  ;; we have to take into account namespace-definition forms
+  ;; e.g. s/defn
+  (when (re-search-backward "^[ \t]*(\\([a-z0-9.-]+/\\)?\\(def[^ \n\t]*\\) " nil t)
+    (save-excursion
+      (let (found?
+            (deftype (match-string 2))
+            (start (point)))
+        ;; ignore user-error from down-list when called from inside a string or comment
+        ;; TODO: a better workaround would be to wrap it in
+        ;; unless (ppss-comment-or-string-start (syntax-ppss)) instead of ignore-errors,
+        ;; but ppss-comment-or-string-start is only available since Emacs 27
+        (ignore-errors
+          (down-list))
+        (forward-sexp)
+        (while (not found?)
+          (ignore-errors
+            (forward-sexp))
+          (or (when (char-equal ?\[ (char-after (point)))
+                (backward-sexp))
+              (when (char-equal ?\) (char-after (point)))
+                (backward-sexp)))
+          (cl-destructuring-bind (def-beg . def-end) (bounds-of-thing-at-point 'sexp)
+            (when (char-equal ?^ (char-after def-beg))
+              ;; move to the beginning of next sexp
+              (progn (forward-sexp) (backward-sexp)))
+            (when (or (not (char-equal ?^ (char-after def-beg)))
+                      (and (char-equal ?^ (char-after (point))) (= def-beg (point))))
+              (setq found? t)
+              (when (string= deftype "defmethod")
+                (setq def-end (progn (goto-char def-end)
+                                     (forward-sexp)
+                                     (point))))
+              (when (or (string= deftype "defendpoint")
+                        (string= deftype "defendpoint-async"))
+                (setq def-end (progn (goto-char def-end)
+                                     (forward-sexp)
+                                     (point))))
+              (set-match-data (list def-beg def-end)))))
+        (goto-char start))))))
 
 (use-package cider
   :pin melpa-stable
@@ -336,13 +412,11 @@
         :map cider-repl-mode-map
               ("C-c M-r" . cider-repl-previous-matching-input)
               ("C-c M-s" . cider-repl-next-matching-input))
-  :init
-  (add-hook 'clojure-mode-hook 'cider-mode)
-  (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  :hook clojure-mode
   :config
   (setq cider-repl-history-file "~/.emacs.d/cider-history"
-        cider-cljs-repl "(do (require '[figwheel-sidecar.repl-api :as ra]) (ra/cljs-repl))"
-        cider-repl-display-help-banner nil)
+        cider-repl-display-help-banner nil
+        cider-download-java-sources t)
   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
 (use-package paredit
@@ -354,10 +428,14 @@
               ("C-<left>" . nil)
               ("C-<right>" . nil)
               ("C-M-," . paredit-forward-barf-sexp)
-              ("C-M-." . paredit-forward-slurp-sexp))
+              ("C-M-." . paredit-forward-slurp-sexp)
+              ("C-M-'" . paredit-convolute-sexp))
+  :hook clojure-mode
+  :hook inf-clojure-mode
+  :hook cider-repl-mode
+  :hook emacs-lisp-mode
+  :hook lisp-data-mode
   :init
-  (add-hook 'clojure-mode-hook 'paredit-mode)
-  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
   (add-to-list 'package--builtin-versions `(paredit 26)))
 
 (use-package clj-refactor
@@ -365,12 +443,52 @@
   :ensure t
   :load-path "elpa/clj-refactor-20230202.637/"
   :commands (clj-refactor-mode cljr-add-keybindings-with-prefix)
-  :init
-  (add-hook 'clojure-mode-hook
-            #'(lambda ()
-                (clj-refactor-mode 1)
-                (cljr-add-keybindings-with-prefix "C-c C-m"))))
+  :hook clojure-mode
+  :config
+  (cljr-add-keybindings-with-prefix "C-c C-m")
+  (setq cljr-insert-newline-after-require nil)
+  (defun cljr--unresolved-alias-ref--preventer (alias-ref)
+    (unless (or (string= "user" alias-ref)
+                (string= "dev" alias-ref)
+                (string-prefix-p "dev." alias-ref))
+      alias-ref))
 
+  (advice-add 'cljr--unresolved-alias-ref :before-while
+              #'cljr--unresolved-alias-ref--preventer))
+
+;; (use-package eglot
+;;   :ensure t
+;;   :bind (("C-c a" . eglot-code-actions))
+;;   :hook (((clojure-mode clojurec-mode clojurescript-mode java-mode scala-mode)
+;;           . eglot-ensure)
+;;          ((cider-mode eglot-managed-mode) . eglot-disable-in-cider))
+;;   :preface
+;;   (defun eglot-disable-in-cider ()
+;;     (when (eglot-managed-p)
+;;       (if (bound-and-true-p cider-mode)
+;;           (progn
+;;             (remove-hook 'completion-at-point-functions 'eglot-completion-at-point t)
+;;             (remove-hook 'xref-backend-functions 'eglot-xref-backend t))
+;;         (add-hook 'completion-at-point-functions 'eglot-completion-at-point nil t)
+;;         (add-hook 'xref-backend-functions 'eglot-xref-backend nil t))))
+;;   :custom
+;;   (eglot-confirm-server-initiated-edits nil)
+;;   (eglot-sync-connect nil)
+;;   (eglot-connect-timeout 120)
+;;   (eglot-autoshutdown t)
+;;   (eglot-events-buffer-size 0)
+;;   (eglot-extend-to-xref nil)
+;;   (eglot-ignored-server-capabilities
+;;    '(:hoverProvider
+;;      :documentHighlightProvider
+;;      :documentFormattingProvider
+;;      :documentRangeFormattingProvider
+;;      :documentOnTypeFormattingProvider
+;;      :colorProvider
+;;      :foldingRangeProvider))
+;;   (eglot-stay-out-of '(yasnippet)))
+
+;; Various
 
 (use-package sql-indent
   :ensure t
@@ -378,14 +496,18 @@
   :init
   (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 
-
 (use-package av-psql
   :commands av-pg-server-connect
   :config
   (av-wireup-pg-stuff))
 
+;; like cider-repl, c-o cleans last output, c-u c-o cleans full buffer
+(defadvice comint-delete-output (around partial compile activate)
+  (pcase-exhaustive current-prefix-arg
+    ('nil ad-do-it)
+    ('(4) (comint-clear-buffer))))
 
-;; Various
+(ad-activate 'comint-delete-output)
 
 (use-package dockerfile-mode
   :ensure t
@@ -397,8 +519,10 @@
   :ensure t
   :bind (("C-x g" . magit-status)
          ("C-x M-g" . magit-dispatch))
+  :hook (magit-process-mode . goto-address-mode)
   :config
-  (setq magit-save-repository-buffers nil)
+  (setq magit-save-repository-buffers nil
+        magit-log-section-commit-count 20)
 
   ;;; https://jakemccrary.com/blog/2020/11/14/speeding-up-magit/
   (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
@@ -426,8 +550,20 @@
                            (format "refs/heads/%s:refs/heads/%s"
                                    branch branch))))
 
-  (transient-append-suffix 'magit-rebase "e" '("o" "origin/master" magit-rebase-origin-master))
-  (transient-append-suffix 'magit-push "e" '("P" "pushRemote with lease" magit-push-current-with-lease)))
+  (defun magit-pull-origin-master (args)
+    (interactive (list (magit-fetch-arguments)))
+    (if-let ((main (-> (magit-git-string-p "symbolic-ref" "refs/remotes/origin/HEAD")
+                       (split-string "/")
+                       (last)
+                       (car))))
+        (progn
+         (message "Fetching origin:%s..." main)
+         (magit-git-fetch "origin" (concat main ":" main)))
+      (message "Cannot determine `main` branch!")))
+
+  (transient-append-suffix 'magit-rebase "e" '("M" "origin/master" magit-rebase-origin-master))
+  (transient-append-suffix 'magit-push "e" '("P" "pushRemote with lease" magit-push-current-with-lease))
+  (transient-append-suffix 'magit-pull "e" '("M" "update `main` branch from origin" magit-pull-origin-master)))
 
 (use-package string-inflection
   :ensure t)
@@ -466,7 +602,7 @@
   :ensure t
   :bind (("C->" . mc/mark-next-like-this)
          ("C-<" . mc/unmark-next-like-this)
-         ("C-c C-." . mc/mark-all-dwim)
+         ("C-x C-." . mc/mark-all-dwim)
          ("C-S-<mouse-1>" . mc/add-cursor-on-click)
          ("C-S-c C-S-c" . mc/edit-lines)))
 
@@ -489,9 +625,6 @@
   :config
   (setq vcl-indent-level 2))
 
-(use-package minions
-  :ensure t
-  :init (minions-mode 1))
 
 (use-package hl-todo
   :ensure t
@@ -552,26 +685,6 @@
 ;;   :init (global-anzu-mode 1))
 
 
-(use-package iflipb
-  :ensure t
-  :bind (("M-]" . iflipb-next-buffer)
-         ("M-[" . iflipb-previous-buffer)))
-
-
-(use-package writeroom-mode
-  :ensure t
-  :bind (:map writeroom-mode-map
-              ("C-M-<" . writeroom-decrease-width)
-              ("C-M->" . writeroom-increase-width)
-              ("C-M-=" . writeroom-adjust-width))
-  :init
-  (setq writeroom-width 80)
-  (add-hook 'writeroom-mode-hook
-            #'(lambda ()
-                (set-face-attribute 'markdown-pre-face (selected-frame) :family "Monaco" :height 140)
-                (face-remap-add-relative 'default '(:family "Inter" :height 120))
-                (face-remap-add-relative 'cursor '(:background 'red)))))
-
 (use-package terraform-mode
   :ensure t)
 
@@ -606,14 +719,6 @@
           (top . 0.3)
           (width . 0.7)
           (height . 10)))
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-literal)
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-fuzzy)
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-regexp)
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-forward-fuzzy-regexp)
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-literal)
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-fuzzy)
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-regexp)
-  (add-to-list 'mini-frame-ignore-commands 'ctrlf-backward-fuzzy-regexp)
   (mini-frame-mode 1))
 
 
@@ -621,30 +726,15 @@
   :ensure t
   :mode "\\.zig\\'")
 
-(use-package point-stack
-  :ensure t
-  :bind (("C-M-;" . point-stack-pop)
-         ("C-M-'" . point-stack-forward-stack-pop))
-  :commands point-stack-setup-advices
-  :init
-  (point-stack-setup-advices))
-
-
-(use-package embark
-  :ensure t
-  :bind
-  (("C-'"   . embark-act)
-   ("C-\""  . embark-dwim)
-   ("C-h B" . embark-bindings)))
-
-
 (use-package pyvenv
   :ensure t
   :commands (pyvenv-activate pyvenv-workon))
 
 (use-package jinja2-mode
   :ensure t
-  :defer t)
+  :defer t
+  :bind (:map jinja2-mode-map
+              ("M-o" . nil)))
 
 (use-package swift-mode
   :ensure t
@@ -656,27 +746,162 @@
   :config
   (setq typescript-indent-level 2))
 
-(use-package vterm
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (ansi-color-apply-on-region compilation-filter-start (point-max)))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+(use-package goto-last-change
   :ensure t
-  :bind (:map vterm-mode-map
-              ("C-M-l" . nil))
-  :commands vterm)
+  :bind ("C-x C-\\" . goto-last-change))
 
-
-(setq treesit-extra-load-path '("/Users/piranha/var/tree-sitter-module/dist"))
-
-(use-package chatgpt-shell
+(use-package point-stack
+  :ensure t
+  :bind (("C-M-j" . point-stack-pop)
+         ("C-M-k" . point-stack-forward-stack-pop)
+         :map paredit-mode-map
+         ("C-M-k" . nil))
   :config
-  (setq chatgpt-shell-openai-key (read-export-value "~/.zshlocal" "OPENAI_ACCESS_TOKEN")))
+  (point-stack-setup-advices))
+
+;; https://github.com/shouya/ancilla.el
+
+(use-package git-link
+  :ensure t)
+
+(use-package treesit-langs
+  :ensure t
+  :config
+  (treesit-langs-major-mode-setup))
+
+(use-package highlight-indent-guides
+  :ensure t
+  :hook yaml-mode
+  :config
+  (setq highlight-indent-guides-method 'character))
+
+(use-package explain-pause-mode)
+
+;;; janet
+
+(use-package janet-mode
+  :ensure t
+  :init
+  (add-hook 'janet-mode-hook 'paredit-mode))
+
+(use-package flycheck-janet
+  :ensure t)
+
+(use-package pkl-mode
+  :ensure t
+  :config
+  (setq pkl-enable-copilot nil))
+
+(use-package significant-other
+  :ensure t
+  :vc (significant-other :url "https://github.com/ovistoica/significant-other.el")
+  :commands with-significant-others significant-other-jump
+  :init
+  (add-hook 'clojure-mode-hook
+            (lambda ()
+              (with-significant-others
+               file
+               ("/src/.+\\.cljc?$"
+                (list (->> file
+                           (replace-regexp-in-string "\\.\\(cljc?\\)$" "_test.\\1")
+                           (replace-regexp-in-string "/src/" "/test/"))))
+
+               ("/test/.+_test\\.cljc?$"
+                (list (->> file
+                           (replace-regexp-in-string "_test\\.\\(cljc?\\)$" ".\\1")
+                           (replace-regexp-in-string "/test/" "/src/"))))))))
+
+;;; llms
+
+(use-package eat ;; terminal
+  :ensure t)
 
 (use-package gptel
   :ensure t
+  :mode ("\\.llm\\'" . org-mode)
+  :bind (:map gptel-mode-map
+              ("C-c C-c" . gptel-send))
   :config
-  (setq gptel-api-key (read-export-value "~/.zshlocal" "OPENAI_ACCESS_TOKEN")))
+  (setq gptel-model 'claude-sonnet-4-20250514
+        gptel-backend (gptel-make-anthropic "Claude"
+                        :stream t :key (cdr (netrc "api.anthropic.com")))
+        ;; gptel-backend (gptel-make-openai "gpt"
+        ;;                 :stream t :key (cdr (netrc "api.openai.com"))
+        ;;                 :models '(o1-preview gpt-4o))
+        ;; gptel-backend (gptel-make-gemini "gemini"
+        ;;                 :stream t :key (cdr (netrc "generativelanguage.googleapis.com"))
+        ;;                 :models '(gemini-2.0-flash gemini-2.0-flash-lite))
+        gptel-default-mode 'org-mode
+        gptel-org-branching-context t)
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (when (and buffer-file-name
+                                          (string-match-p "\\.llm[^.]*$" buffer-file-name))
+                                 (gptel-mode 1))))
 
+  (defun gptel-set-default-directory ()
+    (unless (buffer-file-name)
+      (setq default-directory "~/dev/misc/llmchats/")))
+  (add-hook 'gptel-mode-hook #'gptel-set-default-directory)
 
-(use-package chatgpt
+  (defun gptel-rename-chat ()
+    (interactive)
+    (unless gptel-mode
+      (user-error "This command is intended to be used in gptel chat buffers."))
+    (gptel-request
+        (list nil                         ;user
+              "What is the chat content?" ;llm
+              (concat "```" (if (eq major-mode 'org-mode) "org" "markdown") "\n"
+                      (buffer-substring-no-properties (point-min) (point-max))
+                      "\n```"))         ;user
+      :system
+      (list (format                     ;system message
+             "I will provide a transcript of a chat with an LLM.  \
+Suggest a short and informative name for a file to store this chat in.  \
+Use the following guidelines:
+- be very concise, one very short sentence at most
+- no spaces, use underscores if required
+- return ONLY the title, no explanation or summary
+- append the extension .%s"
+             (if (eq major-mode 'org-mode) "org" "md")))
+      :callback
+      (lambda (resp info)        ;callback called with response and request info
+        (if (stringp resp)
+            (let ((buf (plist-get info :buffer)))
+              (when (and (buffer-live-p buf)
+                         (y-or-n-p (format "Rename buffer %s to %s? " (buffer-name buf) resp)))
+                (with-current-buffer buf (rename-visited-file resp))))
+          (message "Error(%s): did not receive a response from the LLM."
+                   (plist-get info :status)))))))
+
+(use-package aidermacs
   :ensure t
+  :vc (aidermacs :url "https://github.com/MatthewZMD/aidermacs")
+  :bind ("C-c a" . aidermacs-transient-menu)
   :config
-  (setq openai-key (read-export-value "~/.zshlocal" "OPENAI_ACCESS_TOKEN"))
-  (setq chatgpt-model "gpt-4"))
+  (setq aidermacs-default-model "gemini" ;;"sonnet"
+        ;;"gemini/gemini-2.5-pro-exp-03-25"
+        ;;"anthropic/claude-3-7-sonnet-20250219"
+        aidermacs-backend 'eat)
+  (setenv "ANTHROPIC_API_KEY" (cdr (netrc "api.anthropic.com")))
+  (setenv "GEMINI_API_KEY" (cdr (netrc "generativelanguage.googleapis.com"))))
+
+(use-package claude-code-ide
+  :ensure t
+  :vc (claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup)
+  (setq claude-code-ide-terminal-backend 'eat))
+
+(use-package eca
+  :ensure t
+  :commands (eca)
+  :config
+  (setenv "ANTHROPIC_API_KEY" (cdr (netrc "api.anthropic.com"))))
+
+;;; modes-init.el ends here

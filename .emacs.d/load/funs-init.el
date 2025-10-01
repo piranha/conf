@@ -1,3 +1,10 @@
+(defmacro /p (form)
+  "Debug macro similar to Clojure's hashp.  Prints form and its value.
+FORM - any elisp form."
+  `(let ((result ,form))
+     (message "[/p]: %S => %S" ',form result)
+     result))
+
 (defun no-scroll-margin ()
   "Set scroll-margin to 0 buffer-locally"
   (interactive)
@@ -232,3 +239,25 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
     (let ((case-fold-search t))
       (when (re-search-forward (concat "^export " var "=\\([^[:space:]]+\\)") nil t)
         (match-string 1)))))
+
+(defun netrc (host)
+  "Read the login and (optional) password for a `HOST` from a .netrc file."
+  (with-temp-buffer
+    (insert-file-contents "~/.netrc")
+    (goto-char (point-min))
+    (let ((case-fold-search t))
+      (when (re-search-forward (concat "^machine " host "\\( login \\([^[:space:]]+\\)\\)?\\( password \\([^[:space:]]+\\)\\)?"))
+        (cons (match-string 2) (match-string 4))))))
+
+;;; convenience stuff
+
+(defmacro -> (&rest body)
+  (let ((result (pop body)))
+    (dolist (form body result)
+      (setq result (append (list (car form) result)
+                           (cdr form))))))
+
+(defmacro ->> (&rest body)
+  (let ((result (pop body)))
+    (dolist (form body result)
+      (setq result (append form (list result))))))

@@ -17,12 +17,14 @@ mapping=(
     git-req bin/git-req
     .tmux.conf .tmux.conf
     .patdiff .patdiff
-    net.solovyov.vpn.plist "Library/LaunchAgents/net.solovyov.vpn.plist"
+    # net.solovyov.vpn.plist "Library/LaunchAgents/net.solovyov.vpn.plist"
     #net.solovyov.sshtun.plist "Library/LaunchAgents/net.solovyov.sshtun.plist"
     hammerspoon.lua .hammerspoon/init.lua
     karabiner.json .config/karabiner/karabiner.json
     joker .joker
-    rc.elv .elvish/rc.elv
+    # rc.elv .elvish/rc.elv
+    dark-mode-apps-toggle.sh bin/dark-mode-apps-toggle.sh
+    net.solovyov.dark-mode-notify.plist "Library/LaunchAgents/net.solovyov.dark-mode-notify.plist"
     )
 
 for src in ${(k)mapping}; do

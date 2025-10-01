@@ -1,24 +1,22 @@
+(global-unset-key (kbd "<pinch>"))
+(global-unset-key (kbd "C-<wheel-up>"))
+(global-unset-key (kbd "C-<wheel-down>"))
+(global-unset-key (kbd "C-M-<wheel-up>"))
+(global-unset-key (kbd "C-M-<wheel-down>"))
 (global-unset-key (kbd "C-x C-c")) ;; too easy to hit accidentally
 (global-set-key (kbd "C-x C-c C-v") 'save-buffers-kill-terminal)
 
-(global-set-key (kbd "M-'") 'mode-line-other-buffer)
-(global-set-key (kbd "C-x C-b") 'bs-show)
-(global-set-key (kbd "C-,") 'bs-show)
-;(global-set-key (kbd "C-.") 'switch-to-buffer)
-;(define-key global-map (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
+(global-set-key (kbd "S-<tab>") 'complete-symbol)
 
 (global-set-key (kbd "C-z") 'undo)
 ;(global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-?") 'help-command)
 (global-set-key (kbd "C-x C-r") 'query-replace-regexp)
 
-(global-set-key (kbd "C-<f12>") 'toggle-current-window-dedication)
-(global-set-key (kbd "C-S-k") (lambda () (interactive) (kill-line 0)))
-
-;(global-set-key (kbd "C-x C-d") 'dired-jump)
-
 (global-set-key (kbd "C-c k") (lambda () (interactive)
                                 (kill-buffer nil)))
+(global-set-key (kbd "M-'") 'mode-line-other-buffer)
 (global-set-key (kbd "C-M-l") (lambda () (interactive)
                                 (switch-to-buffer (other-buffer))))
 (global-set-key (kbd "C-M-z") (lambda (&optional arg char)
@@ -35,12 +33,21 @@
 (global-set-key (kbd "C-M-=") 'flycheck-next-error)
 
 ;; windows
-(global-set-key (kbd "M-`") 'other-frame)
+;;(global-set-key (kbd "M-`") 'other-frame)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-1") 'delete-other-windows)
 (global-set-key (kbd "M-2") 'split-window-vertically)
 (global-set-key (kbd "M-3") 'split-window-horizontally)
 (global-set-key (kbd "M-0") 'delete-window)
+
+(global-set-key (kbd "M-`")  (lambda ()
+                               (interactive)
+                               (other-window 1 t)
+                               (let ((nframe (window-frame (selected-window))))
+                                 (select-frame-set-input-focus nframe)
+                                 (make-frame-visible nframe))))
+
+(global-set-key (kbd "M-[") 'pop-global-mark)
 
 (if (fboundp 'w32-send-sys-command)
     (global-set-key (kbd "M-M") ; maximize
@@ -65,8 +72,8 @@
  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
 (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat)
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
-(define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
-(define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
+(define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward)
+(define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward)
 
 (add-hook 'comint-mode
           (lambda ()
@@ -74,3 +81,6 @@
 
 (global-set-key (kbd "C-M-[") 'backward-paragraph)
 (global-set-key (kbd "C-M-]") 'forward-paragraph)
+
+(with-eval-after-load 'conf-mode
+  (define-key conf-mode-map (kbd "C-c C-l") 'recompile))

@@ -7,119 +7,138 @@ local sa = {"shift", "alt"}
 local alt = "alt"
 local cmd = "cmd"
 
+-- bind reload at start in case of error later in config
+hs.hotkey.bind(hyper, "R", hs.reload)
+hs.hotkey.bind(hyper, "Y", hs.toggleConsole)
 
---- Window management
+hs.ipc.cliInstall('/opt/homebrew')
+hs.ipc.cliSaveHistory(true)
 
-hs.window.animationDuration = 0
+--- Workspace management
+-- Workspaces logic is coming from AeroSpace:
+-- * WS can be bound to a screen, so
+--    * if screen is available, switch opens WS on that screen
+--    * if screen is unavailable, switch opens WS on a first (!) screen
+-- * Switch to WS hides all other windows on a target screen
+-- * Apps can be "assigned" to a screen, that only has effect on startup
 
-local resize = function(sizechange)
-  return function()
-    local win = hs.window.focusedWindow()
-    local f = win:frame()
-    local screen = win:screen()
-    local max = screen:frame()
+local workspaces = {
+  corners={}, -- screen to corner location
+  appinit={}, -- config of apps to workspaces they are attached to
+  winlocs={}, -- original window coords when hiding them
+  current={}, -- screen index to current workspace index
+}
 
-    sizechange(f, max)
-    win:setFrame(f)
+_G.workspaces = workspaces
+
+--- Utils
+
+--- Internal APIs
+
+function workspaces:_hideWindow(window)
+  self.winlocs[window] = window:topLeft()
+  window:setTopLeft(self.corners[window:screen():id()])
+    --{x=20000,y=20000}
+end
+
+function workspaces:_showWindow(window)
+  window:setTopLeft(self.winlocs[window])
+end
+
+--- API
+
+function workspaces:register(n, screen, apps) -- screen is a 1-based index
+  self[n] = {screen=screen, windows={}}
+  if not workspaces.current[screen] then
+    workspaces.current[screen] = n
+  end
+
+  for _, app in ipairs(apps) do
+    workspaces.appinit[app] = n
   end
 end
 
-hs.hotkey.bind(cmds, "m", resize(function(f, max)
-                   f.x = max.x
-                   f.y = max.y
-                   f.w = max.w
-                   f.h = max.h
-end))
+function workspaces:switch(ws)
+  local cfg = self[ws]
+  local screens = hs.screen.allScreens()
+  local targetScreen = (screens[cfg.screen] and cfg.screen or 1)
+  local outgoingWS = self.current[targetScreen]
+  local screen = screens[targetScreen]
 
-hs.hotkey.bind(mash, "left", resize(function(f, max)
-                   f.x = max.x
-                   f.y = max.y
-                   f.w = max.w / 2
-                   f.h = max.h
-end))
+  self.current[targetScreen] = ws
+  local outgoing = self[outgoingWS]
+  outgoing.windows = {}
 
-hs.hotkey.bind(mash, "right", resize(function(f, max)
-                   f.x = max.x + (max.w / 2)
-                   f.y = max.y
-                   f.w = max.w / 2
-                   f.h = max.h
-end))
+  for _, window in ipairs(hs.window.visibleWindows()) do
+    if window:screen() == screen then
+      table.insert(outgoing.windows, window)
+      workspaces:_hideWindow(window)
+    end
+  end
 
-hs.hotkey.bind(mash, "up", resize(function(f, max)
-                   f.x = max.x
-                   f.y = max.y
-                   f.w = max.w
-                   f.h = max.h / 2
-end))
+  for _, window in ipairs(cfg.windows) do
+    workspaces:_showWindow(window)
+  end
+end
 
-hs.hotkey.bind(mash, "down", resize(function(f, max)
-                   f.x = max.x
-                   f.y = max.y + (max.h / 2)
-                   f.w = max.w
-                   f.h = max.h / 2
-end))
+function workspaces:readjust()
+  -- handle screen count increase/decrease
+end
 
---- Window movement
+function workspaces:start()
+  hs.window.animationDuration = 0
+  for _, screen in pairs(hs.screen.allScreens()) do
+    self.corners[screen:id()] = screen:fullFrame().bottomright:move{x=-1,y=-1}
+  end
+  -- push apps out to respective workspaces
+end
 
-hs.hotkey.bind(cmdc, "down",
-               function() hs.window.focusedWindow():moveOneScreenSouth() end)
+--- Workspace config
 
-hs.hotkey.bind(cmdc, "up",
-               function() hs.window.focusedWindow():moveOneScreenNorth() end)
-
-hs.hotkey.bind("alt", "`",
-               function() focusScreen(hs.window.focusedWindow():screen():next()) end)
+workspaces:register(1, 1, {"Emacs"})
+workspaces:register(2, 1, {"Firefox"})
+workspaces:register(3, 1, {"Terminal"})
+workspaces:register(4, 1, {"Slack", "Telegram"})
+workspaces:register(5, 1, {"zoom.us", "Transmission"})
+workspaces:register(6, 1, {})
+workspaces:register(7, 1, {})
+workspaces:register(8, 1, {})
+workspaces:register(9, 1, {})
+workspaces:register('q', 2, {"Logseq"})
+workspaces:register('w', 2, {"OBS"})
+workspaces:register('e', 2, {})
+workspaces:register('r', 2, {})
+workspaces:start()
 
 --- App Switch
 
-saved = {win=nil}
-
-function runOrHide(appName)
-  local app = hs.application.get(appName)
-  if not app then
-    saved.win = hs.window.focusedWindow()
-    hs.application.launchOrFocus(appName)
-    return
-  end
-
-  if app:isFrontmost() then
-    window = saved.win
-  else
-    saved.win = hs.window.focusedWindow()
-    window = app:mainWindow()
-  end
-
-  if window then
-    window:focus()
-  end
-end
-
 function runApp(appName)
-  return hs.application.launchOrFocus(appName)
+  return function() hs.application.launchOrFocus(appName) end
 end
 
 function bindApp(mod, key, app)
-  return hs.hotkey.bind(mod, key, function() runApp(app) end)
+  return hs.hotkey.bind(mod, key, runApp(app))
 end
 
-bindApp(hyper, "i", "Music")
-bindApp(hyper, ";", "Slack")
-bindApp(hyper, "'", "Telegram")
-bindApp(cmdc, "\\", "Quip")
-bindApp(cmdc, "/", "Bear")
-bindApp(cmds, "/", "UlyssesMac")
-bindApp(hyper, "t", 'Terminal')
-bindApp(hyper, "b", 'Google Chrome')
-bindApp(hyper, "z", 'zoom.us')
-bindApp(hyper, "e", 'Emacs')
+--hs.hotkey.bind(hyper, "i", runApp("Music"))
+-- bindApp(hyper, "i", "Music")
+-- bindApp(hyper, ";", "Slack")
+-- bindApp(hyper, "'", "Telegram")
+-- bindApp(cmdc, "\\", "Quip")
+-- bindApp(cmdc, "/", "Bear")
+-- bindApp(cmds, "/", "UlyssesMac")
+-- bindApp(hyper, "t", 'Terminal')
+-- bindApp(hyper, "b", 'Google Chrome')
+-- bindApp(hyper, "z", 'zoom.us')
+-- bindApp(hyper, "e", 'Emacs')
 
 
 --- window focus
 
-hs.window.filter.ignoreAlways['TotalSpacesCrashWatcher'] = true
-local switcher_space = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true))
-hs.hotkey.bind(alt, 'tab', function() switcher_space:next() end)
-hs.hotkey.bind(sa, 'tab', function() switcher_space:previous() end)
+-- hs.window.filter.ignoreAlways['TotalSpacesCrashWatcher'] = true
+-- local switcher_space = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true))
+-- hs.hotkey.bind(alt, 'tab', function() switcher_space:next() end)
+-- hs.hotkey.bind(sa, 'tab', function() switcher_space:previous() end)
 
 
 --- Various stuff
@@ -159,21 +178,5 @@ function focusScreen(screen)
   hs.mouse.setAbsolutePosition(pt)
 end
 
-
---- Config reload
-
-function reloadConfig(files)
-  doReload = false
-  for _, file in pairs(files) do
-    if file:sub(-4) == ".lua" then
-      doReload = true
-    end
-  end
-  if doReload then
-    hs.reload()
-  end
-end
-
-local configPath = hs.fs.pathToAbsolute(os.getenv("HOME") .. "/.hammerspoon/init.lua")
-local configWatcher = hs.pathwatcher.new(configPath, reloadConfig):start()
-hs.alert.show("Hammerspoon config loaded", 2)
+hs.hotkey.bind("alt", "`",
+               function() focusScreen(hs.window.focusedWindow():screen():next()) end)
