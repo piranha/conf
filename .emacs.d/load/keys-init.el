@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (global-unset-key (kbd "<pinch>"))
 (global-unset-key (kbd "C-<wheel-up>"))
 (global-unset-key (kbd "C-<wheel-down>"))

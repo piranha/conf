@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
 
@@ -105,7 +107,7 @@
 (use-package consult
   :ensure t
   :bind (("C-." . consult-buffer)
-         ("C-s" . consult-line)
+         ;;("C-s" . consult-line)
          ("C-c M-k" . consult-kmacro)
          ("M-y" . consult-yank-pop)
          ("C-x r b" . consult-bookmark) ;; bookmark-jump
@@ -140,19 +142,19 @@
 
 ;;; search
 
-;; (use-package isl
-;;   :ensure t
-;;   :vc (isearch-light :url "https://github.com/thierryvolpiatto/isearch-light")
-;;   :bind (("C-s" . isl-search)
-;;          ("C-M-S" . isl-resume))
-;;   :custom-face
-;;   :custom-face
-;;   (isl-match ((t (:inherit isearch))))
-;;   (isl-match-items ((t (:inherit query-replace))))  ; Another search-related face
-;;   (isl-on ((t (:inherit region))))                  ; Current selection
-;;   (isl-number ((t (:inherit font-lock-constant-face)))) ; Often colored appropriately
-;;   (isl-string ((t (:inherit minibuffer-prompt))))   ; Usually bold and colored
-;;   (isl-case-fold ((t (:inherit isl-string)))))
+(use-package isl
+  :ensure t
+  :vc (isearch-light :url "https://github.com/thierryvolpiatto/isearch-light")
+  :bind (("C-s" . isl-search)
+         ("C-M-S" . isl-resume))
+  :custom-face
+  (isl-match ((t (:inherit query-replace))))
+  (isl-match-items ((t (:inherit isearch))))  ; Another search-related face
+  (isl-on ((t (:inherit region))))                  ; Current selection
+
+  (isl-number ((t (:inherit font-lock-constant-face)))) ; Often colored appropriately
+  (isl-string ((t (:inherit minibuffer-prompt))))   ; Usually bold and colored
+  (isl-case-fold ((t (:inherit isl-string)))))
 
 ;;; mark navigation
 

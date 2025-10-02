@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (put 'test-case-name 'safe-local-variable '(lambda (x) t))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

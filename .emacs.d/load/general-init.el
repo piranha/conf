@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;; general customizations
 
 ;;   ;; never collect.

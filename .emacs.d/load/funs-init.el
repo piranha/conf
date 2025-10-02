@@ -1,9 +1,15 @@
+;; -*- lexical-binding: t; -*-
+
 (defmacro /p (form)
-  "Debug macro similar to Clojure's hashp.  Prints form and its value.
+  "Debug macro similar to Clojure's hashp.  Prints form and its value with location.
 FORM - any elisp form."
-  `(let ((result ,form))
-     (message "[/p]: %S => %S" ',form result)
-     result))
+  (let ((file (or load-file-name
+                  buffer-file-name
+                  "unknown"))
+        (line (line-number-at-pos)))
+    `(let ((result ,form))
+       (message "/p[%s:%s] %S => %S" (file-name-nondirectory ,file) ,line ',form result)
+       result)))
 
 (defun no-scroll-margin ()
   "Set scroll-margin to 0 buffer-locally"
@@ -20,9 +26,12 @@ FORM - any elisp form."
   (interactive)
   (insert (format-time-string "%F %T")))
 
-(defun prh:copy-line ()
-  "Save current line into Kill-Ring without marking the line "
-  (buffer-substring (line-beginning-position) (line-end-position)))
+(defun time-to-number (time)
+  "Convert time from format 9:30 to number"
+  (let ((time (if (string-match ":" time)
+                  (mapcar 'string-to-number (split-string time ":"))
+                `(,(string-to-number time) 0))))
+    (+ (car time) (/ (float (cadr time)) 60))))
 
 (defun prh:move-line-up ()
   (interactive)
@@ -34,21 +43,6 @@ FORM - any elisp form."
   (forward-line 1)
   (transpose-lines 1)
   (forward-line -1))
-
-(defun toggle-file (desired-file)
-  "Toggle buffer display of desired file."
-  (when (file-exists-p desired-file)
-    (if (and (buffer-file-name)
-             (string= (expand-file-name desired-file)
-                      (expand-file-name (buffer-file-name))))
-        (bury-buffer)
-      (find-file desired-file))))
-
-(defun toggle-buffer (buffer-name)
-  "Toggle display of desired buffer."
-  (if (string= (buffer-name) buffer-name)
-      (bury-buffer)
-    (switch-to-buffer buffer-name t)))
 
 (defun plist-maybe-get (keywords key)
   "If there is no \"key\" in \"keywords\", return nil.
@@ -69,28 +63,12 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
       (skip-chars-forward " \t")
     (move-beginning-of-line arg)))
 
-(defun toggle-current-window-dedication ()
-  (interactive)
-  (let* ((window (selected-window))
-         (dedicated (window-dedicated-p window)))
-    (set-window-dedicated-p window (not dedicated))
-    (message "Window %sdedicated to %s"
-             (if dedicated "no longer " "")
-             (buffer-name))))
-
 (defun newline-maybe-indent ()
   "Like newline-and-indent, but doesn't indent if the previous line is blank"
   (interactive "*")
   (if (= (line-beginning-position) (line-end-position))
       (newline)
     (newline-and-indent)))
-
-(defun time-to-number (time)
-  "Convert time from format 9:30 to number"
-  (let ((time (if (string-match ":" time)
-                  (mapcar 'string-to-number (split-string time ":"))
-                `(,(string-to-number time) 0))))
-    (+ (car time) (/ (float (cadr time)) 60))))
 
 (defun copy-path-to-clipboard ()
   "Copy the current file's path to the clipboard.
@@ -99,31 +77,6 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
   (let ((path (file-truename (or (buffer-file-name) default-directory))))
     (kill-new path)
     (message "%s" path)))
-
-(defun reverse-input-method (input-method)
-  "Build the reverse mapping of single letters from INPUT-METHOD."
-  (interactive
-   (list (read-input-method-name "Use input method (default current): ")))
-  (if (and input-method (symbolp input-method))
-      (setq input-method (symbol-name input-method)))
-  (let ((current current-input-method)
-        (modifiers '(nil (control) (meta) (control meta))))
-    (when input-method
-      (activate-input-method input-method))
-    (when (and current-input-method quail-keyboard-layout)
-      (dolist (map (cdr (quail-map)))
-        (let* ((to (car map))
-               (from (quail-get-translation
-                      (cadr map) (char-to-string to) 1)))
-          (when (and (characterp from) (characterp to))
-            (dolist (mod modifiers)
-              (define-key function-key-map
-                (vector (append mod (list from)))
-                (vector (append mod (list to)))))))))
-    (when input-method
-      (activate-input-method current))))
-
-(reverse-input-method 'cyrillic-jcuken)
 
 (defun html-end-of-line ()
   "If there is an HTML tag at the end of the line, then go to start of tag.

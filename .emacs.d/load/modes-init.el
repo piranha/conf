@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;; modes.el -- various modes configuration
 
 (when (memq window-system '(mac ns x))
@@ -224,20 +225,17 @@
   (setq js-indent-level 2)
   (define-key js-mode-map (kbd "RET") 'newline-maybe-indent))
 
-(defun imenu-dumb-js-make-index ()
+(defun san/imenu-dumb-js-make-index ()
   (save-excursion
     (imenu--generic-function '((nil "function\\s-+\\([^ ]+\\)(" 1)
                                (nil "\\.\\([^\\. ]+\\)\\s-*=\\s-*function\\s-*(" 1)))))
 
-(add-hook 'js-mode-hook
-          #'(lambda ()
-              (setq imenu-create-index-function 'imenu-dumb-js-make-index)
-              (setq-local outline-regexp "///")))
+(defun san/setup-js-like ()
+  (setq imenu-create-index-function 'imenu-dumb-js-make-index)
+  (setq-local outline-regexp "///"))
 
-(add-hook 'typescript-mode-hook
-          #'(lambda ()
-              (setq imenu-create-index-function 'imenu-dumb-js-make-index)
-              (setq-local outline-regexp "///")))
+(add-hook 'js-mode-hook 'san/setup-js-like)
+(add-hook 'typescript-mode-hook 'san/setup-js-like)
 
 (use-package json-mode
   :ensure t)
@@ -248,8 +246,8 @@
   :ensure t
   :commands yas-global-mode
   :bind (:map yas-minor-mode-map
-         ("C-/" . yas-expand)
-         ("<tab>" . nil))
+              ("C-/" . yas-expand)
+              ("<tab>" . nil))
   :init
   (add-hook 'snippet-mode-hook
             #'(lambda ()
@@ -272,16 +270,6 @@
                   emacs-lisp-mode-hook
                   clojure-mode-hook))
     (add-hook hook 'highlight-parentheses-mode)))
-
-
-;; ;; breadcrumbs
-;; (el-get-bundle! breadcrumb)
-;; (with-eval-after-load 'breadcrumb
-;;   (global-set-key (kbd "C-'") 'bc-set)
-;;   (global-set-key (kbd "M-j") 'bc-previous)
-;;   (global-set-key (kbd "M-J") 'bc-next)
-;;   (global-set-key (kbd "C-c j") 'bc-goto-current)
-;;   (global-set-key (kbd "C-c C-j") 'bc-list))
 
 
 ;; whole-line-or-region
@@ -420,7 +408,7 @@ Called by `imenu--generic-function'."
   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
 (use-package paredit
-  ;;  :ensure t ;; it's in packages/paredit.el
+  :ensure t ;; it's in packages/paredit.el
   :no-require t
   :commands paredit-mode
   :defines paredit-mode-map
@@ -489,6 +477,15 @@ Called by `imenu--generic-function'."
 ;;   (eglot-stay-out-of '(yasnippet)))
 
 ;; Various
+
+(use-package reverse-im
+  :ensure t
+  ;; translate these methods, use M-x `list-input-methods'
+  ;; if you're not sure which one to use
+  :custom
+  (reverse-im-input-methods '("ukrainian-computer"))
+  :config
+  (reverse-im-mode t))
 
 (use-package sql-indent
   :ensure t
@@ -685,9 +682,6 @@ Called by `imenu--generic-function'."
 ;;   :init (global-anzu-mode 1))
 
 
-(use-package terraform-mode
-  :ensure t)
-
 (use-package web-mode
   :ensure t
   :mode "\\.html\\'" "\\.tsx\\'" "\\.tmpl\\'"
@@ -719,6 +713,8 @@ Called by `imenu--generic-function'."
           (top . 0.3)
           (width . 0.7)
           (height . 10)))
+  (add-to-list 'mini-frame-ignore-commands 'isl-search)
+  (add-to-list 'mini-frame-ignore-commands 'isl-resume)
   (mini-frame-mode 1))
 
 
@@ -781,21 +777,6 @@ Called by `imenu--generic-function'."
   (setq highlight-indent-guides-method 'character))
 
 (use-package explain-pause-mode)
-
-;;; janet
-
-(use-package janet-mode
-  :ensure t
-  :init
-  (add-hook 'janet-mode-hook 'paredit-mode))
-
-(use-package flycheck-janet
-  :ensure t)
-
-(use-package pkl-mode
-  :ensure t
-  :config
-  (setq pkl-enable-copilot nil))
 
 (use-package significant-other
   :ensure t
