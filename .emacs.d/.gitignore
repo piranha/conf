@@ -17,3 +17,7 @@ url
 .lsp*
 eln-cache
 request
+bookmarks
+.emacs.desktop*
+tree-sitter
+tutorial
