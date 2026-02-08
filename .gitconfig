@@ -81,3 +81,5 @@
     prompt = false
 [difftool "difftastic"]
     cmd = difft "$LOCAL" "$REMOTE"
+[rerere]
+	enabled = true

@@ -21,26 +21,24 @@ fi
 
 umask 022
 
-export PATH=~/bin:/usr/local/go/bin:/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=~/bin:~/.local/bin:/usr/local/go/bin:/opt/homebrew/sbin:/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+#export DYLD_LIBRARY_PATH="/opt/homebrew/lib" #:$DYLD_LIBRARY_PATH"
+#export LD_LIBRARY_PATH="/opt/homebrew/lib:$LD_LIBRARY_PATH"
+#export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
 #test -x "/bin/launchctl" && sudo launchctl setenv PATH $PATH
 
-### VCS
+# for emacs' tramp
+if [[ $TERM == "dumb" ]]; then
+  unsetopt zle
+  PS1='$ '
+  return
+fi
 
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-
-zstyle ':vcs_info:git*' formats "[%b] "
-zstyle ':vcs_info:git*' actionformats "[%b: %a] "
+export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
 
 ### Prompt
 
-if [[ $(uname -s) = Darwin && Dark = "$(defaults read -globalDomain AppleInterfaceStyle 2>/dev/null)" ]]; then
-    p_color='%F{cyan}'
-else
-    p_color='%F{blue}'
-fi
-
-#p_color='%F{blue}'
+p_color='%F{blue}'
 p_at='%(!.%F{red}%B#%b%f.@)'
 p_host="${p_color}%m%f"
 p_path="${p_color}%~%f"
@@ -62,7 +60,8 @@ typeset -U path cdpath fpath manpath
 HISTFILE=~/.zhistory
 HISTSIZE=10000
 SAVEHIST=10000
-setopt append_history
+setopt inc_append_history
+setopt no_share_history
 setopt extended_history
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
@@ -71,7 +70,7 @@ setopt autocd
 setopt auto_pushd pushd_ignore_dups pushd_silent pushd_to_home
 
 # other important options
-unsetopt extended_glob # it's quite annoying
+#unsetopt extended_glob # it's quite annoying
 setopt notify # report the status of backgrounds jobs immediately
 setopt completeinword
 setopt hash_list_all
@@ -81,7 +80,6 @@ watch=(notme root)
 
 # Loading builtins
 autoload -U zmv
-zmodload -i zsh/deltochar
 
 ### ZLE
 bindkey -e
@@ -94,10 +92,6 @@ bindkey "[B" down-line-or-history
 bindkey '^[[5D' emacs-backward-word
 bindkey '^[[5C' emacs-forward-word
 bindkey '\ew' kill-region
-bindkey '\ez' delete-to-char
-# for rxvt
-bindkey "\e[8~" end-of-line
-bindkey "\e[7~" beginning-of-line
 
 # press meta-e for editing command line in $EDITOR or $VISUAL
 autoload -U edit-command-line
@@ -107,7 +101,7 @@ bindkey '\ee' edit-command-line
 autoload -U select-word-style
 select-word-style normal
 # don't contains -_/= - and thus breaks words on them
-zstyle ':zle:*' word-chars '*?.[]~&;!#$%^(){}<>'
+export WORDCHARS='*?[]~&;!#$%^(){}<>'
 
 # M-. selects last word from a line, and M-m allows to iterate words from this
 # line
@@ -171,28 +165,13 @@ compctl -x 'c[-1,-v]' -M 'm:{a-zA-Z}={A-Za-z}' -K _say_voices -- say
 ## xterm header
 ## \e]0; will set window's and tab's header
 ## \e]1; will set tab's header
-case $TERM in
-xterm*|rxvt*)
-    title_precmd () {
-        print -Pn "\e]0;@%m:%~\a"
-        print -Pn "\e]1;@%m:%~\a"
-    }
-    title_preexec () {
-        print -Pn "\e]1;@%m:$1 - %~\a"
-    }
-;;
-screen)
-    title_precmd () {
-        print -Pn "\ek@%m %~\a"
-    }
-    title_preexec () {
-        print -Pn "\ek@%m:$1 - %~\a"
-    }
-;;
-esac
-
-#### precmd
-
+title_precmd () {
+    print -Pn "\e]0;@%m:%~\a"
+    print -Pn "\e]1;@%m:%~\a"
+}
+title_preexec () {
+    print -Pn "\e]1;@%m:$1 - %~\a"
+}
 precmd_functions=(title_precmd)
 preexec_functions=(title_preexec)
 
@@ -263,7 +242,6 @@ alias rezsh="exec zsh"
 alias s="mdfind -name"
 
 alias ho="sudo vim /etc/hosts"
-alias sudo="sudo " # this carries aliases to sudo calls
 
 alias -g B='$(git symbolic-ref HEAD)'
 alias master="git checkout master"
@@ -275,7 +253,7 @@ function fe() {
 
 # find file by content, then filter it by name and open it in emacs
 function ge() {
-    rg -n $* | fzf --tac | IFS=: read e_file e_line e_rest
+    rg -n "$*" | fzf --tac | IFS=: read e_file e_line e_rest
     emacsclient -n +${e_line:-1} "$e_file"
 }
 compdef ge=rg
@@ -293,9 +271,8 @@ function gro() { # go root
 }
 
 function gd() { # go directory
-    cd $(fd --type f --hidden --follow --exclude .git |
-             fzf --preview "ls -Ap {}" --print0 |
-             xargs -0 dirname)
+    local dir=$(fd --type f --hidden --exclude .git | fzf --preview "ls -Ap {}")
+    [[ -n "$dir" ]] && cd "$dir"
 }
 
 alias gg="gro && gd"
@@ -395,23 +372,12 @@ function makegif() {
     convert -delay 1x25 *.png -ordered-dither o8x8,9 -coalesce -layers OptimizeTransparency +map -crop 480x270+0+45 +repage animation.gif
 }
 
-function mv() {
-    if [ $# -lt 2 ]; then
-        /bin/mv $1 .
-    else
-        /bin/mv "$@"
-    fi
-}
-
 function Q() {
     psql service="$1" "${@:2}"
 }
 
-umedit() { [ -z "$1" ] && exit 1; mkdir -p ~/Documents/kb; vim ~/Documents/kb/"$1.md" }
+umedit() { [ -z "$1" ] && return 1; mkdir -p ~/Documents/kb; vim ~/Documents/kb/"$1.md" }
 um() { pandoc -s -t man ~/Documents/kb/"$1.md" | tbl | groff -Wall -mtty-char -man -Tascii -c | less -R }
-
-# for emacs' tramp
-[[ $TERM = "dumb" ]] && unsetopt zle && PS1='$ ' && unalias ls
 
 function _POST { curl -n -H 'Content-Type: application/json' -XPOST "$@" }
 alias POST='noglob _POST'
@@ -429,15 +395,17 @@ ttfb() { curl -s -o /dev/null -w "Connect: %{time_connect} TTFB: %{time_starttra
 alias -g UA="-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0'"
 checkdomain() { whois "$1" | grep -iE 'no match|creation date' }
 
+alias ccc='claude --dangerously-skip-permissions'
+
 ## Interactive setup
 
 if [[ -o interactive ]]; then
     setopt auto_cd
-    cdpath=(~/dev/work ~/dev/web ~/dev/misc)
+    cdpath=(~/dev/work ~/dev/web ~/dev/misc ~/dev/fpv)
 fi
 
 export PAGER="less"
-if [[ -x $(whence vim) ]]; then
+if [[ -x "$(whence vim)" ]]; then
     export EDITOR="vim"
 else
     export EDITOR="vi"
@@ -458,10 +426,33 @@ export GEMINI_API_KEY="$(netrc generativelanguage.googleapis.com)"
 export MISTRAL_API_KEY="$(netrc api.mistral.ai)"
 export XAI_API_KEY="$(netrc api.x.ai)"
 
+### Various local crap
+
 # local settings can override some settings
-if [ -f ~/.zshlocal ]; then
-    source ~/.zshlocal
+if [ -f ~/.zshlocal ]; then source ~/.zshlocal; fi
+if [ -f ~/dev/misc/try/try ]; then eval "$(~/dev/misc/try/try init)"; fi
+if [ -f ~/.fzf.zsh ]; then source ~/.fzf.zsh; fi
+if [ -x "$(whence zoxide)" ]; then
+    eval "$(zoxide init zsh)"
+    alias zq='zoxide query'
 fi
 
+# bun completions
+[ -s "/Users/sansolo/.bun/_bun" ] && source "/Users/sansolo/.bun/_bun"
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# echo "${GHOSTTY_RESOURCES_DIR}"
+# if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
+#     echo YES
+#     builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
+# fi
+
+if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
+    autoload -Uz add-zsh-hook
+    _ghostty_deferred_init() {
+        add-zsh-hook -d precmd _ghostty_deferred_init  # remove self
+        builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
+    }
+    add-zsh-hook precmd _ghostty_deferred_init
+fi

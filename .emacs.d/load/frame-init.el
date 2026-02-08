@@ -8,20 +8,24 @@
 
 (defun dark-mode-enabled-p ()
   "If dark mode is enabled right now?"
-  (string=
-   ;;(shell-command-to-string "printf %s \"$( osascript -e \'tell application \"System Events\" to tell appearance preferences to return dark mode\' )\"")
-   (ns-do-applescript "tell application \"System Events\" to tell appearance preferences to return \"\" & dark mode")
-   "true"))
+  ;; (string=
+  ;;  (ns-do-applescript "tell application \"System Events\" to tell appearance preferences to return \"\" & dark mode")
+  ;;  "true")
+  (string= ns-system-appearance "dark"))
 
 ;;; https://github.com/LionyxML/auto-dark-emacs/
-(defun set-gui-theme! ()
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-  ;; (if (dark-mode-enabled-p)
-  ;;     (load-theme 'alabaster-dark t)
-  ;;   (load-theme 'alabaster t))
-  (if (dark-mode-enabled-p)
-      (load-theme 'graham t)
-    (load-theme 'mccarthy t)))
+(defun set-gui-theme! (&rest _args)
+  (when (not (eq window-system 'nil))
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+    ;; (if (dark-mode-enabled-p)
+    ;;     (load-theme 'alabaster-dark t)
+    ;;   (load-theme 'alabaster t))
+    (if (dark-mode-enabled-p)
+        (load-theme 'mccarthy-dark t)
+      (load-theme 'mccarthy t))))
+
+;; this is from `brew install emacs-plus`
+(add-hook 'ns-system-appearance-change-functions #'set-gui-theme!)
 
 (when (not (eq window-system 'nil))
   ;; Title formatting
@@ -40,7 +44,7 @@
   ;; this disables showing docs on mouse hover, I hate it
   (setq show-help-function nil)
   ;; this fixes code in markdown being displayed with weird font
-  (set-face-attribute 'fixed-pitch nil :family nil))
+  (set-face-attribute 'fixed-pitch nil :family 'unspecified))
 
 
 (when (eq window-system 'x)
@@ -57,6 +61,23 @@
         mac-command-modifier 'meta
         mac-option-modifier 'meta))
 
+(setq-default mode-line-format
+              '(" "
+                mode-line-front-space
+                mode-line-client
+                mode-line-frame-identification
+                mode-line-buffer-identification
+                mode-line-modified
+                " " mode-line-position
+                (multiple-cursors-mode mc/mode-line)
+                " " mode-line-modes
+                " " mode-line-misc-info
+                mode-line-end-spaces))
+
+(use-package minions
+  :ensure t
+  :init (minions-mode 1))
+
 (use-package moody
   :ensure t
   :config
@@ -69,32 +90,9 @@
     (set-face-attribute 'mode-line-inactive nil :box nil)
     (set-face-attribute 'mode-line-inactive nil :background "#bbb" :foreground "#000"))
 
-  (setq-default mode-line-format
-                '(" "
-                  mode-line-front-space
-                  mode-line-client
-                  mode-line-frame-identification
-                  mode-line-buffer-identification
-                  mode-line-modified
-                  " " mode-line-position
-                  (multiple-cursors-mode mc/mode-line)
-                  " " mode-line-modes
-                  " " mode-line-misc-info
-                  mode-line-end-spaces))
-
-  (setq x-underline-at-descent-line t)
+  (setq x-underline-at-descent-line nil)
   (setq global-mode-string (remove 'display-time-string global-mode-string))
-  (moody-replace-mode-line-buffer-identification ))
-
-(use-package minions
-  :ensure t
-  :init (minions-mode 1))
-
-;; (use-package mini-modeline
-;;   :ensure t
-;;   :init
-;;   (setq mode-line-format nil))
-
-;; feebleline?
+  (moody-replace-mode-line-front-space)
+  (moody-replace-mode-line-buffer-identification))
 
 ;;; frame-init.el ends here

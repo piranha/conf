@@ -3,15 +3,6 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
 
-;; (use-package buffer-name-relative
-;;   :ensure t
-;;   :init
-;;   (buffer-name-relative-mode)
-;;   :config
-;;   (setq buffer-name-relative-prefix ""
-;;         buffer-name-relative-root-functions
-;;         (list 'buffer-name-relative-root-path-from-projectile)))
-
 (use-package vertico
   :ensure t
   :bind (:map vertico-map
@@ -23,29 +14,23 @@
   :init
   (vertico-mode 1))
 
-(use-package vertico-prescient
+(use-package orderless
   :ensure t
-  :commands (vertico-prescient-mode prescient-persist-mode)
-  :init
-  (vertico-prescient-mode 1)
-  (prescient-persist-mode 1)
+  :custom
+  ;; https://github.com/oantolin/orderless?tab=readme-ov-file#component-matching-styles
+  (orderless-matching-styles '(orderless-literal-prefix orderless-literal orderless-prefixes))
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
+  (completion-pcm-leading-wildcard t)
   :config
-  (setq prescient-filter-method '(literal regexp literal-prefix prefix initialism)
-        prescient-sort-full-matches-first t
-        prescient-sort-length-enable t
-        prescient-history-length 1000))
+  (add-to-list 'orderless-affix-dispatch-alist
+               '(?~ . orderless-regexp)))
 
 (use-package corfu
   :ensure t
   :init
   (global-corfu-mode))
-
-
-(use-package corfu-prescient
-  :ensure t
-  :commands corfu-prescient-mode
-  :init
-  (corfu-prescient-mode 1))
 
 ;;; Grep
 
@@ -72,8 +57,7 @@
 (use-package projectile
   :ensure t
   :commands projectile-mode
-  :bind (("M-t" . projectile-find-file)
-         :map projectile-mode-map
+  :bind (:map projectile-mode-map
          ("C-c p" . projectile-command-map)
          :map projectile-command-map
          ("s" . projectile-deadgrep))
@@ -107,7 +91,7 @@
 (use-package consult
   :ensure t
   :bind (("C-." . consult-buffer)
-         ;;("C-s" . consult-line)
+         ("C-s" . consult-line)
          ("C-c M-k" . consult-kmacro)
          ("M-y" . consult-yank-pop)
          ("C-x r b" . consult-bookmark) ;; bookmark-jump
@@ -121,40 +105,25 @@
          (:map projectile-mode-map
                ("C-c p b" . consult-project-buffer)))
   :config
-  (setq consult-project-function (lambda (_) (projectile-project-root)))
-  (setq consult-narrow-key "<")
+  (setq consult-project-function (lambda (_) (projectile-project-root))
+        consult-narrow-key "<")
 
   (setq consult-buffer-sources
-        '(consult--source-hidden-buffer
-          consult--source-modified-buffer
-          consult--source-buffer
-          consult--source-project-buffer
-          consult--source-project-recent-file
-          consult--source-recent-file
-          consult--source-file-register
-          consult--source-bookmark))
+        '(consult-source-hidden-buffer
+          consult-source-modified-buffer
+          consult-source-buffer
+          consult-source-project-buffer
+          consult-source-project-recent-file
+          consult-source-recent-file
+          consult-source-file-register
+          consult-source-bookmark))
 
-  ;; only manual preview for buffer-switching
-  (consult-customize consult-buffer :preview-key "M-.")
-  (unless 't ;; just a comment
-    (consult-customize consult-line :preview-key (list (kbd "M-.")
-                                                       :debounce 0 (kbd "<up>") (kbd "<down>")))))
+  ;; manual preview for buffer-switching
+  (consult-customize consult-buffer :preview-key "M-."))
 
-;;; search
-
-(use-package isl
+(use-package consult-projectile
   :ensure t
-  :vc (isearch-light :url "https://github.com/thierryvolpiatto/isearch-light")
-  :bind (("C-s" . isl-search)
-         ("C-M-S" . isl-resume))
-  :custom-face
-  (isl-match ((t (:inherit query-replace))))
-  (isl-match-items ((t (:inherit isearch))))  ; Another search-related face
-  (isl-on ((t (:inherit region))))                  ; Current selection
-
-  (isl-number ((t (:inherit font-lock-constant-face)))) ; Often colored appropriately
-  (isl-string ((t (:inherit minibuffer-prompt))))   ; Usually bold and colored
-  (isl-case-fold ((t (:inherit isl-string)))))
+  :bind (("M-t" . consult-projectile)))
 
 ;;; mark navigation
 
@@ -170,5 +139,10 @@
 ;;   :ensure t
 ;;   :commands imenu-anywhere
 ;;   :bind ("C-c C-a" . imenu-anywhere))
+
+(use-package easy-kill
+  :ensure t
+  :bind (([remap kill-ring-save] . easy-kill)
+         ([remap mark-sexp] . easy-mark)))
 
 ;;; select-init.el ends here

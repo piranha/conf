@@ -101,9 +101,6 @@
 (require 'whitespace)
 (setq whitespace-style '(face trailing tabs lines-tail))
 (setq whitespace-line-column 80)
-(set-face-attribute 'whitespace-line nil
-                    :foreground 'unspecified
-                    :background "yellow")
 (add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; org mode
@@ -131,20 +128,29 @@
          ("M-<right>" . nil)
          ("M-<left>" . nil)))
 
-
 (use-package go-mode
   :ensure t
   :mode "\\.go\\'"
-  :commands godoc-gogetdoc
+  :hook ((go-mode . eglot-ensure)
+         (before-save . gofmt-before-save))
   :config
   (add-hook 'go-mode-hook
             (lambda ()
               (set (make-local-variable 'whitespace-style)
                    '(face trailing lines-tail))
               (whitespace-mode -1)
-              (whitespace-mode 1)))
-  :custom
-  (godoc-at-point-function #'godoc-gogetdoc))
+              (whitespace-mode 1)
+
+              ;; Use goimports instead of gofmt for better import management
+              (setq gofmt-command "goimports")
+
+              ;; Customize compile command for tests
+              (if (not (string-match "go" compile-command))
+                  (set (make-local-variable 'compile-command)
+                       "go test -v"))))
+  :bind (:map go-mode-map
+              ("C-c C-k" . compile)
+              ("C-c C-d" . eldoc-doc-buffer)))
 
 (use-package yaml-mode
   :ensure t
@@ -203,11 +209,29 @@
   :ensure t
   :config
   (setq sideline-backends-right '(sideline-flycheck)
-        sideline-backends-right-skip-current-line nil))
+        sideline-backends-right-skip-current-line nil)
+  :init
+  (global-sideline-mode))
 
 (use-package sideline-flycheck
   :ensure t
-  :hook (flycheck-mode . sideline-mode))
+  :hook (flycheck-mode . sideline-flycheck-setup))
+
+(defun sideline-cider--get-warnings ()
+  "Get CIDER warning overlays for sideline."
+  (let (warnings)
+    (dolist (ov (overlays-in (line-beginning-position) (line-end-position)))
+      (when-let ((msg (and (overlay-get ov 'cider-note-p)
+                           (overlay-get ov 'help-echo))))
+        (push (propertize msg 'face 'warning) warnings)))
+    warnings))
+
+(defun sideline-cider (command)
+  "Sideline backend for CIDER warnings."
+  (pcase command
+    (`candidates (sideline-cider--get-warnings))))
+
+(add-to-list 'sideline-backends-right 'sideline-cider)
 
 ;; Ruby
 
@@ -272,43 +296,14 @@
     (add-hook hook 'highlight-parentheses-mode)))
 
 
-;; whole-line-or-region
-(use-package whole-line-or-region
-  :ensure t
-  :commands
-  whole-line-or-region-global-mode
-  whole-line-or-region-call-with-region
-  :bind (("C-w" . whole-line-kill-region-or-word-backward))
-  :init
-  (defun whole-line-kill-region-or-word-backward (prefix)
-    "Kill (cut) region or just a single word backward"
-    (interactive "*p")
-    (if (whole-line-or-region-use-region-p)
-        (kill-region (region-beginning) (region-end) 'region)
-      (if (bound-and-true-p paredit-mode)
-          (paredit-backward-kill-word)
-        (subword-backward-kill prefix))))
-
-  (setq whole-line-or-region-extensions-alist
-        '((copy-region-as-kill whole-line-or-region-copy-region-as-kill nil)
-          (kill-region whole-line-kill-region-or-word-backward nil)
-          (kill-ring-save whole-line-or-region-kill-ring-save nil)
-          (yank whole-line-or-region-yank nil)))
-
-  (whole-line-or-region-global-mode))
-
 ;;; VC mode, do not ever annoy me with slow file loading time
 (remove-hook 'find-file-hook 'vc-find-file-hook)
 
 ;; smerge
-(defun sm-try-smerge ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
-
-(add-hook 'find-file-hook 'sm-try-smerge t)
-(setq smerge-command-prefix (kbd "C-c ]"))
+(use-package smerge-mode
+  :hook (find-file-hook . smerge-start-session)
+  :custom
+  (smerge-command-prefix (kbd "C-c m")))
 
 
 (use-package clojure-mode
@@ -318,12 +313,13 @@
   :mode ("\\.boot\\'" . clojure-mode)
         ("\\.edn\\'" . clojure-mode)
         ("\\.bb\\'" . clojure-mode)
+  :custom
+  (clojure-indent-style :always-indent)
+  (clojure-thread-all-but-last t)
+  (clojure-align-forms-automatically t)
+  (clojure-toplevel-inside-comment-form t)
   :config
   (require 'flycheck-clj-kondo)
-  (setq clojure-indent-style :always-indent)
-  (setq clojure-thread-all-but-last t)
-  (setq clojure-align-forms-automatically t)
-  (setq clojure-toplevel-inside-comment-form t)
   (put-clojure-indent 'and 0)
   (put-clojure-indent 'or 0)
   (put-clojure-indent '= 0)
@@ -348,47 +344,113 @@
   (add-to-list 'clojure-align-binding-forms "with-yielding")
 
   (defun clojure-match-next-def ()
-  "Scans the buffer backwards for the next \"top-level\" definition.
-Called by `imenu--generic-function'."
-  ;; we have to take into account namespace-definition forms
-  ;; e.g. s/defn
-  (when (re-search-backward "^[ \t]*(\\([a-z0-9.-]+/\\)?\\(def[^ \n\t]*\\) " nil t)
-    (save-excursion
-      (let (found?
-            (deftype (match-string 2))
-            (start (point)))
-        ;; ignore user-error from down-list when called from inside a string or comment
-        ;; TODO: a better workaround would be to wrap it in
-        ;; unless (ppss-comment-or-string-start (syntax-ppss)) instead of ignore-errors,
-        ;; but ppss-comment-or-string-start is only available since Emacs 27
-        (ignore-errors
-          (down-list))
-        (forward-sexp)
-        (while (not found?)
+    "Scans the buffer backwards for the next \"top-level\" definition.
+   Called by `imenu--generic-function'."
+    ;; we have to take into account namespace-definition forms
+    ;; e.g. s/defn
+    (when (re-search-backward "^[ \t]*(\\([a-z0-9.-]+/\\)?\\(def[^ \n\t]*\\) " nil t)
+      (save-excursion
+        (let (found?
+              (deftype (match-string 2))
+              (start (point)))
+          ;; ignore user-error from down-list when called from inside a string or comment
+          ;; TODO: a better workaround would be to wrap it in
+          ;; unless (ppss-comment-or-string-start (syntax-ppss)) instead of ignore-errors,
+          ;; but ppss-comment-or-string-start is only available since Emacs 27
           (ignore-errors
-            (forward-sexp))
-          (or (when (char-equal ?\[ (char-after (point)))
-                (backward-sexp))
-              (when (char-equal ?\) (char-after (point)))
-                (backward-sexp)))
-          (cl-destructuring-bind (def-beg . def-end) (bounds-of-thing-at-point 'sexp)
-            (when (char-equal ?^ (char-after def-beg))
-              ;; move to the beginning of next sexp
-              (progn (forward-sexp) (backward-sexp)))
-            (when (or (not (char-equal ?^ (char-after def-beg)))
-                      (and (char-equal ?^ (char-after (point))) (= def-beg (point))))
-              (setq found? t)
-              (when (string= deftype "defmethod")
-                (setq def-end (progn (goto-char def-end)
-                                     (forward-sexp)
-                                     (point))))
-              (when (or (string= deftype "defendpoint")
-                        (string= deftype "defendpoint-async"))
-                (setq def-end (progn (goto-char def-end)
-                                     (forward-sexp)
-                                     (point))))
-              (set-match-data (list def-beg def-end)))))
-        (goto-char start))))))
+            (down-list))
+          (forward-sexp)
+          (while (not found?)
+            (ignore-errors
+              (forward-sexp))
+            (or (when (char-equal ?\[ (char-after (point)))
+                  (backward-sexp))
+                (when (char-equal ?\) (char-after (point)))
+                  (backward-sexp)))
+            (cl-destructuring-bind (def-beg . def-end) (bounds-of-thing-at-point 'sexp)
+              (when (char-equal ?^ (char-after def-beg))
+                ;; move to the beginning of next sexp
+                (progn (forward-sexp) (backward-sexp)))
+              (when (or (not (char-equal ?^ (char-after def-beg)))
+                        (and (char-equal ?^ (char-after (point))) (= def-beg (point))))
+                (setq found? t)
+                (when (string= deftype "defmethod")
+                  (setq def-end (progn (goto-char def-end)
+                                       (forward-sexp)
+                                       (point))))
+                (when (or (string= deftype "defendpoint")
+                          (string= deftype "defendpoint-async"))
+                  (setq def-end (progn (goto-char def-end)
+                                       (forward-sexp)
+                                       (point))))
+                (set-match-data (list def-beg def-end)))))
+          (goto-char start))))))
+
+;; (use-package clojure-ts-mode
+;;   :ensure t
+;;   :defer t
+;;   :commands clojure-ts-mode
+;;   ;; :mode ("\\.boot\\'" . clojure-ts-mode)
+;;   ;;       ("\\.edn\\'" . clojure-ts-mode)
+;;   ;;       ("\\.bb\\'" . clojure-ts-mode)
+;;   :bind (:map paredit-mode-map
+;;               ("M-q" . nil))
+;;   :custom
+;;   (clojure-ts-align-forms-automatically t)
+;;   (clojure-ts-toplevel-inside-comment-form t)
+;;   (clojure-ts-thread-all-but-last t)
+;;   (clojure-ts-semantic-indent-rules
+;;    '(("and" . ((:block 0)))
+;;      ("or" . ((:block 0)))
+;;      ("=" . ((:block 0)))
+;;      ("not=" . ((:block 0)))
+;;      ("+" . ((:block 0)))
+;;      ("-" . ((:block 0)))
+;;      ("*" . ((:block 0)))
+;;      ("/" . ((:block 0)))
+;;      (">" . ((:block 0)))
+;;      ("<" . ((:block 0)))
+;;      (">=" . ((:block 0)))
+;;      ("<=" . ((:block 0)))
+;;      ("->" . ((:block 0)))
+;;      ("->>" . ((:block 0)))
+;;      ("<<" . ((:block 0)))
+;;      ("side->" . ((:block 0)))))
+;;   (clojure-ts-align-cond-forms
+;;    '("better-cond.core/when-let"
+;;      "better-cond.core/if-let"
+;;      "core/cond+"
+;;      "core/cx"))
+;;   (clojure-ts-align-binding-forms
+;;    '("blet"
+;;      "mt/with-dynamic-redefs"
+;;      "with-yielding"))
+;;   :config
+;;   (require 'flycheck-clj-kondo)
+
+;;   ;; add endpoints into imenu
+;;   (defun my/clojure-ts--endpoint-node-name (node)
+;;     "Return the URL path from a defendpoint NODE."
+;;     (let ((method (clojure-ts--node-child-skip-metadata node 1)) ; :get
+;;           (path (clojure-ts--node-child-skip-metadata node 2)))  ; "/:id/..."
+;;       (if (and method path)
+;;           (format "%s %s"
+;;                   (treesit-node-text method)
+;;                   (treesit-node-text path))
+;;         "defendpoint")))
+
+;;   (defun my/clojure-ts--endpoint-node-p (node)
+;;     "Return non-nil if NODE is a defendpoint form."
+;;     (and (clojure-ts--list-node-p node)
+;;          (let* ((child (clojure-ts--node-child-skip-metadata node 0))
+;;                 (child-txt (clojure-ts--named-node-text child)))
+;;            (and (clojure-ts--symbol-node-p child)
+;;                 (string-equal "defendpoint" child-txt)))))
+
+;;   (add-to-list 'clojure-ts--imenu-settings
+;;                '("Endpoint" "list_lit"
+;;                  my/clojure-ts--endpoint-node-p
+;;                  my/clojure-ts--endpoint-node-name)))
 
 (use-package cider
   :pin melpa-stable
@@ -397,10 +459,10 @@ Called by `imenu--generic-function'."
   :commands cider-mode
   :bind (:map cider-mode-map
               ("C-c C-f" . nil)
-        :map cider-repl-mode-map
+              :map cider-repl-mode-map
               ("C-c M-r" . cider-repl-previous-matching-input)
               ("C-c M-s" . cider-repl-next-matching-input))
-  :hook clojure-mode
+  :hook clojure-ts-mode
   :config
   (setq cider-repl-history-file "~/.emacs.d/cider-history"
         cider-repl-display-help-banner nil
@@ -408,7 +470,7 @@ Called by `imenu--generic-function'."
   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
 (use-package paredit
-  :ensure t ;; it's in packages/paredit.el
+  :ensure t
   :no-require t
   :commands paredit-mode
   :defines paredit-mode-map
@@ -417,14 +479,16 @@ Called by `imenu--generic-function'."
               ("C-<right>" . nil)
               ("C-M-," . paredit-forward-barf-sexp)
               ("C-M-." . paredit-forward-slurp-sexp)
-              ("C-M-'" . paredit-convolute-sexp))
+              ("C-M-'" . paredit-convolute-sexp)
+              ;; I did not need this before...
+              ("{" . paredit-open-curly)
+              ("}" . paredit-close-curly))
   :hook clojure-mode
+  :hook clojure-ts-mode
   :hook inf-clojure-mode
   :hook cider-repl-mode
   :hook emacs-lisp-mode
-  :hook lisp-data-mode
-  :init
-  (add-to-list 'package--builtin-versions `(paredit 26)))
+  :hook lisp-data-mode)
 
 (use-package clj-refactor
   :pin melpa-stable
@@ -432,6 +496,7 @@ Called by `imenu--generic-function'."
   :load-path "elpa/clj-refactor-20230202.637/"
   :commands (clj-refactor-mode cljr-add-keybindings-with-prefix)
   :hook clojure-mode
+  :hook clojure-ts-mode
   :config
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (setq cljr-insert-newline-after-require nil)
@@ -447,7 +512,7 @@ Called by `imenu--generic-function'."
 ;; (use-package eglot
 ;;   :ensure t
 ;;   :bind (("C-c a" . eglot-code-actions))
-;;   :hook (((clojure-mode clojurec-mode clojurescript-mode java-mode scala-mode)
+;;   :hook (((clojure-ts-mode clojurec-mode clojurescript-mode java-mode scala-mode)
 ;;           . eglot-ensure)
 ;;          ((cider-mode eglot-managed-mode) . eglot-disable-in-cider))
 ;;   :preface
@@ -517,9 +582,11 @@ Called by `imenu--generic-function'."
   :bind (("C-x g" . magit-status)
          ("C-x M-g" . magit-dispatch))
   :hook (magit-process-mode . goto-address-mode)
+  :custom
+  (magit-save-repository-buffers nil)
+  (magit-log-section-commit-count 20)
+  (magit-list-refs-sortby "-creatordate")
   :config
-  (setq magit-save-repository-buffers nil
-        magit-log-section-commit-count 20)
 
   ;;; https://jakemccrary.com/blog/2020/11/14/speeding-up-magit/
   (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
@@ -859,25 +926,40 @@ Use the following guidelines:
           (message "Error(%s): did not receive a response from the LLM."
                    (plist-get info :status)))))))
 
-(use-package aidermacs
-  :ensure t
-  :vc (aidermacs :url "https://github.com/MatthewZMD/aidermacs")
-  :bind ("C-c a" . aidermacs-transient-menu)
-  :config
-  (setq aidermacs-default-model "gemini" ;;"sonnet"
-        ;;"gemini/gemini-2.5-pro-exp-03-25"
-        ;;"anthropic/claude-3-7-sonnet-20250219"
-        aidermacs-backend 'eat)
-  (setenv "ANTHROPIC_API_KEY" (cdr (netrc "api.anthropic.com")))
-  (setenv "GEMINI_API_KEY" (cdr (netrc "generativelanguage.googleapis.com"))))
+;; (use-package aidermacs
+;;   :ensure t
+;;   :vc (aidermacs :url "https://github.com/MatthewZMD/aidermacs")
+;;   :bind ("C-c a" . aidermacs-transient-menu)
+;;   :config
+;;   (setq aidermacs-default-model "gemini" ;;"sonnet"
+;;         ;;"gemini/gemini-2.5-pro-exp-03-25"
+;;         ;;"anthropic/claude-3-7-sonnet-20250219"
+;;         aidermacs-backend 'eat)
+;;   (setenv "ANTHROPIC_API_KEY" (cdr (netrc "api.anthropic.com")))
+;;   (setenv "GEMINI_API_KEY" (cdr (netrc "generativelanguage.googleapis.com"))))
 
-(use-package claude-code-ide
-  :ensure t
-  :vc (claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")
-  :bind ("C-c C-'" . claude-code-ide-menu)
-  :config
-  (claude-code-ide-emacs-tools-setup)
-  (setq claude-code-ide-terminal-backend 'eat))
+;; (use-package claude-code-ide
+;;   :ensure t
+;;   :vc (claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")
+;;   :bind ("C-c C-'" . claude-code-ide-menu)
+;;   :config
+;;   (claude-code-ide-emacs-tools-setup)
+;;   (setq claude-code-ide-terminal-backend 'eat))
+
+;; (use-package claude-repl
+;;   :ensure t
+;;   :vc (claude-repl :url "https://github.com/edpaget/edmacs"
+;;                    :branch "main"
+;;                    :lisp-dir "modules/claude-repl")
+;;     :after (projectile markdown-mode))
+
+;; (use-package general
+;;   :ensure t)
+
+;; (add-to-list 'load-path "~/.emacs.d/packages/claude-repl")
+;; (require 'claude-repl-core)
+;; (claude-repl-core-setup-keybindings)
+;; (setq claude-repl-approval-mode 'hybrid)
 
 (use-package eca
   :ensure t

@@ -5,45 +5,35 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cider-clojure-cli-global-aliases ":user")
  '(package-selected-packages
-   '(aidermacs auto-dark back-button benchmark-init buffer-name-relative cider
-               claude-code-ide clj-refactor consult corfu-prescient ctrlf
-               deadgrep deft dockerfile-mode dumb-jump dune eat eca ef-themes
-               exec-path-from-shell expand-region feebleline flimenu
-               flycheck-biomejs flycheck-clj-kondo flycheck-janet flycheck-joker
-               flycheck-popup-tip flycheck-pos-tip flycheck-posframe fzf
-               git-commit git-link go-mode goto-last-change gptel
-               graphviz-dot-mode highlight-indent-guides highlight-parentheses
-               hl-todo ialign iedit imenu-anywhere isearch-light janet-mode
-               jinja2-mode json-mode kotlin-mode lua-mode magit markdown-mode
-               mermaid-mode mini-frame mini-modeline minibuffer-line minions
-               moody nav-flash openai pcache pkl-mode po-mode poetry point-stack
-               popwin projectile python-pytest pyvenv rainbow-mode restclient
-               sideline-flycheck significant-other significant-others sql-indent
-               string-edit string-inflection swift-mode terraform-mode
-               treesit-langs typescript-mode undo-tree utop vcl-mode
-               vertico-prescient visible-mark visual-fill-column web-mode
-               whole-line-or-region yaml-mode yaml-pro yasnippet-snippets
-               zig-mode))
+   '(back-button benchmark-init buttercup circe claude-repl clj-refactor
+                 clojure-ts-mode consult consult-projectile corfu-prescient
+                 deadgrep deft dockerfile-mode dumb-jump easy-kill eat eca
+                 exec-path-from-shell expand-region flimenu flycheck-biomejs
+                 flycheck-clj-kondo flymake-ruff fzf general git-link go-mode
+                 goto-last-change gptel graphviz-dot-mode
+                 highlight-indent-guides highlight-parentheses hl-todo ialign
+                 iedit jinja2-mode json-mode magit mini-frame minions moody
+                 orderless pi-coding-agent po-mode point-stack python-pytest
+                 pyvenv restclient reverse-im sideline-flycheck
+                 significant-other sql-indent string-inflection swift-mode
+                 treesit-langs typescript-mode valign vcl-mode vertico-prescient
+                 web-mode web-server websocket whole-line-or-region yaml-mode
+                 yasnippet-snippets zig-mode))
  '(package-vc-selected-packages
-   '((significant-other :url "https://github.com/ovistoica/significant-other.el")
-     (flycheck-biomejs :url "https://github.com/craneduck/flycheck-biomejs")
-     (isearch-light :url "https://github.com/thierryvolpiatto/isearch-light")
-     (claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")
-     (relysium :url "https://github.com/bluzky/relysium")
-     (aidermacs :url "https://github.com/MatthewZMD/aidermacs")))
+   '((claude-repl :url "https://github.com/edpaget/edmacs" :branch "main" :lisp-dir
+                  "modules/claude-repl")))
  '(safe-local-variable-values
-   '((engine . go) (python-shell-interpreter . "poetry run python")
+   '((engine . go)
+     (eval progn (put 'describe 'lisp-indent-function 1)
+           (put 'context 'lisp-indent-function 1)
+           (put 'it 'lisp-indent-function 1)
+           (put 'before-each 'lisp-indent-function 0)
+           (put 'after-each 'lisp-indent-function 0)
+           (put 'before-all 'lisp-indent-function 0)
+           (put 'after-all 'lisp-indent-function 0)
+           (put 'spy-on 'lisp-indent-function 1))
      (python-pytest-executable . "poetry run pytest")
-     (eval put 'api/defendpoint-async 'clojure-doc-string-elt 3)
-     (eval put 'api/defendpoint 'clojure-doc-string-elt 3)
-     (eval put 'api/defendpoint-schema 'clojure-doc-string-elt 3)
-     (eval put 'defendpoint-async 'clojure-doc-string-elt 3)
-     (eval put 'defendpoint 'clojure-doc-string-elt 3)
-     (eval put 'defendpoint-schema 'clojure-doc-string-elt 3)
-     (python-shell-interpreter-args . "run ipython3 --simple-prompt")
-     (python-shell-interpreter . "uv")
      (eval define-clojure-indent (l/matcha '(1 (:defn))) (l/matche '(1 (:defn)))
            (p.types/def-abstract-type '(1 (:defn)))
            (p.types/defprotocol+ '(1 (:defn)))

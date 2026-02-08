@@ -26,6 +26,11 @@ FORM - any elisp form."
   (interactive)
   (insert (format-time-string "%F %T")))
 
+(defun sanya/insert-marker ()
+  "Insert comment marker"
+  (interactive)
+  (insert (format "(Sanya %s)" (format-time-string "%F"))))
+
 (defun time-to-number (time)
   "Convert time from format 9:30 to number"
   (let ((time (if (string-match ":" time)
@@ -75,6 +80,16 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
   If the current buffer has no file, copy the buffer's default directory."
   (interactive)
   (let ((path (file-truename (or (buffer-file-name) default-directory))))
+    (kill-new path)
+    (message "%s" path)))
+
+(defun copy-relative-path-to-clipboard ()
+  "Copy the current file's path to the clipboard.
+  If the current buffer has no file, copy the buffer's default directory."
+  (interactive)
+  (let* ((project (project-root (project-current)))
+         (path (-> (file-truename (or (buffer-file-name) default-directory))
+                   (substring (length project)))))
     (kill-new path)
     (message "%s" path)))
 
