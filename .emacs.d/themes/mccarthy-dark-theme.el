@@ -44,7 +44,7 @@
       (*regexp*             "#f0b0d8")          ;; from #E9C, softened
       (*string*             "#e0a050")          ;; from #BC670F, brighter amber
       (*variable*           "#e86070")          ;; from #D14, lifted
-      (*visual-selection*   "#3a3a58")
+      (*visual-selection*   "#4a4a78")
       (*header-line-bg*     "#0087af"))
 
   (custom-theme-set-faces
@@ -55,8 +55,8 @@
    `(default ((t (:background, *background* :foreground, *normal*))))
    ;; Colour of header lines in Proced, info, Buffer list etc...
    `(header-line ((t (:background, *header-line-bg* :foreground, *background*))))
-   `(highlight ((t (:background, *current-line*))))
-   `(highlight-face ((t (:background, *current-line*))))
+   `(highlight ((t (:background, *visual-selection*))))
+   `(highlight-face ((t (:background, *visual-selection*))))
    `(hl-line ((t (:background, *current-line* :underline t))))
    `(info-xref ((t (:foreground, *keywords* :underline t))))
    `(region ((t (:background, *visual-selection*))))

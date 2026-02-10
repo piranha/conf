@@ -768,23 +768,6 @@
                            (file-exists-p (concat (projectile-project-root) "manage.py")))
                   (web-mode-set-engine "django")))))
 
-
-;; mini-frame shows no lines on start when mini-frame-resize is enabled
-(setq resize-mini-frames nil)
-(setq mini-frame-resize nil)
-(use-package mini-frame
-  :ensure t
-  :config
-  (setq mini-frame-show-parameters
-        '((left . 0.5)
-          (top . 0.3)
-          (width . 0.7)
-          (height . 10)))
-  (add-to-list 'mini-frame-ignore-commands 'isl-search)
-  (add-to-list 'mini-frame-ignore-commands 'isl-resume)
-  (mini-frame-mode 1))
-
-
 (use-package zig-mode
   :ensure t
   :mode "\\.zig\\'")
@@ -796,6 +779,7 @@
 (use-package jinja2-mode
   :ensure t
   :defer t
+  :mode "\\.selmer\\'"
   :bind (:map jinja2-mode-map
               ("M-o" . nil)))
 
