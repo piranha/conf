@@ -52,32 +52,20 @@ set paste
 " python
 autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 
-" Enable terminal background detection (works in Ghostty, iTerm, etc)
-if &t_RB == '' && exists('&t_RB')
-    let &t_RB = "\e]11;?\e\\"
-endif
-
-" Apply theme based on detected background
-augroup BackgroundDetection
-    autocmd!
-    autocmd VimEnter * call timer_start(100, {-> s:SetTheme()})
-augroup END
-
-function! s:SetTheme()
-    if &background ==# 'dark'
-        colorscheme default
-        " No custom highlights for dark - use defaults
-    else
-        colorscheme delek
-        " Apply custom highlights only for light background
-        hi Normal     ctermbg=NONE guibg=NONE
-        hi NonText    ctermbg=NONE guibg=NONE
-        hi LineNr     ctermbg=NONE guibg=NONE
-        hi StatusLine cterm=bold ctermbg=blue ctermfg=white guibg=gold guifg=blue
-        hi Comment    cterm=NONE ctermfg=darkgray     gui=NONE guifg=red2
-        hi Special    cterm=NONE ctermfg=darkred    gui=NONE guifg=deeppink
-    endif
-endfunction
+" Universal theme: works on both dark and light backgrounds without
+" any detection (t_RB, defaults read, etc). The trick is ctermbg=NONE
+" everywhere so the terminal background shows through, and using colors
+" that are readable on both dark and light.
+colorscheme default
+hi Normal     ctermbg=NONE guibg=NONE
+hi NonText    ctermbg=NONE guibg=NONE
+hi LineNr     ctermbg=NONE guibg=NONE
+hi StatusLine cterm=bold ctermbg=252 ctermfg=235 guibg=#d0d0d0 guifg=#262626
+hi Comment    cterm=NONE ctermfg=darkgray gui=NONE guifg=red2
+hi Special    cterm=NONE ctermfg=darkred  gui=NONE guifg=deeppink
+hi MatchParen cterm=bold ctermbg=252 ctermfg=NONE guibg=#d0d0d0 guifg=NONE
+hi Error      cterm=bold ctermbg=NONE ctermfg=131 guibg=NONE guifg=#af5f5f
+hi ErrorMsg   cterm=bold ctermbg=NONE ctermfg=131 guibg=NONE guifg=#af5f5f
 
 " bindings
 
