@@ -34,7 +34,8 @@ if [[ $TERM == "dumb" ]]; then
   return
 fi
 
-export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
+export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=34"
+export LSCOLORS="exfxcxdxbxegedabagacex"
 
 ### Prompt
 
@@ -172,8 +173,8 @@ title_precmd () {
 title_preexec () {
     print -Pn "\e]1;@%m:$1 - %~\a"
 }
-precmd_functions=(title_precmd)
-preexec_functions=(title_preexec)
+precmd_functions+=(title_precmd)
+preexec_functions+=(title_preexec)
 
 ### cdr
 
@@ -442,17 +443,8 @@ fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# echo "${GHOSTTY_RESOURCES_DIR}"
-# if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
-#     echo YES
-#     builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
-# fi
-
-if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
-    autoload -Uz add-zsh-hook
-    _ghostty_deferred_init() {
-        add-zsh-hook -d precmd _ghostty_deferred_init  # remove self
-        builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
-    }
-    add-zsh-hook precmd _ghostty_deferred_init
+# Ghostty shell integration: automatic via ZDOTDIR trick on first launch.
+# For `exec zsh` / rezsh, manually source if _ghostty_state is not yet set.
+if [[ -n "${GHOSTTY_RESOURCES_DIR}" ]] && (( ! ${+_ghostty_state} )); then
+    builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration"
 fi

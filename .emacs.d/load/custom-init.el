@@ -15,7 +15,7 @@
                  highlight-indent-guides highlight-parentheses hl-todo ialign
                  iedit jinja2-mode json-mode magit mini-frame minions moody
                  orderless pi-coding-agent po-mode point-stack python-pytest
-                 pyvenv restclient reverse-im sideline-flycheck
+                 pyvenv qml-mode restclient reverse-im sideline-flycheck
                  significant-other sql-indent string-inflection swift-mode
                  treesit-langs typescript-mode valign vcl-mode vertico-prescient
                  web-mode web-server websocket whole-line-or-region yaml-mode

@@ -1,5 +1,4 @@
-;;; piu.el --- interface to paste.in.ua
-;;; -*- mode: emacs-lisp -*-
+;;; piu.el --- interface to paste.in.ua -*- lexical-binding: t -*-
 
 ;;; Copyright (c) 2010, 2015 Alexander Solovyov under new BSD License
 
@@ -40,7 +39,7 @@
 
 
 (defun lexer-name ()
-  "Return lexer name based on current major mode and 'piu-lexer-mapping'."
+  "Return lexer name based on current major mode and `piu-lexer-mapping'."
   (or (assoc-default major-mode piu-lexer-mapping)
       (replace-regexp-in-string
        "-" "" (substring (symbol-name major-mode) 0 -5))))
@@ -74,7 +73,7 @@
 (defun piu (start end)
   "Paste the region (or whole buffer) to paste.in.ua.
 
-URL returned is saved to 'kill-ring' (and, hopefully, to system buffer)."
+URL returned is saved to `kill-ring' (and, hopefully, to system buffer)."
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))

@@ -793,6 +793,10 @@
   :config
   (setq typescript-indent-level 2))
 
+(use-package qml-mode
+  :ensure t
+  :mode "\\.qml\\'")
+
 (require 'ansi-color)
 (defun colorize-compilation-buffer ()
   (ansi-color-apply-on-region compilation-filter-start (point-max)))
