@@ -52,7 +52,10 @@ setopt promptsubst
 
 ### History
 
-fpath=(~/.zsh.d /opt/homebrew/share/zsh/site-functions /opt/homebrew/share/zsh-completions $fpath)
+fpath=(~/.zsh.d $fpath)
+if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
+    fpath=(/opt/homebrew/share/zsh/site-functions /opt/homebrew/share/zsh-completions $fpath)
+fi
 
 # automatically remove duplicates from these arrays
 typeset -U path cdpath fpath manpath
@@ -240,7 +243,11 @@ alias h="head"
 alias t="tail -f"
 alias mypw="pwgen -1Bny 10 10"
 alias rezsh="exec zsh"
-alias s="mdfind -name"
+if (( $+commands[mdfind] )); then
+    alias s="mdfind -name"
+elif (( $+commands[fd] )); then
+    alias s="fd"
+fi
 
 alias ho="sudo vim /etc/hosts"
 
@@ -257,7 +264,7 @@ function ge() {
     rg -n "$*" | fzf --tac | IFS=: read e_file e_line e_rest
     emacsclient -n +${e_line:-1} "$e_file"
 }
-compdef ge=rg
+(( $+commands[rg] )) && compdef ge=rg
 
 # find file by name and switch to directory containing that file
 function cfd() {
@@ -296,10 +303,11 @@ function gits() {
 
 ### netrc
 function _list_netrc() {
-    reply=($(cut -d ' ' -f 2 < ~/.netrc))
+    [[ -f ~/.netrc ]] && reply=($(cut -d ' ' -f 2 < ~/.netrc))
 }
 
 function netrc() {
+    [[ -f ~/.netrc ]] || return 0
     cat ~/.netrc | perl -ne "/^machine $argv[1]( login ([^ ]+))?( password ([^ ]+))?/ && print defined(\$2) ? \$2.':'.\$4 : \$4" | head -1
 }
 compctl -K _list_netrc netrc
@@ -439,7 +447,7 @@ if [ -x "$(whence zoxide)" ]; then
 fi
 
 # bun completions
-[ -s "/Users/sansolo/.bun/_bun" ] && source "/Users/sansolo/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
