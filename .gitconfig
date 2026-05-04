@@ -44,7 +44,7 @@
 
     pushurl = config remote.origin.pushurl
     addgh = !git remote add gh github.com:piranha/$(basename $(git rev-parse --show-toplevel)).git
-	please = push --force-with-lease
+	please = push --force-with-lease --force-if-includes
     hard = reset --hard HEAD
     uncommit = reset --soft HEAD^
     resetremote = !git reset --hard $(git rev-parse --abbrev-ref --symbolic-full-name @{u})

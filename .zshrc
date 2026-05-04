@@ -451,6 +451,8 @@ fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+if [ -f ~/.cargo/env ]; then source ~/.cargo/env; fi
+
 # Ghostty shell integration: automatic via ZDOTDIR trick on first launch.
 # For `exec zsh` / rezsh, manually source if _ghostty_state is not yet set.
 if [[ -n "${GHOSTTY_RESOURCES_DIR}" ]] && (( ! ${+_ghostty_state} )); then

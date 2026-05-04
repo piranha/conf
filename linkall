@@ -20,16 +20,17 @@ mapping=(
     # net.solovyov.vpn.plist "Library/LaunchAgents/net.solovyov.vpn.plist"
     #net.solovyov.sshtun.plist "Library/LaunchAgents/net.solovyov.sshtun.plist"
     hammerspoon.lua .hammerspoon/init.lua
-    karabiner.json .config/karabiner/karabiner.json
+    #karabiner.json .config/karabiner/karabiner.json
     joker .joker
     # rc.elv .elvish/rc.elv
     dark-mode-apps-toggle.sh bin/dark-mode-apps-toggle.sh
     net.solovyov.dark-mode-notify.plist "Library/LaunchAgents/net.solovyov.dark-mode-notify.plist"
+    pi-extensions .pi/agent/extensions
     )
 
 for src in ${(k)mapping}; do
     dst=~/${mapping[$src]}
-    if [ ! -L "$dst" ]; then
+    if [ ! -e "$dst" ] && [ ! -L "$dst" ]; then
         echo "$src -> $dst"
         mkdir -p "$(dirname "$dst")"
         ln -s "$PWD/$src" "$dst"
