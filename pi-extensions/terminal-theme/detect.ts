@@ -9,6 +9,15 @@
  *
  * Uses pi's terminal_input interception to cleanly consume the OSC 11
  * response before it reaches the TUI as garbage input.
+ *
+ * The interceptor is intentionally STRICT: it only consumes data that
+ * looks exactly like an OSC 11 response. Anything else is passed
+ * through untouched so we never swallow user keystrokes or unrelated
+ * terminal escape sequences (OSC 7, OSC 52, focus events, etc.).
+ *
+ * pi-tui's StdinBuffer guarantees that complete escape sequences are
+ * delivered as single events, so we don't need to accumulate partial
+ * data across multiple calls.
  */
 
 export type DetectResult = {
@@ -19,12 +28,10 @@ export type DetectResult = {
 	luminance: number;
 };
 
-const OSC11_RE = /\x1b\]11;rgb:([0-9a-fA-F]+)\/([0-9a-fA-F]+)\/([0-9a-fA-F]+)(\x1b\\|\x07)/;
-
 /** Parse an OSC 11 response string into a theme result */
 export function parseOsc11Response(raw: string): DetectResult | null {
 	const match = raw.match(
-		/\]11;rgb:([0-9a-fA-F]+)\/([0-9a-fA-F]+)\/([0-9a-fA-F]+)/,
+		/\x1b\]11;rgb:([0-9a-fA-F]+)\/([0-9a-fA-F]+)\/([0-9a-fA-F]+)/,
 	);
 	if (!match) return null;
 
@@ -48,15 +55,16 @@ export type TerminalInputInterceptor = (
 /**
  * Query the terminal for its background color.
  *
- * Uses pi's onTerminalInput to intercept the OSC 11 response before
- * the TUI processes it. Much cleaner than monkey-patching stdin.
+ * Sends OSC 11 and waits for a matching response. The interceptor only
+ * consumes data that parses as an OSC 11 response; everything else is
+ * passed through unchanged. The listener stays installed until either
+ * a response arrives or the timeout elapses.
  */
 export function queryTerminalBackground(
 	onTerminalInput: TerminalInputInterceptor,
-	timeoutMs = 2000,
+	timeoutMs = 500,
 ): Promise<DetectResult | null> {
 	return new Promise((resolve) => {
-		let buf = "";
 		let done = false;
 
 		const cleanup = () => {
@@ -74,29 +82,14 @@ export function queryTerminalBackground(
 		const unsubscribe = onTerminalInput((data: string) => {
 			if (done) return undefined;
 
-			buf += data;
-
-			const match = buf.match(OSC11_RE);
-			if (match) {
+			const result = parseOsc11Response(data);
+			if (result) {
 				cleanup();
-				const result = parseOsc11Response(buf);
 				resolve(result);
-
-				// Return any non-OSC data that arrived alongside the response
-				const cleaned = buf.replace(OSC11_RE, "");
-				if (cleaned.length > 0) {
-					return { consume: false, data: cleaned };
-				}
 				return { consume: true };
 			}
 
-			// Partial OSC response — consume and wait for more
-			if (/\x1b\]/.test(buf)) {
-				return { consume: true };
-			}
-
-			// Not our response — let it through and stop intercepting
-			cleanup();
+			// Not an OSC 11 response — pass through, keep listening.
 			return undefined;
 		});
 
