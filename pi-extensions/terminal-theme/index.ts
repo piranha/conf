@@ -41,23 +41,37 @@ async function detect(ui: ExtensionUIContext): Promise<"dark" | "light" | null> 
 export default function (pi: ExtensionAPI) {
 	let lastProbe = 0;
 	let probing = false;
+	let shuttingDown = false;
+	let currentProbe: Promise<"dark" | "light" | null> | null = null;
+
+	const runDetect = async (ui: ExtensionUIContext): Promise<"dark" | "light" | null> => {
+		if (shuttingDown) return null;
+		const probe = detect(ui);
+		currentProbe = probe;
+		try {
+			return await probe;
+		} finally {
+			if (currentProbe === probe) currentProbe = null;
+		}
+	};
 
 	const maybeProbe = async (ui: ExtensionUIContext) => {
 		const now = Date.now();
-		if (probing || now - lastProbe < COOLDOWN_MS) return;
+		if (shuttingDown || probing || now - lastProbe < COOLDOWN_MS) return;
 		probing = true;
 		lastProbe = now;
 		try {
-			await detect(ui);
+			await runDetect(ui);
 		} finally {
 			probing = false;
 		}
 	};
 
 	pi.on("session_start", async (_event, ctx) => {
+		if (shuttingDown) return;
 		probing = true;
 		try {
-			await detect(ctx.ui);
+			await runDetect(ctx.ui);
 		} finally {
 			probing = false;
 			lastProbe = Date.now();
@@ -70,13 +84,27 @@ export default function (pi: ExtensionAPI) {
 		await maybeProbe(ctx.ui);
 	});
 
+	pi.on("session_shutdown", async () => {
+		shuttingDown = true;
+
+		// If an OSC 11 probe is already in flight, give its interceptor a
+		// short chance to consume the terminal response before TUI teardown.
+		if (currentProbe) {
+			await Promise.race([
+				currentProbe.catch(() => null),
+				new Promise((resolve) => setTimeout(resolve, 600)),
+			]);
+		}
+	});
+
 	pi.registerCommand("theme-detect", {
 		description: "Re-detect terminal background and switch theme",
 		handler: async (_args, ctx) => {
+			if (shuttingDown) return;
 			probing = true;
 			let theme: "dark" | "light" | null = null;
 			try {
-				theme = await detect(ctx.ui);
+				theme = await runDetect(ctx.ui);
 			} finally {
 				probing = false;
 				lastProbe = Date.now();
